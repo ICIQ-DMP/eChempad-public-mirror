@@ -19,16 +19,19 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<!--Added with the project initialization, it is for using web page tools in the project-->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 		<dependency>
+			<!--Added with the project initialization-->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<!--Added with the project initialization-->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
