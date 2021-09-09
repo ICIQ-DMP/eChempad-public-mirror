@@ -34,6 +34,7 @@
 #   MAVEN_SKIP_RC - flag to disable loading of mavenrc files
 # ----------------------------------------------------------------------------
 
+clear  # Clean screen when running this script because it outputs a lot of things
 if [ -z "$MAVEN_SKIP_RC" ] ; then
 
   if [ -f /etc/mavenrc ] ; then
@@ -304,26 +305,42 @@ export MAVEN_CMD_LINE_ARGS
 WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
 
-### CUSTOM CODE TO INCLUDE PROFILES FOR MAVEN WRAPPER
+### CUSTOM CODE TO SOURCE DIFFERENT BASH CODE FOR EACH APPLICATION PROFILE ###
 
-# Debug net issues (HTTPS)
-#-Djavax.net.debug=all \
-# Explicitly set the cacerts files
-
+# Obtain full path to the folder that contains this script
 MAVEN_WRAPPER_DIR="$(dirname "$(realpath "$0")")"
+# Obtain application profile
 SPRINGBOOT_PROFILE="$(
   cat "${MAVEN_WRAPPER_DIR}/src/main/resources/application.properties" |
   grep -Eo "spring.profiles.active=.*" |
   cut -d "=" -f2-
   )"
 
-echo $MAVEN_WRAPPER_DIR
+
+# Added to the original code the sourcing of the application-env.sh and the corresponding environment for the profile
+# that we have currently active
+# {
 source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-env.sh"
 source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE}-env.sh"
+# }
 
-# "${JAVA_FLAGS}"
+
+# Added a hardcoded truststore using $JAVA_HOME
+# Added maven options in MAVEN_OPTIONS. This var is defined in the application profile.
+echo exec "${JAVACMD}" ${JAVA_FLAGS} \
+       -Djavax.net.ssl.trustStore="${JAVA_HOME}/jre/lib/security/cacerts" \
+       ${MAVEN_OPTS} \
+       -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
+       "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
+       ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
+       "$@"
+
+# trust-anchors parameters problems? pick a new cacerts file
+# /etc/default/cacerts
+# "${JAVA_HOME}/jre/lib/security/cacerts"
+# /etc/ssl/certs/java/cacerts  <-- this is a good one
 exec "${JAVACMD}" ${JAVA_FLAGS} \
-  -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts \
+  -Djavax.net.ssl.trustStore="/etc/ssl/certs/java/cacerts" \
   ${MAVEN_OPTS} \
   -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
   "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \

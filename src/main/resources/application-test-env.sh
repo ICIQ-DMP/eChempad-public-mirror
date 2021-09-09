@@ -1,2 +1,2 @@
 export MAVEN_FLAGS="-e -X"
-export JAVA_FLAGS="-Djavax.net.debug=all"
+export JAVA_FLAGS="-Djavax.net.debug=all"  # Debug net issues (HTTPS)
