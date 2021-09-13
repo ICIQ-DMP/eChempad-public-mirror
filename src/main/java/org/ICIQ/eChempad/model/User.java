@@ -1,23 +1,51 @@
 package org.ICIQ.eChempad.model;
 
-import javax.persistence.Entity;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
-@Entity
+
 /**
  * Used to store information about the User and its workspace.
  *
  * It has a list containing the different Journal that conform the workspace.
  */
+@Entity
+@Table(name="users")
 public class User {
+    /*
+     * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
+     * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
+     */
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID UUid;
+
+    @Column(name = "firstName", length = 100, nullable = false)
     private String firstName;
+
+    @Column(name = "lastName", length = 100, nullable = false)
     private String lastName;
+
+    @Column(name = "email", length = 100, nullable = false)
     private String email;
+
+    /*
+     * Exactly 73 characters
+     */
+    @Column(name = "signalsAPIKey", length = 73)
     private String signalsAPIKey;
+
+
     private List<Journal> accessibleElements;
 
 
@@ -36,7 +64,7 @@ public class User {
     }
 
 
-    // GETTERS I SETTERS
+    // GETTERS AND SETTERS
 
 
     public UUID getUUid() {

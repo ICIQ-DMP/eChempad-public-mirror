@@ -324,17 +324,21 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-env.sh"
 source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE}-env.sh"
 # }
 
+if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]; then
+  echo Executed command:
+  echo exec "${JAVACMD}" ${JAVA_FLAGS} \
+         -Djavax.net.ssl.trustStore="${JAVA_HOME}/jre/lib/security/cacerts" \
+         ${MAVEN_OPTS} \
+         -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
+         "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
+         ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
+         "$@"
+  lsof -ti tcp:8080 | xargs kill
+fi
+
 
 # Added a hardcoded truststore using $JAVA_HOME
 # Added maven options in MAVEN_OPTIONS. This var is defined in the application profile.
-echo exec "${JAVACMD}" ${JAVA_FLAGS} \
-       -Djavax.net.ssl.trustStore="${JAVA_HOME}/jre/lib/security/cacerts" \
-       ${MAVEN_OPTS} \
-       -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
-       "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
-       ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
-       "$@"
-
 # trust-anchors parameters problems? pick a new cacerts file
 # /etc/default/cacerts
 # "${JAVA_HOME}/jre/lib/security/cacerts"
