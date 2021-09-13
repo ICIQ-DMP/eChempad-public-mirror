@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.model;
+package org.ICIQ.eChempad.models;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -28,7 +28,7 @@ public class User {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", nullable = false, updatable = false)
-    private UUID UUid;
+    private final UUID UUid;
 
     @Column(name = "firstName", length = 100, nullable = false)
     private String firstName;
@@ -45,8 +45,8 @@ public class User {
     @Column(name = "signalsAPIKey", length = 73)
     private String signalsAPIKey;
 
-
-    private List<Journal> accessibleElements;
+    // @OneToMany(targetEntity=Journal.class, mappedBy="UUid", fetch=FetchType.EAGER)
+    // private List<Journal> accessibleElements = new ArrayList<Journal>();
 
 
     /**
@@ -60,7 +60,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.accessibleElements = new ArrayList<>();
+        //this.accessibleElements = new ArrayList<>();
     }
 
 
@@ -103,11 +103,11 @@ public class User {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public List<Journal> getAccessibleElements() {
+   /* public List<Journal> getAccessibleElements() {
         return accessibleElements;
     }
 
     public void setAccessibleElements(List<Journal> accessibleElements) {
         this.accessibleElements = accessibleElements;
-    }
+    }*/
 }

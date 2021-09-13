@@ -1,28 +1,28 @@
-package org.ICIQ.eChempad.model;
+package org.ICIQ.eChempad.models;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 /**
- * Model class to store many Documents (files) ideally from a single chemistry assay.
+ * Model class to ideally store Experiments that are related to the same project.
  *
- * An Experiment is composed of many Documents (files) and some metadata (description, name).
+ * A Journal contains many Experiment and some metadata (description, name). A Journal is the only shareable
+ * structure with other users.
  */
-public class Experiment {
-    private UUID UUid;
+public class Journal {
+    private final UUID UUid;
     private String name;
     private String description;
     private List<Document> documents;
 
     /**
      * Constructor
-     * @param name Name used by humans to identify this Experiment. There are no possibility of collisions since we use
-     *             the UUID to manage the experiments.
-     * @param description String used to describe the contents of this experiment.
+     * @param name name used by humans to identify a certain Journal. No collision is expected from Journals with same
+     *             name
+     * @param description description of the content of the Journal and its Experiments.
      */
-    public Experiment(String name, String description) {
+    public Journal(String name, String description) {
         this.UUid = UUID.randomUUID();
         this.name = name;
         this.description = description;
@@ -60,3 +60,6 @@ public class Experiment {
         this.documents = documents;
     }
 }
+
+
+

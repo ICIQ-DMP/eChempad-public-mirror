@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.model;
+package org.ICIQ.eChempad.models;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

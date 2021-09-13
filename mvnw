@@ -312,8 +312,9 @@ MAVEN_WRAPPER_DIR="$(dirname "$(realpath "$0")")"
 # Obtain application profile
 SPRINGBOOT_PROFILE="$(
   cat "${MAVEN_WRAPPER_DIR}/src/main/resources/application.properties" |
-  grep -Eo "spring.profiles.active=.*" |
-  cut -d "=" -f2-
+  grep -Eo "spring.profiles.active = .*" |
+  cut -d "=" -f2- |
+  tr -d " "
   )"
 
 
@@ -333,7 +334,10 @@ if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]
          "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
          ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
          "$@"
-  lsof -ti tcp:8080 | xargs kill
+  if lsof -ti tcp:8080; then
+    lsof -ti tcp:8080 | xargs kill
+  fi
+  echo skdhjfkjhs
 fi
 
 
