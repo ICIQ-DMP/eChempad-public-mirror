@@ -1,5 +1,8 @@
 package org.ICIQ.eChempad.models;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,10 +17,27 @@ import java.util.stream.Stream;
  * Each Document can be in different formats. Each class that inherits from this class extends its behaviour by adding
  * visualization methods for concrete types of document.
  */
+@Entity
+@Table(name="document", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id")
+})
 public abstract class Document {
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", nullable = false, updatable = false)
     protected UUID UUid;
+
+    @Column(name = "name", length = 100, nullable = false)
     protected String name;
+
+    @Column(name = "description", length = 1000, nullable = false)
     protected String description;
+
+    @Column(name = "path", length = 1000, nullable = false)
     protected Path path;
 
     /**

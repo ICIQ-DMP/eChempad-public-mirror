@@ -15,7 +15,9 @@ import java.util.UUID;
  * It has a list containing the different Journal that conform the workspace.
  */
 @Entity
-@Table(name="users")
+@Table(name="users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id")
+})
 public class User {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
@@ -45,8 +47,8 @@ public class User {
     @Column(name = "signalsAPIKey", length = 73)
     private String signalsAPIKey;
 
-    // @OneToMany(targetEntity=Journal.class, mappedBy="UUid", fetch=FetchType.EAGER)
-    // private List<Journal> accessibleElements = new ArrayList<Journal>();
+    @OneToMany(targetEntity=Journal.class, mappedBy="UUid", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+    private List<Journal> accessibleElements = new ArrayList<Journal>();
 
 
     /**
@@ -60,7 +62,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        //this.accessibleElements = new ArrayList<>();
+        this.accessibleElements = new ArrayList<>();
     }
 
 
@@ -103,11 +105,11 @@ public class User {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-   /* public List<Journal> getAccessibleElements() {
+    public List<Journal> getAccessibleElements() {
         return accessibleElements;
     }
 
     public void setAccessibleElements(List<Journal> accessibleElements) {
         this.accessibleElements = accessibleElements;
-    }*/
+    }
 }

@@ -1,21 +1,13 @@
 package org.ICIQ.eChempad.repositories;
 
 import org.ICIQ.eChempad.models.User;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
+import java.util.UUID;
 
 @Repository
-public class UserRepository {
+public interface UserRepository extends CrudRepository<User, UUID> {
 
-    @PersistenceContext
-    private EntityManager entityManager;
 
-    public List<User> findAll()
-    {
-        return this.entityManager.createQuery("from " + User.class.getName()).getResultList();
-
-    }
 }
