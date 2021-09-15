@@ -14,7 +14,7 @@ import javax.persistence.Converter;
  * contained within other, more complex attribute types. In this case we don't have to use @Convert annotation
  * explicitly on the attributes."
  */
-@Converter(autoApply = true)  // With autoapply = true performs automatic translation between types transparently
+@Converter(autoApply = true)  // With autoapply = true performs automatic translation between types implicitly
 public class PathConverter implements AttributeConverter<Path, String> {
 
     @Override
