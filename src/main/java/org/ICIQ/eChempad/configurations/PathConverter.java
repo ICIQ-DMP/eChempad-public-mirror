@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.configs;
+package org.ICIQ.eChempad.configurations;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

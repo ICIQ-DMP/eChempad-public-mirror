@@ -1,6 +1,6 @@
 package org.ICIQ.eChempad.repositories;
 
-import org.ICIQ.eChempad.models.User;
+import org.ICIQ.eChempad.entities.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

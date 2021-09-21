@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.models;
+package org.ICIQ.eChempad.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 

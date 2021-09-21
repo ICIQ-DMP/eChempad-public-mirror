@@ -334,10 +334,11 @@ if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]
          "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
          ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
          "$@"
-  if lsof -ti tcp:8080; then
-    lsof -ti tcp:8080 | xargs kill
-  fi
-  echo skdhjfkjhs
+fi
+
+# If there is any application listening to port 8080 (which is the one used to deploy the app) kill it.
+if lsof -ti tcp:8080 &>/dev/null; then
+  lsof -ti tcp:8080 | xargs kill
 fi
 
 

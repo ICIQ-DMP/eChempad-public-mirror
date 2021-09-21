@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.configs;
+package org.ICIQ.eChempad.configurations;
 
 import org.springframework.context.annotation.Configuration;
 

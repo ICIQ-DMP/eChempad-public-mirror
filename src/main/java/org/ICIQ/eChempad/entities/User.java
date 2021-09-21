@@ -1,12 +1,9 @@
-package org.ICIQ.eChempad.models;
+package org.ICIQ.eChempad.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import java.util.*;
 
 
 /**
@@ -22,6 +19,7 @@ public class User {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
+     * https://stackoverflow.com/questions/43056220/store-uuid-v4-in-mysql (psql stores in binary but displays properly)
      */
     @Id
     @GeneratedValue(generator = "UUID")
@@ -48,7 +46,7 @@ public class User {
     private String signalsAPIKey;
 
     @OneToMany(targetEntity=Journal.class, mappedBy="UUid", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
-    private List<Journal> accessibleElements = new ArrayList<Journal>();
+    private Set<Journal> accessibleElements;
 
 
     /**
@@ -62,7 +60,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.accessibleElements = new ArrayList<>();
+        this.accessibleElements = new HashSet<>();
     }
 
 
@@ -105,11 +103,11 @@ public class User {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public List<Journal> getAccessibleElements() {
+    public Set<Journal> getAccessibleElements() {
         return accessibleElements;
     }
 
-    public void setAccessibleElements(List<Journal> accessibleElements) {
+    public void setAccessibleElements(Set<Journal> accessibleElements) {
         this.accessibleElements = accessibleElements;
     }
 }

@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.models;
+package org.ICIQ.eChempad.entities;
 
 import java.nio.file.Path;
 import java.util.UUID;
