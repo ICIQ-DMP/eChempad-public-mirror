@@ -12,5 +12,8 @@ public class EChempadApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EChempadApplication.class, args);
 	}
+	// instanciar classe interna de test.
+	// grabar element fer crida (crear usuari nou)
+	// comprovar pgadmin canvis a la BD
 
 }

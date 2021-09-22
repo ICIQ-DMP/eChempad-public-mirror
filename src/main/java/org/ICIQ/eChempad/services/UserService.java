@@ -1,6 +1,6 @@
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.repositories.UserRepository;
+import org.ICIQ.eChempad.repositories.UserRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +11,10 @@ import javax.transaction.Transactional;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryInterface userRepositoryInterface;
 
     public long count()
     {
-        return this.userRepository.count();
+        return this.userRepositoryInterface.count();
     }
 }
