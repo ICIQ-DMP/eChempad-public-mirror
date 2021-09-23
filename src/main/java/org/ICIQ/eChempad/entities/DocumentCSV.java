@@ -14,7 +14,7 @@ public class DocumentCSV extends Document {
      * @param path path to the file. It can be relative or absolute.
      */
     public DocumentCSV(Path path, String name, String description) {
-        this.UUid = UUID.randomUUID();
+        this.id = UUID.randomUUID();
         this.name = name;
         this.description = description;
         this.path = path;

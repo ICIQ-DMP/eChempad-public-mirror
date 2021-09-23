@@ -1,8 +1,9 @@
 package org.ICIQ.eChempad.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.util.*;
 
 
 /**
@@ -10,11 +11,28 @@ import java.util.UUID;
  *
  * An Experiment is composed of many Documents (files) and some metadata (description, name).
  */
+@Entity
+@Table(name="Experiment", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id")
+})
 public class Experiment {
-    private UUID UUid;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", nullable = false, updatable = false)
+    private UUID id;
+
+    @Column(name = "name", length = 100, nullable = false)
     private String name;
+
+    @Column(name = "description", length = 1000, nullable = false)
     private String description;
-    private List<Document> documents;
+
+    @OneToMany(targetEntity=Document.class, mappedBy="id", fetch=FetchType.EAGER)
+    private Set<Document> documents;
 
     /**
      * Constructor
@@ -23,21 +41,21 @@ public class Experiment {
      * @param description String used to describe the contents of this experiment.
      */
     public Experiment(String name, String description) {
-        this.UUid = UUID.randomUUID();
+        this.id = UUID.randomUUID();
         this.name = name;
         this.description = description;
-        this.documents = new ArrayList<>();
+        this.documents = new HashSet<>();
     }
 
 
     // GETTERS AND SETTERS
 
     public UUID getUUid() {
-        return UUid;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -45,18 +63,18 @@ public class Experiment {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public List<Document> getDocuments() {
-        return documents;
+    public Set<Document> getDocuments() {
+        return this.documents;
     }
 
-    public void setDocuments(List<Document> documents) {
+    public void setDocuments(Set<Document> documents) {
         this.documents = documents;
     }
 }

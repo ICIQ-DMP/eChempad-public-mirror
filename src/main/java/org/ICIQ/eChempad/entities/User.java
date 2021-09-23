@@ -12,7 +12,7 @@ import java.util.*;
  * It has a list containing the different Journal that conform the workspace.
  */
 @Entity
-@Table(name="users", uniqueConstraints = {
+@Table(name="User", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
 public class User {
@@ -28,39 +28,32 @@ public class User {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", nullable = false, updatable = false)
-    private final UUID UUid;
+    private final UUID id;
 
-    @Column(name = "firstName", length = 100, nullable = false)
-    private String firstName;
-
-    @Column(name = "lastName", length = 100, nullable = false)
-    private String lastName;
+    @Column(name = "fullName", length = 100, nullable = false)
+    private String fullName;
 
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    /*
-     * Exactly 73 characters
-     */
-    @Column(name = "signalsAPIKey", length = 73)
+    // Exactly 73 characters
+    @Column(name = "signalsAPIKey", length = 73)  // nullable = true
     private String signalsAPIKey;
 
-    @OneToMany(targetEntity=Journal.class, mappedBy="UUid", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
-    private Set<Journal> accessibleElements;
+    @OneToMany(targetEntity=Journal.class, mappedBy="id", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+    private Set<Journal> journals;
 
 
     /**
      * Constructor
-     * @param firstName First name
-     * @param lastName Last name
+     * @param fullName First name
      * @param email valid e-mail direction.
      */
-    public User(String firstName, String lastName, String email) {
-        this.UUid = UUID.randomUUID();
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public User(String fullName, String email) {
+        this.id = UUID.randomUUID();
+        this.fullName = fullName;
         this.email = email;
-        this.accessibleElements = new HashSet<>();
+        this.journals = new HashSet<>();
     }
 
 
@@ -68,27 +61,19 @@ public class User {
 
 
     public UUID getUUid() {
-        return UUid;
+        return this.id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return this.fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -96,18 +81,18 @@ public class User {
     }
 
     public String getSignalsAPIKey() {
-        return signalsAPIKey;
+        return this.signalsAPIKey;
     }
 
     public void setSignalsAPIKey(String signalsAPIKey) {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public Set<Journal> getAccessibleElements() {
-        return accessibleElements;
+    public Set<Journal> getJournal() {
+        return this.journals;
     }
 
-    public void setAccessibleElements(Set<Journal> accessibleElements) {
-        this.accessibleElements = accessibleElements;
+    public void setJournals(Set<Journal> accessibleElements) {
+        this.journals = accessibleElements;
     }
 }

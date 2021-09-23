@@ -1,73 +1,35 @@
 package org.ICIQ.eChempad.repositories;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import java.lang.reflect.ParameterizedType;
 import java.io.Serializable;
 import java.util.List;
 
-@Repository
-@Transactional
-public abstract class GenericRepository<T, S extends Serializable> implements GenericRepositoryInterface<T, S> {
+/**
+ * Alternative usage of CrudRepository
+ * Code modified from http://www.codesenior.com/en/tutorial/Spring-Generic-DAO-and-Generic-Service-Implementation
+ *
+ * This interfaces defines basic generic methods for all repositories / entities, in order to modify the database.
+ * @author malvarez
+ *
+ * @param <T> Generic entity.
+ * @param <S> Generic primary key (data for unique identification).
+ */
 
-    @Autowired
-    protected SessionFactory sessionFactory;
+public interface GenericRepository<T, S extends Serializable> {
 
-    protected Class<T> entityClass;
+    void add(T entity);
 
+    void saveOrUpdate(T entity);
 
-    @SuppressWarnings({"unchecked"})  // Remove warning about safe and unsafe static types.
-    protected Session currentSession() {
-        this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        return this.sessionFactory.getCurrentSession();
-    }
+    void update(T entity);
 
-    @Override
-    public void add(T entity) {
-        this.currentSession().save(entity);
-    }
+    void remove(T entity);
 
-    @Override
-    public void saveOrUpdate(T entity) {
-        this.currentSession().saveOrUpdate(entity);
-    }
+    T find(S id);
 
-    @Override
-    public void update(T entity) {
-        this.currentSession().saveOrUpdate(entity);
-    }
+    List<T> getAll();
 
-    @Override
-    public void remove(T entity) {
-        this.currentSession().delete(entity);
-    }
+    void clear();
 
-    @Override
-    public T find(final Serializable id) {
-        return this.currentSession().get(this.entityClass, id);
-    }
+    void flush();
 
-    @Override
-    public List<T> getAll() {
-        CriteriaBuilder builder = this.currentSession().getCriteriaBuilder();
-        CriteriaQuery<T> criteria = builder.createQuery(this.entityClass);
-        criteria.from(this.entityClass);
-        return this.currentSession().createQuery(criteria).getResultList();
-    }
-
-    @Override
-    public void clear() {
-        this.currentSession().clear();
-    }
-
-    @Override
-    public void flush() {
-        this.currentSession().flush();
-    }
 }

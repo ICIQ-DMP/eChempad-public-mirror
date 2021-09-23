@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * visualization methods for concrete types of document.
  */
 @Entity
-@Table(name="document", uniqueConstraints = {
+@Table(name="Document", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
 public abstract class Document {
@@ -29,7 +29,7 @@ public abstract class Document {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", nullable = false, updatable = false)
-    protected UUID UUid;
+    protected UUID id;
 
     @Column(name = "name", length = 100, nullable = false)
     protected String name;
@@ -63,7 +63,7 @@ public abstract class Document {
     // GETTERS AND SETTERS
 
     public UUID getUUid() {
-        return UUid;
+        return id;
     }
 
     public String getName() {

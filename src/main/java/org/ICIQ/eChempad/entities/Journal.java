@@ -3,9 +3,7 @@ package org.ICIQ.eChempad.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Model class to ideally store Experiments that are related to the same project.
@@ -14,8 +12,9 @@ import java.util.UUID;
  * structure with other users.
  */
 @Entity
-@Table(name="journals")
-public class Journal {
+@Table(name="Journal", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id")
+})public class Journal {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
@@ -27,7 +26,7 @@ public class Journal {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", nullable = false, updatable = false)
-    private final UUID UUid;
+    private final UUID id;
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;
@@ -35,8 +34,8 @@ public class Journal {
     @Column(name = "description", length = 1000, nullable = false)
     private String description;
 
-    @OneToMany(targetEntity=Document.class, mappedBy="UUid", fetch=FetchType.EAGER)
-    private List<Document> documents;
+    @OneToMany(targetEntity=Experiment.class, mappedBy="id", fetch=FetchType.EAGER)
+    private Set<Experiment> experiments;
 
     /**
      * Constructor
@@ -45,21 +44,21 @@ public class Journal {
      * @param description description of the content of the Journal and its Experiments.
      */
     public Journal(String name, String description) {
-        this.UUid = UUID.randomUUID();
+        this.id = UUID.randomUUID();
         this.name = name;
         this.description = description;
-        this.documents = new ArrayList<>();
+        this.experiments = new HashSet<>();
     }
 
 
     // GETTERS AND SETTERS
 
     public UUID getUUid() {
-        return UUid;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -67,19 +66,19 @@ public class Journal {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public List<Document> getDocuments() {
-        return documents;
+    public Set<Experiment> getExperiments() {
+        return this.experiments;
     }
 
-    public void setDocuments(List<Document> documents) {
-        this.documents = documents;
+    public void setExperiments(Set<Experiment> experiments) {
+        this.experiments = experiments;
     }
 }
 
