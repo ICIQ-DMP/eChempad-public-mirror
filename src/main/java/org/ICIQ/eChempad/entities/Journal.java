@@ -25,8 +25,7 @@ import java.util.*;
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "id", nullable = false, updatable = false)
-    private final UUID id;
+    private UUID id;
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;
@@ -34,8 +33,25 @@ import java.util.*;
     @Column(name = "description", length = 1000, nullable = false)
     private String description;
 
-    @OneToMany(targetEntity=Experiment.class, mappedBy="id", fetch=FetchType.EAGER)
+    @OneToMany(
+            targetEntity = Experiment.class,
+            mappedBy = "journal",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+)
     private Set<Experiment> experiments;
+
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            optional = false
+    )
+    @JoinColumn(
+            name = "researcher_id",
+            referencedColumnName = "id",
+            nullable = false)
+    private Researcher researcher;
+
+    public Journal() {}
 
     /**
      * Constructor
@@ -44,7 +60,6 @@ import java.util.*;
      * @param description description of the content of the Journal and its Experiments.
      */
     public Journal(String name, String description) {
-        this.id = UUID.randomUUID();
         this.name = name;
         this.description = description;
         this.experiments = new HashSet<>();
@@ -80,6 +95,8 @@ import java.util.*;
     public void setExperiments(Set<Experiment> experiments) {
         this.experiments = experiments;
     }
+
+
 }
 
 

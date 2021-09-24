@@ -22,7 +22,6 @@ public class Experiment {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
     @Column(name = "name", length = 100, nullable = false)
@@ -31,8 +30,25 @@ public class Experiment {
     @Column(name = "description", length = 1000, nullable = false)
     private String description;
 
-    @OneToMany(targetEntity=Document.class, mappedBy="id", fetch=FetchType.EAGER)
+    @OneToMany(
+            targetEntity = Document.class,
+            mappedBy = "experiment",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+)
     private Set<Document> documents;
+
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            optional = false
+    )
+    @JoinColumn(
+            name = "journal_id",
+            referencedColumnName = "id",
+            nullable = false)
+    private Journal journal;
+
+    public Experiment() {}
 
     /**
      * Constructor
@@ -41,7 +57,6 @@ public class Experiment {
      * @param description String used to describe the contents of this experiment.
      */
     public Experiment(String name, String description) {
-        this.id = UUID.randomUUID();
         this.name = name;
         this.description = description;
         this.documents = new HashSet<>();
@@ -76,5 +91,13 @@ public class Experiment {
 
     public void setDocuments(Set<Document> documents) {
         this.documents = documents;
+    }
+
+    public Journal getJournal() {
+        return journal;
+    }
+
+    public void setJournal(Journal journal) {
+        this.journal = journal;
     }
 }

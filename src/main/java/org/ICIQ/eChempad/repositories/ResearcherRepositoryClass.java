@@ -1,14 +1,13 @@
 package org.ICIQ.eChempad.repositories;
 
-import org.ICIQ.eChempad.entities.User;
+import org.ICIQ.eChempad.entities.Researcher;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
 
 @Repository
-public class UserRepositoryClass extends GenericRepositoryClass<User, UUID> implements UserRepository {
-
+public class ResearcherRepositoryClass extends GenericRepositoryClass<Researcher, UUID> implements ResearcherRepository {
 
     /**
      * We can use uniqueResult because we will not allow different users with the same e-mail.

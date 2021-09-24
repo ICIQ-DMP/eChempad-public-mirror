@@ -12,10 +12,10 @@ import java.util.*;
  * It has a list containing the different Journal that conform the workspace.
  */
 @Entity
-@Table(name="User", uniqueConstraints = {
+@Table(name="Researcher", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
-public class User {
+public class Researcher {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
@@ -27,8 +27,7 @@ public class User {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "id", nullable = false, updatable = false)
-    private final UUID id;
+    private UUID id;
 
     @Column(name = "fullName", length = 100, nullable = false)
     private String fullName;
@@ -40,17 +39,23 @@ public class User {
     @Column(name = "signalsAPIKey", length = 73)  // nullable = true
     private String signalsAPIKey;
 
-    @OneToMany(targetEntity=Journal.class, mappedBy="id", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+    @OneToMany(
+            targetEntity = Journal.class,
+            mappedBy = "researcher",
+            fetch = FetchType.EAGER
+    //        cascade = CascadeType.ALL
+    )
     private Set<Journal> journals;
 
+
+    public Researcher() {}
 
     /**
      * Constructor
      * @param fullName First name
      * @param email valid e-mail direction.
      */
-    public User(String fullName, String email) {
-        this.id = UUID.randomUUID();
+    public Researcher(String fullName, String email) {
         this.fullName = fullName;
         this.email = email;
         this.journals = new HashSet<>();

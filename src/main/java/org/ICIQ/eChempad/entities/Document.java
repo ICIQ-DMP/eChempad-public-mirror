@@ -28,7 +28,6 @@ public abstract class Document {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "id", nullable = false, updatable = false)
     protected UUID id;
 
     @Column(name = "name", length = 100, nullable = false)
@@ -39,6 +38,24 @@ public abstract class Document {
 
     @Column(name = "path", length = 1000, nullable = false)
     protected Path path;
+
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            optional = false
+    )
+    @JoinColumn(
+            name = "experiment_id",
+            referencedColumnName = "id",
+            nullable = false)
+    protected Experiment experiment;
+
+    public Document() {}
+
+    public Document(String name, String description, Path path) {
+        this.name = name;
+        this.description = description;
+        this.path = path;
+    }
 
     /**
      * Default display of a File: By default an instance of a File is always considered as text.
@@ -88,5 +105,13 @@ public abstract class Document {
 
     public void setPath(Path path) {
         this.path = path;
+    }
+
+    public Experiment getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
     }
 }
