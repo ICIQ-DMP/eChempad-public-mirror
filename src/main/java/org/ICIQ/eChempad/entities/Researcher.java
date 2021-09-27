@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.entities;
 
+import org.ICIQ.eChempad.configurations.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -27,6 +28,7 @@ public class Researcher {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+    @Convert(converter = UUIDConverter.class)
     private UUID id;
 
     @Column(name = "fullName", length = 100, nullable = false)
@@ -55,9 +57,10 @@ public class Researcher {
      * @param fullName First name
      * @param email valid e-mail direction.
      */
-    public Researcher(String fullName, String email) {
+    public Researcher(String fullName, String email, String signalsAPIKey) {
         this.fullName = fullName;
         this.email = email;
+        this.signalsAPIKey = signalsAPIKey;
         this.journals = new HashSet<>();
     }
 

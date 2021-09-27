@@ -2,6 +2,7 @@ package org.ICIQ.eChempad.repositories;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.lang.reflect.ParameterizedType;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class implements basic generic methods to make standard queries associated to all tables / entities.
@@ -39,8 +42,15 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
     }
 
     @Override
-    public void saveOrUpdate(T entity) {
-        this.currentSession().saveOrUpdate(entity);
+    public T saveOrUpdate(T entity) {
+        Session session = this.sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.saveOrUpdate(entity);
+        session.getTransaction().commit();
+        session.close();
+
+        return entity;
     }
 
     @Override
@@ -59,11 +69,18 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
     }
 
     @Override
-    public List<T> getAll() {
-        CriteriaBuilder builder = this.currentSession().getCriteriaBuilder();
+    public Set<T> getAll() {
+        Session session = this.sessionFactory.openSession();
+        session.beginTransaction();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(this.entityClass);
         criteria.from(this.entityClass);
-        return this.currentSession().createQuery(criteria).getResultList();
+        Set<T> res = new HashSet<>(session.createQuery(criteria).getResultList());
+
+        session.getTransaction().commit();
+        session.close();
+        return res;
     }
 
     @Override

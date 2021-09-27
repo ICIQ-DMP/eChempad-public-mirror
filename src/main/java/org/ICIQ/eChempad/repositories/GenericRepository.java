@@ -2,6 +2,7 @@ package org.ICIQ.eChempad.repositories;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Alternative usage of CrudRepository
@@ -18,7 +19,7 @@ public interface GenericRepository<T, S extends Serializable> {
 
     void add(T entity);
 
-    void saveOrUpdate(T entity);
+    T saveOrUpdate(T entity);
 
     void update(T entity);
 
@@ -26,7 +27,7 @@ public interface GenericRepository<T, S extends Serializable> {
 
     T find(S id);
 
-    List<T> getAll();
+    Set<T> getAll();
 
     void clear();
 

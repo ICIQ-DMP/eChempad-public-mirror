@@ -37,6 +37,13 @@ This will install:
   * gitlab runners: Integration with the GitLab platform to perform CD and CI. 
   
   
+#### Notes
+To test the software you can visit using your browser
+http://localhost:8080/api/researcher
+
+A v1 UUID for testing: 1c9abdba-1f82-11ec-9621-0242ac130002
+
+
   
  
   
