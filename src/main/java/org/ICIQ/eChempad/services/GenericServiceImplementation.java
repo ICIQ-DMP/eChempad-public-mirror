@@ -10,10 +10,14 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public abstract class GenericServiceImplementation<T, S extends Serializable> implements GenericService<T, S> {
+public class GenericServiceImplementation<T, S extends Serializable> implements GenericService<T, S> {
 
     @Autowired
     private GenericRepository<T, S> genericRepository;
+
+    public GenericServiceImplementation(GenericRepository<T, S> genericDao) {
+        this.genericRepository = genericDao;
+    }
 
     @Override
     @Transactional
@@ -30,7 +34,7 @@ public abstract class GenericServiceImplementation<T, S extends Serializable> im
     @Override
     @Transactional
     public T get(S id) {
-        return this.genericRepository.find(id);
+        return this.genericRepository.get(id);
     }
 
     @Override

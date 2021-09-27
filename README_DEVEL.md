@@ -44,7 +44,10 @@ http://localhost:8080/api/researcher
 A v1 UUID for testing: 1c9abdba-1f82-11ec-9621-0242ac130002
 
 
-  
- 
-  
+SQL statement to introduce values in our DB
+INSERT INTO researcher(email, full_name, signalsAPIKey, id) VALUES ('patat', 'pat', 'yes638363ndsydeinumbers666', '1c9abdba-1f82-11ec-9621-0242ac130002');
 
+
+	// instanciar classe interna de test.
+	// grabar element fer crida (crear usuari nou)
+	// comprovar pgadmin canvis a la BD

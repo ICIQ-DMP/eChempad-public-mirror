@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/researcher")
@@ -26,7 +27,6 @@ public class ResearcherControllerClass implements ResearcherController {
         this.researcherServiceClass = researcherServiceClass;
     }
 
-
     @Override
     @GetMapping
     public Set<Researcher> getAllResearchers() {
@@ -36,6 +36,8 @@ public class ResearcherControllerClass implements ResearcherController {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<Researcher> getResearcher(@PathVariable(value = "id") UUID uuid) {
+        Logger.getLogger("LO MAIN").info("NIENTRAASERVIR");
+
         Researcher researcher = this.researcherServiceClass.get(uuid);
 
         if (researcher != null)

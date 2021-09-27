@@ -25,7 +25,7 @@ public interface GenericRepository<T, S extends Serializable> {
 
     void remove(T entity);
 
-    T find(S id);
+    T get(S id);
 
     Set<T> getAll();
 

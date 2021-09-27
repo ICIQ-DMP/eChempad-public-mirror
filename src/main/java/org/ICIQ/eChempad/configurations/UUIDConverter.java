@@ -25,17 +25,11 @@ public class UUIDConverter implements AttributeConverter<UUID, String>, Serializ
 
     @Override
     public String convertToDatabaseColumn(UUID uuid) {
-        LoggerFactory.getLogger(getClass()).error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
         return uuid == null ? null : uuid.toString();
     }
 
     @Override
     public UUID convertToEntityAttribute(String s) {
-
-        LoggerFactory.getLogger(getClass()).error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
-        return UUID.fromString("1c9abdba1f82-11ec-9621-0242ac130002");
-        //return s == null ? null : UUID.fromString(s);
+        return s == null ? null : UUID.fromString(s);
     }
 }
