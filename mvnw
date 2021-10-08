@@ -328,7 +328,7 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]; then
   echo Executed command:
   echo exec "${JAVACMD}" ${JAVA_FLAGS} \
-         -Djavax.net.ssl.trustStore="${JAVA_HOME}/jre/lib/security/cacerts" \
+         -Djavax.net.ssl.trustStore="/etc/ssl/certs/java/cacerts" \
          ${MAVEN_OPTS} \
          -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
          "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
