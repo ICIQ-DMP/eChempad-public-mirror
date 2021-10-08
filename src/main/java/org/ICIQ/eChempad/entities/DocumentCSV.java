@@ -9,15 +9,13 @@ import java.util.UUID;
 public class DocumentCSV extends Document {
 
     /**
-     * Constructor
+     * Constructor of DocumentCSV. It will perform a call to the constructor of the super class in order to initialize
+     * its parameters.
      * @param name Name of the document (file)
      * @param path path to the file. It can be relative or absolute.
      */
-    public DocumentCSV(Path path, String name, String description) {
-        this.id = UUID.randomUUID();
-        this.name = name;
-        this.description = description;
-        this.path = path;
+    public DocumentCSV(String name, String description, Path path) {
+        super(name, description, path);
     }
 
 

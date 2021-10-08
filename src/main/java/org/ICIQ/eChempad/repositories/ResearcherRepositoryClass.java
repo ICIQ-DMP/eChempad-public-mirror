@@ -4,6 +4,7 @@ import org.ICIQ.eChempad.entities.Researcher;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -35,4 +36,7 @@ public class ResearcherRepositoryClass extends GenericRepositoryClass<Researcher
     public String getSignalsAPIKey(UUID id) {
         return (String) super.currentSession().createQuery("FROM User where id=:id").setParameter("id", id).uniqueResult();
     }
+
+
+
 }

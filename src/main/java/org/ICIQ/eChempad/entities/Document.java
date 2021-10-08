@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public abstract class Document {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected UUID id;
 
     @Column(name = "name", length = 100, nullable = false)
@@ -49,9 +51,10 @@ public abstract class Document {
             nullable = false)
     protected Experiment experiment;
 
-    public Document() {}
+    // Public constructors in abstract classes are pointless
+    protected Document() {}
 
-    public Document(String name, String description, Path path) {
+    protected Document(String name, String description, Path path) {
         this.name = name;
         this.description = description;
         this.path = path;

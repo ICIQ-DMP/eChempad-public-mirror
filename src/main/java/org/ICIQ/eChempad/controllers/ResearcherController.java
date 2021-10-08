@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public interface ResearcherController {
 
     ResponseEntity<Researcher> getResearcher(UUID uuid);
 
-    public Researcher addResearcher(Researcher user);
+    public Researcher addResearcher(Researcher researcher);
 
+    int removeResearcher(UUID uuid);
 }

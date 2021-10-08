@@ -1,9 +1,13 @@
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.ICIQ.eChempad.configurations.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -16,7 +20,7 @@ import java.util.*;
 @Table(name="Researcher", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
-public class Researcher {
+public class Researcher implements Serializable {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
@@ -47,9 +51,21 @@ public class Researcher {
             fetch = FetchType.EAGER
     //        cascade = CascadeType.ALL
     )
+    @JsonIgnore
     private Set<Journal> journals;
 
+    /**
+     * Used to create "ghost" instances only with the internal UUIDs in order to perform deletion.
+     * @param id
+     */
+    public Researcher(UUID id)
+    {
+        this.id = id;
+    }
 
+    /**
+     * Internally used by SpringBoot when using reflection.
+     */
     public Researcher() {}
 
     /**
@@ -96,11 +112,11 @@ public class Researcher {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public Set<Journal> getJournal() {
+    public Set<Journal> getJournals() {
         return this.journals;
     }
 
-    public void setJournals(Set<Journal> accessibleElements) {
-        this.journals = accessibleElements;
+    public void setJournals(Set<Journal> journals) {
+        this.journals = journals;
     }
 }

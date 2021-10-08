@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class GenericServiceImplementation<T, S extends Serializable> implements GenericService<T, S> {
+public class GenericServiceClass<T, S extends Serializable> implements GenericService<T, S> {
 
     @Autowired
     private GenericRepository<T, S> genericRepository;
 
-    public GenericServiceImplementation(GenericRepository<T, S> genericDao) {
+    public GenericServiceClass(GenericRepository<T, S> genericDao) {
         this.genericRepository = genericDao;
     }
 
@@ -53,5 +53,11 @@ public class GenericServiceImplementation<T, S extends Serializable> implements 
     @Transactional
     public void remove(T entity) {
         this.genericRepository.remove(entity);
+    }
+
+    @Override
+    @Transactional
+    public int remove(S id) {
+        return this.genericRepository.remove(id);
     }
 }

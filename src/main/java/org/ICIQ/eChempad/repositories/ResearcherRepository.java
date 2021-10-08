@@ -11,5 +11,4 @@ public interface ResearcherRepository {
     String getFullName(UUID id);
 
     String getSignalsAPIKey(UUID id);
-
 }
