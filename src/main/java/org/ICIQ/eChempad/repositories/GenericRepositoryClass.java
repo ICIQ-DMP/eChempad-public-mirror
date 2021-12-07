@@ -126,7 +126,8 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
     @Transactional
     @Override
     public int remove(S id){
-        /*// Session init {
+        /* TRY1
+        // Session init {
         Session session = this.sessionFactory.openSession();
         session.beginTransaction();
         // }
@@ -159,7 +160,7 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
         return res;
         */
 
-
+        /* TRY2
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         entityManager.getTransaction().begin();
@@ -181,6 +182,26 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
         entityManager.getTransaction().commit();
         entityManager.close();
         return 0;
+        */
+
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+
+        T t = entityManager.find(this.entityClass, id);
+
+
+
+        if (t == null)
+        {
+            return 1;
+        }
+        else
+        {
+            entityManager.remove(t);
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return 0;
+        }
     }
 
 
