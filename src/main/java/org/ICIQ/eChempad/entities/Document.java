@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +23,7 @@ import java.util.stream.Stream;
 @Table(name="Document", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
-public abstract class Document {
+public abstract class Document implements IEntity{
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -58,6 +59,7 @@ public abstract class Document {
         this.name = name;
         this.description = description;
         this.path = path;
+
     }
 
     /**
@@ -83,7 +85,11 @@ public abstract class Document {
     // GETTERS AND SETTERS
 
     public UUID getUUid() {
-        return id;
+        return this.id;
+    }
+
+    public void setUUid(UUID s) {
+        this.id = s;
     }
 
     public String getName() {

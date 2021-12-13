@@ -21,14 +21,14 @@ import java.util.logging.Logger;
 /**
  * GET /researcher :
  *   Obtains all researchers.
- * GET /cars/:id :
+ * GET /researcher/:id :
  *   Obtains a certain researcher instance via GET on the specific endpoint of that certain researcher, which is
  *   composed by its uuid.
- * POST /cars :
+ * POST /researcher :
  *   Adds a new researcher instance by submitting the required fields of the researcher.
- * PUT /cars/:id :
+ * PUT /researcher/:id :
  *   Modifies the data of a researcher by supplying the fields that will be modified. Return error if UUID not found.
- * DELETE /cars/:id
+ * DELETE /researcher/:id
  *   Deletes a researcher from the database from its id. Return error if UUID not found.
  */
 @RestController
@@ -80,6 +80,8 @@ public class ResearcherControllerClass implements ResearcherController {
         return this.researcherServiceClass.saveOrUpdate(researcher);
     }
 
+
+
     @DeleteMapping(
             value = "/{id}",
             produces = "application/json"
@@ -87,6 +89,16 @@ public class ResearcherControllerClass implements ResearcherController {
     public int removeResearcher(@PathVariable(value = "id") UUID uuid) {
 
         return this.researcherServiceClass.remove(uuid);
+    }
+
+    @PutMapping(
+            value = "/{id}",
+            produces = "application/json",
+            consumes = "application/json"
+    )
+    @Override
+    public Researcher putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID uuid) {
+        return this.researcherServiceClass.update(researcher, uuid);
     }
 
 }

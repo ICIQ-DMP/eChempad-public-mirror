@@ -4,7 +4,9 @@ Steps to obtain a functional environment to develop and test eChempad in a Linux
 
 #### First steps
 
-The first thing that we got to do is clone the repository that contains the software "Linux-Auto-Customizer". This software consists in a set of scripts to automatically install dependencies, libraries and programs to a Linux Environment. It can be used in many distros, but in this guide we are supposing that our environment is Ubuntu Linux.
+The first thing that we got to do is clone the repository that contains the software "Linux-Auto-Customizer". This 
+software consists in a set of scripts to automatically install dependencies, libraries and programs to a Linux 
+Environment. It can be used in many distros, but in this guide we are supposing that our environment is Ubuntu Linux.
 
 We can clone the repository anywhere, for example to our HOME folder:
 
@@ -21,7 +23,7 @@ The previous commands will show the help of the software if everything is okay.
 
 In the repository execute the next orders:
 ```
-sudo bash install.sh -v -o go psql
+sudo bash install.sh -v -o psql
 bash install.sh -v -o jdk ideac ideau pgadmin postman
 ```
 
@@ -46,8 +48,3 @@ A v1 UUID for testing: 1c9abdba-1f82-11ec-9621-0242ac130002
 
 SQL statement to introduce values in our DB
 INSERT INTO researcher(email, full_name, signalsAPIKey, id) VALUES ('patat', 'pat', 'yes638363ndsydeinumbers666', '1c9abdba-1f82-11ec-9621-0242ac130002');
-
-
-	// instanciar classe interna de test.
-	// grabar element fer crida (crear usuari nou)
-	// comprovar pgadmin canvis a la BD

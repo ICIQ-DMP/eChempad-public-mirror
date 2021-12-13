@@ -25,9 +25,7 @@ public interface GenericRepository<T, S extends Serializable> //extends JpaRepos
 
     T saveOrUpdate(T entity);
 
-    void update(T entity);
-
-    void remove(T entity);
+    T update(T entity, S id);
 
     T get(S id);
 
@@ -38,5 +36,8 @@ public interface GenericRepository<T, S extends Serializable> //extends JpaRepos
     void flush();
 
     int remove(S id);
+
+    // void remove(T entity);  // We will select the entities using the UUID, there is no point in sending ALL data
+    // of an instance in order to remove it.
 
 }

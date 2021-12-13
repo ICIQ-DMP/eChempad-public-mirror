@@ -15,7 +15,7 @@ import java.util.*;
 @Table(name="Experiment", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
-public class Experiment {
+public class Experiment{
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -64,9 +64,12 @@ public class Experiment {
 
 
     // GETTERS AND SETTERS
-
     public UUID getUUid() {
         return this.id;
+    }
+
+    public void setUUid(UUID s) {
+        this.id = s;
     }
 
     public String getName() {

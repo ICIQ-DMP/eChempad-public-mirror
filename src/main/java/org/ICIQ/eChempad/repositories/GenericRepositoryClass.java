@@ -1,27 +1,17 @@
 package org.ICIQ.eChempad.repositories;
-
-import org.ICIQ.eChempad.entities.Researcher;
+import org.ICIQ.eChempad.entities.IEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.orm.hibernate5.HibernateOperations;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.persistence.criteria.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * This class implements basic generic methods to make standard queries associated to all tables / entities.
@@ -30,7 +20,7 @@ import java.util.logging.Logger;
  */
 @Repository
 @Transactional
-public abstract class GenericRepositoryClass<T, S extends Serializable> implements GenericRepository<T, S> //, implements CrudRepository<T, S>,
+public abstract class GenericRepositoryClass<T extends IEntity, S extends Serializable> implements GenericRepository<T, S> //, implements CrudRepository<T, S>,
 {
 
     // autowired sessionFactory magically obtained (not explicitly set, adequate set deducted from hibernate conf)
@@ -54,11 +44,6 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
     }
 
     @Override
-    public void add(T entity) {
-        this.saveOrUpdate(entity);
-    }
-
-    @Override
     public T saveOrUpdate(T entity) {
         // Session init {
         Session session = this.sessionFactory.openSession();
@@ -75,14 +60,45 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
         return entity;
     }
 
+    /**
+     * Update an existing instance. We need the id to perform the update of the entity.
+     * @param entity
+     */
     @Override
-    public void update(T entity) {
-        this.saveOrUpdate(entity);
+    public T update(T entity, S id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        // Obtain the entity object that has the received ID
+        T t = entityManager.find(this.entityClass, id);
+
+
+        // If the entity manager is null it means there is no such element with this ID.
+        if (t == null)
+        {
+            // Do nothing
+            entityManager.close();
+            return null;
+        }
+        else
+        {
+            // If not, take the received data from the entity T and merge it into the data that we just received from
+            // doing the getBy ID from the DB
+            entityManager.getTransaction().begin();
+
+            // Set the ID
+            entity.setUUid(t.getUUid());
+
+            entityManager.merge(entity);
+
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return t;
+        }
     }
 
     @Override
-    public void remove(T entity) {
-        this.currentSession().delete(entity);
+    public void add(T entity) {
+        this.saveOrUpdate(entity);
     }
 
     @Override
@@ -91,7 +107,6 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
         Session session = this.sessionFactory.openSession();
         session.beginTransaction();
         // }
-        // Logger.getLogger("LO MAIN").info("in generic is one as it hsould" );
 
         T res = session.get(this.entityClass, id);
 
@@ -108,7 +123,6 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
         Session session = this.sessionFactory.openSession();
         session.beginTransaction();
         // }
-        // Logger.getLogger("LO MAIN").info("in generic is all" );
 
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(this.entityClass);
@@ -122,77 +136,19 @@ public abstract class GenericRepositoryClass<T, S extends Serializable> implemen
         return res;
     }
 
+
     @Modifying
     @Transactional
     @Override
     public int remove(S id){
-        /* TRY1
-        // Session init {
-        Session session = this.sessionFactory.openSession();
-        session.beginTransaction();
-        // }
-
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaDelete<T> criteria = builder.createCriteriaDelete(this.entityClass);
-
-        Root<T> entity = criteria.from(this.entityClass);
-        Predicate idMatch = builder.equal(entity.get("id"), id);
-
-        criteria.where(idMatch);
-
-        // Assume unique id //RF
-        T t = (T) session.createQuery(criteria).getResultList();
-        int res;
-        if (t == null)
-        {
-            res = 0;
-        }
-        else
-        {
-            res = 1;
-        }
-
-        // Session close {
-        session.getTransaction().commit();
-        session.close();
-        // }
-
-        return res;
-        */
-
-        /* TRY2
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-
-        entityManager.getTransaction().begin();
-
-
-        T t = null;
-        try {
-            Constructor<T> constructor = this.entityClass.getConstructor(UUID.class);
-            UUID uuid = UUID.fromString(id.toString());
-            T ghost = constructor.newInstance(uuid);
-            t = entityManager.find(this.entityClass, ghost);
-
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        entityManager.remove(t);
-
-
-        entityManager.getTransaction().commit();
-        entityManager.close();
-        return 0;
-        */
-
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
 
         T t = entityManager.find(this.entityClass, id);
 
-
-
         if (t == null)
         {
+            entityManager.close();
             return 1;
         }
         else

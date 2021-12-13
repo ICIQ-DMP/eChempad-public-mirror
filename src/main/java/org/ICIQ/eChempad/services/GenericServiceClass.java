@@ -21,6 +21,12 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     @Override
     @Transactional
+    public T update(T entity, S id) {
+        return this.genericRepository.update(entity, id);
+    }
+
+    @Override
+    @Transactional
     public T saveOrUpdate(T entity) {
         return this.genericRepository.saveOrUpdate(entity);
     }
@@ -41,18 +47,6 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
     @Transactional
     public void add(T entity) {
         this.genericRepository.add(entity);
-    }
-
-    @Override
-    @Transactional
-    public void update(T entity) {
-        this.genericRepository.update(entity);
-    }
-
-    @Override
-    @Transactional
-    public void remove(T entity) {
-        this.genericRepository.remove(entity);
     }
 
     @Override

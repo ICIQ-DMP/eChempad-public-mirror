@@ -1,8 +1,6 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.ICIQ.eChempad.configurations.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,7 +18,7 @@ import java.util.*;
 @Table(name="Researcher", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
-public class Researcher implements Serializable {
+public class Researcher implements Serializable, IEntity {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
@@ -80,6 +78,17 @@ public class Researcher implements Serializable {
         this.journals = new HashSet<>();
     }
 
+    @Override
+    public String toString() {
+        return "Researcher{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", signalsAPIKey='" + signalsAPIKey + '\'' +
+                ", journals=" + journals +
+                '}';
+    }
+
 
     // GETTERS AND SETTERS
 
@@ -88,6 +97,9 @@ public class Researcher implements Serializable {
         return this.id;
     }
 
+    public void setUUid(UUID s) {
+        this.id = s;
+    }
     public String getFullName() {
         return this.fullName;
     }
@@ -119,4 +131,5 @@ public class Researcher implements Serializable {
     public void setJournals(Set<Journal> journals) {
         this.journals = journals;
     }
+
 }

@@ -325,10 +325,30 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-env.sh"
 source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE}-env.sh"
 # }
 
+# Added a hardcoded truststore using $JAVA_HOME
+# Added maven options in MAVEN_OPTIONS. This var is defined in the application profile.
+# trust-anchors parameters problems? pick a new cacerts file between:
+# *  /etc/default/cacerts
+# *  "${JAVA_HOME}/jre/lib/security/cacerts"
+# *  /etc/ssl/certs/java/cacerts  <-- this is a good one
+# "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts"
+trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts")
+trustStore="${trustStores[3]}"
+
+if [ ! -f "${trustStore}" ]; then
+  echo "ERROR: The trust store ${trustStore} is not a valid or existent file"
+  exit 1
+fi
+if [ ! -r "${trustStore}" ]; then
+  echo "ERROR: The trust store ${trustStore} can not be read"
+  exit 1
+fi
+
+
 if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]; then
   echo Executed command:
   echo exec "${JAVACMD}" ${JAVA_FLAGS} \
-         -Djavax.net.ssl.trustStore="/etc/ssl/certs/java/cacerts" \
+         -Djavax.net.ssl.trustStore="${trustStore}" \
          ${MAVEN_OPTS} \
          -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
          "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
@@ -341,15 +361,8 @@ if lsof -ti tcp:8080 &>/dev/null; then
   lsof -ti tcp:8080 | xargs kill
 fi
 
-
-# Added a hardcoded truststore using $JAVA_HOME
-# Added maven options in MAVEN_OPTIONS. This var is defined in the application profile.
-# trust-anchors parameters problems? pick a new cacerts file
-# /etc/default/cacerts
-# "${JAVA_HOME}/jre/lib/security/cacerts"
-# /etc/ssl/certs/java/cacerts  <-- this is a good one
 exec "${JAVACMD}" ${JAVA_FLAGS} \
-  -Djavax.net.ssl.trustStore="/etc/ssl/certs/java/cacerts" \
+  -Djavax.net.ssl.trustStore="${trustStore}" \
   ${MAVEN_OPTS} \
   -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
   "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \

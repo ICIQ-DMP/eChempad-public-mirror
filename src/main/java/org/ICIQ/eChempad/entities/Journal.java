@@ -14,7 +14,8 @@ import java.util.*;
 @Entity
 @Table(name="Journal", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
-})public class Journal {
+})
+public class Journal{
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
@@ -70,6 +71,10 @@ import java.util.*;
 
     public UUID getUUid() {
         return this.id;
+    }
+
+    public void setUUid(UUID s) {
+        this.id = s;
     }
 
     public String getName() {

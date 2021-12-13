@@ -8,15 +8,13 @@ public interface GenericService<T, S extends Serializable> {
 
     T saveOrUpdate(T entity);
 
+    T update(T entity, S id);
+
     Set<T> getAll();
 
     T get(S id);
 
     void add(T entity);
-
-    void update(T entity);
-
-    void remove(T entity);
 
     int remove(S id);
 
