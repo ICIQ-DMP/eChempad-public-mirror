@@ -15,7 +15,7 @@ import java.util.*;
  * It has a list containing the different Journal that conform the workspace.
  */
 @Entity
-@Table(name="Researcher", uniqueConstraints = {
+@Table(name="researcher", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
 public class Researcher implements Serializable, IEntity {
@@ -33,8 +33,8 @@ public class Researcher implements Serializable, IEntity {
     @Convert(converter = UUIDConverter.class)
     private UUID id;
 
-    @Column(name = "fullName", length = 100, nullable = false)
-    private String fullName;
+    @Column(name = "name", length = 100, nullable = false)
+    private String name;
 
     @Column(name = "email", length = 100, nullable = false)
     private String email;
@@ -72,7 +72,7 @@ public class Researcher implements Serializable, IEntity {
      * @param email valid e-mail direction.
      */
     public Researcher(String fullName, String email, String signalsAPIKey) {
-        this.fullName = fullName;
+        this.name = fullName;
         this.email = email;
         this.signalsAPIKey = signalsAPIKey;
         this.journals = new HashSet<>();
@@ -82,7 +82,7 @@ public class Researcher implements Serializable, IEntity {
     public String toString() {
         return "Researcher{" +
                 "id=" + id +
-                ", fullName='" + fullName + '\'' +
+                ", fullName='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
                 ", journals=" + journals +
@@ -101,11 +101,11 @@ public class Researcher implements Serializable, IEntity {
         this.id = s;
     }
     public String getFullName() {
-        return this.fullName;
+        return this.name;
     }
 
     public void setFullName(String fullName) {
-        this.fullName = fullName;
+        this.name = fullName;
     }
 
     public String getEmail() {

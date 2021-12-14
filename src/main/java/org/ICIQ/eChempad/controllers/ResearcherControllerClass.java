@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Researcher;
+import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.ICIQ.eChempad.services.ResearcherService;
 import org.ICIQ.eChempad.services.ResearcherServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,10 @@ import java.util.logging.Logger;
 @RequestMapping("/api/researcher")
 public class ResearcherControllerClass implements ResearcherController {
 
-    @Autowired
+    // https://blog.marcnuri.com/inyeccion-de-campos-desaconsejada-field-injection-not-recommended-spring-ioc
     private ResearcherServiceClass researcherServiceClass;
 
+    @Autowired
     public ResearcherControllerClass(ResearcherServiceClass researcherServiceClass) {
         this.researcherServiceClass = researcherServiceClass;
     }
@@ -71,6 +73,7 @@ public class ResearcherControllerClass implements ResearcherController {
         }
     }
 
+
     @PostMapping(
             value = "",
             produces = "application/json",
@@ -97,7 +100,7 @@ public class ResearcherControllerClass implements ResearcherController {
             consumes = "application/json"
     )
     @Override
-    public Researcher putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID uuid) {
+    public Researcher putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
         return this.researcherServiceClass.update(researcher, uuid);
     }
 

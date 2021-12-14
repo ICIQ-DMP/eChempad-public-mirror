@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Researcher;
+import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,5 +35,5 @@ public interface ResearcherController {
 
     int removeResearcher(UUID uuid);
 
-    Researcher putResearcher(Researcher researcher, UUID uuid);
+    Researcher putResearcher(Researcher researcher, UUID uuid) throws ExceptionResourceNotExists;
 }

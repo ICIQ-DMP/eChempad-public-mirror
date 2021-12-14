@@ -11,9 +11,9 @@ import java.util.UUID;
 @Service
 public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID> implements ResearcherService{
 
-    @Autowired
     private ResearcherRepository researcherRepository;
 
+    @Autowired
     public ResearcherServiceClass(GenericRepository<Researcher, UUID> genericRepository) {
         super(genericRepository);
         this.researcherRepository = (ResearcherRepository) genericRepository;

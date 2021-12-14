@@ -19,22 +19,22 @@ public class ResearcherRepositoryClass extends GenericRepositoryClass<Researcher
      */
     @Override
     public UUID getIdByEmail(String email) {
-        return (UUID) super.currentSession().createQuery("FROM User where email=:email").setParameter("email", email).uniqueResult();
+        return (UUID) super.currentSession().createQuery("FROM researcher where email=:email").setParameter("email", email).uniqueResult();
     }
 
     @Override
     public String getEmail(UUID id) {
-        return (String) super.currentSession().createQuery("FROM User where id=:id").setParameter("id", id).uniqueResult();
+        return (String) super.currentSession().createQuery("FROM researcher where id=:id").setParameter("id", id).uniqueResult();
     }
 
     @Override
     public String getFullName(UUID id) {
-        return (String) super.currentSession().createQuery("FROM User where id=:id").setParameter("id", id).uniqueResult();
+        return (String) super.currentSession().createQuery("FROM researcher where id=:id").setParameter("id", id).uniqueResult();
     }
 
     @Override
     public String getSignalsAPIKey(UUID id) {
-        return (String) super.currentSession().createQuery("FROM User where id=:id").setParameter("id", id).uniqueResult();
+        return (String) super.currentSession().createQuery("FROM researcher where id=:id").setParameter("id", id).uniqueResult();
     }
 
 

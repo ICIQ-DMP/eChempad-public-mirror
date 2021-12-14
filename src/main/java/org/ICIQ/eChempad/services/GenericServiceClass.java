@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.ICIQ.eChempad.repositories.GenericRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,17 +13,25 @@ import java.util.Set;
 @Service
 public class GenericServiceClass<T, S extends Serializable> implements GenericService<T, S> {
 
-    @Autowired
     private GenericRepository<T, S> genericRepository;
 
+    @Autowired
     public GenericServiceClass(GenericRepository<T, S> genericDao) {
         this.genericRepository = genericDao;
     }
 
     @Override
     @Transactional
-    public T update(T entity, S id) {
-        return this.genericRepository.update(entity, id);
+    public T update(T entity, S id) throws ExceptionResourceNotExists {
+        T t = this.genericRepository.update(entity, id);
+        if (t == null)
+        {
+            throw new ExceptionResourceNotExists("The resource of type " + entity.getClass().getName() + " with ID " + id.toString() + " does not exist.");
+        }
+        else
+        {
+            return t;
+        }
     }
 
     @Override

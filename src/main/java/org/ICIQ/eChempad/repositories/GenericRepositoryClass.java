@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.repositories;
 import org.ICIQ.eChempad.entities.IEntity;
+import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +76,8 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
         // If the entity manager is null it means there is no such element with this ID.
         if (t == null)
         {
-            // Do nothing
+            // Do nothing and show an exception because it is not found
             entityManager.close();
-            return null;
         }
         else
         {
@@ -88,12 +88,13 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
             // Set the ID
             entity.setUUid(t.getUUid());
 
+            // Merge into the entity that is being managed t, so it overwrites its fields
             entityManager.merge(entity);
 
             entityManager.getTransaction().commit();
             entityManager.close();
-            return t;
         }
+        return t;
     }
 
     @Override
@@ -103,18 +104,13 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
 
     @Override
     public T get(final S id) {
-        // Session init {
-        Session session = this.sessionFactory.openSession();
-        session.beginTransaction();
-        // }
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
-        T res = session.get(this.entityClass, id);
+        // Obtain the entity object that has the received ID
+        T t = entityManager.find(this.entityClass, id);
 
-        // Session close {
-        session.getTransaction().commit();
-        session.close();
-        // }
-        return res;
+        entityManager.close();
+        return t;
     }
 
     @Override

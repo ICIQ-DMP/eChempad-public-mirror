@@ -357,8 +357,9 @@ if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]
 fi
 
 # If there is any application listening to port 8080 (which is the one used to deploy the app) kill it.
-if lsof -ti tcp:8080 &>/dev/null; then
-  lsof -ti tcp:8080 | xargs kill
+if lsof -ti tcp:"$1"; then
+  # if there is someone running in port 8080
+  lsof -ti tcp:"$1" | xargs kill
 fi
 
 exec "${JAVACMD}" ${JAVA_FLAGS} \

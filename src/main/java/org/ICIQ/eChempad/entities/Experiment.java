@@ -5,11 +5,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.*;
 
-
 /**
- * Model class to store many Documents (files) ideally from a single chemistry assay.
- *
- * An Experiment is composed of many Documents (files) and some metadata (description, name).
+ * Model class to store many Documents (files) from a single chemistry assay.
  */
 @Entity
 @Table(name="Experiment", uniqueConstraints = {
