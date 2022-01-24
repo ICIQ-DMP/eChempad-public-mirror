@@ -10,6 +10,20 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Services throw custom exceptions when they catch a spring exception or a custom exception. In a certain manner they
+ * translate spring exceptions to a common preset of custom exceptions and forward these exceptions to the controller.
+ * Services will have try-catch in the methods, especially to capture built-in exceptions and throw instead a custom
+ * exception. Custom exceptions will be attended in the controller if needed, or not attended and implicitly forwarded
+ * to the ExceptionHandlerGlobal class, which will have handlers for these custom exceptions.
+ *
+ * Services will also have the logic to know if someone can access a certain resource, they will have the business logic
+ * of the permissions, so the most probable is that we will have many service classes not related exactly to the entity,
+ * instead, they will have the different repositories to be able to manipulate the necessary data in the application.
+ *
+ * @param <T> Generic Entity type
+ * @param <S> Serializable identifier, usually and UUID
+ */
 @Service
 public class GenericServiceClass<T, S extends Serializable> implements GenericService<T, S> {
 
@@ -48,8 +62,16 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     @Override
     @Transactional
-    public T get(S id) {
-        return this.genericRepository.get(id);
+    public T get(S id) throws ExceptionResourceNotExists {
+        T t = this.genericRepository.get(id);
+        if (t == null)
+        {
+            throw new ExceptionResourceNotExists("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
+        }
+        else
+        {
+            return t;
+        }
     }
 
     @Override
@@ -60,7 +82,12 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     @Override
     @Transactional
-    public int remove(S id) {
-        return this.genericRepository.remove(id);
+    public void remove(S id) throws ExceptionResourceNotExists {
+        int removeResult = this.genericRepository.remove(id);
+        if (removeResult > 0)
+        {
+            // Returned 1, element could not have been deleted
+            throw new ExceptionResourceNotExists("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
+        }
     }
 }

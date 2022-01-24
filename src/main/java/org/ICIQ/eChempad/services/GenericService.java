@@ -14,11 +14,11 @@ public interface GenericService<T, S extends Serializable> {
 
     Set<T> getAll();
 
-    T get(S id);
+    T get(S id) throws ExceptionResourceNotExists;
 
     void add(T entity);
 
-    int remove(S id);
+    void remove(S id) throws ExceptionResourceNotExists;
 
 }
 

@@ -32,6 +32,14 @@ import java.util.logging.Logger;
  * DELETE /researcher/:id
  *   Deletes a researcher from the database from its id. Return error if UUID not found.
  */
+
+/**
+ * The controller will be responsible of processing REST API requests and transforming them into "model" requests,
+ * which are programmatic requests for the service layer.
+ * Then, queries will be made to the service layer.
+ * After that, the data received from the service layer will be transformed in a ResponseEntity to render the Views of
+ * the app.
+ */
 @RestController
 @RequestMapping("/api/researcher")
 public class ResearcherControllerClass implements ResearcherController {
@@ -49,8 +57,9 @@ public class ResearcherControllerClass implements ResearcherController {
             value = "",
             produces = "application/json"
     )
-    public Set<Researcher> getAllResearchers() {
-        return new HashSet<>(this.researcherServiceClass.getAll());
+    public ResponseEntity<Set<Researcher>> getAllResearchers() {
+        HashSet<Researcher> researchers = new HashSet<>(this.researcherServiceClass.getAll());
+        return ResponseEntity.ok(researchers);
     }
 
     // https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
@@ -60,38 +69,27 @@ public class ResearcherControllerClass implements ResearcherController {
             value = "/{id}",
             produces = "application/json"
     )
-    public ResponseEntity<Researcher> getResearcher(@PathVariable(value = "id") UUID uuid) {
+    public ResponseEntity<Researcher> getResearcher(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
         Researcher researcher = this.researcherServiceClass.get(uuid);
-
-        if (researcher != null)
-        {
-            return ResponseEntity.ok().body(researcher);
-        }
-        else
-        {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(researcher);
     }
 
 
     @PostMapping(
             value = "",
-            produces = "application/json",
             consumes = "application/json"
     )
-    public Researcher addResearcher(@Validated @RequestBody Researcher researcher) {
-        return this.researcherServiceClass.saveOrUpdate(researcher);
+    public void addResearcher(@Validated @RequestBody Researcher researcher) {
+        this.researcherServiceClass.saveOrUpdate(researcher);
     }
-
 
 
     @DeleteMapping(
             value = "/{id}",
             produces = "application/json"
     )
-    public int removeResearcher(@PathVariable(value = "id") UUID uuid) {
-
-        return this.researcherServiceClass.remove(uuid);
+    public void removeResearcher(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+        this.researcherServiceClass.remove(uuid);
     }
 
     @PutMapping(
@@ -100,8 +98,8 @@ public class ResearcherControllerClass implements ResearcherController {
             consumes = "application/json"
     )
     @Override
-    public Researcher putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
-        return this.researcherServiceClass.update(researcher, uuid);
+    public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+        this.researcherServiceClass.update(researcher, uuid);
     }
 
 }

@@ -37,6 +37,4 @@ public class ResearcherRepositoryClass extends GenericRepositoryClass<Researcher
         return (String) super.currentSession().createQuery("FROM researcher where id=:id").setParameter("id", id).uniqueResult();
     }
 
-
-
 }

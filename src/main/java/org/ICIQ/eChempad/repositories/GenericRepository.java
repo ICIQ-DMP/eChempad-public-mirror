@@ -38,6 +38,8 @@ public interface GenericRepository<T, S extends Serializable> //extends JpaRepos
 
     int remove(S id);
 
+    Class<T> getEntityClass();
+
     // void remove(T entity);  // We will select the entities using the UUID, there is no point in sending ALL data
     // of an instance in order to remove it.
 

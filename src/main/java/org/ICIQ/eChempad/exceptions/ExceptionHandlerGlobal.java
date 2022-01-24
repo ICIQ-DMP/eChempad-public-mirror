@@ -10,18 +10,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 /**
  * Used to handle the errors that occur in the application from a single class.
- * We extend the class ResponseEntityExceptionHandler to obtain methods like handleExceptionInternal
- * which will be used to generate automatically (already programmed by Spring) the response bodies of
- * the HTTP response based in the received HTTP headers.
  */
 @ControllerAdvice
 public class ExceptionHandlerGlobal {
 
 @ExceptionHandler(value = {ExceptionResourceNotExists.class})
-public ResponseEntity<String> handleResourceNotExists(ExceptionResourceNotExists except, WebRequest request)
+public ResponseEntity<Object> handleResourceNotExists(ExceptionResourceNotExists except, WebRequest request)
 {
-    String body = "ERROR: The resource with the requested ID does not exist.";
-    return new ResponseEntity<String>(body, HttpStatus.NOT_FOUND);
+    // At this point an exception of type ExceptionResourceNotExists has been produced and now we must return
+    // an error response. We may do it manually by creating a ResponseEntity or we can program a new auxiliar method
+    // that will be the one used to process the actual exceptions.
+    return new ResponseEntity<>(except.toString(), HttpStatus.NOT_FOUND);  // new Response(body, headers, status)
     // return this.handleExceptionInternal(except, body, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 }
 

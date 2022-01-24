@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,13 +28,13 @@ import java.util.UUID;
  *   Deletes a researcher from the database from its id. Return error if UUID not found.
  */
 public interface ResearcherController {
-    Set<Researcher> getAllResearchers();
+    ResponseEntity<Set<Researcher>> getAllResearchers();
 
-    ResponseEntity<Researcher> getResearcher(UUID uuid);
+    ResponseEntity<Researcher> getResearcher(UUID uuid) throws ExceptionResourceNotExists;
 
-    Researcher addResearcher(Researcher researcher);
+    void addResearcher(Researcher researcher);
 
-    int removeResearcher(UUID uuid);
+    void removeResearcher(UUID uuid) throws ExceptionResourceNotExists;
 
-    Researcher putResearcher(Researcher researcher, UUID uuid) throws ExceptionResourceNotExists;
+    void putResearcher(Researcher researcher, UUID uuid) throws ExceptionResourceNotExists;
 }

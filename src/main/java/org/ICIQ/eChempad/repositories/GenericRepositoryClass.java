@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.repositories;
 import org.ICIQ.eChempad.entities.IEntity;
+import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -106,7 +107,7 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
     public T get(final S id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
-        // Obtain the entity object that has the received ID
+        // Obtain the entity object that has the received ID (null in the cases where does nt exist)
         T t = entityManager.find(this.entityClass, id);
 
         entityManager.close();
@@ -168,6 +169,14 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
     }
 
 
+    /**
+     * return the entity class of this generic repository.
+     * @return Internal class type, set at the creation of the repository.
+     */
+    @Override
+    public Class<T> getEntityClass() {
+        return this.entityClass;
+    }
 
 
 
