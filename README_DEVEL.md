@@ -36,9 +36,35 @@ This will install:
   
   Missing for now:
   * gitlab: GitLab platform, serving repositories locally from your computer. Used to integrate developing of the code with automatic building, deployment and testing 
-  * gitlab runners: Integration with the GitLab platform to perform CD and CI. 
-  
-  
+  * gitlab runners: Integration with the GitLab platform to perform CD and CI.
+
+This will set up the next things in the environment by writing to the `.bashrc` of the running user of the `install.sh` script.
+#### Setting up database connection
+Log in as the postgres user:
+```
+sudo su - postgres
+```
+
+Then create the user that the installation will use:
+```
+createuser --interactive --pwprompt
+```
+Notice that there are other ways of doing this. You can also do it directly by submitting orders to the database from 
+this user, but in this case it is easier if you have this binary wrapper.
+
+Then we need to create the database for our software:
+```
+createdb eChempad
+```
+
+#### Run software
+Clone the repository, enter it and run it using the maven wrapper:
+```
+git clone https://github.com/USER/eChempad
+cd eChempad
+./mvnw spring-boot:run
+```
+
 #### Notes
 To test the software you can visit using your browser
 http://localhost:8080/api/researcher

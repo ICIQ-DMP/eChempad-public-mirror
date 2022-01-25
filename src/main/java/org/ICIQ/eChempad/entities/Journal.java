@@ -13,26 +13,31 @@ import java.util.*;
  */
 @Entity
 @Table(name="Journal", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id")
+        @UniqueConstraint(columnNames = "UUID")
 })
 public class Journal{
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
      */
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+    @Column(name = "UUID")
     private UUID id;
+
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;
 
+
     @Column(name = "description", length = 1000, nullable = false)
     private String description;
+
 
     @OneToMany(
             targetEntity = Experiment.class,
@@ -42,15 +47,7 @@ public class Journal{
 )
     private Set<Experiment> experiments;
 
-    @ManyToOne(
-            fetch = FetchType.EAGER,
-            optional = false
-    )
-    @JoinColumn(
-            name = "researcher_id",
-            referencedColumnName = "id",
-            nullable = false)
-    private Researcher researcher;
+
 
     public Journal() {}
 

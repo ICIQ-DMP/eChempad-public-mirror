@@ -16,6 +16,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Autowired
     private ResearcherRepositoryClass researcherRepositoryClass;
 
+
+
     /**
      * This event is executed as late as conceivably possible to indicate that
      * the application is ready to service requests.
@@ -29,6 +31,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     {
         this.researcherRepositoryClass.saveOrUpdate(new Researcher("Elvis", "Tech", null));
         this.researcherRepositoryClass.saveOrUpdate(new Researcher("Aitor", "Menta", null));
+
     }
 
 }

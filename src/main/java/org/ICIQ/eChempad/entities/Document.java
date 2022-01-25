@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  */
 @Entity
 @Table(name="Document", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id")
+        @UniqueConstraint(columnNames = "UUID")
 })
 public abstract class Document implements IEntity{
     @Id
@@ -31,6 +31,7 @@ public abstract class Document implements IEntity{
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "UUID")
     protected UUID id;
 
     @Column(name = "name", length = 100, nullable = false)
@@ -48,7 +49,6 @@ public abstract class Document implements IEntity{
     )
     @JoinColumn(
             name = "experiment_id",
-            referencedColumnName = "id",
             nullable = false)
     protected Experiment experiment;
 

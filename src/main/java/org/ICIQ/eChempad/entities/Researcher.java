@@ -16,7 +16,7 @@ import java.util.*;
  */
 @Entity
 @Table(name="researcher", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id")
+        @UniqueConstraint(columnNames = "UUID")
 })
 public class Researcher implements Serializable, IEntity {
     /*
@@ -31,7 +31,8 @@ public class Researcher implements Serializable, IEntity {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Convert(converter = UUIDConverter.class)
-    private UUID id;
+    @Column(name = "UUID")
+    private UUID uuid;
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;
@@ -44,21 +45,22 @@ public class Researcher implements Serializable, IEntity {
     private String signalsAPIKey;
 
     @OneToMany(
-            targetEntity = Journal.class,
+            targetEntity = JournalPermission.class,
             mappedBy = "researcher",
             fetch = FetchType.EAGER
     //        cascade = CascadeType.ALL
     )
     @JsonIgnore
-    private Set<Journal> journals;
+    private Set<JournalPermission> journals;
 
     /**
      * Used to create "ghost" instances only with the internal UUIDs in order to perform deletion.
-     * @param id
+     * This is used by springboot since it uses reflection to call the methods.
+     * @param uuid
      */
-    public Researcher(UUID id)
+    public Researcher(UUID uuid)
     {
-        this.id = id;
+        this.uuid = uuid;
     }
 
     /**
@@ -81,7 +83,7 @@ public class Researcher implements Serializable, IEntity {
     @Override
     public String toString() {
         return "Researcher{" +
-                "id=" + id +
+                "id=" + uuid +
                 ", fullName='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
@@ -94,11 +96,11 @@ public class Researcher implements Serializable, IEntity {
 
 
     public UUID getUUid() {
-        return this.id;
+        return this.uuid;
     }
 
     public void setUUid(UUID s) {
-        this.id = s;
+        this.uuid = s;
     }
     public String getFullName() {
         return this.name;
@@ -124,11 +126,11 @@ public class Researcher implements Serializable, IEntity {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public Set<Journal> getJournals() {
+    public Set<JournalPermission> getJournals() {
         return this.journals;
     }
 
-    public void setJournals(Set<Journal> journals) {
+    public void setJournals(Set<JournalPermission> journals) {
         this.journals = journals;
     }
 
