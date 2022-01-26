@@ -15,7 +15,7 @@ import java.util.*;
 @Table(name="Journal", uniqueConstraints = {
         @UniqueConstraint(columnNames = "UUID")
 })
-public class Journal{
+public class Journal implements IEntity{
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
