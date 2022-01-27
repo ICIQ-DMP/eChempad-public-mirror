@@ -14,8 +14,8 @@ public class DocumentCSV extends Document {
      * @param name Name of the document (file)
      * @param path path to the file. It can be relative or absolute.
      */
-    public DocumentCSV(String name, String description, Path path) {
-        super(name, description, path);
+    public DocumentCSV(String name, String description, Path path, Experiment experiment) {
+        super(name, description, path, experiment);
     }
 
 

@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -45,6 +46,7 @@ public class Journal implements IEntity{
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
 )
+    @JsonIgnore
     private Set<Experiment> experiments;
 
 

@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.util.*;
 @Table(name="Experiment", uniqueConstraints = {
         @UniqueConstraint(columnNames = "UUID")
 })
-public class Experiment{
+public class Experiment implements IEntity{
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -31,9 +32,10 @@ public class Experiment{
     @OneToMany(
             targetEntity = Document.class,
             mappedBy = "experiment",
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
 )
+    @JsonIgnore
     private Set<Document> documents;
 
     @ManyToOne(
@@ -43,6 +45,7 @@ public class Experiment{
     @JoinColumn(
             name = "journal_id",
             nullable = false)
+    @JsonIgnore
     private Journal journal;
 
     public Experiment() {}
@@ -53,10 +56,11 @@ public class Experiment{
      *             the UUID to manage the experiments.
      * @param description String used to describe the contents of this experiment.
      */
-    public Experiment(String name, String description) {
+    public Experiment(String name, String description, Journal journal) {
         this.name = name;
         this.description = description;
         this.documents = new HashSet<>();
+        this.journal = journal;
     }
 
 

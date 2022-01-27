@@ -55,11 +55,11 @@ public abstract class Document implements IEntity{
     // Public constructors in abstract classes are pointless
     protected Document() {}
 
-    protected Document(String name, String description, Path path) {
+    protected Document(String name, String description, Path path, Experiment experiment) {
         this.name = name;
         this.description = description;
         this.path = path;
-
+        this.experiment = experiment;
     }
 
     /**

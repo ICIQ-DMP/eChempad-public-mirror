@@ -1,13 +1,16 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.repositories.ExperimentRepository;
 import org.ICIQ.eChempad.repositories.GenericRepository;
 import org.ICIQ.eChempad.repositories.JournalRepository;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -34,11 +37,6 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     private GenericRepository<T, S> genericRepository;
 
-    /*
-    public GenericServiceClass(GenericRepository<T, S> genericDao) {
-        this.genericRepository = genericDao;
-    }
-*/
     public GenericServiceClass() {}
 
     public GenericServiceClass(ResearcherRepository researcherRepository) {
@@ -49,11 +47,10 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
         this.genericRepository = (GenericRepository<T, S>) journalRepository;
     }
 
-    /*
-    public GenericServiceClass(GenericRepository<Journal, S> genericRepository) {
-        this.genericRepository = (GenericRepository<T, S>) genericRepository;
+    public GenericServiceClass(ExperimentRepository experimentRepository) {
+        this.genericRepository = (GenericRepository<T, S>) experimentRepository;
     }
-*/
+
     @Override
     @Transactional
     public T update(T entity, S id) throws ExceptionResourceNotExists {
@@ -77,6 +74,8 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
     @Override
     @Transactional
     public Set<T> getAll() {
+        System.out.print(this.genericRepository.getAll().toString());
+
         return this.genericRepository.getAll();
     }
 
