@@ -1,7 +1,11 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.Journal;
+import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.ICIQ.eChempad.repositories.GenericRepository;
+import org.ICIQ.eChempad.repositories.JournalRepository;
+import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +13,7 @@ import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Services throw custom exceptions when they catch a spring exception or a custom exception. In a certain manner they
@@ -29,11 +34,26 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     private GenericRepository<T, S> genericRepository;
 
-    @Autowired
+    /*
     public GenericServiceClass(GenericRepository<T, S> genericDao) {
         this.genericRepository = genericDao;
     }
+*/
+    public GenericServiceClass() {}
 
+    public GenericServiceClass(ResearcherRepository researcherRepository) {
+        this.genericRepository = (GenericRepository<T, S>) researcherRepository;
+    }
+
+    public GenericServiceClass(JournalRepository journalRepository) {
+        this.genericRepository = (GenericRepository<T, S>) journalRepository;
+    }
+
+    /*
+    public GenericServiceClass(GenericRepository<Journal, S> genericRepository) {
+        this.genericRepository = (GenericRepository<T, S>) genericRepository;
+    }
+*/
     @Override
     @Transactional
     public T update(T entity, S id) throws ExceptionResourceNotExists {

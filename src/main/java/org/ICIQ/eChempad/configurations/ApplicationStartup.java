@@ -1,6 +1,9 @@
 package org.ICIQ.eChempad.configurations;
 
+import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
+import org.ICIQ.eChempad.repositories.JournalRepository;
+import org.ICIQ.eChempad.repositories.JournalRepositoryClass;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.ICIQ.eChempad.repositories.ResearcherRepositoryClass;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,11 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Autowired
     private ResearcherRepositoryClass researcherRepositoryClass;
 
+    @Autowired
+    private JournalRepositoryClass journalRepositoryClass;
+
+
+
     /**
      * This event is executed as late as conceivably possible to indicate that
      * the application is ready to service requests.
@@ -29,6 +37,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     {
         this.researcherRepositoryClass.saveOrUpdate(new Researcher("Elvis", "Tech", null));
         this.researcherRepositoryClass.saveOrUpdate(new Researcher("Aitor", "Menta", null));
+
+        this.journalRepositoryClass.saveOrUpdate(new Journal("Water Properties", "Experiments that take advantage of the special properties of the H2O molecule."));
+
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.*;
  */
 @Entity
 @Table(name="Experiment", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id")
+        @UniqueConstraint(columnNames = "UUID")
 })
 public class Experiment{
     @Id
@@ -19,6 +19,7 @@ public class Experiment{
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+    @Column(name = "UUID")
     private UUID id;
 
     @Column(name = "name", length = 100, nullable = false)
@@ -41,7 +42,6 @@ public class Experiment{
     )
     @JoinColumn(
             name = "journal_id",
-            referencedColumnName = "id",
             nullable = false)
     private Journal journal;
 
