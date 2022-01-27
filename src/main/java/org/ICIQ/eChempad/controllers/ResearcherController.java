@@ -3,14 +3,7 @@ package org.ICIQ.eChempad.controllers;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,7 +21,7 @@ import java.util.UUID;
  *   Deletes a researcher from the database from its id. Return error if UUID not found.
  */
 public interface ResearcherController {
-    ResponseEntity<Set<Researcher>> getAllResearchers();
+    ResponseEntity<Set<Researcher>> getResearchers();
 
     ResponseEntity<Researcher> getResearcher(UUID uuid) throws ExceptionResourceNotExists;
 

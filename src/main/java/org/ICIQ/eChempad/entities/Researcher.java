@@ -34,10 +34,10 @@ public class Researcher implements Serializable, IEntity {
     @Column(name = "UUID")
     private UUID uuid;
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 1000, nullable = false)
     private String name;
 
-    @Column(name = "email", length = 100, nullable = false)
+    @Column(name = "email", length = 1000, nullable = false)
     private String email;
 
     // Exactly 73 characters

@@ -57,7 +57,7 @@ public class ResearcherControllerClass implements ResearcherController {
             value = "",
             produces = "application/json"
     )
-    public ResponseEntity<Set<Researcher>> getAllResearchers() {
+    public ResponseEntity<Set<Researcher>> getResearchers() {
         HashSet<Researcher> researchers = new HashSet<>(this.researcherServiceClass.getAll());
         return ResponseEntity.ok(researchers);
     }

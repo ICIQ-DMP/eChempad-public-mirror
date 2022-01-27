@@ -34,7 +34,7 @@ public abstract class Document implements IEntity{
     @Column(name = "UUID")
     protected UUID id;
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 1000, nullable = false)
     protected String name;
 
     @Column(name = "description", length = 1000, nullable = false)

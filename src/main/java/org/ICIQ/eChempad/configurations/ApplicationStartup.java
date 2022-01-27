@@ -35,11 +35,13 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
     private void initializeDB()
     {
-        this.researcherRepositoryClass.saveOrUpdate(new Researcher("Elvis", "Tech", null));
-        this.researcherRepositoryClass.saveOrUpdate(new Researcher("Aitor", "Menta", null));
+        this.researcherRepositoryClass.saveOrUpdate(new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null));
+        this.researcherRepositoryClass.saveOrUpdate(new Researcher("Aitor Menta", "mentolado@gmail.com", null));
 
-        this.journalRepositoryClass.saveOrUpdate(new Journal("Water Properties", "Experiments that take advantage of the special properties of the H2O molecule."));
-
+        this.journalRepositoryClass.saveOrUpdate(new Journal("Water Properties", "Experiments that take advantage of the special physical properties of the H2O molecule, regarding its H2 bonds."));
+        this.journalRepositoryClass.saveOrUpdate(new Journal("Ethanol properties", "Set of reaction that use ethanol as reactive or media to improve yield"));
+        this.journalRepositoryClass.saveOrUpdate(new Journal("Comparation of the activation energy of reactions catalyzed by enzymes with copper ligands", "In these experiments we are trying to obtain experimentally the difference between the activation energy of a human cupredoxin when it is attached to its copper ligands"));
+        this.journalRepositoryClass.saveOrUpdate(new Journal("CO2 reduction to HCO3- using laser beams as an initial alternative approach to CO2 fixation to fight global warming", "In these set of experiments we are trying different approaches and parameters to activate CO2 using a high-energy laser beam, which will allow us to ionize our CO2 molecule, and transform to other carbon forms that produce less global warmign effect."));
     }
 
 }

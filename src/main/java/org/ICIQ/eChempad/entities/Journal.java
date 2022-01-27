@@ -31,7 +31,7 @@ public class Journal implements IEntity{
     private UUID id;
 
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 1000, nullable = false)
     private String name;
 
 
