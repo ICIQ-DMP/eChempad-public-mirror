@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,7 +24,7 @@ import java.util.stream.Stream;
 @Table(name="Document", uniqueConstraints = {
         @UniqueConstraint(columnNames = "UUID")
 })
-public abstract class Document implements IEntity{
+public class Document implements IEntity{
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -50,12 +51,12 @@ public abstract class Document implements IEntity{
     @JoinColumn(
             name = "experiment_id",
             nullable = false)
+    @JsonIgnore
     protected Experiment experiment;
 
-    // Public constructors in abstract classes are pointless
-    protected Document() {}
+    public Document() {}
 
-    protected Document(String name, String description, Path path, Experiment experiment) {
+    public Document(String name, String description, Path path, Experiment experiment) {
         this.name = name;
         this.description = description;
         this.path = path;

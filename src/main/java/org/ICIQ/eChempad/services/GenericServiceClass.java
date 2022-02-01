@@ -4,10 +4,7 @@ import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
-import org.ICIQ.eChempad.repositories.ExperimentRepository;
-import org.ICIQ.eChempad.repositories.GenericRepository;
-import org.ICIQ.eChempad.repositories.JournalRepository;
-import org.ICIQ.eChempad.repositories.ResearcherRepository;
+import org.ICIQ.eChempad.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +46,10 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     public GenericServiceClass(ExperimentRepository experimentRepository) {
         this.genericRepository = (GenericRepository<T, S>) experimentRepository;
+    }
+
+    public GenericServiceClass(DocumentRepository documentRepository) {
+        this.genericRepository = (GenericRepository<T, S>) documentRepository;
     }
 
     @Override
