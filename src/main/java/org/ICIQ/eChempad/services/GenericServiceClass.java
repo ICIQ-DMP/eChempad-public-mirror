@@ -10,7 +10,7 @@ import org.ICIQ.eChempad.repositories.JournalRepository;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
+
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
