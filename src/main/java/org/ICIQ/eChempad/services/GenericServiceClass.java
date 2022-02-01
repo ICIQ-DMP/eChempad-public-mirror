@@ -35,7 +35,7 @@ import java.util.UUID;
 @Service
 public class GenericServiceClass<T, S extends Serializable> implements GenericService<T, S> {
 
-    private GenericRepository<T, S> genericRepository;
+    protected GenericRepository<T, S> genericRepository;
 
     public GenericServiceClass() {}
 
@@ -97,6 +97,7 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
     @Transactional
     public void add(T entity) {
         this.genericRepository.add(entity);
+
     }
 
     @Override

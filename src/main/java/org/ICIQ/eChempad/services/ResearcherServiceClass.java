@@ -6,6 +6,7 @@ import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Service
@@ -17,5 +18,12 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
     public ResearcherServiceClass(ResearcherRepository researcherRepository) {
         super(researcherRepository);
  //       this.researcherRepository = (ResearcherRepository) genericRepository;
+    }
+
+
+    @Override
+    public Researcher saveOrUpdate(Researcher researcher) {
+
+        return this.genericRepository.saveOrUpdate(researcher);
     }
 }
