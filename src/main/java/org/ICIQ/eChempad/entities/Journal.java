@@ -44,7 +44,7 @@ public class Journal implements IEntity{
             targetEntity = Experiment.class,
             mappedBy = "journal",
             fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
 )
     @JsonIgnore
     private Set<Experiment> experiments;

@@ -31,7 +31,8 @@ public class JournalPermission {
             targetEntity = ExperimentPermission.class,
             mappedBy = "experiment",
             fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
+            // If a journal permission is deleted, all of the experiment permissions have to be deleted
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     private Set<ExperimentPermission> experiments;
 

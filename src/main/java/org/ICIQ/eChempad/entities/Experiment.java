@@ -33,7 +33,7 @@ public class Experiment implements IEntity{
             targetEntity = Document.class,
             mappedBy = "experiment",
             fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
 )
     @JsonIgnore
     private Set<Document> documents;
