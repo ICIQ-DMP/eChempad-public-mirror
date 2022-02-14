@@ -16,25 +16,26 @@
 	<packaging>war</packaging>
 	<name>eChempad</name>
 	<description>Experimental Chemistry Electronic Pad</description>
-	<!-- internal variable definition for compilation -->
+	<!-- Internal variable definition for compilation -->
 	<properties>
+		<!-- General compilation of the project -->
 		<java.version>1.8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 	</properties>
 
 
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+		<!-- Java persistence API, uses
+		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>2.6.1</version>
 		</dependency>
 
-		<!--Added with the project initialization, it seems a core part of spring boot to do automatic tests-->
+		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -47,53 +48,65 @@
 			</exclusions>
 		</dependency>
 
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!--Added with the project initialization-->
+		<!-- Added with the project initialization -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 
-		<!--Added with the project initialization, it is for using web page tools in the project-->
+		<!-- Added with the project initialization, it is for using web page tools in the project -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!--To import the @ Entity annotation and allow persistency of the memory DB in a relational DB-->
+		<!-- https://www.baeldung.com/javax-validation
+        Ensures that annotation in beans such as @NotNull meet a specific criteria -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+
+		<!-- To import the @ Entity annotation and allow persistence of the memory DB in a relational DB -->
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>1.0.2.Final</version>
 		</dependency>
 
-		<!--To use postgresql in spring-->
+		<!-- To use postgresql dialect in spring -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>org.xmlunit</groupId>
-            <artifactId>xmlunit-core</artifactId>
-        </dependency>
-
-		<!--To import hibernate, which is used to achieve transparent persistence to a Database-->
+		<!-- To import hibernate, which is used to achieve transparent persistence to a Database -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>5.6.1.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>2.3.3.RELEASE</version>
+		</dependency>
+
+		<!-- DEPENDENCIES WITH DEBATABLE UTILITY -->
+
+		<!--Not used yet?, it serves testing purposes -->
+		<dependency>
+			<groupId>org.xmlunit</groupId>
+			<artifactId>xmlunit-core</artifactId>
+		</dependency>
+
+		<!--Not used yet?, it serves testing purposes -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
