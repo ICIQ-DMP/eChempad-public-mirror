@@ -31,7 +31,7 @@ public class Document implements IEntity{
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "UUID")
     protected UUID id;
 

@@ -94,7 +94,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         this.documentServiceClass.saveOrUpdate(documentEthanolTheory);
 
 
-
+        Path binary = FileSystems.getDefault().getPath("/home/amarine/Downloads/foto.webp");
+        // Documents in experimentEthanol1 Experiment
+        Document documentEthanolTheory_binary = new Document("Photo", "Example photo of springboot", binary, experimentEthanol1);
+        this.documentServiceClass.saveOrUpdate(documentEthanolTheory_binary);
 
 
 

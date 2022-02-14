@@ -47,8 +47,9 @@ public class Researcher implements Serializable, IEntity {
     @OneToMany(
             targetEntity = JournalPermission.class,
             mappedBy = "researcher",
-            fetch = FetchType.EAGER
-    //        cascade = CascadeType.ALL
+            fetch = FetchType.EAGER,
+            // if a researcher is deleted all of its journalPermission have to be deleted.
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     @JsonIgnore
     private Set<JournalPermission> journals;

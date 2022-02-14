@@ -163,11 +163,11 @@ we would get a list of all the experiments:
 
 |  Body | HTTP mode | API | URL | Action |
 |---|---|---|---|---|
-| *Empty* | GET | experiment | http://localhost:8081/api/experiment | Get all experiments
-| *Empty* | GET | experiment | http://localhost:8081/api/experiment/1c9abdba-1f82-11ec-9621-0242ac130002 | Get the experiment with the ID  
-| `{ "name": "An experiment name", "description": "Example experiment." }` | POST | experiment | http://localhost:8081/api/experiment | Add a new experiment
-| `{ "name": "My journal", "description": "Contains many experiments." }` | PUT | journal | http://localhost:8081/api/journal/18a34472-57a3-46ee-8913-98eefcd4cf89 | Overwrites an existent journal  
-| *Empty* | DELETE | experiment | http://localhost:8081/api/experiment/1c9abdba-1f82-11ec-9621-0242ac130002 | Deletes the experiment with the supplied ID
+| *Empty* | GET | experiment | http://localhost:8081/api/experiment | Get all experiments |
+| *Empty* | GET | experiment | http://localhost:8081/api/experiment/1c9abdba-1f82-11ec-9621-0242ac130002 | Get the experiment with the ID |  
+| `{ "name": "An experiment name", "description": "Example experiment." }` | POST | experiment | http://localhost:8081/api/experiment | Add a new experiment |
+| `{ "name": "My journal", "description": "Contains many experiments." }` | PUT | journal | http://localhost:8081/api/journal/18a34472-57a3-46ee-8913-98eefcd4cf89 | Overwrites an existent journal |  
+| *Empty* | DELETE | experiment | http://localhost:8081/api/experiment/1c9abdba-1f82-11ec-9621-0242ac130002 | Deletes the experiment with the supplied ID |
 
 You can even visit the URLs with your browser to attack the `GET` API calls, for example visiting 
 http://localhost:8081/api/researcher to trigger the `GET` API function in that URL. 

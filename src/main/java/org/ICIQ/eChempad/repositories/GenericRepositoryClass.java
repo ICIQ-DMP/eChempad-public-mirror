@@ -4,6 +4,7 @@ import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
@@ -151,7 +152,8 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
         else
         {
             entityManager.remove(t);
-            entityManager.getTransaction().commit();
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.commit();
             entityManager.close();
             return 0;
         }
