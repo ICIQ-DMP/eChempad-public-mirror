@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  * visualization methods for concrete types of document.
  */
 @Entity
-@Table(name="Document", uniqueConstraints = {
+@Table(name="document", uniqueConstraints = {
         @UniqueConstraint(columnNames = "UUID")
 })
 public class Document implements IEntity{
