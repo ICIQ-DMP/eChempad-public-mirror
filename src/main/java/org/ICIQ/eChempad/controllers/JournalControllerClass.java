@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/journal")
 public class JournalControllerClass implements JournalController{
     // https://blog.marcnuri.com/inyeccion-de-campos-desaconsejada-field-injection-not-recommended-spring-ioc
-    private JournalServiceClass journalServiceClass;
+    private final JournalServiceClass journalServiceClass;
 
     @Autowired
     public JournalControllerClass(JournalServiceClass journalServiceClass) {

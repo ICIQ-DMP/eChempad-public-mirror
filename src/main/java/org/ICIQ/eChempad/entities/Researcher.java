@@ -40,8 +40,10 @@ public class Researcher implements Serializable, IEntity {
     @Column(name = "email", length = 1000, nullable = false)
     private String email;
 
+
+
     // Exactly 73 characters
-    @Column(name = "signalsAPIKey", length = 73)  // nullable = true
+    @Column(name = "signalsAPIKey", length = 73, nullable = true)
     private String signalsAPIKey;
 
     @OneToMany(

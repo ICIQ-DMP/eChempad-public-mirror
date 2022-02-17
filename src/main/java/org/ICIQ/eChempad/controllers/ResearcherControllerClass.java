@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 public class ResearcherControllerClass implements ResearcherController {
 
     // https://blog.marcnuri.com/inyeccion-de-campos-desaconsejada-field-injection-not-recommended-spring-ioc
-    private ResearcherServiceClass researcherServiceClass;
+    private final ResearcherServiceClass researcherServiceClass;
 
     @Autowired
     public ResearcherControllerClass(ResearcherServiceClass researcherServiceClass) {

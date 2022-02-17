@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>2.6.1</version>
+			<version>2.6.3</version>
 		</dependency>
 
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
@@ -85,13 +85,30 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.6.1.Final</version>
+			<version>5.6.5.Final</version>
 		</dependency>
 
+		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->
+		<!-- By default, filters everything out, so we need to configure it -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-			<version>2.3.3.RELEASE</version>
+			<version>2.6.3</version>
+		</dependency>
+
+		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>22.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Allows the creation of our own properties in application.properties file -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- DEPENDENCIES WITH DEBATABLE UTILITY -->
@@ -109,8 +126,8 @@
 			<scope>test</scope>
 		</dependency>
 
-	</dependencies>
 
+	</dependencies>
 
 
 
