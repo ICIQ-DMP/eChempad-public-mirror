@@ -16,7 +16,7 @@ import java.util.*;
  */
 @Entity
 @Table(name="researcher", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "UUID")
+        @UniqueConstraint(columnNames = {"UUID", "email"})
 })
 public class Researcher implements Serializable, IEntity {
     /*
@@ -37,9 +37,9 @@ public class Researcher implements Serializable, IEntity {
     @Column(name = "name", length = 1000, nullable = false)
     private String name;
 
+
     @Column(name = "email", length = 1000, nullable = false)
     private String email;
-
 
 
     // Exactly 73 characters

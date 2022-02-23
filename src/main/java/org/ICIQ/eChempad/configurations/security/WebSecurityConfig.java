@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.configurations;
+package org.ICIQ.eChempad.configurations.security;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,22 +14,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.enable.csrf}")
     private boolean csrfEnabled;
 
+    /**
+     * https://stackoverflow.com/questions/2952196/ant-path-style-patterns
+     * @param http HTTP security class
+     * @throws Exception Any type of exception that occurs during the HTTP configuration
+     */
     protected void configure(@NotNull HttpSecurity http) throws Exception {
 
         http
                 .authorizeRequests()  // Protect all API REST directions
-                    .antMatchers("/api/document", "/api/experiment", "/api/journal", "/api/researcher")
-                    .authenticated()
-                    .and()
-                .authorizeRequests()  // Allow requests to the API REST calls for login
+                    .antMatchers("/api/document", "/api/experiment", "/api/journal", "/api/researcher").authenticated()
+
+                .and().authorizeRequests()  // Allow requests to the API REST calls for login
                     .antMatchers("/api/login")
                     .permitAll()
-                    .and()
-                .formLogin()  // Allow requests to the login form
+
+                .and().formLogin()  // Allow requests to the login form
                     .loginPage("/login")
                     .permitAll()
-                    .and()
-                .logout()  // Allow logout (?)
+
+                .and().logout()  // Allow logout (?)
                     .permitAll();
 
         // Conditional activation depending on the profile properties
