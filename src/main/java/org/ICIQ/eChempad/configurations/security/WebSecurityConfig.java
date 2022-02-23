@@ -44,9 +44,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/login*", "/api/researcher/**").permitAll()
+                .antMatchers("/api/journal").hasRole("USER")
                 .anyRequest().authenticated();
 
-        http.formLogin();
+        //http.formLogin();
     }
 
 
@@ -58,9 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
-        authenticationBuilder.userDetailsService(researcherService).passwordEncoder(new BCryptPasswordEncoder())
-                .and()
+        authenticationBuilder
                 .inMemoryAuthentication()
-                .withUser("pepe").password(new BCryptPasswordEncoder().encode("cacatua")).roles("USER");
+                .withUser("admin").password("{noop}password").roles("USER");
     }
 }
