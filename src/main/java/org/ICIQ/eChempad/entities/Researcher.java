@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.security.Permission;
 import java.util.*;
 
 
@@ -37,24 +38,27 @@ public class Researcher implements Serializable, IEntity {
     @Column(name = "name", length = 1000, nullable = false)
     private String name;
 
-
     @Column(name = "email", length = 1000, nullable = false)
     private String email;
 
+    //RF set a certain length for the used hashed algorithm
+    @Column(name = "hashedPassword", length = 1000, nullable = false)
+    private String hashedPassword;
 
     // Exactly 73 characters
     @Column(name = "signalsAPIKey", length = 73, nullable = true)
     private String signalsAPIKey;
 
     @OneToMany(
-            targetEntity = JournalPermission.class,
+            targetEntity = ElementPermission.class,
             mappedBy = "researcher",
             fetch = FetchType.EAGER,
-            // if a researcher is deleted all of its journalPermission have to be deleted.
+            // if a researcher is deleted all of its Permissions have to be deleted.
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
+    @MapKey(name = "id")
     @JsonIgnore
-    private Set<JournalPermission> journals;
+    private Map<UUID, ElementPermission> permissions;
 
     /**
      * Used to create "ghost" instances only with the internal UUIDs in order to perform deletion.
@@ -76,11 +80,12 @@ public class Researcher implements Serializable, IEntity {
      * @param fullName First name
      * @param email valid e-mail direction.
      */
-    public Researcher(String fullName, String email, String signalsAPIKey) {
+    public Researcher(String fullName, String email, String signalsAPIKey, String hashedPassword) {
         this.name = fullName;
         this.email = email;
         this.signalsAPIKey = signalsAPIKey;
-        this.journals = new HashSet<>();
+        this.permissions = new HashMap<>();
+        this.hashedPassword = hashedPassword;
     }
 
     @Override
@@ -90,7 +95,7 @@ public class Researcher implements Serializable, IEntity {
                 ", fullName='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
-                ", journals=" + journals +
+                ", permissions=" + this.permissions +
                 '}';
     }
 
@@ -129,12 +134,15 @@ public class Researcher implements Serializable, IEntity {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public Set<JournalPermission> getJournals() {
-        return this.journals;
+    public Map<UUID, ElementPermission> getPermissions() {
+        return permissions;
     }
 
-    public void setJournals(Set<JournalPermission> journals) {
-        this.journals = journals;
+    public void setPermissions(Map<UUID, ElementPermission> permissions) {
+        this.permissions = permissions;
     }
 
+    public String getHashedPassword() {
+        return hashedPassword;
+    }
 }

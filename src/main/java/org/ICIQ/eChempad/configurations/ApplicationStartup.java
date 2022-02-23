@@ -8,6 +8,7 @@ import org.ICIQ.eChempad.services.DocumentServiceClass;
 import org.ICIQ.eChempad.services.ExperimentServiceClass;
 import org.ICIQ.eChempad.services.JournalServiceClass;
 import org.ICIQ.eChempad.services.ResearcherServiceClass;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -36,15 +37,15 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
      * the application is ready to service requests.
      */
     @Override
-    public void onApplicationEvent(final ApplicationReadyEvent event) {
+    public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
         initializeDB();
     }
 
     private void initializeDB()
     {
         // Researcher examples
-        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null);
-        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null);
+        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password");
+        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password");
         this.researcherServiceClass.saveOrUpdate(elvisTech);
         this.researcherServiceClass.saveOrUpdate(aitorMenta);
 

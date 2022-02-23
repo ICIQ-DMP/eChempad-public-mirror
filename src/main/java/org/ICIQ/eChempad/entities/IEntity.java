@@ -37,7 +37,9 @@ public interface IEntity {
      * This interface is specially designed to expose this specific method of all the entities, and is specially
      * designed to perform updates of existing entities of the database when an ID is not supplied with the received
      * data object.
-     * @param id
+     * @param id ID that will be set. Only usable on dettached spring boot instances
      */
     void setUUid(UUID id);
+
+
 }
