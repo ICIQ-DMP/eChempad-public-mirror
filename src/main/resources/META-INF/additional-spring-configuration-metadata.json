@@ -4,5 +4,11 @@
       "name": "security.enable.csrf",
       "type": "java.lang.String",
       "description": "Description for security.enable.csrf."
+    },
+    {
+      "name": "spring.security.user.name",
+      "type": "java.lang.String",
+      "description": "Value of the default user name of eChempad (//RF it transforms magically to amarine)."
     }
+
   ] }
