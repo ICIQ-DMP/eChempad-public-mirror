@@ -5,6 +5,8 @@ import org.ICIQ.eChempad.entities.Researcher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -32,4 +34,13 @@ public interface ResearcherService extends GenericService<Researcher, UUID>, Use
      * user authentication internally.
      */
     UserDetails loadDetailsByUsername(String email);
+
+
+    /**
+     * Loads all user details in a single list, which will be used by the authentication manager to know the
+     * authentication data of each user, to know how to authenticate to perform the authentication itself by password
+     * matching.
+     * @return List of all the user details.
+     */
+    Map<UUID, UserDetails> loadAllUserDetails();
 }

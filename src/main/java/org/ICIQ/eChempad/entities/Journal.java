@@ -66,6 +66,7 @@ public class Journal implements IEntity{
     }
 
 
+
     // GETTERS AND SETTERS
 
     public UUID getUUid() {

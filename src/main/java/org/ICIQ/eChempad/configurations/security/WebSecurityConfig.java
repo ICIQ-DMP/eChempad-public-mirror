@@ -1,22 +1,24 @@
 package org.ICIQ.eChempad.configurations.security;
 
 import org.ICIQ.eChempad.EChempadApplication;
-import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.ICIQ.eChempad.services.ResearcherService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.JdbcUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.logging.Logger;
+import javax.sql.DataSource;
 
 @EnableWebSecurity
 @Configuration
@@ -36,6 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${spring.security.user.password}")
     private String admin_password;
 
+    @Autowired
+    private DataSource dataSource;
 
     /**
      * https://stackoverflow.com/questions/2952196/ant-path-style-patterns
@@ -75,10 +79,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().httpBasic();
 
 
-
-        // Creates the http form login in the default URL /login· The first parameter is a string corresponding to the
-        // URL where we will map the login form
-        http.formLogin();
     }
 
 
@@ -91,11 +91,43 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
 
-        LoggerFactory.getLogger(EChempadApplication.class).info(
-                "SDFGSDFGGFGAFGSFASFASFSA" + this.admin_password + " " + this.admin_username);
 
-        authenticationBuilder
-                .inMemoryAuthentication()
-                .withUser(this.admin_username).password("{noop}" + this.admin_password).roles("USER");
+        //authenticationBuilder.inMemoryAuthentication().withUser(this.admin_username).password("{noop}" + this.admin_password).roles("USER");
+
+        // https://www.baeldung.com/spring-security-jdbc-authentication
+        // https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/jdbc.html
+        // https://stackoverflow.com/questions/51642604/jdbcauthentication-instead-of-inmemoryauthentication-doesnt-give-access-s
+        // Get all userdetails and load them into the authentication manager
+
+        LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE BEGIN");
+
+        //JdbcUserDetailsManagerConfigurer<AuthenticationManagerBuilder> am = authenticationBuilder.jdbcAuthentication().dataSource(this.dataSource);
+
+        JdbcUserDetailsManagerConfigurer<AuthenticationManagerBuilder> am = authenticationBuilder.jdbcAuthentication().dataSource(this.dataSource)
+                .usersByUsernameQuery("select email, hashed_password, true" + " from researcher where email=?")
+                .authoritiesByUsernameQuery("select name, role" + " from elementpermission where  ");
+        /**
+        for (UserDetails userDetails: this.researcherService.loadAllUserDetails().values())
+        {
+            am.withUser(userDetails);
+            Thread.sleep(10000);
+            LoggerFactory.getLogger(EChempadApplication.class).info("FOOL FOOL FOOOL FOOL " + userDetails.toString());
+        }
+        am.withUser(User.withUsername(this.admin_username).password(passwordEncoder().encode(this.admin_password)).roles("USER", "ADMIN"));
+**/
+
+        LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE END");
+
+    }
+
+
+    /**
+     * Bean that returns the password encoder used for hashing passwords
+     * @return Returns an instance of encode, which can be used by accessing to encode(String) method
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder()
+    {
+        return new BCryptPasswordEncoder();
     }
 }

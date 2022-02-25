@@ -44,8 +44,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     private void initializeDB()
     {
         // Researcher examples
-        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password");
-        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password");
+        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "{noop}password");
+        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "{noop}password");
         this.researcherServiceClass.saveOrUpdate(elvisTech);
         this.researcherServiceClass.saveOrUpdate(aitorMenta);
 

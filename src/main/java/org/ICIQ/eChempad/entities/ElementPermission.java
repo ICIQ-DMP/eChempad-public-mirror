@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name="elementpermission", uniqueConstraints = {
         @UniqueConstraint(columnNames = "UUID")
 })
-public class ElementPermission {
+public class ElementPermission<T> {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -31,8 +31,8 @@ public class ElementPermission {
     @Column(name = "resource", nullable = false)
     protected UUID resource;
 
-    @Column(name = "path", length = 1000, nullable = false)
-    protected Class type;
+    @Column(name = "type", length = 1000, nullable = false)
+    protected Class<T> type;
 
     @Column(name = "role", length = 1000, nullable = false)
     protected Enum<Role> role;

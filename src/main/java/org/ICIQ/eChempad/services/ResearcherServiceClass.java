@@ -80,9 +80,21 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
         return this.loadUserByUsername(email);
     }
 
+
+    @Override
+    public Map<UUID, UserDetails> loadAllUserDetails() {
+        Map<UUID, UserDetails> ret = new HashMap<>();
+
+        for (Researcher res: this.genericRepository.getAll())
+        {
+            ret.put(res.getUUid(), this.loadUserByUsername(res.getEmail()));
+        }
+        return ret;
+    }
+
     /**
      * Internal method that will be used to authenticate users. Basically it transforms a Researcher entity to a
-     * UserDetails entity identified by its email. To construct an user details we need to load its username, roles and
+     * UserDetails entity identified by its email. To construct a user details we need to load its username, roles and
      * password.
      *
      * @param s email of the researcher that we are retrieving data from. Unique in the database.
@@ -100,6 +112,12 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
 
             Set<String> roles = new HashSet<>();
 
+            // All users have the USER roll, which is the most basic permissions that allows the access to public
+            // resources
+            roles.add("USER");
+
+
+            // We append as a role the UUID of the resource that we want to access, and _ + permission against this resource
             if (!CollectionUtils.isEmpty(permissions)) {
                 for (UUID id : permissions.keySet()) {
                     // Construct an string representing resourceID_ + role
