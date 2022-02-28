@@ -1,13 +1,18 @@
 package org.ICIQ.eChempad.configurations.security;
 
 import org.ICIQ.eChempad.EChempadApplication;
+import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.ICIQ.eChempad.services.ResearcherService;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.JdbcUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +21,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
@@ -41,6 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     /**
      * https://stackoverflow.com/questions/2952196/ant-path-style-patterns
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
@@ -56,7 +65,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.csrf().disable();
         }
 
-        //
         http
                 .authorizeRequests()
 
@@ -64,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login*", "/api/researcher/**").permitAll()
 
                 // You have to be authenticated and authorized to have the roll USER to access /api/journal
-                .antMatchers("/api/journal").hasRole("USER")
+                .antMatchers("/api/**").hasRole("USER")
 
                 // The rest of requests have to be always authenticated
                 .anyRequest().authenticated()
@@ -76,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // https://stackoverflow.com/questions/57574981/what-is-httpbasic-method-in-spring-security
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated
-                .and().httpBasic();
+                .and().httpBasic(Customizer.withDefaults());
 
 
     }
@@ -91,7 +99,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
 
-
         //authenticationBuilder.inMemoryAuthentication().withUser(this.admin_username).password("{noop}" + this.admin_password).roles("USER");
 
         // https://www.baeldung.com/spring-security-jdbc-authentication
@@ -101,11 +108,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE BEGIN");
 
-        //JdbcUserDetailsManagerConfigurer<AuthenticationManagerBuilder> am = authenticationBuilder.jdbcAuthentication().dataSource(this.dataSource);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
 
-        JdbcUserDetailsManagerConfigurer<AuthenticationManagerBuilder> am = authenticationBuilder.jdbcAuthentication().dataSource(this.dataSource)
-                .usersByUsernameQuery("select email, hashed_password, true" + " from researcher where email=?")
-                .authoritiesByUsernameQuery("select name, role" + " from elementpermission where  ");
+        authenticationBuilder.userDetailsService(this.userDetailsService()).passwordEncoder(this.passwordEncoder()).and()
+                .jdbcAuthentication().dataSource(this.dataSource)
+                // .withDefaultSchema()  // Does not work with psql
+                .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = '?'")
+                .authoritiesByUsernameQuery("SELECT researcher.email, elementpermission.authority\n" +
+                        "FROM researcher, elementpermission\n" +
+                        "WHERE elementpermission.researcher = researcher.uuid \n" +
+                        "AND researcher.email = '?'");
+                //.withUser("patatero").password(passwordEncoder().encode("pass")).authorities("ROLE_USER");
+
+        session.getTransaction().commit();
+        session.close();
+
         /**
         for (UserDetails userDetails: this.researcherService.loadAllUserDetails().values())
         {
@@ -113,8 +131,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             Thread.sleep(10000);
             LoggerFactory.getLogger(EChempadApplication.class).info("FOOL FOOL FOOOL FOOL " + userDetails.toString());
         }
-        am.withUser(User.withUsername(this.admin_username).password(passwordEncoder().encode(this.admin_password)).roles("USER", "ADMIN"));
-**/
+         **/
+
+        //am.getUserDetailsService().createUser(this.researcherService.loadDetailsByUsername("admin@eChempad.com"));
+        //am.withUser(User.withUsername(this.admin_username).password(passwordEncoder().encode(this.admin_password)).roles("USER", "ADMIN"));
+
 
         LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE END");
 
@@ -128,6 +149,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder()
     {
-        return new BCryptPasswordEncoder();
+
+        return NoOpPasswordEncoder.getInstance();
+        //return new BCryptPasswordEncoder();
     }
+
+
 }

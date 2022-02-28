@@ -52,6 +52,10 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
         this.genericRepository = (GenericRepository<T, S>) documentRepository;
     }
 
+    public GenericServiceClass(ElementPermissionRepository elementPermissionRepository) {
+        this.genericRepository = (GenericRepository<T, S>) elementPermissionRepository;
+    }
+
     @Override
     @Transactional
     public T update(T entity, S id) throws ExceptionResourceNotExists {

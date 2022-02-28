@@ -10,5 +10,7 @@ public enum Role {
     READ,
     WRITE,
     EDIT,
-    OWN
+    OWN,
+    USER,
+    ADMIN
 }

@@ -101,7 +101,15 @@ public class Journal implements IEntity{
         this.experiments = experiments;
     }
 
-
+    @Override
+    public String toString() {
+        return "Journal{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", experiments=" + experiments +
+                '}';
+    }
 }
 
 

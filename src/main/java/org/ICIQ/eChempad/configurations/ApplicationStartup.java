@@ -1,14 +1,10 @@
 package org.ICIQ.eChempad.configurations;
 
-import org.ICIQ.eChempad.entities.Document;
-import org.ICIQ.eChempad.entities.Experiment;
-import org.ICIQ.eChempad.entities.Journal;
-import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.services.DocumentServiceClass;
-import org.ICIQ.eChempad.services.ExperimentServiceClass;
-import org.ICIQ.eChempad.services.JournalServiceClass;
-import org.ICIQ.eChempad.services.ResearcherServiceClass;
+import org.ICIQ.eChempad.EChempadApplication;
+import org.ICIQ.eChempad.entities.*;
+import org.ICIQ.eChempad.services.*;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -16,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.security.Permission;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
@@ -32,6 +29,11 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Autowired
     private DocumentServiceClass documentServiceClass;
 
+    @Autowired
+    private ElementPermissionServiceClass elementPermissionServiceClass;
+
+
+
     /**
      * This event is executed as late as conceivably possible to indicate that
      * the application is ready to service requests.
@@ -44,21 +46,51 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     private void initializeDB()
     {
         // Researcher examples
-        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "{noop}password");
-        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "{noop}password");
+        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password");
+        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password");
+        Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password");
+
         this.researcherServiceClass.saveOrUpdate(elvisTech);
         this.researcherServiceClass.saveOrUpdate(aitorMenta);
-
+        this.researcherServiceClass.saveOrUpdate(administrator);
 
         // Journal examples
         Journal activationEnergy = new Journal("Comparation of the activation energy of reactions catalyzed by enzymes with copper ligands", "In these experiments we are trying to obtain experimentally the difference between the activation energy of a human cupredoxin when it is attached to its copper ligands");
         Journal waterProperties = new Journal("Water Properties", "Experiments that take advantage of the special physical properties of the H2O molecule, regarding its H2 bonds.");
         Journal ethanolProperties = new Journal("Ethanol properties", "Set of reaction that use ethanol as reactive or media to improve yield");
         Journal CO2Reaction = new Journal("CO2 reduction to HCO3- using laser beams as an initial alternative approach to CO2 fixation to fight global warming", "In these set of experiments we are trying different approaches and parameters to activate CO2 using a high-energy laser beam, which will allow us to ionize our CO2 molecule, and transform to other carbon forms that produce less global warmign effect.");
+
         this.journalServiceClass.saveOrUpdate(activationEnergy);
         this.journalServiceClass.saveOrUpdate(waterProperties);
         this.journalServiceClass.saveOrUpdate(ethanolProperties);
         this.journalServiceClass.saveOrUpdate(CO2Reaction);
+
+        // Journal permissions
+        ElementPermission activationEnergyPermission = new ElementPermission(activationEnergy, Role.USER, elvisTech);
+        ElementPermission waterPropertiesPermission = new ElementPermission(waterProperties, Role.USER, elvisTech);
+        ElementPermission ethanolPropertiesPermission = new ElementPermission(ethanolProperties, Role.USER, aitorMenta);
+        ElementPermission CO2ReactionPermission= new ElementPermission(CO2Reaction, Role.USER, administrator);
+
+        /*
+        elvisTech.getPermissions().put(activationEnergy.getUUid(), activationEnergyPermission);
+        elvisTech.getPermissions().put(waterPropertiesPermission.getUUid(), waterPropertiesPermission);
+        aitorMenta.getPermissions().put(ethanolPropertiesPermission.getUUid(), ethanolPropertiesPermission);
+        administrator.getPermissions().put(CO2ReactionPermission.getUUid(), CO2ReactionPermission);
+*/
+
+        this.elementPermissionServiceClass.saveOrUpdate(activationEnergyPermission);
+        this.elementPermissionServiceClass.saveOrUpdate(waterPropertiesPermission);
+        this.elementPermissionServiceClass.saveOrUpdate(ethanolPropertiesPermission);
+        this.elementPermissionServiceClass.saveOrUpdate(CO2ReactionPermission);
+
+        // User roles
+        ElementPermission basicRollElvisTech = new ElementPermission(null, Role.USER, elvisTech);
+        this.elementPermissionServiceClass.saveOrUpdate(basicRollElvisTech);
+        ElementPermission basicRollAitorMenta = new ElementPermission(null, Role.USER, aitorMenta);
+        this.elementPermissionServiceClass.saveOrUpdate(basicRollAitorMenta);
+        ElementPermission basicRollAdministrator = new ElementPermission(null, Role.USER, administrator);
+        ElementPermission adminRollAdministrator = new ElementPermission(null, Role.ADMIN, administrator);
+        this.elementPermissionServiceClass.saveOrUpdate(adminRollAdministrator);
 
 
         // Experiment examples
