@@ -7,6 +7,7 @@ import org.ICIQ.eChempad.services.JournalServiceClass;
 import org.ICIQ.eChempad.services.ResearcherServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

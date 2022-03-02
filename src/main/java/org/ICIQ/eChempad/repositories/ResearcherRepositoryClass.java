@@ -15,7 +15,7 @@ public class ResearcherRepositoryClass extends GenericRepositoryClass<Researcher
     /**
      * We can use uniqueResult because we will not allow different users with the same e-mail.
      * @param email email of the user
-     * @return
+     * @return UUID identifying the user.
      */
     @Override
     public UUID getIdByEmail(String email) {

@@ -57,6 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param http HTTP security class. Can be used to configure a lot of different parameters regarding HTTP security.
      * @throws Exception Any type of exception that occurs during the HTTP configuration
      */
+    //TODO:
+
     @Override
     protected void configure(@NotNull HttpSecurity http) throws Exception {
         // Conditional activation depending on the profile properties
@@ -110,6 +112,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE BEGIN");
 
+        UserDetails user = User.builder().username("eChempad").password(passwordEncoder().encode("chemistry")).authorities("USER", "ADMIN").build();
+
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
 
@@ -120,7 +124,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authoritiesByUsernameQuery("SELECT researcher.email, elementpermission.authority\n" +
                         "FROM researcher, elementpermission\n" +
                         "WHERE elementpermission.researcher = researcher.uuid \n" +
-                        "AND researcher.email = ?");
+                        "AND researcher.email = ?")
+                        .withUser(user);  // Add admin account
                 //.withUser("patatero").password(passwordEncoder().encode("pass")).authorities("ROLE_USER");
 
         session.getTransaction().commit();
