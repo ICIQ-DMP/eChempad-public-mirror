@@ -174,7 +174,7 @@ public class ElementPermission implements IEntity {
                 ", type='" + type + '\'' +
                 ", role=" + role +
                 ", authority='" + authority + '\'' +
-                ", researcher=" + researcher +
+                ", researcher=" + researcher.getEmail() +
                 '}';
     }
 }

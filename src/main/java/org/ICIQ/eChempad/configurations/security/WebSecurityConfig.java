@@ -69,10 +69,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 // Publicly accessible URLs
-                .antMatchers("/login*", "/api/researcher/**").permitAll()
+                .antMatchers("/login/**").permitAll()
 
                 // You have to be authenticated and authorized to have the roll USER to access /api/journal
-                .antMatchers("/api/**").hasRole("USER")
+                .antMatchers("/api/**").hasAnyAuthority("USER", "ADMIN")
+
+                //.hasARole("USER")
 
                 // The rest of requests have to be always authenticated
                 .anyRequest().authenticated()
@@ -114,11 +116,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationBuilder.userDetailsService(this.userDetailsService()).passwordEncoder(this.passwordEncoder()).and()
                 .jdbcAuthentication().dataSource(this.dataSource)
                 // .withDefaultSchema()  // Does not work with psql
-                .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = '?'")
+                .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = ?")
                 .authoritiesByUsernameQuery("SELECT researcher.email, elementpermission.authority\n" +
                         "FROM researcher, elementpermission\n" +
                         "WHERE elementpermission.researcher = researcher.uuid \n" +
-                        "AND researcher.email = '?'");
+                        "AND researcher.email = ?");
                 //.withUser("patatero").password(passwordEncoder().encode("pass")).authorities("ROLE_USER");
 
         session.getTransaction().commit();

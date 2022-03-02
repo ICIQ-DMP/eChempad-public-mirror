@@ -91,6 +91,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         ElementPermission basicRollAdministrator = new ElementPermission(null, Role.USER, administrator);
         ElementPermission adminRollAdministrator = new ElementPermission(null, Role.ADMIN, administrator);
         this.elementPermissionServiceClass.saveOrUpdate(adminRollAdministrator);
+        this.elementPermissionServiceClass.saveOrUpdate(basicRollAdministrator);
+
 
 
         // Experiment examples
