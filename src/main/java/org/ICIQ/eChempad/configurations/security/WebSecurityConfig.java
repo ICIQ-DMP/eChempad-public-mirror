@@ -30,9 +30,6 @@ import javax.sql.DataSource;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private ResearcherService researcherService;
-
     // Value obtained from .properties files, outside the env of the JAVA project. Configures Cross-site request forgery
     // protection.
     @Value("${security.enable.csrf}")
@@ -124,8 +121,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authoritiesByUsernameQuery("SELECT researcher.email, elementpermission.authority\n" +
                         "FROM researcher, elementpermission\n" +
                         "WHERE elementpermission.researcher = researcher.uuid \n" +
-                        "AND researcher.email = ?")
-                        .withUser(user);  // Add admin account
+                        "AND researcher.email = ?");
+                        //.withUser(user);  // Add admin account
                 //.withUser("patatero").password(passwordEncoder().encode("pass")).authorities("ROLE_USER");
 
         session.getTransaction().commit();
@@ -153,12 +150,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * Bean that returns the password encoder used for hashing passwords
      * @return Returns an instance of encode, which can be used by accessing to encode(String) method
      */
-    @Bean
+    @Bean()
     public PasswordEncoder passwordEncoder()
     {
 
-        return NoOpPasswordEncoder.getInstance();
-        //return new BCryptPasswordEncoder();
+        //return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
 

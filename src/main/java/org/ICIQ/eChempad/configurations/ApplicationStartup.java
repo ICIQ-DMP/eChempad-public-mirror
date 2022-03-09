@@ -40,7 +40,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
      */
     @Override
     public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
-        initializeDB();
+        //initializeDB();
     }
 
     private void initializeDB()
