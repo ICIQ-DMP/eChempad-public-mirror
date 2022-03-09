@@ -13,10 +13,9 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 /**
- * Model class to store, visualize and manage a Document (contained in a file).
- *
- * Each Document can be in different formats. Each class that inherits from this class extends its behaviour by adding
- * visualization methods for concrete types of document.
+ * Model class to store the permission level / authority that a researcher has against a concrete resource of a certain
+ * type. It should be used before reaching the service level, so it is used in the filters before actually calling the
+ * method.
  */
 @Entity
 @Table(name="elementpermission", uniqueConstraints = {
@@ -29,23 +28,19 @@ public class ElementPermission implements IEntity {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "UUID", nullable = false)
     protected UUID id;
 
-    // We can have an element permission to assign a general role, and as such is not pointing to any resource.
-    @Column(name = "resource", nullable = true)
-    protected UUID resource;
+    // Resource that we are limiting access to
+    @Column(name = "resource", nullable = false)
+    protected IEntity resource;
 
-    @Column(name = "type", length = 1000, nullable = true)
-    protected String type;
+    // Type of resource we are limiting; used to know in which table we need to check
+    @Column(name = "type", length = 100, nullable = false)
+    protected Class type;
 
-    @Column(name = "role", length = 1000, nullable = false)
-    protected Enum<Role> role;
-
-    // Authority is resourceUUID + "_" + role
     @Column(name = "authority", length = 100, nullable = false)
-    protected String authority;
+    protected Enum<Authority> authority;
 
     // https://stackoverflow.com/questions/4121485/columns-not-allowed-on-a-manytoone-property
     @JoinColumn(name = "researcher")
