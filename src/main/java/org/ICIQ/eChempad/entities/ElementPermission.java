@@ -31,16 +31,21 @@ public class ElementPermission implements IEntity {
     @Column(name = "UUID", nullable = false)
     protected UUID id;
 
+
     // Resource that we are limiting access to
     @Column(name = "resource", nullable = false)
     protected IEntity resource;
 
-    // Type of resource we are limiting; used to know in which table we need to check
+    // Type of resource we are limiting; used to know in which table we need to check the IEntity resource.
+    // This only makes sense with Hibernate since fields have dual format: one serialized for the DB and binarize for
+    // Java code.
     @Column(name = "type", length = 100, nullable = false)
-    protected Class type;
+    protected Class<?> type;
+
 
     @Column(name = "authority", length = 100, nullable = false)
     protected Enum<Authority> authority;
+
 
     // https://stackoverflow.com/questions/4121485/columns-not-allowed-on-a-manytoone-property
     @JoinColumn(name = "researcher")
@@ -51,96 +56,52 @@ public class ElementPermission implements IEntity {
     @JsonIgnore
     protected Researcher researcher;
 
+
+
     public ElementPermission() {}
 
-    public ElementPermission(IEntity resource, Role role, Researcher researcher)
+    public ElementPermission(IEntity resource, Authority authority, Researcher researcher)
     {
-        if (resource != null)
-        {
-            this.resource = resource.getUUid();
-            // Obtain the actual type of this IEntity object. //RF not working, returns Object
-            this.type = resource.getClass().getGenericSuperclass().getTypeName();
-        }
-        else
-        {
-            this.resource = null;
-            this.type = null;
-        }
-
-        this.role = role;
+        this.type = resource.getClass();
+        this.resource = resource;
+        this.authority = authority;
         this.researcher = researcher;
-
-        // Construct authority with the role + the ID of the resource that we are authorizing.
-        if (this.resource == null)
-        {
-            this.authority = this.role.name();
-        }
-        else
-        {
-            this.authority = this.role + "_" + this.resource;
-        }
     }
 
-    public ElementPermission(IEntity resource, String role, Researcher researcher)
-    {
-        if (resource != null)
-        {
-            this.resource = resource.getUUid();
-            // Obtain the actual type of this IEntity object. //RF not working, returns Object
-            this.type = resource.getClass().getGenericSuperclass().getTypeName();
-        }
-        else
-        {
-            this.resource = null;
-            this.type = null;
-        }
-
-        this.role = Role.valueOf(role);
-        this.researcher = researcher;
-
-        // Construct authority with the role + the ID of the resource that we are authorizing.
-        if (this.resource == null)
-        {
-            this.authority = this.role.name();
-        }
-        else
-        {
-            this.authority = this.role + "_" + this.resource;
-        }
-    }
 
     // Getters and setters
-    public UUID getId() {
+
+
+    public UUID getUUid() {
         return id;
     }
 
-    public UUID getResource() {
+    public void setUUid(UUID id) {
+        this.id = id;
+    }
+
+    public IEntity getResource() {
         return resource;
     }
 
-    public void setResource(UUID resource) {
+    public void setResource(IEntity resource) {
         this.resource = resource;
     }
 
-    public Class getType() {
-        try {
-            return Class.forName(this.type);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public Class<?> getType() {
+        return type;
     }
 
-    public void setType(Class type) {
-        this.type = type.getName();
+    public void setType(Class<?> type) {
+        this.type = type;
     }
 
-    public Enum<Role> getRole() {
-        return role;
+    public Enum<Authority> getAuthority() {
+        return authority;
     }
 
-    public void setRole(Enum<Role> role) {
-        this.role = role;
+    public void setAuthority(Enum<Authority> authority) {
+        this.authority = authority;
     }
 
     public Researcher getResearcher() {
@@ -152,24 +113,13 @@ public class ElementPermission implements IEntity {
     }
 
     @Override
-    public UUID getUUid() {
-        return this.id;
-    }
-
-    @Override
-    public void setUUid(UUID id) {
-        this.id = id;
-    }
-
-    @Override
     public String toString() {
         return "ElementPermission{" +
                 "id=" + id +
                 ", resource=" + resource +
-                ", type='" + type + '\'' +
-                ", role=" + role +
-                ", authority='" + authority + '\'' +
-                ", researcher=" + researcher.getEmail() +
+                ", type=" + type +
+                ", authority=" + authority +
+                ", researcher=" + researcher +
                 '}';
     }
 }

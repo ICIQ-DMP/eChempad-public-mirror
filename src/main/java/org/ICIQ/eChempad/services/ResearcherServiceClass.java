@@ -104,33 +104,28 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         Optional<Researcher> selected = ((ResearcherRepository) this.genericRepository).getResearcherByEmail(s);
 
-        if (selected.isPresent()) {
+        if (selected.isPresent())
+        {
+            // Obtain researcher by email (username)
             Researcher researcher = selected.get();
 
-            // Obtain the roles of this user to construct the instance of UserDetails for SpringBoot Security
-            Map<UUID, ElementPermission> permissions = researcher.getPermissions();
-
-            Set<String> roles = new HashSet<>();
-
-            // All users have the USER roll, which is the most basic permissions that allows the access to public
-            // resources
-            roles.add("USER");
-
-
-            // We append as a role the UUID of the resource that we want to access, and _ + permission against this resource
-            if (!CollectionUtils.isEmpty(permissions)) {
-                for (UUID id : permissions.keySet()) {
-                    // Construct an string representing resourceID_ + role
-                    roles.add(permissions.get(id).getResource() + "_" + permissions.get(id).getRole().name());
-                }
-            }
+            // Obtain the roles of this user to construct the instance of UserDetails for SpringBoot Security.
+            // TODO: to simplify only using a single Role per user, change to a Set in productioin if needed
+            Set<Role> roles = new HashSet<>();
+            roles.add(researcher.getRole());
 
             return org.springframework.security.core.userdetails.User
                     .withUsername(s)
-                    .roles(roles.toArray(new String[0]))
+                    .roles(roles.stream().toArray(
+                        (n) -> {
+                            return new String[n];
+                        }
+                    ))
                     .password(researcher.getHashedPassword())
                     .build();
-        } else {
+        }
+        else
+        {
             throw new UsernameNotFoundException("The researcher with email " + s + " is not registered in the database");
         }
     }

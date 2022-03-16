@@ -45,10 +45,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
     private void initializeDB()
     {
-        // Researcher examples
+        // Researcher examples, implicitly are USERs
         Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password");
         Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password");
-        Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password");
+        Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password", Role.ADMIN);
 
         this.researcherServiceClass.saveOrUpdate(elvisTech);
         this.researcherServiceClass.saveOrUpdate(aitorMenta);
@@ -66,10 +66,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         this.journalServiceClass.saveOrUpdate(CO2Reaction);
 
         // Journal permissions
-        ElementPermission activationEnergyPermission = new ElementPermission(activationEnergy, Role.USER, elvisTech);
-        ElementPermission waterPropertiesPermission = new ElementPermission(waterProperties, Role.USER, elvisTech);
-        ElementPermission ethanolPropertiesPermission = new ElementPermission(ethanolProperties, Role.USER, aitorMenta);
-        ElementPermission CO2ReactionPermission= new ElementPermission(CO2Reaction, Role.USER, administrator);
+        ElementPermission activationEnergyPermission = new ElementPermission(activationEnergy, Authority.OWN, elvisTech);
+        ElementPermission waterPropertiesPermission = new ElementPermission(waterProperties, Authority.EDIT, elvisTech);
+        ElementPermission ethanolPropertiesPermission = new ElementPermission(ethanolProperties, Authority.WRITE, aitorMenta);
+        ElementPermission CO2ReactionPermission= new ElementPermission(CO2Reaction, Authority.READ, administrator);
 
         /*
         elvisTech.getPermissions().put(activationEnergy.getUUid(), activationEnergyPermission);
@@ -82,18 +82,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         this.elementPermissionServiceClass.saveOrUpdate(waterPropertiesPermission);
         this.elementPermissionServiceClass.saveOrUpdate(ethanolPropertiesPermission);
         this.elementPermissionServiceClass.saveOrUpdate(CO2ReactionPermission);
-
-        // User roles
-        ElementPermission basicRollElvisTech = new ElementPermission(null, Role.USER, elvisTech);
-        this.elementPermissionServiceClass.saveOrUpdate(basicRollElvisTech);
-        ElementPermission basicRollAitorMenta = new ElementPermission(null, Role.USER, aitorMenta);
-        this.elementPermissionServiceClass.saveOrUpdate(basicRollAitorMenta);
-        ElementPermission basicRollAdministrator = new ElementPermission(null, Role.USER, administrator);
-        ElementPermission adminRollAdministrator = new ElementPermission(null, Role.ADMIN, administrator);
-        this.elementPermissionServiceClass.saveOrUpdate(adminRollAdministrator);
-        this.elementPermissionServiceClass.saveOrUpdate(basicRollAdministrator);
-
-
 
         // Experiment examples
         // Experiments in CO2Reaction journal

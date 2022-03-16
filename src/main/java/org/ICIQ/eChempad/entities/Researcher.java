@@ -58,7 +58,13 @@ public class Researcher implements Serializable, IEntity {
     )
     @MapKey(name = "id")
     @JsonIgnore
-    private Map<UUID, ElementPermission> permissions;
+    private List<ElementPermission> permissions;
+
+
+    // TODO: We use only one role per user to simplify, but it might get converted to a list of roles + table for roles
+    //       and researchers.
+    @Column(name = "role", length = 100, nullable = false)
+    private Role role;
 
     /**
      * Used to create "ghost" instances only with the internal UUIDs in order to perform deletion.
@@ -84,18 +90,30 @@ public class Researcher implements Serializable, IEntity {
         this.name = fullName;
         this.email = email;
         this.signalsAPIKey = signalsAPIKey;
-        this.permissions = new HashMap<>();
+        this.permissions = new LinkedList<>();
         this.hashedPassword = hashedPassword;
+        this.role = Role.USER;
+    }
+
+    public Researcher(String fullName, String email, String signalsAPIKey, String hashedPassword, Role role) {
+        this.name = fullName;
+        this.email = email;
+        this.signalsAPIKey = signalsAPIKey;
+        this.permissions = new LinkedList<>();
+        this.hashedPassword = hashedPassword;
+        this.role = role;
     }
 
     @Override
     public String toString() {
         return "Researcher{" +
-                "id=" + uuid +
-                ", fullName='" + name + '\'' +
+                "uuid=" + uuid +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", hashedPassword='" + hashedPassword + '\'' +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
-                ", permissions=" + this.permissions +
+                ", permissions=" + permissions +
+                ", role=" + role +
                 '}';
     }
 
@@ -134,12 +152,20 @@ public class Researcher implements Serializable, IEntity {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public Map<UUID, ElementPermission> getPermissions() {
+    public List<ElementPermission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Map<UUID, ElementPermission> permissions) {
+    public void setPermissions(List<ElementPermission> permissions) {
         this.permissions = permissions;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getHashedPassword() {
