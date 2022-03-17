@@ -1,5 +1,7 @@
 package org.ICIQ.eChempad.configurations;
 
+import org.ICIQ.eChempad.entities.IEntity;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.io.Serializable;
@@ -13,23 +15,19 @@ import java.io.Serializable;
  * contained within other, more complex attribute types. In this case we don't have to use @Convert annotation
  * explicitly on the attributes.
  */
+/**
 @Converter(autoApply = true)  // With autoapply = true performs automatic translation between types implicitly
-public class ClassToStringConverter implements AttributeConverter<Class<?>, String>, Serializable {
+public class ClassToStringConverter implements AttributeConverter<IEntity, String>, Serializable {
 
     @Override
-    public String convertToDatabaseColumn(Class aClass) {
-        return aClass.getName();
+    public String convertToDatabaseColumn(IEntity iEntity) {
+        return iEntity.getClass().getName();
     }
 
     @Override
-    public Class<?> convertToEntityAttribute(String s) {
-        try
-        {
-            return Class.forName(s);
-        }
-        catch (ClassNotFoundException e)  // TODO: Assume fatal error on class not found
-        {
-            return null;
-        }
+    public IEntity convertToEntityAttribute(String s) {
+        return null;
     }
 }
+
+ **/

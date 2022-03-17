@@ -91,6 +91,11 @@ public class Document implements IEntity{
         this.id = s;
     }
 
+    @Override
+    public Class<?> getMyType() {
+        return Document.class;
+    }
+
     public String getName() {
         return name;
     }

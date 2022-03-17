@@ -40,19 +40,20 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
      */
     @Override
     public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
-        //initializeDB();
+        initializeDB();
     }
 
     private void initializeDB()
     {
         // Researcher examples, implicitly are USERs
-        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password");
-        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password");
+        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password", Role.USER);
+        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password", Role.USER);
         Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password", Role.ADMIN);
 
         this.researcherServiceClass.saveOrUpdate(elvisTech);
         this.researcherServiceClass.saveOrUpdate(aitorMenta);
         this.researcherServiceClass.saveOrUpdate(administrator);
+
 
         // Journal examples
         Journal activationEnergy = new Journal("Comparation of the activation energy of reactions catalyzed by enzymes with copper ligands", "In these experiments we are trying to obtain experimentally the difference between the activation energy of a human cupredoxin when it is attached to its copper ligands");
@@ -60,16 +61,27 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         Journal ethanolProperties = new Journal("Ethanol properties", "Set of reaction that use ethanol as reactive or media to improve yield");
         Journal CO2Reaction = new Journal("CO2 reduction to HCO3- using laser beams as an initial alternative approach to CO2 fixation to fight global warming", "In these set of experiments we are trying different approaches and parameters to activate CO2 using a high-energy laser beam, which will allow us to ionize our CO2 molecule, and transform to other carbon forms that produce less global warmign effect.");
 
-        this.journalServiceClass.saveOrUpdate(activationEnergy);
-        this.journalServiceClass.saveOrUpdate(waterProperties);
-        this.journalServiceClass.saveOrUpdate(ethanolProperties);
-        this.journalServiceClass.saveOrUpdate(CO2Reaction);
-
         // Journal permissions
         ElementPermission activationEnergyPermission = new ElementPermission(activationEnergy, Authority.OWN, elvisTech);
         ElementPermission waterPropertiesPermission = new ElementPermission(waterProperties, Authority.EDIT, elvisTech);
         ElementPermission ethanolPropertiesPermission = new ElementPermission(ethanolProperties, Authority.WRITE, aitorMenta);
         ElementPermission CO2ReactionPermission= new ElementPermission(CO2Reaction, Authority.READ, administrator);
+
+        // Add permissions to the journals
+        activationEnergy.getPermissions().add(activationEnergyPermission);
+        waterProperties.getPermissions().add(waterPropertiesPermission);
+        ethanolProperties.getPermissions().add(ethanolPropertiesPermission);
+        CO2Reaction.getPermissions().add(CO2ReactionPermission);
+
+        LoggerFactory.getLogger(EChempadApplication.class).info("after journals permissions");
+
+
+        this.journalServiceClass.saveOrUpdate(activationEnergy);
+        this.journalServiceClass.saveOrUpdate(waterProperties);
+        this.journalServiceClass.saveOrUpdate(ethanolProperties);
+        this.journalServiceClass.saveOrUpdate(CO2Reaction);
+
+        LoggerFactory.getLogger(EChempadApplication.class).info("elemento previo");
 
         /*
         elvisTech.getPermissions().put(activationEnergy.getUUid(), activationEnergyPermission);
@@ -78,10 +90,14 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         administrator.getPermissions().put(CO2ReactionPermission.getUUid(), CO2ReactionPermission);
 */
 
+        LoggerFactory.getLogger(EChempadApplication.class).info(activationEnergyPermission.toString());
+
         this.elementPermissionServiceClass.saveOrUpdate(activationEnergyPermission);
         this.elementPermissionServiceClass.saveOrUpdate(waterPropertiesPermission);
         this.elementPermissionServiceClass.saveOrUpdate(ethanolPropertiesPermission);
         this.elementPermissionServiceClass.saveOrUpdate(CO2ReactionPermission);
+
+        LoggerFactory.getLogger(EChempadApplication.class).info("elemento posterior");
 
         // Experiment examples
         // Experiments in CO2Reaction journal

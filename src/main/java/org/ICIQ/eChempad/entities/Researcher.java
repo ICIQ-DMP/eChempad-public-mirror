@@ -112,7 +112,7 @@ public class Researcher implements Serializable, IEntity {
                 ", email='" + email + '\'' +
                 ", hashedPassword='" + hashedPassword + '\'' +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
-                ", permissions=" + permissions +
+                //", permissions=" + permissions +
                 ", role=" + role +
                 '}';
     }
@@ -128,6 +128,12 @@ public class Researcher implements Serializable, IEntity {
     public void setUUid(UUID s) {
         this.uuid = s;
     }
+
+    @Override
+    public Class<?> getMyType() {
+        return Researcher.class;
+    }
+
     public String getFullName() {
         return this.name;
     }

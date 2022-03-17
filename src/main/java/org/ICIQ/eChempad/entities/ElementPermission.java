@@ -6,6 +6,7 @@ import org.ICIQ.eChempad.repositories.GenericRepositoryClass;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.lang.reflect.ParameterizedType;
@@ -32,19 +33,23 @@ public class ElementPermission implements IEntity {
     protected UUID id;
 
 
-    // Resource that we are limiting access to
-    @Column(name = "resource", nullable = false)
-    protected IEntity resource;
+
+
+    // Resource that we are limiting access to. It cannot be mapped to the DB since it is dynamically bind depending on
+    // the class that is implementing IEntity
+    //@JsonIgnore
+    //protected IEntity resource;
 
     // Type of resource we are limiting; used to know in which table we need to check the IEntity resource.
-    // This only makes sense with Hibernate since fields have dual format: one serialized for the DB and binarize for
+    // This only makes sense with Hibernate since fields have dual format: one serialized for the DB and binarized for
     // Java code.
     @Column(name = "type", length = 100, nullable = false)
     protected Class<?> type;
 
 
+    // Authority that this user has against this resource.
     @Column(name = "authority", length = 100, nullable = false)
-    protected Enum<Authority> authority;
+    protected Authority authority;
 
 
     // https://stackoverflow.com/questions/4121485/columns-not-allowed-on-a-manytoone-property
@@ -57,13 +62,56 @@ public class ElementPermission implements IEntity {
     protected Researcher researcher;
 
 
+    // Only one resource is not null, the other ones have to be null. One element per element permission
+    // {
+
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            optional = true
+    )
+    @JoinColumn(
+            name = "experiment_id",
+            nullable = true)
+    @JsonIgnore
+    @Nullable
+    protected Experiment experiment;
+
+
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            optional = true
+    )
+    @JoinColumn(
+            name = "journal_id",
+            nullable = true)
+    @JsonIgnore
+    @Nullable
+    protected Journal journal;
+
+
+
+
+    // }
+
 
     public ElementPermission() {}
 
     public ElementPermission(IEntity resource, Authority authority, Researcher researcher)
     {
         this.type = resource.getClass();
-        this.resource = resource;
+        if (resource.getMyType().equals(Journal.class))
+        {
+            this.journal = (Journal) resource;
+        }
+        else if (resource.getMyType().equals(Experiment.class))
+        {
+            this.experiment = (Experiment) resource;
+        }
+        else
+        {
+            LoggerFactory.getLogger(EChempadApplication.class).info("AFTER");
+
+        }
         this.authority = authority;
         this.researcher = researcher;
     }
@@ -80,12 +128,9 @@ public class ElementPermission implements IEntity {
         this.id = id;
     }
 
-    public IEntity getResource() {
-        return resource;
-    }
-
-    public void setResource(IEntity resource) {
-        this.resource = resource;
+    @Override
+    public Class<?> getMyType() {
+        return ElementPermission.class;
     }
 
     public Class<?> getType() {
@@ -100,7 +145,7 @@ public class ElementPermission implements IEntity {
         return authority;
     }
 
-    public void setAuthority(Enum<Authority> authority) {
+    public void setAuthority(Authority authority) {
         this.authority = authority;
     }
 
@@ -112,14 +157,16 @@ public class ElementPermission implements IEntity {
         this.researcher = researcher;
     }
 
+
     @Override
     public String toString() {
         return "ElementPermission{" +
                 "id=" + id +
-                ", resource=" + resource +
                 ", type=" + type +
                 ", authority=" + authority +
                 ", researcher=" + researcher +
+                ", experiment=" + experiment +
+                ", journal=" + journal +
                 '}';
     }
 }

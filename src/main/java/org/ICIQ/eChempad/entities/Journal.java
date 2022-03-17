@@ -50,6 +50,14 @@ public class Journal implements IEntity{
     private Set<Experiment> experiments;
 
 
+    @OneToMany(
+            targetEntity = ElementPermission.class,
+            mappedBy = "id",
+            fetch = FetchType.EAGER,
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
+    )
+    @JsonIgnore
+    private Set<ElementPermission> permissions;
 
     public Journal() {}
 
@@ -63,10 +71,22 @@ public class Journal implements IEntity{
         this.name = name;
         this.description = description;
         this.experiments = new HashSet<>();
+        this.permissions = new HashSet<>();
     }
 
 
-
+    /**
+     * Constructor
+     * @param name name used by humans to identify a certain Journal. No collision is expected from Journals with same
+     *             name
+     * @param description description of the content of the Journal and its Experiments.
+     */
+    public Journal(String name, String description, Set<ElementPermission> permissions) {
+        this.name = name;
+        this.description = description;
+        this.experiments = new HashSet<>();
+        this.permissions = permissions;
+    }
     // GETTERS AND SETTERS
 
     public UUID getUUid() {
@@ -75,6 +95,11 @@ public class Journal implements IEntity{
 
     public void setUUid(UUID s) {
         this.id = s;
+    }
+
+    @Override
+    public Class<?> getMyType() {
+        return Journal.class;
     }
 
     public String getName() {
@@ -109,6 +134,14 @@ public class Journal implements IEntity{
                 ", description='" + description + '\'' +
                 ", experiments=" + experiments +
                 '}';
+    }
+
+    public Set<ElementPermission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<ElementPermission> permissions) {
+        this.permissions = permissions;
     }
 }
 

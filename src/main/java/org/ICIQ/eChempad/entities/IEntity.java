@@ -42,4 +42,9 @@ public interface IEntity {
     void setUUid(UUID id);
 
 
+    /**
+     * Implemented by every class to return its own class.
+     * @return Class of the object implementing this interface.
+     */
+    Class<?> getMyType();
 }

@@ -68,27 +68,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
 
+                .anyRequest().authenticated()
                 // Publicly accessible URLs
-                .antMatchers("/login/**").permitAll()
-
+                //.antMatchers("/login/**").permitAll()
                 // You have to be authenticated and authorized to have the roll USER to access /api/journal
-                .antMatchers("/api/**").hasAnyAuthority("USER", "ADMIN")
+
+                //.antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
+                //.hasAnyAuthority("USER", "ADMIN")
 
                 //.hasARole("USER")
 
                 // The rest of requests have to be always authenticated
-                .anyRequest().authenticated()
-
-                // Creates the http form login in the default URL /login· The first parameter is a string corresponding to the
-                // URL where we will map the login form
-                .and().formLogin()
+                //.anyRequest().authenticated()
 
                 // https://stackoverflow.com/questions/57574981/what-is-httpbasic-method-in-spring-security
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated
-                .and().httpBasic(Customizer.withDefaults());
+                .and().httpBasic(Customizer.withDefaults())
 
-
+                // Creates the http form login in the default URL /login· The first parameter is a string corresponding to the
+                // URL where we will map the login form
+                .formLogin();
     }
 
 
@@ -110,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE BEGIN");
 
-        UserDetails user = User.builder().username("eChempad").password(passwordEncoder().encode("chemistry")).authorities("USER", "ADMIN").build();
+        //UserDetails user = User.builder().username("eChempad").password(passwordEncoder().encode("chemistry")).authorities("USER", "ADMIN").build();
 
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
@@ -124,7 +124,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "WHERE elementpermission.researcher = researcher.uuid \n" +
                         "AND researcher.email = ?");
                         //.withUser(user);  // Add admin account
-                //.withUser("patatero").password(passwordEncoder().encode("pass")).authorities("ROLE_USER");
+                //.withUser("patatero").password(passwordEncoder().encode("password")).roles("USER");
 
         session.getTransaction().commit();
         session.close();
@@ -155,8 +155,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder()
     {
 
-        //return NoOpPasswordEncoder.getInstance();
-        return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
+        //return new BCryptPasswordEncoder();
     }
 
 
