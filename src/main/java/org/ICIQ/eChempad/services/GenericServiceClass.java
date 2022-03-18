@@ -1,19 +1,23 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.EChempadApplication;
 import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.ICIQ.eChempad.repositories.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Services throw custom exceptions when they catch a spring exception or a custom exception. In a certain manner they
@@ -76,13 +80,13 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
         return this.genericRepository.saveOrUpdate(entity);
     }
 
+
     @Override
     @Transactional
     public Set<T> getAll() {
-        System.out.print(this.genericRepository.getAll().toString());
-
         return this.genericRepository.getAll();
     }
+
 
     @Override
     @Transactional

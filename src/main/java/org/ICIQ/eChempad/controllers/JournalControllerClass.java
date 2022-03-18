@@ -32,7 +32,8 @@ public class JournalControllerClass implements JournalController{
             produces = "application/json"
     )
     public ResponseEntity<Set<Journal>> getAllJournals() {
-        HashSet<Journal> journals = new HashSet<>(this.journalServiceClass.getAll());
+        HashSet<Journal> journals = new HashSet<>(this.journalServiceClass.getAllReadable());
+
         return ResponseEntity.ok(journals);
     }
 

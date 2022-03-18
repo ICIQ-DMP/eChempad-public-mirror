@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
  * permissions against resources to forbid researchers to access other researchers resources. It will be also used to
  * provide a secure administrative account.
  */
-public class FineGrainedAuthenticationProvider //implements AuthenticationProvider
+public class CustomFineGrainedAuthenticationProvider //implements AuthenticationProvider
 {
 
     /**

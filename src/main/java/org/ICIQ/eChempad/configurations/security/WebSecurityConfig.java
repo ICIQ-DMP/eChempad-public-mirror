@@ -119,7 +119,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .jdbcAuthentication().dataSource(this.dataSource)
                 // .withDefaultSchema()  // Does not work with psql
                 .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = ?")
-                .authoritiesByUsernameQuery("SELECT researcher.email, elementpermission.authority\n" +
+                .authoritiesByUsernameQuery("SELECT researcher.email, CONCAT(elementpermission.journal_id, '_', elementpermission.authority)\n" +
                         "FROM researcher, elementpermission\n" +
                         "WHERE elementpermission.researcher = researcher.uuid \n" +
                         "AND researcher.email = ?");
@@ -142,7 +142,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //am.withUser(User.withUsername(this.admin_username).password(passwordEncoder().encode(this.admin_password)).roles("USER", "ADMIN"));
 
 
-        LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE END");
+        //LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE END");
 
     }
 
