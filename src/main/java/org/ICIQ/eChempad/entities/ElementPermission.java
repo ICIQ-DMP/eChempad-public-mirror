@@ -117,6 +117,23 @@ public class ElementPermission implements IEntity {
     }
 
 
+    public <T extends IEntity> T getElement()
+    {
+        if (this.type.equals(Experiment.class))
+        {
+            return (T) this.experiment;
+        }
+        else if (this.type.equals(Journal.class))
+        {
+            return (T) this.journal;
+        }
+        else
+        {
+            // TODO: make error
+            return null;
+        }
+    }
+
     // Getters and setters
 
 
@@ -169,4 +186,24 @@ public class ElementPermission implements IEntity {
                 ", journal=" + journal +
                 '}';
     }
+
+    @Nullable
+    public Experiment getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(@Nullable Experiment experiment) {
+        this.experiment = experiment;
+    }
+
+    @Nullable
+    public Journal getJournal() {
+        return journal;
+    }
+
+    public void setJournal(@Nullable Journal journal) {
+        this.journal = journal;
+    }
+
+
 }

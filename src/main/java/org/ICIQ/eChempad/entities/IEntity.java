@@ -46,5 +46,5 @@ public interface IEntity {
      * Implemented by every class to return its own class.
      * @return Class of the object implementing this interface.
      */
-    Class<?> getMyType();
+    <T extends IEntity> Class<T> getMyType();
 }

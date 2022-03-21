@@ -2,7 +2,7 @@ package org.ICIQ.eChempad.configurations;
 
 import org.ICIQ.eChempad.EChempadApplication;
 import org.ICIQ.eChempad.entities.*;
-import org.ICIQ.eChempad.services.*;
+import org.ICIQ.eChempad.repositories.*;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,25 +12,24 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.security.Permission;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
-    private ResearcherServiceClass researcherServiceClass;
+    private ResearcherRepository researcherRepository;
 
     @Autowired
-    private JournalServiceClass journalServiceClass;
+    private JournalRepositoryClass journalRepositoryClass;
 
     @Autowired
-    private ExperimentServiceClass experimentServiceClass;
+    private ExperimentRepository experimentRepository;
 
     @Autowired
-    private DocumentServiceClass documentServiceClass;
+    private DocumentRepository documentRepository;
 
     @Autowired
-    private ElementPermissionServiceClass elementPermissionServiceClass;
+    private ElementPermissionRepository elementPermissionRepository;
 
 
 
@@ -50,9 +49,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password", Role.USER);
         Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password", Role.ADMIN);
 
-        this.researcherServiceClass.saveOrUpdate(elvisTech);
-        this.researcherServiceClass.saveOrUpdate(aitorMenta);
-        this.researcherServiceClass.saveOrUpdate(administrator);
+
+        this.researcherRepository.saveOrUpdate(elvisTech);
+        this.researcherRepository.saveOrUpdate(aitorMenta);
+        this.researcherRepository.saveOrUpdate(administrator);
 
 
         // Journal examples
@@ -76,10 +76,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         LoggerFactory.getLogger(EChempadApplication.class).info("after journals permissions");
 
 
-        this.journalServiceClass.saveOrUpdate(activationEnergy);
-        this.journalServiceClass.saveOrUpdate(waterProperties);
-        this.journalServiceClass.saveOrUpdate(ethanolProperties);
-        this.journalServiceClass.saveOrUpdate(CO2Reaction);
+        this.journalRepositoryClass.add(activationEnergy);
+        this.journalRepositoryClass.saveOrUpdate(waterProperties);
+        this.journalRepositoryClass.saveOrUpdate(ethanolProperties);
+        this.journalRepositoryClass.saveOrUpdate(CO2Reaction);
 
         LoggerFactory.getLogger(EChempadApplication.class).info("elemento previo");
 
@@ -92,10 +92,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         LoggerFactory.getLogger(EChempadApplication.class).info(activationEnergyPermission.toString());
 
-        this.elementPermissionServiceClass.saveOrUpdate(activationEnergyPermission);
-        this.elementPermissionServiceClass.saveOrUpdate(waterPropertiesPermission);
-        this.elementPermissionServiceClass.saveOrUpdate(ethanolPropertiesPermission);
-        this.elementPermissionServiceClass.saveOrUpdate(CO2ReactionPermission);
+        this.elementPermissionRepository.saveOrUpdate(activationEnergyPermission);
+        this.elementPermissionRepository.saveOrUpdate(waterPropertiesPermission);
+        this.elementPermissionRepository.saveOrUpdate(ethanolPropertiesPermission);
+        this.elementPermissionRepository.saveOrUpdate(CO2ReactionPermission);
 
         LoggerFactory.getLogger(EChempadApplication.class).info("elemento posterior");
 
@@ -105,24 +105,24 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         Experiment experimentActivation2 = new Experiment("Activation energy laser beam 530 W, refraction index 0.4", "Test 2 of the CO2 fixation with laser beams",  CO2Reaction);
         Experiment experimentActivation3 = new Experiment("Activation energy laser beam 560 W, refraction index 0.4", "Test 3 of the CO2 fixation with laser beams", CO2Reaction);
         Experiment experimentActivation4 = new Experiment("Activation energy laser beam 500 W, refraction index 0.35", "Test 4 of the CO2 fixation with laser beams", CO2Reaction);
-        this.experimentServiceClass.saveOrUpdate(experimentActivation1);
-        this.experimentServiceClass.saveOrUpdate(experimentActivation2);
-        this.experimentServiceClass.saveOrUpdate(experimentActivation3);
-        this.experimentServiceClass.saveOrUpdate(experimentActivation4);
+        this.experimentRepository.saveOrUpdate(experimentActivation1);
+        this.experimentRepository.saveOrUpdate(experimentActivation2);
+        this.experimentRepository.saveOrUpdate(experimentActivation3);
+        this.experimentRepository.saveOrUpdate(experimentActivation4);
 
         // Experiments in ethanolProperties journal
         Experiment experimentEthanol1 = new Experiment("Ethanol properties 1", "Ethanol yield in Pd-Ni-P complexes 1 M media", ethanolProperties);
         Experiment experimentEthanol2 = new Experiment("Ethanol properties 2", "Ethanol yield in Pd-Ni-P complexes 0.5 M media", ethanolProperties);
-        this.experimentServiceClass.saveOrUpdate(experimentEthanol1);
-        this.experimentServiceClass.saveOrUpdate(experimentEthanol2);
+        this.experimentRepository.saveOrUpdate(experimentEthanol1);
+        this.experimentRepository.saveOrUpdate(experimentEthanol2);
 
         // Experiments in waterProperties journal
         Experiment experimentWater1 = new Experiment("Water properties 1", "Study of the effect of surface tension in the formation of micelles in water solutions", waterProperties);
-        this.experimentServiceClass.saveOrUpdate(experimentWater1);
+        this.experimentRepository.saveOrUpdate(experimentWater1);
 
         // Experiments in activationEnergy journal
         Experiment activationEnergy1 = new Experiment("Copper ligands activation energy ", "Study of the effect of surface tension in the formation of micelles in water solutions", waterProperties);
-        this.experimentServiceClass.saveOrUpdate(activationEnergy1);
+        this.experimentRepository.saveOrUpdate(activationEnergy1);
 
 
         // Document examples
@@ -130,13 +130,13 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         Path license = FileSystems.getDefault().getPath("/home/amarine/Desktop/eChempad/COPYING");
         // Documents in experimentEthanol1 Experiment
         Document documentEthanolTheory = new Document("License", "Contains text that indicates the state of the copyright", license, experimentEthanol1);
-        this.documentServiceClass.saveOrUpdate(documentEthanolTheory);
+        this.documentRepository.saveOrUpdate(documentEthanolTheory);
 
 
         Path binary = FileSystems.getDefault().getPath("/home/amarine/Downloads/foto.webp");
         // Documents in experimentEthanol1 Experiment
         Document documentEthanolTheory_binary = new Document("Photo", "Example photo of springboot", binary, experimentEthanol1);
-        this.documentServiceClass.saveOrUpdate(documentEthanolTheory_binary);
+        this.documentRepository.saveOrUpdate(documentEthanolTheory_binary);
 
 
 

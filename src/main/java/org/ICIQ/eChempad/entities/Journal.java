@@ -98,7 +98,7 @@ public class Journal implements IEntity{
     }
 
     @Override
-    public Class<?> getMyType() {
+    public Class<Journal> getMyType() {
         return Journal.class;
     }
 

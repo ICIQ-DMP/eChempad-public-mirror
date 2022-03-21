@@ -2,6 +2,7 @@ package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.services.ExperimentService;
 import org.ICIQ.eChempad.services.ExperimentServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/experiment")
 public class ExperimentControllerClass implements ExperimentController{
-    private ExperimentServiceClass experimentServiceClass;
+    private ExperimentService experimentService;
 
     @Autowired
     public ExperimentControllerClass(ExperimentServiceClass experimentServiceClass) {
-        this.experimentServiceClass = experimentServiceClass;
+        this.experimentService = experimentServiceClass;
     }
 
     @Override
@@ -28,7 +29,7 @@ public class ExperimentControllerClass implements ExperimentController{
             produces = "application/json"
     )
     public ResponseEntity<Set<Experiment>> getExperiments() {
-        HashSet<Experiment> experiments = new HashSet<>(this.experimentServiceClass.getAll());
+        HashSet<Experiment> experiments = new HashSet<>(this.experimentService.getAll());
         return ResponseEntity.ok(experiments);
     }
 
@@ -40,7 +41,7 @@ public class ExperimentControllerClass implements ExperimentController{
             produces = "application/json"
     )
     public ResponseEntity<Experiment> getExperiment(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
-        Experiment experiment = this.experimentServiceClass.get(uuid);
+        Experiment experiment = this.experimentService.get(uuid);
         return ResponseEntity.ok().body(experiment);
     }
 
@@ -50,7 +51,7 @@ public class ExperimentControllerClass implements ExperimentController{
             consumes = "application/json"
     )
     public void addExperiment(@Validated @RequestBody Experiment experiment) {
-        this.experimentServiceClass.saveOrUpdate(experiment);
+        this.experimentService.saveOrUpdate(experiment);
     }
 
 
@@ -59,7 +60,7 @@ public class ExperimentControllerClass implements ExperimentController{
             produces = "application/json"
     )
     public void removeExperiment(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
-        this.experimentServiceClass.remove(uuid);
+        this.experimentService.remove(uuid);
     }
 
     @PutMapping(
@@ -69,7 +70,7 @@ public class ExperimentControllerClass implements ExperimentController{
     )
     @Override
     public void putExperiment(@Validated @RequestBody Experiment experiment, @PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
-        this.experimentServiceClass.update(experiment, uuid);
+        this.experimentService.update(experiment, uuid);
     }
 
 }

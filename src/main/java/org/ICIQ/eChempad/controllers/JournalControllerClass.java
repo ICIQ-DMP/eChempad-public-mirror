@@ -1,13 +1,11 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Journal;
-import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.services.JournalService;
 import org.ICIQ.eChempad.services.JournalServiceClass;
-import org.ICIQ.eChempad.services.ResearcherServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +17,11 @@ import java.util.UUID;
 @RequestMapping("/api/journal")
 public class JournalControllerClass implements JournalController{
     // https://blog.marcnuri.com/inyeccion-de-campos-desaconsejada-field-injection-not-recommended-spring-ioc
-    private final JournalServiceClass journalServiceClass;
+    private JournalService journalService;
 
     @Autowired
     public JournalControllerClass(JournalServiceClass journalServiceClass) {
-        this.journalServiceClass = journalServiceClass;
+        this.journalService = journalServiceClass;
     }
 
     @Override
@@ -32,7 +30,7 @@ public class JournalControllerClass implements JournalController{
             produces = "application/json"
     )
     public ResponseEntity<Set<Journal>> getAllJournals() {
-        HashSet<Journal> journals = new HashSet<>(this.journalServiceClass.getAllReadable());
+        HashSet<Journal> journals = new HashSet<>(this.journalService.getAll());
 
         return ResponseEntity.ok(journals);
     }
@@ -45,7 +43,7 @@ public class JournalControllerClass implements JournalController{
             produces = "application/json"
     )
     public ResponseEntity<Journal> getJournal(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
-        Journal journal = this.journalServiceClass.get(uuid);
+        Journal journal = this.journalService.get(uuid);
         return ResponseEntity.ok().body(journal);
     }
 
@@ -55,7 +53,7 @@ public class JournalControllerClass implements JournalController{
             consumes = "application/json"
     )
     public void addJournal(@Validated @RequestBody Journal journal) {
-        this.journalServiceClass.saveOrUpdate(journal);
+        this.journalService.saveOrUpdate(journal);
     }
 
 
@@ -64,7 +62,7 @@ public class JournalControllerClass implements JournalController{
             produces = "application/json"
     )
     public void removeJournal(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
-        this.journalServiceClass.remove(uuid);
+        this.journalService.remove(uuid);
     }
 
     @PutMapping(
@@ -74,6 +72,6 @@ public class JournalControllerClass implements JournalController{
     )
     @Override
     public void putJournal(@Validated @RequestBody Journal journal, @PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
-        this.journalServiceClass.update(journal, uuid);
+        this.journalService.update(journal, uuid);
     }
 }

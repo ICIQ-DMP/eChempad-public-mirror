@@ -8,11 +8,12 @@ package org.ICIQ.eChempad.entities;
  * will retrieve its authorities to know if that user is allowed to "use" the resource in the requested manner.
  */
 public enum Authority {
-    NONE,
-    READ,
-    WRITE,
-    EDIT,
-    OWN,
+    // The position of each value can be retrieved using Authority.ordinal()
+    NONE,  // 0
+    READ,  // 1
+    WRITE,  // 2
+    EDIT,  // 3
+    OWN,  // 4
 }
 
 

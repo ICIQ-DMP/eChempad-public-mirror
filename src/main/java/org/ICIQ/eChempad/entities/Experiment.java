@@ -123,5 +123,14 @@ public class Experiment implements IEntity{
     public void setJournal(Journal journal) {
         this.journal = journal;
     }
+
+    @Nullable
+    public Set<ElementPermission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(@Nullable Set<ElementPermission> permissions) {
+        this.permissions = permissions;
+    }
 }
 
