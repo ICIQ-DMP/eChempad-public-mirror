@@ -56,7 +56,6 @@ public class Journal implements IEntity{
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
-    @JsonIgnore
     private Set<ElementPermission> permissions;
 
     public Journal() {}
@@ -98,9 +97,7 @@ public class Journal implements IEntity{
     }
 
     @Override
-    public Class<Journal> getMyType() {
-        return Journal.class;
-    }
+    public Class<Journal> getMyType() { return Journal.class; }
 
     public String getName() {
         return this.name;

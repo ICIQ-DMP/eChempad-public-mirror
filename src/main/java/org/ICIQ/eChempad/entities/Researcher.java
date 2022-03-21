@@ -61,10 +61,14 @@ public class Researcher implements Serializable, IEntity {
     private List<ElementPermission> permissions;
 
 
-    // TODO: We use only one role per user to simplify, but it might get converted to a list of roles + table for roles
-    //       and researchers.
-    @Column(name = "role", length = 100, nullable = false)
-    private Role role;
+    @OneToMany(
+            targetEntity = RoleUser.class,
+            mappedBy = "researcher",
+            fetch = FetchType.EAGER,
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
+    )
+    private Set<Role> roles;
+
 
     /**
      * Used to create "ghost" instances only with the internal UUIDs in order to perform deletion.
@@ -81,6 +85,7 @@ public class Researcher implements Serializable, IEntity {
      */
     public Researcher() {}
 
+
     /**
      * Constructor
      * @param fullName First name
@@ -92,16 +97,7 @@ public class Researcher implements Serializable, IEntity {
         this.signalsAPIKey = signalsAPIKey;
         this.permissions = new LinkedList<>();
         this.hashedPassword = hashedPassword;
-        this.role = Role.USER;
-    }
-
-    public Researcher(String fullName, String email, String signalsAPIKey, String hashedPassword, Role role) {
-        this.name = fullName;
-        this.email = email;
-        this.signalsAPIKey = signalsAPIKey;
-        this.permissions = new LinkedList<>();
-        this.hashedPassword = hashedPassword;
-        this.role = role;
+        this.roles = new HashSet<>();
     }
 
     @Override
@@ -113,13 +109,21 @@ public class Researcher implements Serializable, IEntity {
                 ", hashedPassword='" + hashedPassword + '\'' +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
                 //", permissions=" + permissions +
-                ", role=" + role +
+                ", roles=" + roles +
                 '}';
     }
 
 
     // GETTERS AND SETTERS
 
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     public UUID getUUid() {
         return this.uuid;
@@ -166,14 +170,6 @@ public class Researcher implements Serializable, IEntity {
         this.permissions = permissions;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public String getHashedPassword() {
         return hashedPassword;
     }
@@ -185,5 +181,5 @@ public class Researcher implements Serializable, IEntity {
         Researcher that = (Researcher) o;
         return Objects.equals(uuid, that.uuid);
     }
-    
+
 }

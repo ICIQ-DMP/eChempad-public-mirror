@@ -110,9 +110,8 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
             Researcher researcher = selected.get();
 
             // Obtain the roles of this user to construct the instance of UserDetails for SpringBoot Security.
-            // TODO: to simplify only using a single Role per user, change to a Set in productioin if needed
-            Set<Role> roles = new HashSet<>();
-            roles.add(researcher.getRole());
+            // TODO: to simplify only using a single Role per user, change to a Set in production if needed
+            Set<Role> roles = researcher.getRoles();
 
             return org.springframework.security.core.userdetails.User
                     .withUsername(s)

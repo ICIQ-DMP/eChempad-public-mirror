@@ -1,10 +1,8 @@
 package org.ICIQ.eChempad.configurations;
 
-import org.ICIQ.eChempad.EChempadApplication;
 import org.ICIQ.eChempad.entities.*;
 import org.ICIQ.eChempad.repositories.*;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -26,6 +24,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
     private final ElementPermissionRepository elementPermissionRepository;
 
+    private final RoleUserRepository roleUserRepository;
 
     /**
      * Using classic constructor since when using autowired injection in the fields is discouraged because breaks
@@ -36,14 +35,16 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
      * @param experimentRepository
      * @param documentRepository
      * @param elementPermissionRepository
+     * @param roleUserRepository
      */
     @Autowired
-    public ApplicationStartup(ResearcherRepository researcherRepository, JournalRepository journalRepository, ExperimentRepository experimentRepository, DocumentRepository documentRepository, ElementPermissionRepository elementPermissionRepository) {
+    public ApplicationStartup(ResearcherRepository researcherRepository, JournalRepository journalRepository, ExperimentRepository experimentRepository, DocumentRepository documentRepository, ElementPermissionRepository elementPermissionRepository, RoleUserRepository roleUserRepository) {
         this.researcherRepository = researcherRepository;
         this.journalRepository = journalRepository;
         this.experimentRepository = experimentRepository;
         this.documentRepository = documentRepository;
         this.elementPermissionRepository = elementPermissionRepository;
+        this.roleUserRepository = roleUserRepository;
     }
 
     /**
@@ -58,14 +59,23 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     private void initializeDB()
     {
         // Researcher examples, implicitly are USERs
-        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password", Role.USER);
-        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password", Role.USER);
-        Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password", Role.ADMIN);
+        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password");
+        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password");
+        Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password");
 
+        RoleUser elvisTechRole = new RoleUser(elvisTech, Role.USER);
+        RoleUser aitorMentaRole = new RoleUser(aitorMenta, Role.USER);
+        RoleUser administratorRole = new RoleUser(administrator, Role.USER);
+        RoleUser administratorRoleAdmin = new RoleUser(administrator, Role.ADMIN);
 
         this.researcherRepository.saveOrUpdate(elvisTech);
         this.researcherRepository.saveOrUpdate(aitorMenta);
         this.researcherRepository.saveOrUpdate(administrator);
+
+        this.roleUserRepository.saveOrUpdate(elvisTechRole);
+        this.roleUserRepository.saveOrUpdate(aitorMentaRole);
+        this.roleUserRepository.saveOrUpdate(administratorRole);
+        this.roleUserRepository.saveOrUpdate(administratorRoleAdmin);
 
         // Journal examples
         Journal activationEnergy = new Journal("Comparation of the activation energy of reactions catalyzed by enzymes with copper ligands", "In these experiments we are trying to obtain experimentally the difference between the activation energy of a human cupredoxin when it is attached to its copper ligands");

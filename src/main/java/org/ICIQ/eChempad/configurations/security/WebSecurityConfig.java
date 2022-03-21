@@ -66,29 +66,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         http
+                // Creates the http form login in the default URL /login· The first parameter is a string corresponding
+                // to the URL where we will map the login form
+                    .formLogin()
+                    .permitAll()
+
+                .and()
                 .authorizeRequests()
 
-                .anyRequest().authenticated()
-                // Publicly accessible URLs
-                //.antMatchers("/login/**").permitAll()
-                // You have to be authenticated and authorized to have the roll USER to access /api/journal
-
-                //.antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
-                //.hasAnyAuthority("USER", "ADMIN")
-
-                //.hasARole("USER")
-
-                // The rest of requests have to be always authenticated
-                //.anyRequest().authenticated()
+                    .antMatchers("/api/researcher").hasRole("ADMIN")
+                    .antMatchers("/api/journal").authenticated()
+                    .antMatchers("/api/experiment").authenticated()
+                    .antMatchers("/api/document").authenticated()
+                    .antMatchers("/api/**").authenticated()
 
                 // https://stackoverflow.com/questions/57574981/what-is-httpbasic-method-in-spring-security
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated
-                .and().httpBasic(Customizer.withDefaults())
+                .and()
+                    .httpBasic(Customizer.withDefaults());
 
-                // Creates the http form login in the default URL /login· The first parameter is a string corresponding to the
-                // URL where we will map the login form
-                .formLogin();
     }
 
 
