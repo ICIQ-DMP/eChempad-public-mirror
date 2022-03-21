@@ -14,12 +14,13 @@ import java.util.UUID;
 @Service
 public class JournalServiceClass extends GenericServiceClass<Journal, UUID> implements JournalService {
 
-    @Autowired
+    final
     SecurityService securityService;
 
     @Autowired
-    public JournalServiceClass(JournalRepository journalRepository) {
+    public JournalServiceClass(JournalRepository journalRepository, SecurityService securityService) {
         super(journalRepository);
+        this.securityService = securityService;
     }
 
     @Override

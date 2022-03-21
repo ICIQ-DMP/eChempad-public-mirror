@@ -41,7 +41,7 @@ public class SecurityServiceClass implements SecurityService{
         Optional<Researcher> researcher = this.researcherService.getAll().stream().filter(r -> r.getEmail().equals(username)).findFirst();
 
         // TODO: make error in case of null
-        return researcher.orElse(null);
+        return researcher.orElse(new Researcher());
     }
 
 

@@ -16,22 +16,35 @@ import java.nio.file.Path;
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 
+    private final ResearcherRepository researcherRepository;
+
+    private final JournalRepository journalRepository;
+
+    private final ExperimentRepository experimentRepository;
+
+    private final DocumentRepository documentRepository;
+
+    private final ElementPermissionRepository elementPermissionRepository;
+
+
+    /**
+     * Using classic constructor since when using autowired injection in the fields is discouraged because breaks
+     * encapsulation and very random behaviour was happening.
+     * https://www.baeldung.com/constructor-injection-in-spring
+     * @param researcherRepository
+     * @param journalRepository
+     * @param experimentRepository
+     * @param documentRepository
+     * @param elementPermissionRepository
+     */
     @Autowired
-    private ResearcherRepository researcherRepository;
-
-    @Autowired
-    private JournalRepositoryClass journalRepositoryClass;
-
-    @Autowired
-    private ExperimentRepository experimentRepository;
-
-    @Autowired
-    private DocumentRepository documentRepository;
-
-    @Autowired
-    private ElementPermissionRepository elementPermissionRepository;
-
-
+    public ApplicationStartup(ResearcherRepository researcherRepository, JournalRepository journalRepository, ExperimentRepository experimentRepository, DocumentRepository documentRepository, ElementPermissionRepository elementPermissionRepository) {
+        this.researcherRepository = researcherRepository;
+        this.journalRepository = journalRepository;
+        this.experimentRepository = experimentRepository;
+        this.documentRepository = documentRepository;
+        this.elementPermissionRepository = elementPermissionRepository;
+    }
 
     /**
      * This event is executed as late as conceivably possible to indicate that
@@ -73,31 +86,20 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         ethanolProperties.getPermissions().add(ethanolPropertiesPermission);
         CO2Reaction.getPermissions().add(CO2ReactionPermission);
 
-        LoggerFactory.getLogger(EChempadApplication.class).info("after journals permissions");
+        LoggerFactory.getLogger(EChempadApplication.class).info("before saving journals");
+        LoggerFactory.getLogger(EChempadApplication.class).info("After");
 
+        this.journalRepository.saveOrUpdate(activationEnergy);
+        this.journalRepository.saveOrUpdate(waterProperties);
+        this.journalRepository.saveOrUpdate(ethanolProperties);
+        this.journalRepository.saveOrUpdate(CO2Reaction);
 
-        this.journalRepositoryClass.add(activationEnergy);
-        this.journalRepositoryClass.saveOrUpdate(waterProperties);
-        this.journalRepositoryClass.saveOrUpdate(ethanolProperties);
-        this.journalRepositoryClass.saveOrUpdate(CO2Reaction);
-
-        LoggerFactory.getLogger(EChempadApplication.class).info("elemento previo");
-
-        /*
-        elvisTech.getPermissions().put(activationEnergy.getUUid(), activationEnergyPermission);
-        elvisTech.getPermissions().put(waterPropertiesPermission.getUUid(), waterPropertiesPermission);
-        aitorMenta.getPermissions().put(ethanolPropertiesPermission.getUUid(), ethanolPropertiesPermission);
-        administrator.getPermissions().put(CO2ReactionPermission.getUUid(), CO2ReactionPermission);
-*/
-
-        LoggerFactory.getLogger(EChempadApplication.class).info(activationEnergyPermission.toString());
 
         this.elementPermissionRepository.saveOrUpdate(activationEnergyPermission);
         this.elementPermissionRepository.saveOrUpdate(waterPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(ethanolPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(CO2ReactionPermission);
 
-        LoggerFactory.getLogger(EChempadApplication.class).info("elemento posterior");
 
         // Experiment examples
         // Experiments in CO2Reaction journal

@@ -14,6 +14,9 @@ import java.util.UUID;
 @Transactional
 public class JournalRepositoryClass extends GenericRepositoryClass<Journal, UUID> implements JournalRepository{
 
+    public JournalRepositoryClass() {
+    }
+
     public String getDescription(UUID id) {
         return (String) super.currentSession().createQuery("FROM journal where id=:id").setParameter("id", id).uniqueResult();
     }
