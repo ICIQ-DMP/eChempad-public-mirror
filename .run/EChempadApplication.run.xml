@@ -1,5 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="EChempadApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.ICIQ.eChempad.EChempadApplication" />
     <module name="eChempad" />
     <extension name="coverage">
@@ -22,7 +24,8 @@
       </pattern>
     </extension>
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.ICIQ.eChempad.EChempadApplication" />
-    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
     <method v="2">
       <option name="Make" enabled="true" />
       <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_killByPort8081" />

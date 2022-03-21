@@ -108,7 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // https://stackoverflow.com/questions/51642604/jdbcauthentication-instead-of-inmemoryauthentication-doesnt-give-access-s
         // Get all userdetails and load them into the authentication manager
 
-        LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE BEGIN");
+        //LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE BEGIN");
 
         //UserDetails user = User.builder().username("eChempad").password(passwordEncoder().encode("chemistry")).authorities("USER", "ADMIN").build();
 

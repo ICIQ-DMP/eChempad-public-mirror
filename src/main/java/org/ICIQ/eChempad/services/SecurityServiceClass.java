@@ -98,10 +98,7 @@ public class SecurityServiceClass implements SecurityService{
         {
             // Select all permissions of the logged researcher that are pointing to an entity of type experiment and
             // that have an authority level below the required.
-            if (elementPermission.getResearcher().equals(researcher)
-                    && elementPermission.getType().equals(type)
-                    && elementPermission.getAuthority().ordinal() >= authority.ordinal()
-            )
+            if (elementPermission.getResearcher().equals(researcher) && elementPermission.getType().equals(type) && elementPermission.getAuthority().ordinal() >= authority.ordinal())
             {
                 result.add(elementPermission.getElement());
             }

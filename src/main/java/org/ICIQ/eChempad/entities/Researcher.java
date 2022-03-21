@@ -177,4 +177,13 @@ public class Researcher implements Serializable, IEntity {
     public String getHashedPassword() {
         return hashedPassword;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Researcher that = (Researcher) o;
+        return Objects.equals(uuid, that.uuid);
+    }
+    
 }

@@ -67,7 +67,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         this.researcherRepository.saveOrUpdate(aitorMenta);
         this.researcherRepository.saveOrUpdate(administrator);
 
-
         // Journal examples
         Journal activationEnergy = new Journal("Comparation of the activation energy of reactions catalyzed by enzymes with copper ligands", "In these experiments we are trying to obtain experimentally the difference between the activation energy of a human cupredoxin when it is attached to its copper ligands");
         Journal waterProperties = new Journal("Water Properties", "Experiments that take advantage of the special physical properties of the H2O molecule, regarding its H2 bonds.");
@@ -86,8 +85,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         ethanolProperties.getPermissions().add(ethanolPropertiesPermission);
         CO2Reaction.getPermissions().add(CO2ReactionPermission);
 
-        LoggerFactory.getLogger(EChempadApplication.class).info("before saving journals");
-        LoggerFactory.getLogger(EChempadApplication.class).info("After");
 
         this.journalRepository.saveOrUpdate(activationEnergy);
         this.journalRepository.saveOrUpdate(waterProperties);
@@ -139,11 +136,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         // Documents in experimentEthanol1 Experiment
         Document documentEthanolTheory_binary = new Document("Photo", "Example photo of springboot", binary, experimentEthanol1);
         this.documentRepository.saveOrUpdate(documentEthanolTheory_binary);
-
-
-
-
-
 
     }
 

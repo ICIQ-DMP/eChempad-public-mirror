@@ -1,9 +1,11 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.EChempadApplication;
 import org.ICIQ.eChempad.entities.Authority;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.ICIQ.eChempad.repositories.JournalRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,9 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
     @Override
     public Set<Journal> getAll()
     {
-        return securityService.getAuthorizedJournal(Authority.READ);
+        Set<Journal> journals = securityService.getAuthorizedJournal(Authority.READ);
+        LoggerFactory.getLogger(EChempadApplication.class).info("LAS JOURNALS!!:\n\n" + journals.toString());
+        return journals;
     }
 
     public Journal saveOrUpdate(Journal entity)
