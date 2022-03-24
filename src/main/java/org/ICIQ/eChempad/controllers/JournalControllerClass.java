@@ -24,6 +24,11 @@ public class JournalControllerClass implements JournalController{
         this.journalService = journalServiceClass;
     }
 
+
+    /**
+     * Obtains all journals readable from the logged user.
+     * @return Collection of journals
+     */
     @Override
     @GetMapping(
             value = "",
@@ -31,12 +36,18 @@ public class JournalControllerClass implements JournalController{
     )
     public ResponseEntity<Set<Journal>> getAllJournals() {
         HashSet<Journal> journals = new HashSet<>(this.journalService.getAll());
-
         return ResponseEntity.ok(journals);
     }
 
-    // https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
-    // https://restfulapi.net/http-methods/
+
+    /**
+     * https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
+     * https://restfulapi.net/http-methods/
+     * Obtains the journal pointed by the supplied UUID if the logged user has READ rights against the journal.
+     * @param uuid UUID of the desired journal
+     * @return journal data
+     * @throws ExceptionResourceNotExists Thrown if the supplied UUID does not correspond to any Journal
+     */
     @Override
     @GetMapping(
             value = "/{id}",

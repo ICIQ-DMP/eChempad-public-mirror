@@ -56,7 +56,7 @@ public class SecurityServiceClass implements SecurityService{
      * @return True or false depending on if we can do the required operation on the element or not.
      */
     @Override
-    public <T extends IEntity> boolean isLoggedResearcherAuthorizedOverElement(Authority authority, UUID uuid, Class<T> type) {
+    public <T extends IEntity> boolean isResearcherAuthorized(Authority authority, UUID uuid, Class<T> type) {
         Researcher researcher = this.getLoggedResearcher();
 
         // Loop permissions table
@@ -98,7 +98,9 @@ public class SecurityServiceClass implements SecurityService{
         {
             // Select all permissions of the logged researcher that are pointing to an entity of type experiment and
             // that have an authority level below the required.
-            if (elementPermission.getResearcher().equals(researcher) && elementPermission.getType().equals(type) && elementPermission.getAuthority().ordinal() >= authority.ordinal())
+            if (elementPermission.getResearcher().equals(researcher)
+                    && elementPermission.getType().equals(type)
+                    && elementPermission.getAuthority().ordinal() >= authority.ordinal())
             {
                 result.add(elementPermission.getElement());
             }

@@ -95,18 +95,15 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         ethanolProperties.getPermissions().add(ethanolPropertiesPermission);
         CO2Reaction.getPermissions().add(CO2ReactionPermission);
 
-
         this.journalRepository.saveOrUpdate(activationEnergy);
         this.journalRepository.saveOrUpdate(waterProperties);
         this.journalRepository.saveOrUpdate(ethanolProperties);
         this.journalRepository.saveOrUpdate(CO2Reaction);
 
-
         this.elementPermissionRepository.saveOrUpdate(activationEnergyPermission);
         this.elementPermissionRepository.saveOrUpdate(waterPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(ethanolPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(CO2ReactionPermission);
-
 
         // Experiment examples
         // Experiments in CO2Reaction journal
