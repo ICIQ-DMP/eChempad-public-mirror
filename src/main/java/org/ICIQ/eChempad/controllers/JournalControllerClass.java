@@ -59,12 +59,16 @@ public class JournalControllerClass implements JournalController{
     }
 
 
+    /**
+     * Adds a journal into the user workspace of the logged user.
+     * @param journal Journal information from which we will create and add a new journal to our DB
+     */
     @PostMapping(
             value = "",
             consumes = "application/json"
     )
     public void addJournal(@Validated @RequestBody Journal journal) {
-        this.journalService.saveOrUpdate(journal);
+        this.journalService.save(journal);
     }
 
 

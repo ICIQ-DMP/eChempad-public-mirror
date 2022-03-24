@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface JournalService extends GenericService<Journal, UUID> {
 
 
-    Journal saveOrUpdate(Journal entity);
+    Journal save(Journal entity);
 
     Journal update(Journal entity, UUID id) throws ExceptionResourceNotExists;
 

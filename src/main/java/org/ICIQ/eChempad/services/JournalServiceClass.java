@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class JournalServiceClass extends GenericServiceClass<Journal, UUID> implements JournalService {
@@ -41,22 +42,17 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
 
 
     /**
-     * Save or update the supplied entity of journal.
-     * @param entity
-     * @return
+     * Saves the supplied entity of journal. We can always save a journal, but in the workspace of the logged user.
+     * @param entity Data parsed coming from the REST API call. Some fields such as the id which are managed with
+     *               hibernate could be null
+     * @return Returns the same journal that we are adding, but after the transient state is over and all fields are
+     *         available.
      */
-    public Journal saveOrUpdate(Journal entity)
+    public Journal save(Journal entity)
     {
-        if (this.securityService.isResearcherAuthorized(Authority.WRITE, entity.getUUid(), entity.getMyType()))
-        {
-            return super.saveOrUpdate(entity);
-        }
-        else
-        {
-            // TODO: error
-            return null;
-        }
+        return (Journal) this.securityService.saveElementWorkspace(entity);
     }
+
 
     public Journal update(Journal entity, UUID id) throws ExceptionResourceNotExists
     {

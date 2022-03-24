@@ -2,21 +2,15 @@ package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
-import org.ICIQ.eChempad.services.ResearcherService;
 import org.ICIQ.eChempad.services.ResearcherServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.HashPrintJobAttributeSet;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 
 /**
@@ -80,7 +74,7 @@ public class ResearcherControllerClass implements ResearcherController {
             consumes = "application/json"
     )
     public void addResearcher(@Validated @RequestBody Researcher researcher) {
-        this.researcherServiceClass.saveOrUpdate(researcher);
+        this.researcherServiceClass.save(researcher);
     }
 
 

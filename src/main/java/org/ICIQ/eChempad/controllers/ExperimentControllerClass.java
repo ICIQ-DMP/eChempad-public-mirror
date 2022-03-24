@@ -51,7 +51,7 @@ public class ExperimentControllerClass implements ExperimentController{
             consumes = "application/json"
     )
     public void addExperiment(@Validated @RequestBody Experiment experiment) {
-        this.experimentService.saveOrUpdate(experiment);
+        this.experimentService.save(experiment);
     }
 
 

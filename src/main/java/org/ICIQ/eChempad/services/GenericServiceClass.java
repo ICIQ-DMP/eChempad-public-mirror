@@ -76,7 +76,7 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     @Override
     @Transactional
-    public T saveOrUpdate(T entity) {
+    public T save(T entity) {
         return this.genericRepository.saveOrUpdate(entity);
     }
 

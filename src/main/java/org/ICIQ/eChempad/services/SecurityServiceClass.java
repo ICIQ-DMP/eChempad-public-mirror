@@ -1,6 +1,8 @@
 package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.*;
+import org.ICIQ.eChempad.repositories.ExperimentRepository;
+import org.ICIQ.eChempad.repositories.JournalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +20,11 @@ public class SecurityServiceClass implements SecurityService{
     @PersistenceContext
     private EntityManager entityManager;
 
-    //@Autowired
-    //private ExperimentRepository experimentRepository;
+    @Autowired
+    private ExperimentRepository experimentRepository;
 
-    //@Autowired
-    //private JournalRepository journalRepository;
+    @Autowired
+    private JournalRepository journalRepository;
 
     @Autowired
     private ResearcherService researcherService;
@@ -75,6 +77,32 @@ public class SecurityServiceClass implements SecurityService{
         }
 
         return false;
+    }
+
+
+    /**
+     * Saves the received element to the workspace of the
+     * @param element Generic entity
+     * @return Generic entity with the data fields managed by springboot in.
+     */
+    @Override
+    public IEntity saveElementWorkspace(IEntity element) {
+        IEntity processed = null;
+        if (element.getMyType().equals(Experiment.class))
+        {
+            processed = this.experimentRepository.saveOrUpdate((Experiment) element);
+        }
+        else if (element.getMyType().equals(Journal.class))
+        {
+            processed = this.journalRepository.saveOrUpdate((Journal) element);
+        }
+        else
+        {
+            // TODO: Error if other type
+            return null;
+        }
+        this.elementPermissionService.save(new ElementPermission(processed, Authority.OWN, this.getLoggedResearcher()));
+        return processed;
     }
 
 

@@ -16,4 +16,6 @@ public interface SecurityService {
     Researcher getLoggedResearcher();
 
     <T extends IEntity> boolean isResearcherAuthorized(Authority authority, UUID uuid, Class<T> type);
+
+    IEntity saveElementWorkspace(IEntity element);
 }

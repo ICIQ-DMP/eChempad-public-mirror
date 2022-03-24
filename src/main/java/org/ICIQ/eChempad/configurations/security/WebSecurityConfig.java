@@ -24,8 +24,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 @EnableWebSecurity
 @Configuration
@@ -33,8 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Value obtained from .properties files, outside the env of the JAVA project. Configures Cross-site request forgery
     // protection.
-    @Value("${security.enable.csrf}")
-    private boolean csrfEnabled;
+    @Value("#{new Boolean('${security.disable.csrf}')}")
+    private boolean csrfDisabled;
+
+    @Value("#{new Boolean('${security.disable.cors}')}")
+    private boolean corsDisabled;
 
     @Value("${spring.security.user.name}")
     private String admin_username;
@@ -61,7 +69,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(@NotNull HttpSecurity http) throws Exception {
         // Conditional activation depending on the profile properties
         // https://www.yawintutor.com/how-to-enable-and-disable-csrf/
-        if (this.csrfEnabled) {
+        if (this.csrfDisabled) {
+            http.csrf().disable();
+        }
+
+        if (this.corsDisabled) {
             http.csrf().disable();
         }
 
@@ -156,5 +168,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 }

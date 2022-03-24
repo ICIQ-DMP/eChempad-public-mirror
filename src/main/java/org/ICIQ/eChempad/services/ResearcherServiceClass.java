@@ -28,7 +28,7 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
 
 
     @Override
-    public Researcher saveOrUpdate(Researcher researcher) {
+    public Researcher save(Researcher researcher) {
 
         return this.genericRepository.saveOrUpdate(researcher);
     }

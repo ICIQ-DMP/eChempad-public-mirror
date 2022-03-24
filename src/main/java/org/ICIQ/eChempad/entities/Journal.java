@@ -75,10 +75,13 @@ public class Journal implements IEntity{
 
 
     /**
+
+    /**
      * Constructor
      * @param name name used by humans to identify a certain Journal. No collision is expected from Journals with same
      *             name
      * @param description description of the content of the Journal and its Experiments.
+     * @param permissions Permissions that this journal has against the users
      */
     public Journal(String name, String description, Set<ElementPermission> permissions) {
         this.name = name;
