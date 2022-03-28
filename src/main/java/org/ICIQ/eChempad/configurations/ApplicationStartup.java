@@ -107,32 +107,91 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         // Experiment examples
         // Experiments in CO2Reaction journal
-        Experiment experimentActivation1 = new Experiment("Activation energy laser beam 500 W, refraction index 0.4", "Test 1 of the CO2 fixation with laser beams", CO2Reaction);
-        Experiment experimentActivation2 = new Experiment("Activation energy laser beam 530 W, refraction index 0.4", "Test 2 of the CO2 fixation with laser beams",  CO2Reaction);
-        Experiment experimentActivation3 = new Experiment("Activation energy laser beam 560 W, refraction index 0.4", "Test 3 of the CO2 fixation with laser beams", CO2Reaction);
-        Experiment experimentActivation4 = new Experiment("Activation energy laser beam 500 W, refraction index 0.35", "Test 4 of the CO2 fixation with laser beams", CO2Reaction);
-        this.experimentRepository.saveOrUpdate(experimentActivation1);
-        this.experimentRepository.saveOrUpdate(experimentActivation2);
-        this.experimentRepository.saveOrUpdate(experimentActivation3);
-        this.experimentRepository.saveOrUpdate(experimentActivation4);
+        Experiment experimentCO2Reaction1 = new Experiment("Activation energy laser beam 500 W, refraction index 0.4", "Test 1 of the CO2 fixation with laser beams", CO2Reaction);
+        Experiment experimentCO2Reaction2 = new Experiment("Activation energy laser beam 530 W, refraction index 0.4", "Test 2 of the CO2 fixation with laser beams",  CO2Reaction);
+        Experiment experimentCO2Reaction3 = new Experiment("Activation energy laser beam 560 W, refraction index 0.4", "Test 3 of the CO2 fixation with laser beams", CO2Reaction);
+        Experiment experimentCO2Reaction4 = new Experiment("Activation energy laser beam 500 W, refraction index 0.35", "Test 4 of the CO2 fixation with laser beams", CO2Reaction);
 
         // Experiments in ethanolProperties journal
         Experiment experimentEthanol1 = new Experiment("Ethanol properties 1", "Ethanol yield in Pd-Ni-P complexes 1 M media", ethanolProperties);
         Experiment experimentEthanol2 = new Experiment("Ethanol properties 2", "Ethanol yield in Pd-Ni-P complexes 0.5 M media", ethanolProperties);
+
+        // Experiments in waterProperties journal
+        Experiment experimentWater1 = new Experiment("Water properties 1", "Study of the effect of surface tension in the formation of micelles in water solutions", waterProperties);
+
+        // Experiments in activationEnergy journal
+        Experiment experimentActivationEnergy1 = new Experiment("Copper ligands activation energy ", "Study of the effect of surface tension in the formation of micelles in water solutions", activationEnergy);
+
+
+        // Save experiments
+        // Experiments in CO2Reaction journal
+        this.experimentRepository.saveOrUpdate(experimentCO2Reaction1);
+        this.experimentRepository.saveOrUpdate(experimentCO2Reaction2);
+        this.experimentRepository.saveOrUpdate(experimentCO2Reaction3);
+        this.experimentRepository.saveOrUpdate(experimentCO2Reaction4);
+
+        // Experiments in ethanolProperties journal
         this.experimentRepository.saveOrUpdate(experimentEthanol1);
         this.experimentRepository.saveOrUpdate(experimentEthanol2);
 
         // Experiments in waterProperties journal
-        Experiment experimentWater1 = new Experiment("Water properties 1", "Study of the effect of surface tension in the formation of micelles in water solutions", waterProperties);
         this.experimentRepository.saveOrUpdate(experimentWater1);
 
         // Experiments in activationEnergy journal
-        Experiment activationEnergy1 = new Experiment("Copper ligands activation energy ", "Study of the effect of surface tension in the formation of micelles in water solutions", waterProperties);
-        this.experimentRepository.saveOrUpdate(activationEnergy1);
+        this.experimentRepository.saveOrUpdate(experimentActivationEnergy1);
+
+
+        // Experiment permissions
+        // CO2 reaction (Elvis Tech)
+        ElementPermission experimentCO2Reaction1Permission = new ElementPermission(experimentCO2Reaction1, Authority.OWN, elvisTech);
+        ElementPermission experimentCO2Reaction2Permission = new ElementPermission(experimentCO2Reaction2, Authority.OWN, elvisTech);
+        ElementPermission experimentCO2Reaction3Permission = new ElementPermission(experimentCO2Reaction3, Authority.OWN, elvisTech);
+        ElementPermission experimentCO2Reaction4Permission = new ElementPermission(experimentCO2Reaction4, Authority.OWN, elvisTech);
+
+        // Ethanol properties (Aitor Menta)
+        ElementPermission experimentEthanol1Permission = new ElementPermission(experimentEthanol1, Authority.OWN, aitorMenta);
+        ElementPermission experimentEthanol2Permission = new ElementPermission(experimentEthanol2, Authority.OWN, aitorMenta);
+
+        // Water properties (Elvis Tech)
+        ElementPermission experimentWater1Permission = new ElementPermission(experimentWater1, Authority.OWN, elvisTech);
+
+        // Activation Energies (Admin)
+        ElementPermission experimentActivationEnergy1Permission= new ElementPermission(experimentActivationEnergy1, Authority.OWN, administrator);
+
+
+        // Add permissions to the experiments
+        // experiment CO2 permissions
+        experimentCO2Reaction1.getPermissions().add(experimentCO2Reaction1Permission);
+        experimentCO2Reaction2.getPermissions().add(experimentCO2Reaction2Permission);
+        experimentCO2Reaction3.getPermissions().add(experimentCO2Reaction3Permission);
+        experimentCO2Reaction4.getPermissions().add(experimentCO2Reaction4Permission);
+
+        // Ethanol properties permissions
+        experimentEthanol1.getPermissions().add(experimentEthanol1Permission);
+        experimentEthanol2.getPermissions().add(experimentEthanol2Permission);
+
+        // Water properties permissions
+        experimentWater1.getPermissions().add(experimentWater1Permission);
+
+        // Activation Energy permissions
+        experimentActivationEnergy1.getPermissions().add(experimentActivationEnergy1Permission);
+
+
+        // Save permissions of the experiments
+        this.elementPermissionRepository.saveOrUpdate(experimentCO2Reaction1Permission);
+        this.elementPermissionRepository.saveOrUpdate(experimentCO2Reaction2Permission);
+        this.elementPermissionRepository.saveOrUpdate(experimentCO2Reaction3Permission);
+        this.elementPermissionRepository.saveOrUpdate(experimentCO2Reaction4Permission);
+
+        this.elementPermissionRepository.saveOrUpdate(experimentEthanol1Permission);
+        this.elementPermissionRepository.saveOrUpdate(experimentEthanol2Permission);
+
+        this.elementPermissionRepository.saveOrUpdate(experimentWater1Permission);
+
+        this.elementPermissionRepository.saveOrUpdate(experimentActivationEnergy1Permission);
 
 
         // Document examples
-
         Path license = FileSystems.getDefault().getPath("/home/amarine/Desktop/eChempad/COPYING");
         // Documents in experimentEthanol1 Experiment
         Document documentEthanolTheory = new Document("License", "Contains text that indicates the state of the copyright", license, experimentEthanol1);

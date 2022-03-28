@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.Authority;
+import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.ICIQ.eChempad.repositories.JournalRepository;
@@ -54,18 +55,19 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
     }
 
 
+    /**
+     * Updates with the data supplied the journal with the passed UUID
+     * @param entity Data that will override the selected journal
+     * @param id ID of an existing journal that we want to overwrite
+     * @return The same journal that we have updated
+     * @throws ExceptionResourceNotExists This exception is thrown if the supplied id does not coincide with any
+     * existing journal.
+     */
     public Journal update(Journal entity, UUID id) throws ExceptionResourceNotExists
     {
-        if (this.securityService.isResearcherAuthorized(Authority.WRITE, id, entity.getMyType()))
-        {
-            return super.update(entity, id);
-        }
-        else
-        {
-            // TODO: error
-            return null;
-        }
+        return (Journal) this.securityService.updateElement(entity, id);
     }
+
 
     /**
      * Returns the journal identified by the supplied UUID if is READABLE by the logged user.

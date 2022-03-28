@@ -18,4 +18,12 @@ public interface SecurityService {
     <T extends IEntity> boolean isResearcherAuthorized(Authority authority, UUID uuid, Class<T> type);
 
     IEntity saveElementWorkspace(IEntity element);
+
+    /**
+     * Updates the element pointed by the supplied UUID with the data supplied via the IEntity element.
+     * @param element contains data used to override the existing
+     * @param uuid Points to a previously existing resource.
+     * @return Returns the same entity we updated, now fully managed by spring boot.
+     */
+    IEntity updateElement(IEntity element, UUID uuid);
 }

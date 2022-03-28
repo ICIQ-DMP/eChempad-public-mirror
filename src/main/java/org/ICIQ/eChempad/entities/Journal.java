@@ -73,22 +73,6 @@ public class Journal implements IEntity{
         this.permissions = new HashSet<>();
     }
 
-
-    /**
-
-    /**
-     * Constructor
-     * @param name name used by humans to identify a certain Journal. No collision is expected from Journals with same
-     *             name
-     * @param description description of the content of the Journal and its Experiments.
-     * @param permissions Permissions that this journal has against the users
-     */
-    public Journal(String name, String description, Set<ElementPermission> permissions) {
-        this.name = name;
-        this.description = description;
-        this.experiments = new HashSet<>();
-        this.permissions = permissions;
-    }
     // GETTERS AND SETTERS
 
     public UUID getUUid() {

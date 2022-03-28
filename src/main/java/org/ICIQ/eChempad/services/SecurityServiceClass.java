@@ -105,6 +105,25 @@ public class SecurityServiceClass implements SecurityService{
         return processed;
     }
 
+    /**
+     * Updates the element pointed by the supplied UUID with the data supplied via the IEntity element.
+     * @param element contains data used to override the existing
+     * @param uuid    Points to a previously existing resource.
+     * @return Returns the same entity we updated, now fully managed by spring boot.
+     */
+    @Override
+    public IEntity updateElement(IEntity element, UUID uuid) {
+        if (this.isResearcherAuthorized(Authority.WRITE, uuid, element.getMyType()))
+        {
+            return this.journalRepository.update((Journal) element, uuid);
+        }
+        else
+        {
+            // TODO: Error
+            return null;
+        }
+    }
+
 
     /**
      * Generic method that returns all the IEntity objects of certain type T from a researcher identified by its
@@ -178,6 +197,9 @@ public class SecurityServiceClass implements SecurityService{
             return null;
         }
     }
+
+
+
 
 /*
     public List<Journal> getAuthorizedJournalQuery(Authority authority) {

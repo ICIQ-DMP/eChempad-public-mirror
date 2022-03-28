@@ -75,6 +75,7 @@ public class Experiment implements IEntity{
         this.description = description;
         this.documents = new HashSet<>();
         this.journal = journal;
+        this.permissions = new HashSet<>();
     }
 
 
