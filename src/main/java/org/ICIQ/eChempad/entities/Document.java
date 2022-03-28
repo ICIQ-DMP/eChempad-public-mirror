@@ -2,6 +2,7 @@ package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -9,6 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -52,6 +55,16 @@ public class Document implements IEntity{
     @JsonIgnore
     protected Experiment experiment;
 
+    @OneToMany(
+            targetEntity = ElementPermission.class,
+            mappedBy = "id",
+            fetch = FetchType.EAGER,
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
+    )
+    @Nullable
+    @JsonIgnore
+    private Set<ElementPermission> permissions;
+
     public Document() {}
 
     public Document(String name, String description, Path path, Experiment experiment) {
@@ -59,6 +72,7 @@ public class Document implements IEntity{
         this.description = description;
         this.path = path;
         this.experiment = experiment;
+        this.permissions = new HashSet<>();
     }
 
     /**
@@ -126,5 +140,14 @@ public class Document implements IEntity{
 
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
+    }
+
+    @Nullable
+    public Set<ElementPermission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(@Nullable Set<ElementPermission> permissions) {
+        this.permissions = permissions;
     }
 }

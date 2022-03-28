@@ -11,6 +11,8 @@ public interface SecurityService {
 
     Set<Experiment> getAuthorizedExperiment(Authority authority);
 
+    Set<Document> getAuthorizedDocument(Authority authority);
+
     <T extends IEntity> Set<T> getAuthorizedElement(String username, Authority authority, Class<T> type);
 
     Researcher getLoggedResearcher();

@@ -192,16 +192,23 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
 
         // Document examples
-        Path license = FileSystems.getDefault().getPath("/home/amarine/Desktop/eChempad/COPYING");
-        // Documents in experimentEthanol1 Experiment
-        Document documentEthanolTheory = new Document("License", "Contains text that indicates the state of the copyright", license, experimentEthanol1);
-        this.documentRepository.saveOrUpdate(documentEthanolTheory);
 
+        // Document License in experimentEthanol1 Experiment
+        Path license = FileSystems.getDefault().getPath("/home/amarine/Desktop/eChempad/COPYING");
+        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", license, experimentEthanol1);
+        ElementPermission document1ExperimentEthanol1Permission = new ElementPermission(document1ExperimentEthanol1, Authority.OWN, aitorMenta);
+        document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
+        this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
+        this.elementPermissionRepository.saveOrUpdate(document1ExperimentEthanol1Permission);
+
+        // Documents photo in experimentEthanol1 Experiment
 
         Path binary = FileSystems.getDefault().getPath("/home/amarine/Downloads/foto.webp");
-        // Documents in experimentEthanol1 Experiment
-        Document documentEthanolTheory_binary = new Document("Photo", "Example photo of springboot", binary, experimentEthanol1);
-        this.documentRepository.saveOrUpdate(documentEthanolTheory_binary);
+        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", binary, experimentEthanol1);
+        ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);
+        document2ExperimentEthanol1.getPermissions().add(document2ExperimentEthanol1Permission);
+        this.documentRepository.saveOrUpdate(document2ExperimentEthanol1);
+        this.elementPermissionRepository.saveOrUpdate(document2ExperimentEthanol1Permission);
 
     }
 

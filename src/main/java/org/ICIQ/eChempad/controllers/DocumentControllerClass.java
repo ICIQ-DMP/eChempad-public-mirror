@@ -22,7 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/document")
 public class DocumentControllerClass implements DocumentController{
-    private DocumentServiceClass documentServiceClass;
+    private final DocumentServiceClass documentServiceClass;
 
     @Autowired
     public DocumentControllerClass(DocumentServiceClass documentServiceClass) {

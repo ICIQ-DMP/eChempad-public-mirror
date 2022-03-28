@@ -89,7 +89,16 @@ public class ElementPermission implements IEntity {
     protected Journal journal;
 
 
-
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            optional = true
+    )
+    @JoinColumn(
+            name = "document_id",
+            nullable = true)
+    @JsonIgnore
+    @Nullable
+    protected Document document;
 
     // }
 
@@ -106,6 +115,10 @@ public class ElementPermission implements IEntity {
         else if (resource.getMyType().equals(Experiment.class))
         {
             this.experiment = (Experiment) resource;
+        }
+        else if (resource.getMyType().equals(Document.class))
+        {
+            this.document = (Document) resource;
         }
         else
         {
@@ -126,6 +139,10 @@ public class ElementPermission implements IEntity {
         else if (this.type.equals(Journal.class))
         {
             return (T) this.journal;
+        }
+        else if (this.type.equals(Document.class))
+        {
+            return (T) this.document;
         }
         else
         {
@@ -184,6 +201,7 @@ public class ElementPermission implements IEntity {
                 ", researcher=" + researcher.getEmail() +
                 ", experiment=" + experiment.getUUid() +
                 ", journal=" + journal.getUUid() +
+                ", document=" + document.getUUid() +
                 '}';
     }
 

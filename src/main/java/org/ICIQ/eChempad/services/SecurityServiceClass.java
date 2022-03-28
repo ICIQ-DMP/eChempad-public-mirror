@@ -199,6 +199,27 @@ public class SecurityServiceClass implements SecurityService{
     }
 
 
+    /**
+     * Get all documents that have an authorization level below or equal to the authorization required for the
+     * logged user.
+     * @param authority Level of authorization required.
+     * @return All the documents where the current user has more privileges assigned than the required ones.
+     */
+    @Override
+    public Set<Document> getAuthorizedDocument(Authority authority) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails)
+        {
+            return this.getAuthorizedElement(this.getLoggedResearcher().getEmail(), authority, Document.class);
+        }
+        else
+        {
+            //TODO: ERRR
+            return null;
+        }
+    }
+
+
 
 
 /*
