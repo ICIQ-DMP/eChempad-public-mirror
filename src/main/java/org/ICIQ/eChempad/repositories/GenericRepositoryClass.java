@@ -1,10 +1,7 @@
 package org.ICIQ.eChempad.repositories;
 import org.ICIQ.eChempad.entities.IEntity;
-import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;

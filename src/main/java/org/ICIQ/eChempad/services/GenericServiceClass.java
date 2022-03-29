@@ -1,23 +1,14 @@
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.EChempadApplication;
-import org.ICIQ.eChempad.entities.Experiment;
-import org.ICIQ.eChempad.entities.Journal;
-import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.*;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Services throw custom exceptions when they catch a spring exception or a custom exception. In a certain manner they
@@ -37,6 +28,9 @@ import java.util.stream.Collectors;
 public class GenericServiceClass<T, S extends Serializable> implements GenericService<T, S> {
 
     protected GenericRepository<T, S> genericRepository;
+
+    @Autowired
+    protected SecurityService securityService;
 
     public GenericServiceClass() {}
 
@@ -62,11 +56,11 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     @Override
     @Transactional
-    public T update(T entity, S id) throws ExceptionResourceNotExists {
+    public T update(T entity, S id) throws ResourceNotExistsException {
         T t = this.genericRepository.update(entity, id);
         if (t == null)
         {
-            throw new ExceptionResourceNotExists("The resource of type " + entity.getClass().getName() + " with ID " + id.toString() + " does not exist.");
+            throw new ResourceNotExistsException("The resource of type " + entity.getClass().getName() + " with ID " + id.toString() + " does not exist.");
         }
         else
         {
@@ -90,11 +84,11 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     @Override
     @Transactional
-    public T get(S id) throws ExceptionResourceNotExists {
+    public T get(S id) throws ResourceNotExistsException {
         T t = this.genericRepository.get(id);
         if (t == null)
         {
-            throw new ExceptionResourceNotExists("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
+            throw new ResourceNotExistsException("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
         }
         else
         {
@@ -111,12 +105,12 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     @Override
     @Transactional
-    public void remove(S id) throws ExceptionResourceNotExists {
+    public void remove(S id) throws ResourceNotExistsException {
         int removeResult = this.genericRepository.remove(id);
         if (removeResult > 0)
         {
             // Returned 1, element could not have been deleted
-            throw new ExceptionResourceNotExists("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
+            throw new ResourceNotExistsException("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
         }
     }
 }

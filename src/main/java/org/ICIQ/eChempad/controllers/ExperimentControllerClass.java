@@ -1,7 +1,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Experiment;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.ExperimentService;
 import org.ICIQ.eChempad.services.ExperimentServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class ExperimentControllerClass implements ExperimentController{
             value = "/{id}",
             produces = "application/json"
     )
-    public ResponseEntity<Experiment> getExperiment(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public ResponseEntity<Experiment> getExperiment(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         Experiment experiment = this.experimentService.get(uuid);
         return ResponseEntity.ok().body(experiment);
     }
@@ -59,7 +59,7 @@ public class ExperimentControllerClass implements ExperimentController{
             value = "/{id}",
             produces = "application/json"
     )
-    public void removeExperiment(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public void removeExperiment(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         this.experimentService.remove(uuid);
     }
 
@@ -69,7 +69,7 @@ public class ExperimentControllerClass implements ExperimentController{
             consumes = "application/json"
     )
     @Override
-    public void putExperiment(@Validated @RequestBody Experiment experiment, @PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public void putExperiment(@Validated @RequestBody Experiment experiment, @PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         this.experimentService.update(experiment, uuid);
     }
 

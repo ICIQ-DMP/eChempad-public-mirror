@@ -218,4 +218,4 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
-# End of https://www.toptal.com/developers/gitignore/api/maven
+# End of https://www.toptal.com/developers/gitignore/api/mavenfile_db

@@ -42,9 +42,6 @@ public class Document implements IEntity{
     @Column(name = "description", length = 1000, nullable = false)
     protected String description;
 
-    @Column(name = "path", length = 1000, nullable = false)
-    protected Path path;
-
     @ManyToOne(
             fetch = FetchType.EAGER,
             optional = false
@@ -67,10 +64,9 @@ public class Document implements IEntity{
 
     public Document() {}
 
-    public Document(String name, String description, Path path, Experiment experiment) {
+    public Document(String name, String description, Experiment experiment) {
         this.name = name;
         this.description = description;
-        this.path = path;
         this.experiment = experiment;
         this.permissions = new HashSet<>();
     }
@@ -85,12 +81,6 @@ public class Document implements IEntity{
         contentBuilder.append(this.name);
         contentBuilder.append(" ");
         contentBuilder.append(this.description);
-        try (Stream<String> stream = Files.lines(Paths.get(this.path.toString()), StandardCharsets.UTF_8))  {
-            stream.forEach(s -> contentBuilder.append(s).append("\n"));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
         return contentBuilder.toString();
     }
 
@@ -124,14 +114,6 @@ public class Document implements IEntity{
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Path getPath() {
-        return path;
-    }
-
-    public void setPath(Path path) {
-        this.path = path;
     }
 
     public Experiment getExperiment() {

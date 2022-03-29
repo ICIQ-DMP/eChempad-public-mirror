@@ -1,7 +1,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Set;
@@ -23,11 +23,11 @@ import java.util.UUID;
 public interface ResearcherController {
     ResponseEntity<Set<Researcher>> getResearchers();
 
-    ResponseEntity<Researcher> getResearcher(UUID uuid) throws ExceptionResourceNotExists;
+    ResponseEntity<Researcher> getResearcher(UUID uuid) throws ResourceNotExistsException;
 
     void addResearcher(Researcher researcher);
 
-    void removeResearcher(UUID uuid) throws ExceptionResourceNotExists;
+    void removeResearcher(UUID uuid) throws ResourceNotExistsException;
 
-    void putResearcher(Researcher researcher, UUID uuid) throws ExceptionResourceNotExists;
+    void putResearcher(Researcher researcher, UUID uuid) throws ResourceNotExistsException;
 }

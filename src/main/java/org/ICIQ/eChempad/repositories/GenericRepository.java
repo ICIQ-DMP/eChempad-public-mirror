@@ -1,11 +1,6 @@
 package org.ICIQ.eChempad.repositories;
 
-import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 /**

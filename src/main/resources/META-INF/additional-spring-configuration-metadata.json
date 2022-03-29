@@ -14,5 +14,10 @@
       "name": "security.disable.csrf",
       "type": "java.lang.String",
       "description": "Description for security.disable.csrf."
+    },
+    {
+      "name": "file.upload-dir",
+      "type": "java.lang.String",
+      "description": "Description for file.upload-dir."
     }
   ] }

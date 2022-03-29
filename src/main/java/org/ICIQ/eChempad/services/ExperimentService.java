@@ -1,11 +1,7 @@
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.entities.Authority;
 import org.ICIQ.eChempad.entities.Experiment;
-import org.ICIQ.eChempad.entities.Journal;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

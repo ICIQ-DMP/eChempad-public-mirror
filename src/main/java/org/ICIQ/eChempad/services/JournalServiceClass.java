@@ -1,16 +1,14 @@
 package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.Authority;
-import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Journal;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.JournalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @Service
 public class JournalServiceClass extends GenericServiceClass<Journal, UUID> implements JournalService {
@@ -60,10 +58,10 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
      * @param entity Data that will override the selected journal
      * @param id ID of an existing journal that we want to overwrite
      * @return The same journal that we have updated
-     * @throws ExceptionResourceNotExists This exception is thrown if the supplied id does not coincide with any
+     * @throws ResourceNotExistsException This exception is thrown if the supplied id does not coincide with any
      * existing journal.
      */
-    public Journal update(Journal entity, UUID id) throws ExceptionResourceNotExists
+    public Journal update(Journal entity, UUID id) throws ResourceNotExistsException
     {
         return (Journal) this.securityService.updateElement(entity, id);
     }
@@ -73,9 +71,9 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
      * Returns the journal identified by the supplied UUID if is READABLE by the logged user.
      * @param id UUID of the desired journal
      * @return Journal data
-     * @throws ExceptionResourceNotExists if the desired journal does not exist we throw an exception
+     * @throws ResourceNotExistsException if the desired journal does not exist we throw an exception
      */
-    public Journal get(UUID id) throws ExceptionResourceNotExists
+    public Journal get(UUID id) throws ResourceNotExistsException
     {
         if (this.securityService.isResearcherAuthorized(Authority.READ, id, Journal.class))
         {
@@ -89,7 +87,7 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
     }
 
 
-    public void remove(UUID id) throws ExceptionResourceNotExists
+    public void remove(UUID id) throws ResourceNotExistsException
     {
         if (this.securityService.isResearcherAuthorized(Authority.EDIT, id, Journal.class))
         {

@@ -1,11 +1,8 @@
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.entities.Authority;
-import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.entities.Journal;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,15 +16,15 @@ public interface JournalService extends GenericService<Journal, UUID> {
 
     Journal save(Journal entity);
 
-    Journal update(Journal entity, UUID id) throws ExceptionResourceNotExists;
+    Journal update(Journal entity, UUID id) throws ResourceNotExistsException;
 
     Set<Journal> getAll();
 
-    Journal get(UUID id) throws ExceptionResourceNotExists;
+    Journal get(UUID id) throws ResourceNotExistsException;
 
     // Not overridden. We can always add our own journals no matter security concerns
     //void add(T entity);
 
-    void remove(UUID id) throws ExceptionResourceNotExists;
+    void remove(UUID id) throws ResourceNotExistsException;
 
 }

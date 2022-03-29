@@ -2,11 +2,13 @@ package org.ICIQ.eChempad.configurations;
 
 import org.ICIQ.eChempad.entities.*;
 import org.ICIQ.eChempad.repositories.*;
+import org.ICIQ.eChempad.services.FileStorageService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -26,6 +28,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
     private final RoleUserRepository roleUserRepository;
 
+    private final FileStorageService fileStorageService;
     /**
      * Using classic constructor since when using autowired injection in the fields is discouraged because breaks
      * encapsulation and very random behaviour was happening.
@@ -38,13 +41,14 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
      * @param roleUserRepository
      */
     @Autowired
-    public ApplicationStartup(ResearcherRepository researcherRepository, JournalRepository journalRepository, ExperimentRepository experimentRepository, DocumentRepository documentRepository, ElementPermissionRepository elementPermissionRepository, RoleUserRepository roleUserRepository) {
+    public ApplicationStartup(ResearcherRepository researcherRepository, JournalRepository journalRepository, ExperimentRepository experimentRepository, DocumentRepository documentRepository, ElementPermissionRepository elementPermissionRepository, RoleUserRepository roleUserRepository, FileStorageService fileStorageService) {
         this.researcherRepository = researcherRepository;
         this.journalRepository = journalRepository;
         this.experimentRepository = experimentRepository;
         this.documentRepository = documentRepository;
         this.elementPermissionRepository = elementPermissionRepository;
         this.roleUserRepository = roleUserRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     /**
@@ -195,20 +199,31 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         // Document License in experimentEthanol1 Experiment
         Path license = FileSystems.getDefault().getPath("/home/amarine/Desktop/eChempad/COPYING");
-        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", license, experimentEthanol1);
+        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1);
         ElementPermission document1ExperimentEthanol1Permission = new ElementPermission(document1ExperimentEthanol1, Authority.OWN, aitorMenta);
         document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
         this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
         this.elementPermissionRepository.saveOrUpdate(document1ExperimentEthanol1Permission);
 
         // Documents photo in experimentEthanol1 Experiment
-
-        Path binary = FileSystems.getDefault().getPath("/home/amarine/Downloads/foto.webp");
-        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", binary, experimentEthanol1);
+        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1);
         ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);
         document2ExperimentEthanol1.getPermissions().add(document2ExperimentEthanol1Permission);
         this.documentRepository.saveOrUpdate(document2ExperimentEthanol1);
         this.elementPermissionRepository.saveOrUpdate(document2ExperimentEthanol1Permission);
+        // Copy an arbitrary file as if it has been uploaded with the API
+
+
+        Path filepath = Paths.get(dir.toString(), multipart.getOriginalFilename());
+        multipart.transferTo(filepath);
+
+        MultipartFile multipartFile = new
+                MockMultipartFile("sourceFile.tmp", "Hello World".getBytes());
+
+        File file = new File("src/main/resources/targetFile.tmp");
+
+        multipartFile.transferTo(file);
+        this.fileStorageService.storeFile(FileSystems.getDefault().getPath("/home/amarine/Downloads/foto.webp").toFile(), document2ExperimentEthanol1);
 
     }
 

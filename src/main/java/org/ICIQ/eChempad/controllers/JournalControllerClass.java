@@ -1,7 +1,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Journal;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.JournalService;
 import org.ICIQ.eChempad.services.JournalServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +46,14 @@ public class JournalControllerClass implements JournalController{
      * Obtains the journal pointed by the supplied UUID if the logged user has READ rights against the journal.
      * @param uuid UUID of the desired journal
      * @return journal data
-     * @throws ExceptionResourceNotExists Thrown if the supplied UUID does not correspond to any Journal
+     * @throws ResourceNotExistsException Thrown if the supplied UUID does not correspond to any Journal
      */
     @Override
     @GetMapping(
             value = "/{id}",
             produces = "application/json"
     )
-    public ResponseEntity<Journal> getJournal(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public ResponseEntity<Journal> getJournal(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         Journal journal = this.journalService.get(uuid);
         return ResponseEntity.ok().body(journal);
     }
@@ -76,7 +76,7 @@ public class JournalControllerClass implements JournalController{
             value = "/{id}",
             produces = "application/json"
     )
-    public void removeJournal(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public void removeJournal(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         this.journalService.remove(uuid);
     }
 
@@ -86,7 +86,7 @@ public class JournalControllerClass implements JournalController{
             consumes = "application/json"
     )
     @Override
-    public void putJournal(@Validated @RequestBody Journal journal, @PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public void putJournal(@Validated @RequestBody Journal journal, @PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         this.journalService.update(journal, uuid);
     }
 }

@@ -1,7 +1,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.ResearcherServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +63,7 @@ public class ResearcherControllerClass implements ResearcherController {
             value = "/{id}",
             produces = "application/json"
     )
-    public ResponseEntity<Researcher> getResearcher(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public ResponseEntity<Researcher> getResearcher(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         Researcher researcher = this.researcherServiceClass.get(uuid);
         return ResponseEntity.ok().body(researcher);
     }
@@ -82,7 +82,7 @@ public class ResearcherControllerClass implements ResearcherController {
             value = "/{id}",
             produces = "application/json"
     )
-    public void removeResearcher(@PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public void removeResearcher(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         this.researcherServiceClass.remove(uuid);
     }
 
@@ -92,7 +92,7 @@ public class ResearcherControllerClass implements ResearcherController {
             consumes = "application/json"
     )
     @Override
-    public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID uuid) throws ExceptionResourceNotExists {
+    public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
         this.researcherServiceClass.update(researcher, uuid);
     }
 

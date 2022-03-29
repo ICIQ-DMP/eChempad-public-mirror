@@ -1,6 +1,6 @@
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.exceptions.ExceptionResourceNotExists;
+import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -17,15 +17,15 @@ public interface GenericService<T, S extends Serializable> {
 
     T save(T entity);
 
-    T update(T entity, S id) throws ExceptionResourceNotExists;
+    T update(T entity, S id) throws ResourceNotExistsException;
 
     Set<T> getAll();
 
-    T get(S id) throws ExceptionResourceNotExists;
+    T get(S id) throws ResourceNotExistsException;
 
     void add(T entity);
 
-    void remove(S id) throws ExceptionResourceNotExists;
+    void remove(S id) throws ResourceNotExistsException;
 
 }
 
