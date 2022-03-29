@@ -33,18 +33,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/document")
 public class DocumentControllerClass implements DocumentController{
-    private final DocumentServiceClass documentServiceClass;
+
+    @Autowired
+    private DocumentServiceClass documentServiceClass;
 
     @Autowired
     private FileStorageService fileStorageService;
 
     @Autowired
     private ExperimentRepository experimentRepository;
-
-    @Autowired
-    public DocumentControllerClass(DocumentServiceClass documentServiceClass) {
-        this.documentServiceClass = documentServiceClass;
-    }
 
 
     /**
@@ -72,7 +69,7 @@ public class DocumentControllerClass implements DocumentController{
      */
     @Override
     @GetMapping(
-            value = "/{id}/data",
+            value = "/{id}",
             produces = "application/json"
     )
     public ResponseEntity<Document> getDocument(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
@@ -124,8 +121,8 @@ public class DocumentControllerClass implements DocumentController{
      *         experiment
      */
     @PostMapping(
-            value = "/experiment/{experiment_uuid}/document",
-            consumes = MediaType.ALL_VALUE
+            value = "/experiment/{experiment_uuid}/document"
+            //consumes = MediaType.ALL_VALUE
     )
     public UploadFileResponse addDocument(@Validated @RequestBody Document document, @RequestParam("file") MultipartFile file, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
         this.documentServiceClass.addDocumentToExperiment(document, file, experiment_uuid);

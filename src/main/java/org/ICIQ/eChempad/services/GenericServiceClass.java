@@ -29,8 +29,7 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     protected GenericRepository<T, S> genericRepository;
 
-    @Autowired
-    protected SecurityService securityService;
+
 
     public GenericServiceClass() {}
 
@@ -53,6 +52,11 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
     public GenericServiceClass(ElementPermissionRepository elementPermissionRepository) {
         this.genericRepository = (GenericRepository<T, S>) elementPermissionRepository;
     }
+
+    public GenericServiceClass(SecurityService securityService) {
+        this.genericRepository = (GenericRepository<T, S>) securityService;
+    }
+
 
     @Override
     @Transactional

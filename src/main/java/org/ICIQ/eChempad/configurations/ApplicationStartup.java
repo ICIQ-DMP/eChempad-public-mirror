@@ -7,11 +7,15 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
@@ -198,32 +202,41 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         // Document examples
 
         // Document License in experimentEthanol1 Experiment
-        Path license = FileSystems.getDefault().getPath("/home/amarine/Desktop/eChempad/COPYING");
         Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1);
         ElementPermission document1ExperimentEthanol1Permission = new ElementPermission(document1ExperimentEthanol1, Authority.OWN, aitorMenta);
         document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
         this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
         this.elementPermissionRepository.saveOrUpdate(document1ExperimentEthanol1Permission);
+        // Copy an arbitrary file as if it has been uploaded with the API
+        Path document1ExperimentEthanol1_license_path = Paths.get("/home/amarine/Desktop/eChempad/file_db/LICENSE.md");
+        byte[] document1ExperimentEthanol1_license_content = null;
+        try {
+            document1ExperimentEthanol1_license_content = Files.readAllBytes(document1ExperimentEthanol1_license_path);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        MultipartFile document1ExperimentEthanol1_license = new MockMultipartFile("LICENSE.md", "LICENSE.md", "text/plain", document1ExperimentEthanol1_license_content);
+        this.fileStorageService.storeFile(document1ExperimentEthanol1_license, document1ExperimentEthanol1.getUUid());
 
-        // Documents photo in experimentEthanol1 Experiment
+
+
+        // Documents photo in experimentEthanol2 Experiment
         Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1);
         ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);
         document2ExperimentEthanol1.getPermissions().add(document2ExperimentEthanol1Permission);
         this.documentRepository.saveOrUpdate(document2ExperimentEthanol1);
         this.elementPermissionRepository.saveOrUpdate(document2ExperimentEthanol1Permission);
         // Copy an arbitrary file as if it has been uploaded with the API
+        Path document2ExperimentEthanol1_photo_path = Paths.get("/home/amarine/Desktop/eChempad/file_db/3.jpg");
+        byte[] document2ExperimentEthanol1_photo_content = null;
+        try {
+            document2ExperimentEthanol1_photo_content = Files.readAllBytes(document2ExperimentEthanol1_photo_path);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        MultipartFile document2ExperimentEthanol1_photo = new MockMultipartFile("3.jpg", "3.jpg", "text/plain", document2ExperimentEthanol1_photo_content);
+        this.fileStorageService.storeFile(document2ExperimentEthanol1_photo, document2ExperimentEthanol1.getUUid());
 
-
-        Path filepath = Paths.get(dir.toString(), multipart.getOriginalFilename());
-        multipart.transferTo(filepath);
-
-        MultipartFile multipartFile = new
-                MockMultipartFile("sourceFile.tmp", "Hello World".getBytes());
-
-        File file = new File("src/main/resources/targetFile.tmp");
-
-        multipartFile.transferTo(file);
-        this.fileStorageService.storeFile(FileSystems.getDefault().getPath("/home/amarine/Downloads/foto.webp").toFile(), document2ExperimentEthanol1);
 
     }
 

@@ -12,10 +12,9 @@ public class DocumentCSV extends Document {
      * Constructor of DocumentCSV. It will perform a call to the constructor of the super class in order to initialize
      * its parameters.
      * @param name Name of the document (file)
-     * @param path path to the file. It can be relative or absolute.
      */
-    public DocumentCSV(String name, String description, Path path, Experiment experiment) {
-        super(name, description, path, experiment);
+    public DocumentCSV(String name, String description, Experiment experiment) {
+        super(name, description, experiment);
     }
 
 
