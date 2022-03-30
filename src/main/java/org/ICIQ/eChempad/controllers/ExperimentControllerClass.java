@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Experiment;
+import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.ExperimentService;
 import org.ICIQ.eChempad.services.ExperimentServiceClass;
@@ -14,7 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/experiment")
+//@RequestMapping("/api/experiment")
 public class ExperimentControllerClass implements ExperimentController{
     private ExperimentService experimentService;
 
@@ -25,7 +26,7 @@ public class ExperimentControllerClass implements ExperimentController{
 
     @Override
     @GetMapping(
-            value = "",
+            value = "/api/experiment",
             produces = "application/json"
     )
     public ResponseEntity<Set<Experiment>> getExperiments() {
@@ -37,7 +38,7 @@ public class ExperimentControllerClass implements ExperimentController{
     // https://restfulapi.net/http-methods/
     @Override
     @GetMapping(
-            value = "/{id}",
+            value = "/api/experiment/{id}",
             produces = "application/json"
     )
     public ResponseEntity<Experiment> getExperiment(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
@@ -47,16 +48,33 @@ public class ExperimentControllerClass implements ExperimentController{
 
 
     @PostMapping(
-            value = "",
+            value = "/api/journal/{journal_uuid}/experiment",
             consumes = "application/json"
     )
-    public void addExperiment(@Validated @RequestBody Experiment experiment) {
-        this.experimentService.save(experiment);
+    public void addExperimentToJournal(@Validated @RequestBody Experiment experiment, @PathVariable UUID journal_uuid) {
+        this.experimentService.addExperimentToJournal(experiment, journal_uuid);
+    }
+
+    /**
+     * Gets all the experiments belonging to a certain journal.
+     *
+     * @param journal_uuid UUID of the journal we are querying
+     * @return returns all experiments inside the journal if they are readable by the logged user.
+     * @throws ResourceNotExistsException  Thrown if the referred journal does not exist in the DB
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read into this journal.
+     */
+    @Override
+    @GetMapping(
+            value = "/api/journal/{journal_uuid}/experiment",
+            produces = "application/json"
+    )
+    public ResponseEntity<Set<Experiment>> getExperimentsFromJournal(@PathVariable UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        return ResponseEntity.ok(this.experimentService.getExperimentsFromJournal(journal_uuid));
     }
 
 
     @DeleteMapping(
-            value = "/{id}",
+            value = "/api/experiment/{id}",
             produces = "application/json"
     )
     public void removeExperiment(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
@@ -64,7 +82,7 @@ public class ExperimentControllerClass implements ExperimentController{
     }
 
     @PutMapping(
-            value = "/{id}",
+            value = "/api/experiment/{id}",
             produces = "application/json",
             consumes = "application/json"
     )

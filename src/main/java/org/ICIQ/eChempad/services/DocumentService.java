@@ -14,6 +14,6 @@ import java.util.UUID;
 
 public interface DocumentService extends GenericService<Document, UUID> {
 
-    void addDocumentToExperiment(Document document, MultipartFile file, UUID experiment_uuid);
+    void addDocumentToExperiment(Document document, UUID experiment_uuid);
 
 }

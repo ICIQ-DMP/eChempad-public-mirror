@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/document")
 public class DocumentControllerClass implements DocumentController{
 
     @Autowired
@@ -50,7 +49,7 @@ public class DocumentControllerClass implements DocumentController{
      */
     @Override
     @GetMapping(
-            value = "",
+            value = "/api/document",
             produces = "application/json"
     )
     public ResponseEntity<Set<Document>> getDocuments() {
@@ -69,7 +68,7 @@ public class DocumentControllerClass implements DocumentController{
      */
     @Override
     @GetMapping(
-            value = "/{id}",
+            value = "/api/document/{id}",
             produces = "application/json"
     )
     public ResponseEntity<Document> getDocument(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
@@ -84,7 +83,7 @@ public class DocumentControllerClass implements DocumentController{
      * @return ByteArray response (binary response)
      * @throws ResourceNotExistsException Thrown if the UUID does not exist for any document
      */
-    @GetMapping("/{id}/data")
+    @GetMapping("/api/document/{id}/data")
     public ResponseEntity<Resource> getDocumentData(@PathVariable(value = "id") UUID uuid, HttpServletRequest request) throws ResourceNotExistsException{
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(uuid);
@@ -113,7 +112,6 @@ public class DocumentControllerClass implements DocumentController{
      * Adds a document and its corresponding file to an Experiment designated by its unique UUID. It saves the document
      * metadata into the DB and the file in the filesystem.
      * @param document Metadata of the document, from the body of the request
-     * @param file File data
      * @param experiment_uuid UUID of the experiment where we will add this document
      * @return A file response where we tell the user where he can find this file using a URL
      * @throws ResourceNotExistsException Thrown if the experiment where we will add the document does not exist
@@ -121,11 +119,11 @@ public class DocumentControllerClass implements DocumentController{
      *         experiment
      */
     @PostMapping(
-            value = "/experiment/{experiment_uuid}/document"
-            //consumes = MediaType.ALL_VALUE
+            value = "/api/experiment/{experiment_uuid}/document",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public UploadFileResponse addDocument(@Validated @RequestBody Document document, @RequestParam("file") MultipartFile file, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        this.documentServiceClass.addDocumentToExperiment(document, file, experiment_uuid);
+    public UploadFileResponse addDocument(@ModelAttribute Document document, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        this.documentServiceClass.addDocumentToExperiment(document, experiment_uuid);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/document/")
@@ -134,7 +132,7 @@ public class DocumentControllerClass implements DocumentController{
                 .toUriString();
 
         return new UploadFileResponse(document.getName(), fileDownloadUri,
-                file.getContentType(), file.getSize());
+                document.getFile().getContentType(), document.getFile().getSize());
     }
 
 
@@ -145,7 +143,7 @@ public class DocumentControllerClass implements DocumentController{
      * @throws NotEnoughAuthorityException Thrown if we do not have EDIT authority to delete documents.
      */
     @DeleteMapping(
-            value = "/{id}",
+            value = "/api/document/{id}",
             produces = "application/json"
     )
     public void removeDocument(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
@@ -162,7 +160,7 @@ public class DocumentControllerClass implements DocumentController{
      * @throws NotEnoughAuthorityException Thrown if we do not have EDIT authority against the updated document
      */
     @PutMapping(
-            value = "/{document_uuid}",
+            value = "/api/document/{document_uuid}",
             produces = "application/json",
             consumes = "application/json"
     )

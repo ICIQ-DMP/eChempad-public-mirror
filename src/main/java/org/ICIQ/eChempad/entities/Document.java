@@ -3,6 +3,8 @@ package org.ICIQ.eChempad.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.lang.Nullable;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -41,6 +43,9 @@ public class Document implements IEntity{
 
     @Column(name = "description", length = 1000, nullable = false)
     protected String description;
+
+    @Column(name = "file", length = 1000, nullable = true)
+    protected MockMultipartFile file;
 
     @ManyToOne(
             fetch = FetchType.EAGER,
@@ -122,6 +127,14 @@ public class Document implements IEntity{
 
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
+    }
+
+    public MockMultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MockMultipartFile file) {
+        this.file = file;
     }
 
     @Nullable

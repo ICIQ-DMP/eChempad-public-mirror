@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.*;
+import org.ICIQ.eChempad.repositories.DocumentRepository;
 import org.ICIQ.eChempad.repositories.ExperimentRepository;
 import org.ICIQ.eChempad.repositories.JournalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class SecurityServiceClass implements SecurityService{
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private DocumentRepository documentRepository;
 
     @Autowired
     private ExperimentRepository experimentRepository;
@@ -87,22 +91,30 @@ public class SecurityServiceClass implements SecurityService{
      */
     @Override
     public IEntity saveElementWorkspace(IEntity element) {
-        IEntity processed = null;
+        ElementPermission permission = new ElementPermission(element, Authority.OWN, this.getLoggedResearcher());
+        this.elementPermissionService.save(permission);
         if (element.getMyType().equals(Experiment.class))
         {
-            processed = this.experimentRepository.saveOrUpdate((Experiment) element);
+            this.experimentRepository.saveOrUpdate((Experiment) element);
+            ((Experiment) element).getPermissions().add(permission);
+            this.experimentRepository.saveOrUpdate((Experiment) element);
         }
         else if (element.getMyType().equals(Journal.class))
         {
-            processed = this.journalRepository.saveOrUpdate((Journal) element);
+            ((Journal) element).getPermissions().add(permission);
+            this.journalRepository.saveOrUpdate((Journal) element);
+        }
+        else if (element.getMyType().equals(Document.class))
+        {
+            ((Document) element).getPermissions().add(permission);
+            this.documentRepository.saveOrUpdate((Document) element);
         }
         else
         {
             // TODO: Error if other type
             return null;
         }
-        this.elementPermissionService.save(new ElementPermission(processed, Authority.OWN, this.getLoggedResearcher()));
-        return processed;
+        return element;
     }
 
     /**

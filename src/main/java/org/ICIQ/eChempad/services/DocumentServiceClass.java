@@ -37,7 +37,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
     }
 
     @Override
-    public void addDocumentToExperiment(Document document, MultipartFile file, UUID experiment_uuid) {
+    public void addDocumentToExperiment(Document document, UUID experiment_uuid) {
         Experiment experiment = this.experimentRepository.get(experiment_uuid);
 
         if (this.securityService.isResearcherAuthorized(Authority.WRITE, experiment_uuid, Experiment.class))
@@ -52,7 +52,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
             this.experimentRepository.saveOrUpdate(experiment);
 
             // Create response
-            this.fileStorageService.storeFile(file, document.getUUid());
+            this.fileStorageService.storeFile(document.getFile(), document.getUUid());
         }
         else
         {

@@ -202,11 +202,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         // Document examples
 
         // Document License in experimentEthanol1 Experiment
-        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1);
-        ElementPermission document1ExperimentEthanol1Permission = new ElementPermission(document1ExperimentEthanol1, Authority.OWN, aitorMenta);
-        document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
-        this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
-        this.elementPermissionRepository.saveOrUpdate(document1ExperimentEthanol1Permission);
+
         // Copy an arbitrary file as if it has been uploaded with the API
         Path document1ExperimentEthanol1_license_path = Paths.get("/home/amarine/Desktop/eChempad/file_db/LICENSE.md");
         byte[] document1ExperimentEthanol1_license_content = null;
@@ -215,17 +211,24 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        MultipartFile document1ExperimentEthanol1_license = new MockMultipartFile("LICENSE.md", "LICENSE.md", "text/plain", document1ExperimentEthanol1_license_content);
+        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1);
+
+
+
+        ElementPermission document1ExperimentEthanol1Permission = new ElementPermission(document1ExperimentEthanol1, Authority.OWN, aitorMenta);
+        document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
+        document1ExperimentEthanol1 = this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
+        this.elementPermissionRepository.saveOrUpdate(document1ExperimentEthanol1Permission);
+        MultipartFile document1ExperimentEthanol1_license = new MockMultipartFile(document1ExperimentEthanol1.getUUid().toString(), document1ExperimentEthanol1.getUUid().toString(), "application/octet-stream", document1ExperimentEthanol1_license_content);
+        document1ExperimentEthanol1.setFile((MockMultipartFile) document1ExperimentEthanol1_license);
+
         this.fileStorageService.storeFile(document1ExperimentEthanol1_license, document1ExperimentEthanol1.getUUid());
+        this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
+
 
 
 
         // Documents photo in experimentEthanol2 Experiment
-        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1);
-        ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);
-        document2ExperimentEthanol1.getPermissions().add(document2ExperimentEthanol1Permission);
-        this.documentRepository.saveOrUpdate(document2ExperimentEthanol1);
-        this.elementPermissionRepository.saveOrUpdate(document2ExperimentEthanol1Permission);
         // Copy an arbitrary file as if it has been uploaded with the API
         Path document2ExperimentEthanol1_photo_path = Paths.get("/home/amarine/Desktop/eChempad/file_db/3.jpg");
         byte[] document2ExperimentEthanol1_photo_content = null;
@@ -234,9 +237,22 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        MultipartFile document2ExperimentEthanol1_photo = new MockMultipartFile("3.jpg", "3.jpg", "text/plain", document2ExperimentEthanol1_photo_content);
+
+        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1);
+
+
+        ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);
+        document2ExperimentEthanol1.getPermissions().add(document2ExperimentEthanol1Permission);
+        document2ExperimentEthanol1 = this.documentRepository.saveOrUpdate(document2ExperimentEthanol1);
+
+        MultipartFile document2ExperimentEthanol1_photo = new MockMultipartFile(document2ExperimentEthanol1.getUUid().toString(), document2ExperimentEthanol1.getUUid().toString(), "application/octet-stream", document2ExperimentEthanol1_photo_content);
+        document2ExperimentEthanol1.setFile((MockMultipartFile) document2ExperimentEthanol1_photo);
+
+        this.elementPermissionRepository.saveOrUpdate(document2ExperimentEthanol1Permission);
+
         this.fileStorageService.storeFile(document2ExperimentEthanol1_photo, document2ExperimentEthanol1.getUUid());
 
+        this.documentRepository.saveOrUpdate(document2ExperimentEthanol1);
 
     }
 
