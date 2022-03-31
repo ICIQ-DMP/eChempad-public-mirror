@@ -1,5 +1,5 @@
 |===================================================================================|
-| Copyright (C) ${project.inceptionYear} - ${project.year} ${owner} <${email}>                          |
+| Copyright (C) ${project.inceptionYear} - ${project.year} ${owner} <${email}>                            |
 |                                                                                   |
-| This software is the property of ${owner}.                                           |
+| This software is the property of ${owner}.                                            |
 |===================================================================================|
