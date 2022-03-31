@@ -183,6 +183,19 @@ your database. You can also set a master password, which is a password that can 
 in `pgadmin`, so you do not need to remember each credential. It is specially useful if you are planning on having more 
 than one database.
 
+## Continuous Integration
+The project has continuous integration features:
+#### Auto-generation of license
+Using the Maven licenses plugin we can autogenerate the copyright headers for each file of the project and also collect 
+all the third party libraries used by listing the dependencies in pom.xml.
+
+The next instruction will generate all licenses and attach it to the source files.
+Warning: It appends more than one time if executed in sequence.
+```
+mvn -Dthird.party.licenses=true -Dattach.license.header=true generate-resources 
+```
+
+
 ## Project file structure
 Here is a list of the folders and files contained inside the root of this project:
 - `.idea/`: Not present, but appears when using a Jetbrains editor such as IntelliJ IDEA to open the project. Contains 
