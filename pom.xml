@@ -338,6 +338,7 @@
 								<email>contact@iochem-bd.org</email>
 								<inceptionYear>${project.inceptionYear}</inceptionYear>
 								<latestYearOfContribution>${project.inceptionYear}</latestYearOfContribution>
+								<project.year>2022</project.year>
 							</properties>
 							<excludes>
 								<exclude>**/README</exclude>
