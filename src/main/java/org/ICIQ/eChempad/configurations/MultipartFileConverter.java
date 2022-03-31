@@ -33,7 +33,7 @@ public class MultipartFileConverter implements AttributeConverter<MockMultipartF
     // receives standardMultipartHttpServletRequest$StandardMultipartFile on crash
     @Override
     public String convertToDatabaseColumn(MockMultipartFile file) {
-        if (file instanceof StandardMultipartHttpServletRequest)
+        if (file instanceof MockMultipartFile)
         {
             if (file == null || file.getOriginalFilename() == null)
             {
