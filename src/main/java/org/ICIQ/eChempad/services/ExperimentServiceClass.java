@@ -46,6 +46,7 @@ public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID
      */
     @Override
     public void addExperimentToJournal(Experiment experiment, UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        // TODO query journal when we know that we have permissions.
         Journal journal = this.journalRepository.get(journal_uuid);
 
         // Check permissions

@@ -20,8 +20,7 @@ import java.util.UUID;
 @Service
 public class JournalServiceClass extends GenericServiceClass<Journal, UUID> implements JournalService {
 
-    final
-    SecurityService securityService;
+    final SecurityService securityService;
 
     /**
      * Creates a new Journal service using the SecurityService and a JournalRepository

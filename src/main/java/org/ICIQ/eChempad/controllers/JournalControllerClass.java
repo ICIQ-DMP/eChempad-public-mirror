@@ -90,11 +90,11 @@ public class JournalControllerClass implements JournalController{
      * @throws ResourceNotExistsException Thrown if the researcher with the supplied UUID does not exist.
      */
     @GetMapping(
-            value = "/api/journal",
+            value = "/api/researcher/{researcher_uuid}/journal",
             consumes = "application/json"
     )
     @Override
-    public ResponseEntity<Set<Journal>> getJournalsFromResearcher(UUID researcher_uuid) throws ResourceNotExistsException {
+    public ResponseEntity<Set<Journal>> getJournalsFromResearcher(@PathVariable UUID researcher_uuid) throws ResourceNotExistsException {
         return null;
         // TODO
     }
