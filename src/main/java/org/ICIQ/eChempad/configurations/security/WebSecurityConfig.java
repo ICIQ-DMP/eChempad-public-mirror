@@ -81,7 +81,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         if (this.corsDisabled) {
-            http.csrf().disable();
+            http.cors().disable();
         }
 
         http

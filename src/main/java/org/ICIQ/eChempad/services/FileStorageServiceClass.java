@@ -49,7 +49,7 @@ public class FileStorageServiceClass implements FileStorageService {
      * @param file Chunks of raw data
      * @param iEntity Entity object which will be used to obtain the unique identifier of the associated document, which
      *                will be used as name of the file.
-     * @return Name of the file as a String
+     * @return Absolute path to the created resource.
      */
     @Override
     public String storeFile(MultipartFile file, IEntity iEntity) {
@@ -62,7 +62,7 @@ public class FileStorageServiceClass implements FileStorageService {
      * Stores the received file using the supplied uuid as filename
      * @param file Chunks of raw data
      * @param uuid Unique identifier of the associated document, which will be used as name of the file.
-     * @return Name of the file as a String
+     * @return Absolute path to the created resource.
      */
     @Override
     public String storeFile(MultipartFile file, UUID uuid) {
@@ -79,7 +79,7 @@ public class FileStorageServiceClass implements FileStorageService {
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return fileName;
+            return targetLocation.toString();
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }

@@ -52,7 +52,7 @@ public class Document implements IEntity{
     protected String description;
 
     @Column(name = "file", length = 1000, nullable = true)
-    protected MockMultipartFile file;
+    protected String path;
 
     @ManyToOne(
             fetch = FetchType.EAGER,
@@ -75,6 +75,13 @@ public class Document implements IEntity{
     private Set<ElementPermission> permissions;
 
     public Document() {}
+
+    public Document(String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.experiment = null;
+        this.permissions = new HashSet<>();
+    }
 
     public Document(String name, String description, Experiment experiment) {
         this.name = name;
@@ -136,12 +143,12 @@ public class Document implements IEntity{
         this.experiment = experiment;
     }
 
-    public MockMultipartFile getFile() {
-        return file;
+    public String getPath() {
+        return path;
     }
 
-    public void setFile(MockMultipartFile file) {
-        this.file = file;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Nullable

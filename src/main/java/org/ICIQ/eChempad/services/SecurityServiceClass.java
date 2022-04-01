@@ -171,7 +171,6 @@ public class SecurityServiceClass implements SecurityService{
                 result.add(elementPermission.getElement());
             }
         }
-
         return result;
     }
 

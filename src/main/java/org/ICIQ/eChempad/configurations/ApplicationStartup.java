@@ -227,9 +227,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         document1ExperimentEthanol1 = this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
         this.elementPermissionRepository.saveOrUpdate(document1ExperimentEthanol1Permission);
         MultipartFile document1ExperimentEthanol1_license = new MockMultipartFile(document1ExperimentEthanol1.getUUid().toString(), document1ExperimentEthanol1.getUUid().toString(), "application/octet-stream", document1ExperimentEthanol1_license_content);
-        document1ExperimentEthanol1.setFile((MockMultipartFile) document1ExperimentEthanol1_license);
 
-        this.fileStorageService.storeFile(document1ExperimentEthanol1_license, document1ExperimentEthanol1.getUUid());
+        document1ExperimentEthanol1.setPath(Paths.get(this.fileStorageService.storeFile(document1ExperimentEthanol1_license, document1ExperimentEthanol1.getUUid())).toString());
+
+
         this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
 
 
@@ -253,11 +254,11 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         document2ExperimentEthanol1 = this.documentRepository.saveOrUpdate(document2ExperimentEthanol1);
 
         MultipartFile document2ExperimentEthanol1_photo = new MockMultipartFile(document2ExperimentEthanol1.getUUid().toString(), document2ExperimentEthanol1.getUUid().toString(), "application/octet-stream", document2ExperimentEthanol1_photo_content);
-        document2ExperimentEthanol1.setFile((MockMultipartFile) document2ExperimentEthanol1_photo);
+
 
         this.elementPermissionRepository.saveOrUpdate(document2ExperimentEthanol1Permission);
 
-        this.fileStorageService.storeFile(document2ExperimentEthanol1_photo, document2ExperimentEthanol1.getUUid());
+        document2ExperimentEthanol1.setPath(Paths.get(this.fileStorageService.storeFile(document2ExperimentEthanol1_photo, document2ExperimentEthanol1.getUUid())).toString());
 
         this.documentRepository.saveOrUpdate(document2ExperimentEthanol1);
 

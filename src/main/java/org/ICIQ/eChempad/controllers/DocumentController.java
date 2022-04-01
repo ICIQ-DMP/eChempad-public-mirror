@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.controllers;
 
+import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.configurations.UploadFileResponse;
 import org.ICIQ.eChempad.entities.Document;
 import org.ICIQ.eChempad.entities.Experiment;
@@ -50,13 +51,13 @@ public interface DocumentController {
 
     /**
      * Upload the received file if it does not collide with another into the local filesystem
-     * @param document Document data coming from the HTTP body
+     * @param document Document data coming from the HTTP body inside of a helper class.
      * @param experiment_uuid Experiment where we will add the received document.
      * @return Response containing the relevant information of the uploaded file, such as the download URL.
      * @throws ResourceNotExistsException Thrown if the UUID of the supplied experiment does not exist.
      * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to write in the desired experiment
      */
-    UploadFileResponse addDocument(Document document, UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    UploadFileResponse addDocument(DocumentHelper document, UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
     /**
      * Removes the selected document from the DB and deletes its associated file.

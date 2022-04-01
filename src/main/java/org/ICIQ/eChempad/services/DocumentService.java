@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.configurations.UploadFileResponse;
 import org.ICIQ.eChempad.entities.Document;
 import org.ICIQ.eChempad.entities.Journal;
@@ -21,6 +22,13 @@ import java.util.UUID;
 
 public interface DocumentService extends GenericService<Document, UUID> {
 
-    void addDocumentToExperiment(Document document, UUID experiment_uuid);
+    /**
+     * Adds a document to a certain experiment using the data in the document helper class and returns the new Document
+     * instance.
+     * @param document Data of the document inside of a helper class that should have all the equivalent fields.
+     * @param experiment_uuid UUID of the experiment that we want to edit by adding this document.
+     * @return Managed instance of the created document.
+     */
+    Document addDocumentToExperiment(DocumentHelper document, UUID experiment_uuid);
 
 }

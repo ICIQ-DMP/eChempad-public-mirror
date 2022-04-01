@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.controllers;
 
+import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.configurations.UploadFileResponse;
 import org.ICIQ.eChempad.entities.Document;
 import org.ICIQ.eChempad.entities.ElementPermission;
@@ -129,12 +130,13 @@ public class DocumentControllerClass implements DocumentController{
             value = "/api/experiment/{experiment_uuid}/document",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public UploadFileResponse addDocument(@ModelAttribute Document document, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        this.documentServiceClass.addDocumentToExperiment(document, experiment_uuid);
+    public UploadFileResponse addDocument(@ModelAttribute("Document") DocumentHelper document, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+
+        Document document1 = this.documentServiceClass.addDocumentToExperiment(document, experiment_uuid);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/document/")
-                .path(document.getUUid().toString())
+                .path(document1.getUUid().toString())
                 .path("/data")
                 .toUriString();
 
