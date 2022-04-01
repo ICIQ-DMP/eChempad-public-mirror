@@ -48,7 +48,7 @@ public interface DocumentController {
 
     /**
      * Upload the received file if it does not collide with another into the local filesystem
-     * @param document Document data coming from the HTTP body inside of a helper class.
+     * @param document Document data coming from the HTTP body inside a helper class.
      * @param experiment_uuid Experiment where we will add the received document.
      * @return Response containing the relevant information of the uploaded file, such as the download URL.
      * @throws ResourceNotExistsException Thrown if the UUID of the supplied experiment does not exist.

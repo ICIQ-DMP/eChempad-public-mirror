@@ -16,9 +16,21 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface ExperimentController {
+
+    /**
+     * Obtain all experiments accessible by the logged user.
+     * @return Set of Readable experiments by the logged user.
+     */
     ResponseEntity<Set<Experiment>> getExperiments();
 
-    ResponseEntity<Experiment> getExperiment(UUID uuid) throws ResourceNotExistsException;
+    /**
+     * Gets a certain experiment if we have enough permissions to read it and the resource exists
+     * @param experiment_uuid UUID of the accessed experiment.
+     * @return Returns the experiment wrapped in an HTTP response.
+     * @throws ResourceNotExistsException Thrown if the received UUID does not correspond to any resource.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the experiment we sent.
+     */
+    ResponseEntity<Experiment> getExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
     /**
      * Adds an experiment to a certain journal if we have enough permissions
@@ -38,7 +50,33 @@ public interface ExperimentController {
      */
     ResponseEntity<Set<Experiment>> getExperimentsFromJournal(UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
-    void removeExperiment(UUID uuid) throws ResourceNotExistsException;
 
-    void putExperiment(Experiment experiment, UUID uuid) throws ResourceNotExistsException;
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Removes the experiment selected by its UUID if the logged user have enough permissions to do so.
+     * @param experiment_uuid UUID of the experiment that we are removing.
+     * @throws ResourceNotExistsException Thrown if the resource does not exist.
+     * @throws NotEnoughAuthorityException Thrown if we do not have EDIT permissions against the removed experiment.
+     */
+    void removeExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+
+    /**
+     * Updates the experiment with the corresponding UUID if the logged user has enough permissions to do so.
+     * @param experiment Experiment data that we want to put in place of the older data of the experiment.
+     * @param experiment_uuid UUID of the experiment that we want to update. It has to exist.
+     * @throws ResourceNotExistsException Thrown if the resource with this UUID does not exist.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough permissions to update the desired experiment.
+     */
+    void putExperiment(Experiment experiment, UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 }

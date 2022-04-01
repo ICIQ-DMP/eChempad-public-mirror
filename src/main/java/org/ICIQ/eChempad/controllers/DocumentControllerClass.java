@@ -10,16 +10,11 @@ package org.ICIQ.eChempad.controllers;
 import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.configurations.UploadFileResponse;
 import org.ICIQ.eChempad.entities.Document;
-import org.ICIQ.eChempad.entities.ElementPermission;
-import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.repositories.ExperimentRepository;
 import org.ICIQ.eChempad.services.DocumentServiceClass;
 import org.ICIQ.eChempad.services.FileStorageService;
-import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,26 +25,22 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @RestController
 public class DocumentControllerClass implements DocumentController{
 
-    @Autowired
-    private DocumentServiceClass documentServiceClass;
+    private final DocumentServiceClass documentServiceClass;
+
+    private final FileStorageService fileStorageService;
 
     @Autowired
-    private FileStorageService fileStorageService;
-
-    @Autowired
-    private ExperimentRepository experimentRepository;
+    public DocumentControllerClass(DocumentServiceClass documentServiceClass, FileStorageService fileStorageService) {
+        this.documentServiceClass = documentServiceClass;
+        this.fileStorageService = fileStorageService;
+    }
 
 
     /**
@@ -156,7 +147,7 @@ public class DocumentControllerClass implements DocumentController{
     public ResponseEntity<Set<Document>> getDocumentsFromExperiment(@PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
         Set<Document> documents = this.documentServiceClass.getDocumentsFromExperiment(experiment_uuid);
 
-        // More properties could be added such as the mimetype (JSON)
+        // TODO: More properties could be added such as the mimetype (JSON)
         return ResponseEntity.ok(documents);
     }
 

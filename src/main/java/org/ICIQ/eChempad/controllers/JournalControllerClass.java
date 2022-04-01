@@ -8,6 +8,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Journal;
+import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.JournalService;
 import org.ICIQ.eChempad.services.JournalServiceClass;
@@ -21,10 +22,8 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/journal")
 public class JournalControllerClass implements JournalController{
-    // https://blog.marcnuri.com/inyeccion-de-campos-desaconsejada-field-injection-not-recommended-spring-ioc
-    private JournalService journalService;
+    private final JournalService journalService;
 
     @Autowired
     public JournalControllerClass(JournalServiceClass journalServiceClass) {
@@ -33,45 +32,49 @@ public class JournalControllerClass implements JournalController{
 
 
     /**
-     * Obtains all journals readable from the logged user.
-     * @return Collection of journals
+     * Obtain all journals accessible by the logged user.
+     * @return Set of journals readable by the user.
      */
     @Override
     @GetMapping(
-            value = "",
+            value = "/api/journal",
             produces = "application/json"
     )
-    public ResponseEntity<Set<Journal>> getAllJournals() {
+    public ResponseEntity<Set<Journal>> getJournals() {
         HashSet<Journal> journals = new HashSet<>(this.journalService.getAll());
         return ResponseEntity.ok(journals);
     }
 
 
-    /**
+     /**
      * https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
      * https://restfulapi.net/http-methods/
-     * Obtains the journal pointed by the supplied UUID if the logged user has READ rights against the journal.
-     * @param uuid UUID of the desired journal
-     * @return journal data
-     * @throws ResourceNotExistsException Thrown if the supplied UUID does not correspond to any Journal
+     * Gets a certain journal identified by the supplied UUID if the logged user has enough permissions to read the
+     * journal.
+     * @param journal_uuid UUID of the journal we have to retrieve
+     * @return Returns the data of the journal that we want to retrieve.
+     * @throws ResourceNotExistsException Thrown if the journal with this UUID does not exist.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the journal.
      */
     @Override
     @GetMapping(
-            value = "/{id}",
+            value = "/api/journal/{journal_uuid}",
             produces = "application/json"
     )
-    public ResponseEntity<Journal> getJournal(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
-        Journal journal = this.journalService.get(uuid);
+    public ResponseEntity<Journal> getJournal(@PathVariable UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        Journal journal = this.journalService.get(journal_uuid);
         return ResponseEntity.ok().body(journal);
     }
 
 
     /**
-     * Adds a journal into the user workspace of the logged user.
-     * @param journal Journal information from which we will create and add a new journal to our DB
+     * addJournal(ToResearcher)
+     * Adds a new journal to the researcher workspace. We always have permissions for this because it is in our own
+     * workspace.
+     * @param journal Data of the journal that we are going to add.
      */
     @PostMapping(
-            value = "",
+            value = "/api/journal",
             consumes = "application/json"
     )
     public void addJournal(@Validated @RequestBody Journal journal) {
@@ -79,21 +82,54 @@ public class JournalControllerClass implements JournalController{
     }
 
 
-    @DeleteMapping(
-            value = "/{id}",
-            produces = "application/json"
+    /**
+     * Obtain all readable journals from a certain researcher, identified by its UUID. We always have permission to
+     * query users, but we will only see the journals that we have permission to view.
+     * @param researcher_uuid UUID of the researcher that we are querying.
+     * @return Returns all the Journals readable of the selected researcher with this UUID.
+     * @throws ResourceNotExistsException Thrown if the researcher with the supplied UUID does not exist.
+     */
+    @GetMapping(
+            value = "/api/journal",
+            consumes = "application/json"
     )
-    public void removeJournal(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
-        this.journalService.remove(uuid);
+    @Override
+    public ResponseEntity<Set<Journal>> getJournalsFromResearcher(UUID researcher_uuid) throws ResourceNotExistsException {
+        return null;
+        // TODO
     }
 
+
+    /**
+     * Removes the journal with the supplied UUID. Fails if the journal does not exist, or we do not have edition
+     * permissions against the journal.
+     * @param journal_uuid UUID of the journal that we want to delete.
+     * @throws ResourceNotExistsException Thrown if the journal with this UUID does not exist.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to remove that journal.
+     */
+    @DeleteMapping(
+            value = "/api/journal/{journal_uuid}",
+            produces = "application/json"
+    )
+    public void removeJournal(@PathVariable UUID journal_uuid) throws ResourceNotExistsException {
+        this.journalService.remove(journal_uuid);
+    }
+
+
+    /**
+     * Updates the journal with the supplied UUID if we have enough permissions and the journal with that UUID exists.
+     * @param journal Contains the information of the new journal
+     * @param journal_uuid UUID of the journal that we want to update.
+     * @throws ResourceNotExistsException Thrown if the journal with the supplied UUID does not exist.
+     * @throws NotEnoughAuthorityException Thrown if we do not have edition authority against this journal.
+     */
     @PutMapping(
-            value = "/{id}",
+            value = "/api/journal/{journal_uuid}",
             produces = "application/json",
             consumes = "application/json"
     )
     @Override
-    public void putJournal(@Validated @RequestBody Journal journal, @PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
-        this.journalService.update(journal, uuid);
+    public void putJournal(@Validated @RequestBody Journal journal, @PathVariable UUID journal_uuid) throws ResourceNotExistsException {
+        this.journalService.update(journal, journal_uuid);
     }
 }

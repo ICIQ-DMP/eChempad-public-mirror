@@ -8,6 +8,7 @@
 package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Researcher;
+import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.ResearcherServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,33 +20,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-
 /**
- * GET /researcher :
- *   Obtains all researchers.
- * GET /researcher/:id :
- *   Obtains a certain researcher instance via GET on the specific endpoint of that certain researcher, which is
- *   composed by its uuid.
- * POST /researcher :
- *   Adds a new researcher instance by submitting the required fields of the researcher.
- * PUT /researcher/:id :
- *   Modifies the data of a researcher by supplying the fields that will be modified. Return error if UUID not found.
- * DELETE /researcher/:id
- *   Deletes a researcher from the database from its id. Return error if UUID not found.
- */
-
-/**
- * The controller will be responsible of processing REST API requests and transforming them into "model" requests,
- * which are programmatic requests for the service layer.
- * Then, queries will be made to the service layer.
- * After that, the data received from the service layer will be transformed in a ResponseEntity to render the Views of
- * the app.
+ * Controller that displays researcher information. The GETs can be called by everyone. The POSTs for addition are
+ * special since they are the "sign up" operation. REMOVEs and PUTs can be called by everyone but can only affect the
+ * own user, except for the administrator who can call all the methods over all researchers.
+ * Researcher in this application is what we generically call the users.
  */
 @RestController
-@RequestMapping("/api/researcher")
 public class ResearcherControllerClass implements ResearcherController {
 
-    // https://blog.marcnuri.com/inyeccion-de-campos-desaconsejada-field-injection-not-recommended-spring-ioc
     private final ResearcherServiceClass researcherServiceClass;
 
     @Autowired
@@ -53,9 +36,15 @@ public class ResearcherControllerClass implements ResearcherController {
         this.researcherServiceClass = researcherServiceClass;
     }
 
+
+    /**
+     * Obtains all the researchers available at eChempad application. Researchers information should be public between
+     * themselves, since it should be an information that is already present at institutional level.
+     * @return Set of all existent researchers.
+     */
     @Override
     @GetMapping(
-            value = "",
+            value = "/api/researcher",
             produces = "application/json"
     )
     public ResponseEntity<Set<Researcher>> getResearchers() {
@@ -63,21 +52,31 @@ public class ResearcherControllerClass implements ResearcherController {
         return ResponseEntity.ok(researchers);
     }
 
-    // https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
-    // https://restfulapi.net/http-methods/
+
+    /**
+     * Obtains a researcher's information by its UUID. Fails if the researcher does not exist.
+     * @param researcher_uuid UUID of the researcher that we want to retrieve.
+     * @return Returns information of the supplied researcher.
+     * @throws ResourceNotExistsException Thrown if the researcher does not exist.
+     */
     @Override
     @GetMapping(
-            value = "/{id}",
+            value = "/api/researcher/{researcher_uuid}",
             produces = "application/json"
     )
-    public ResponseEntity<Researcher> getResearcher(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
-        Researcher researcher = this.researcherServiceClass.get(uuid);
+    public ResponseEntity<Researcher> getResearcher(@PathVariable UUID researcher_uuid) throws ResourceNotExistsException {
+        Researcher researcher = this.researcherServiceClass.get(researcher_uuid);
         return ResponseEntity.ok().body(researcher);
     }
 
 
+    /**
+     * Adds a new researcher by supplying all the required fields to build a researcher. This operation will be done
+     * when we sign up in the application.
+     * @param researcher Data of the new researcher.
+     */
     @PostMapping(
-            value = "",
+            value = "/api/researcher",
             consumes = "application/json"
     )
     public void addResearcher(@Validated @RequestBody Researcher researcher) {
@@ -85,22 +84,52 @@ public class ResearcherControllerClass implements ResearcherController {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Deletes a researcher from the DB, cascading to all of its owned resources, so no data is left behind the user.
+     * This operation can be called by all users, but it will only affect the own user, except if we are administrator.
+     * @param researcher_uuid UUID of the researcher that we want to delete.
+     * @throws ResourceNotExistsException Thrown if the supplied UUID does not point to any researcher.
+     * @throws NotEnoughAuthorityException Thrown if a user tries to delete a researcher that is not him.
+     */
     @DeleteMapping(
-            value = "/{id}",
+            value = "/api/researcher/{researcher_uuid}",
             produces = "application/json"
     )
-    public void removeResearcher(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
-        this.researcherServiceClass.remove(uuid);
+    public void removeResearcher(@PathVariable UUID researcher_uuid) throws ResourceNotExistsException {
+        this.researcherServiceClass.remove(researcher_uuid);
     }
 
+
+    /**
+     * Overwrites the content of an existing researcher with new data.
+     * @param researcher Data that will be used to overwrite the current data of the desired researcher.
+     * @param researcher_uuid UUID of the researcher that we want to overwrite with new data.
+     * @throws ResourceNotExistsException Thrown if the researcher with that UUID does not exist.
+     * @throws NotEnoughAuthorityException Thrown if a user tries to update information of a researcher that is not him.
+     */
     @PutMapping(
-            value = "/{id}",
+            value = "/api/researcher/{id}",
             produces = "application/json",
             consumes = "application/json"
     )
     @Override
-    public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException {
-        this.researcherServiceClass.update(researcher, uuid);
+    public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID researcher_uuid) throws ResourceNotExistsException {
+        this.researcherServiceClass.update(researcher, researcher_uuid);
     }
 
 }
