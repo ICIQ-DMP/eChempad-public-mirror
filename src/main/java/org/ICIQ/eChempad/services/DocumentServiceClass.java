@@ -76,5 +76,18 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
         }
     }
 
+    /**
+     * Get all documents that belong to a certain experiment designated by its UUID
+     *
+     * @param experiment_uuid UUID of the experiment we are observing
+     * @return Set of documents of this experiment. It could be empty
+     */
+    @Override
+    public Set<Document> getDocumentsFromExperiment(UUID experiment_uuid) {
+        Experiment experiment = this.experimentRepository.get(experiment_uuid);
+
+        return experiment.getDocuments();
+    }
+
 
 }

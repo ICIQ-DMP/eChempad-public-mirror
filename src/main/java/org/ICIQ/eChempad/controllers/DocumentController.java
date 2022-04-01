@@ -10,16 +10,13 @@ package org.ICIQ.eChempad.controllers;
 import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.configurations.UploadFileResponse;
 import org.ICIQ.eChempad.entities.Document;
-import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -57,7 +54,23 @@ public interface DocumentController {
      * @throws ResourceNotExistsException Thrown if the UUID of the supplied experiment does not exist.
      * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to write in the desired experiment
      */
-    UploadFileResponse addDocument(DocumentHelper document, UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    UploadFileResponse addDocumentToExperiment(DocumentHelper document, UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+
+    /**
+     * Obtain the documents that are hanging from a certain experiment designated by its UUID
+     * @param experiment_uuid UUID of the experiment that we will obtain documents from
+     * @return Set of document that belong to this experiment.
+     */
+    ResponseEntity<Set<Document>> getDocumentsFromExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+
+
+
+
+
+
+
+
+
 
     /**
      * Removes the selected document from the DB and deletes its associated file.

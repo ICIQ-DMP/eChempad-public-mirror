@@ -17,6 +17,7 @@ import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.ExperimentRepository;
 import org.ICIQ.eChempad.services.DocumentServiceClass;
 import org.ICIQ.eChempad.services.FileStorageService;
+import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -130,7 +131,7 @@ public class DocumentControllerClass implements DocumentController{
             value = "/api/experiment/{experiment_uuid}/document",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public UploadFileResponse addDocument(@ModelAttribute("Document") DocumentHelper document, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+    public UploadFileResponse addDocumentToExperiment(@ModelAttribute("Document") DocumentHelper document, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
 
         Document document1 = this.documentServiceClass.addDocumentToExperiment(document, experiment_uuid);
 
@@ -143,6 +144,51 @@ public class DocumentControllerClass implements DocumentController{
         return new UploadFileResponse(document.getName(), fileDownloadUri,
                 document.getFile().getContentType(), document.getFile().getSize());
     }
+
+    /**
+     * Obtain the documents that are hanging from a certain experiment designated by its UUID
+     *
+     * @param experiment_uuid UUID of the experiment that we will obtain documents from
+     * @return Set of document that belong to this experiment.
+     */
+    @Override
+    @GetMapping("/api/experiment/{experiment_uuid}/document")
+    public ResponseEntity<Set<Document>> getDocumentsFromExperiment(@PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        Set<Document> documents = this.documentServiceClass.getDocumentsFromExperiment(experiment_uuid);
+
+        // More properties could be added such as the mimetype (JSON)
+        return ResponseEntity.ok(documents);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**
