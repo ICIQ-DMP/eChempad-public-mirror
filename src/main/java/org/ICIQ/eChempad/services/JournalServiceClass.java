@@ -41,8 +41,7 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
     @Override
     public Set<Journal> getAll()
     {
-        Set<Journal> journals = securityService.getAuthorizedJournal(Authority.READ);
-        return journals;
+        return this.securityService.getAuthorizedJournal(Authority.READ);
     }
 
 

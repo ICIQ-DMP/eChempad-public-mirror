@@ -23,16 +23,17 @@ import java.util.UUID;
 @Service
 public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID> implements ExperimentService {
 
-    @Autowired
+    final
     SecurityService securityService;
 
-    @Autowired
+    final
     JournalRepository journalRepository;
 
     @Autowired
-    public ExperimentServiceClass(ExperimentRepository experimentRepository) {
+    public ExperimentServiceClass(ExperimentRepository experimentRepository, SecurityService securityService, JournalRepository journalRepository) {
         super(experimentRepository);
-        //       this.researcherRepository = (ResearcherRepository) genericRepository;
+        this.securityService = securityService;
+        this.journalRepository = journalRepository;
     }
 
     /**
@@ -91,11 +92,33 @@ public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID
         }
     }
 
-    @Override
+
+    /**
+     * Obtain all experiments accessible by the logged user.
+     * @return Set of Readable experiments by the logged user.
+     */
     public Set<Experiment> getAll() {
         return this.securityService.getAuthorizedExperiment(Authority.READ);
     }
 
+    /**
+     * Gets a certain experiment if we have enough permissions to read it and the resource exists
+     * @param experiment_uuid UUID of the accessed experiment.
+     * @return Returns the experiment entity.
+     * @throws ResourceNotExistsException Thrown if the received UUID does not correspond to any resource.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the experiment we sent.
+     */
+    public Experiment get(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        Experiment experiment = this.genericRepository.get(experiment_uuid);
+        if (this.securityService.isResearcherAuthorized(Authority.READ, experiment_uuid, Experiment.class))
+        {
+            return experiment;
+        }
+        else
+        {
+            throw new NotEnoughAuthorityException("You do not have authority to read this journal");
+        }
+    }
 
 
 }

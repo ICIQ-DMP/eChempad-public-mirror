@@ -49,6 +49,12 @@ public interface JournalController {
      */
     ResponseEntity<Set<Journal>> getJournalsFromResearcher(UUID researcher_uuid) throws ResourceNotExistsException;
 
+
+
+
+
+
+
     /**
      * Removes the journal with the supplied UUID. Fails if the journal does not exist or we do not have edition
      * permissions against the journal.

@@ -10,11 +10,18 @@ package org.ICIQ.eChempad.services;
 import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Set;
 import java.util.UUID;
 
 public interface ExperimentService extends GenericService<Experiment, UUID> {
+
+    /**
+     * Obtain all experiments accessible by the logged user.
+     * @return Set of Readable experiments by the logged user.
+     */
+    Set<Experiment> getAll();
 
 
     /**
@@ -36,16 +43,15 @@ public interface ExperimentService extends GenericService<Experiment, UUID> {
      */
     Set<Experiment> getExperimentsFromJournal(UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
-    //T saveOrUpdate(T entity);
 
-    //T update(T entity, S id) throws ExceptionResourceNotExists;
 
-    Set<Experiment> getAll();
-
-    //T get(S id) throws ExceptionResourceNotExists;
-
-    //void add(T entity);
-
-    //void remove(S id) throws ExceptionResourceNotExists;
+    /**
+     * Gets a certain experiment if we have enough permissions to read it and the resource exists
+     * @param experiment_uuid UUID of the accessed experiment.
+     * @return Returns the experiment entity.
+     * @throws ResourceNotExistsException Thrown if the received UUID does not correspond to any resource.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the experiment we sent.
+     */
+    Experiment get(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
 }
