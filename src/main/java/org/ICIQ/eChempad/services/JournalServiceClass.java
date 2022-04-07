@@ -9,6 +9,7 @@ package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.Authority;
 import org.ICIQ.eChempad.entities.Journal;
+import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.JournalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +40,27 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
      * @return Set of journals
      */
     @Override
-    public Set<Journal> getAll()
+    public Set<Journal> getJournals()
     {
         return this.securityService.getAuthorizedJournal(Authority.READ);
+    }
+
+    /**
+     * Returns the journal identified by the supplied UUID if is READABLE by the logged user.
+     * @param journal_uuid UUID of the desired journal
+     * @return Journal data
+     * @throws ResourceNotExistsException if the desired journal does not exist we throw an exception
+     */
+    public Journal getJournal(UUID journal_uuid) throws ResourceNotExistsException
+    {
+        if (this.securityService.isResearcherAuthorized(Authority.READ, journal_uuid, Journal.class))
+        {
+            return this.genericRepository.get(journal_uuid);
+        }
+        else
+        {
+            throw new NotEnoughAuthorityException("You do not have enough authority to read this journal");
+        }
     }
 
 
@@ -52,9 +71,9 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
      * @return Returns the same journal that we are adding, but after the transient state is over and all fields are
      *         available.
      */
-    public Journal save(Journal entity)
+    public void addJournal(Journal entity)
     {
-        return (Journal) this.securityService.saveElementWorkspace(entity);
+        this.securityService.saveElementWorkspace(entity);
     }
 
 
@@ -72,24 +91,6 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
     }
 
 
-    /**
-     * Returns the journal identified by the supplied UUID if is READABLE by the logged user.
-     * @param id UUID of the desired journal
-     * @return Journal data
-     * @throws ResourceNotExistsException if the desired journal does not exist we throw an exception
-     */
-    public Journal get(UUID id) throws ResourceNotExistsException
-    {
-        if (this.securityService.isResearcherAuthorized(Authority.READ, id, Journal.class))
-        {
-            return super.get(id);
-        }
-        else
-        {
-            // TODO: error
-            return null;
-        }
-    }
 
 
     public void remove(UUID id) throws ResourceNotExistsException

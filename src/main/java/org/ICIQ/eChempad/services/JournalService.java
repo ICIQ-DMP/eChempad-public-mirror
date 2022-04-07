@@ -26,23 +26,27 @@ public interface JournalService extends GenericService<Journal, UUID> {
      * Obtains all the journals readable by the logged in user.
      * @return Set of readable journals
      */
-    Set<Journal> getAll();
+    Set<Journal> getJournals();
 
 
     /**
-     * Obtains the journal identified
-     * @param id
-     * @return
-     * @throws ResourceNotExistsException
-     * @throws NotEnoughAuthorityException
+     * Obtains the journal identified by its UUID if the logged in reseqarcher has enough permissions to read the
+     * journal.
+     * @param journal_uuid UUID of the journal we want to read.
+     * @return Journal data
+     * @throws ResourceNotExistsException Thrown if the journal with this UUID does not exist.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the journal.
      */
-    Journal get(UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    Journal getJournal(UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+
 
     /**
      * Adds a new journal to the user workspace. It will be always available since it is on the own user workspace.
      * @param entity Journal data to add.
      */
-    void add(Journal entity);
+    void addJournal(Journal entity);
+
+
 
 
 

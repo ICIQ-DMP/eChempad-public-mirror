@@ -15,20 +15,4 @@
       <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_killByPort8081" />
     </method>
   </configuration>
-  <configuration default="false" name="EChempadApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-    <module name="eChempad" />
-    <extension name="coverage">
-      <pattern>
-        <option name="PATTERN" value="org.ICIQ.eChempad.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
-    <option name="SPRING_BOOT_MAIN_CLASS" value="org.ICIQ.eChempad.EChempadApplication" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-    <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_killByPort8081" />
-    </method>
-  </configuration>
 </component>
