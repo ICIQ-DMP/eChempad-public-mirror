@@ -59,6 +59,27 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
 
 
     /**
+     * Returns the desired document if it exists in the DB and if we have permissions to read it.
+     * @param document_uuid id of the desired document
+     * @return Data of the document.
+     * @throws ResourceNotExistsException Thrown if the UUID does not exist for any document
+     * @throws NotEnoughAuthorityException Thrown if we do not have read permissions against the document
+     */
+    @Override
+    public Document getDocument(UUID document_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        Document document = this.genericRepository.get(document_uuid);
+        if (this.securityService.isResearcherAuthorized(Authority.READ, document_uuid, Document.class))
+        {
+            return document;
+        }
+        else
+        {
+            throw new NotEnoughAuthorityException("You are not authorized to see this document");
+        }
+    }
+
+
+    /**
      * Adds a document to a certain experiment using the data in the document helper class and returns the new Document
      * instance.
      * @param documentHelper Data of the document inside a helper class that should have all the equivalent fields.

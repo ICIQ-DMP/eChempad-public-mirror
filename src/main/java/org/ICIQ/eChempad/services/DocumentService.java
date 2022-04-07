@@ -16,6 +16,7 @@ import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,16 @@ public interface DocumentService extends GenericService<Document, UUID> {
      * @return Collection of readable documents
      */
     Set<Document> getAll();
+
+
+    /**
+     * Returns the desired document if it exists in the DB and if we have permissions to read it.
+     * @param uuid id of the desired document
+     * @return Data of the document.
+     * @throws ResourceNotExistsException Thrown if the UUID does not exist for any document
+     * @throws NotEnoughAuthorityException Thrown if we do not have read permissions against the document
+     */
+    Document getDocument(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
     /**
      * Adds a document to a certain experiment using the data in the document helper class and returns the new Document

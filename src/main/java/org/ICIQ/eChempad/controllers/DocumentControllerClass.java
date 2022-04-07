@@ -34,12 +34,9 @@ public class DocumentControllerClass implements DocumentController{
 
     private final DocumentServiceClass documentServiceClass;
 
-    private final FileStorageService fileStorageService;
-
     @Autowired
-    public DocumentControllerClass(DocumentServiceClass documentServiceClass, FileStorageService fileStorageService) {
+    public DocumentControllerClass(DocumentServiceClass documentServiceClass) {
         this.documentServiceClass = documentServiceClass;
-        this.fileStorageService = fileStorageService;
     }
 
 
@@ -62,7 +59,7 @@ public class DocumentControllerClass implements DocumentController{
      * https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
      * https://restfulapi.net/http-methods/
      * Returns the desired document if it exists in the DB and if we have permissions to read it.
-     * @param uuid id of the desired document
+     * @param document_uuid id of the desired document
      * @return ResponseEntity containing the document desired
      * @throws ResourceNotExistsException Thrown if the UUID does not exist for any document
      * @throws NotEnoughAuthorityException Thrown if we do not have read permissions against the document
@@ -72,8 +69,8 @@ public class DocumentControllerClass implements DocumentController{
             value = "/api/document/{id}",
             produces = "application/json"
     )
-    public ResponseEntity<Document> getDocument(@PathVariable(value = "id") UUID uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        Document document = this.documentServiceClass.get(uuid);
+    public ResponseEntity<Document> getDocument(@PathVariable(value = "id") UUID document_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        Document document = this.documentServiceClass.getDocument(document_uuid);
         return ResponseEntity.ok().body(document);
     }
 
