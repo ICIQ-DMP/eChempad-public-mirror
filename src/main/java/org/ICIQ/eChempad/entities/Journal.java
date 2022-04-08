@@ -8,6 +8,8 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -53,7 +55,6 @@ public class Journal implements IEntity{
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
 )
-    @JsonIgnore
     private Set<Experiment> experiments;
 
 
@@ -88,6 +89,25 @@ public class Journal implements IEntity{
 
     public void setUUid(UUID s) {
         this.id = s;
+    }
+
+    @Override
+    public boolean isContainer(UUID entity_uuid) {
+        // Search UUID for the inner experiment
+        if (this.getExperiments().stream().anyMatch(experiment -> experiment.getUUid().equals(entity_uuid)))
+        {
+            // Return true if there is match
+            return true;
+        }
+        else  // If we can find it in the immediate level, we ask the next level
+        {
+            return this.getExperiments().stream().anyMatch(experiment -> experiment.isContainer(entity_uuid));
+        }
+    }
+
+    @Override
+    public boolean isContained(UUID entity_uuid) {
+        return false;
     }
 
     @Override

@@ -54,4 +54,24 @@ public interface IEntity {
      * @return Class of the object implementing this interface.
      */
     <T extends IEntity> Class<T> getMyType();
+
+
+    /**
+     * Implemented differently by every entity class to know if the passed entity_uuid is contained by the current
+     * object
+     * @param entity_uuid UUID of an entity of type journal, experiment and document that is contained by this instance
+     * @return True if the supplied UUID is contained by the current object.
+     */
+    boolean isContainer(UUID entity_uuid);
+
+
+    /**
+     * Implemented differently by every entity class to know if the passed entity_uuid is parent of the current
+     * instance.
+     * @param entity_uuid UUID of the entity of type journal, experiment and document that can contain this instance
+     * @return True if the supplied UUID is a container of the current object.
+     */
+    boolean isContained(UUID entity_uuid);
+
+
 }

@@ -95,7 +95,7 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
 
     @Override
     @Transactional
-    public T get(S id) throws ResourceNotExistsException {
+    public T getAll(S id) throws ResourceNotExistsException {
         T t = this.genericRepository.get(id);
         if (t == null)
         {

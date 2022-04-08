@@ -97,7 +97,7 @@ public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID
      * Obtain all experiments accessible by the logged user.
      * @return Set of Readable experiments by the logged user.
      */
-    public Set<Experiment> getAll() {
+    public Set<Experiment> getExperiments() {
         return this.securityService.getAuthorizedExperiment(Authority.READ);
     }
 
@@ -108,7 +108,7 @@ public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID
      * @throws ResourceNotExistsException Thrown if the received UUID does not correspond to any resource.
      * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the experiment we sent.
      */
-    public Experiment get(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+    public Experiment getExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
         Experiment experiment = this.genericRepository.get(experiment_uuid);
         if (this.securityService.isResearcherAuthorized(Authority.READ, experiment_uuid, Experiment.class))
         {

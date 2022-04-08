@@ -32,8 +32,7 @@ public interface DocumentService extends GenericService<Document, UUID> {
      * Returns all the document readable by the logged user
      * @return Collection of readable documents
      */
-    Set<Document> getAll();
-
+    Set<Document> getDocuments();
 
     /**
      * Returns the desired document if it exists in the DB and if we have permissions to read it.

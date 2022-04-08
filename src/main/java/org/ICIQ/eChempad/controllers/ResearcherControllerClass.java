@@ -65,7 +65,7 @@ public class ResearcherControllerClass implements ResearcherController {
             produces = "application/json"
     )
     public ResponseEntity<Researcher> getResearcher(@PathVariable UUID researcher_uuid) throws ResourceNotExistsException {
-        Researcher researcher = this.researcherServiceClass.get(researcher_uuid);
+        Researcher researcher = this.researcherServiceClass.getAll(researcher_uuid);
         return ResponseEntity.ok().body(researcher);
     }
 

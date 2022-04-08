@@ -65,7 +65,6 @@ public class ElementPermission implements IEntity {
             fetch = FetchType.EAGER,
             optional = false
     )
-    @JsonIgnore
     protected Researcher researcher;
 
 
@@ -79,7 +78,6 @@ public class ElementPermission implements IEntity {
     @JoinColumn(
             name = "experiment_id",
             nullable = true)
-    @JsonIgnore
     @Nullable
     protected Experiment experiment;
 
@@ -91,19 +89,17 @@ public class ElementPermission implements IEntity {
     @JoinColumn(
             name = "journal_id",
             nullable = true)
-    @JsonIgnore
     @Nullable
     protected Journal journal;
 
 
     @ManyToOne(
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             optional = true
     )
     @JoinColumn(
             name = "document_id",
             nullable = true)
-    @JsonIgnore
     @Nullable
     protected Document document;
 
@@ -170,6 +166,16 @@ public class ElementPermission implements IEntity {
     }
 
     @Override
+    public boolean isContainer(UUID entity_uuid) {
+        return false;
+    }
+
+    @Override
+    public boolean isContained(UUID entity_uuid) {
+        return false;
+    }
+
+    @Override
     public Class<?> getMyType() {
         return ElementPermission.class;
     }
@@ -201,15 +207,25 @@ public class ElementPermission implements IEntity {
 
     @Override
     public String toString() {
-        return "ElementPermission{" +
-                "id=" + id +
-                ", type=" + type +
-                ", authority=" + authority +
-                ", researcher=" + researcher.getEmail() +
-                ", experiment=" + experiment.getUUid() +
-                ", journal=" + journal.getUUid() +
-                ", document=" + document.getUUid() +
-                '}';
+        String msg = "ElementPermission{" +
+                "id=" + this.id +
+                ", type=" + this.type +
+                ", authority=" + this.authority +
+                ", researcher=" + this.researcher.getEmail();
+
+        if (this.type.equals(Document.class))
+        {
+            msg += ", document=" + this.document.getUUid();
+        }
+        else if (this.type.equals(Experiment.class))
+        {
+            msg += ", experiment=" + this.experiment.getUUid();
+        }
+        else if (this.type.equals(Journal.class))
+        {
+            msg += ", journal=" + this.journal.getUUid();
+        }
+        return msg;
     }
 
     @Nullable

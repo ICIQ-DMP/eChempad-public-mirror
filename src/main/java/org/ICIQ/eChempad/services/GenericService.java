@@ -28,7 +28,7 @@ public interface GenericService<T, S extends Serializable> {
 
     Set<T> getAll();
 
-    T get(S id) throws ResourceNotExistsException;
+    T getAll(S id) throws ResourceNotExistsException;
 
     void add(T entity);
 

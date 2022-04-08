@@ -71,7 +71,6 @@ public class Document implements IEntity{
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     @Nullable
-    @JsonIgnore
     private Set<ElementPermission> permissions;
 
     public Document() {}
@@ -96,11 +95,7 @@ public class Document implements IEntity{
      */
     public String displayFile()
     {
-        StringBuilder contentBuilder = new StringBuilder();
-        contentBuilder.append(this.name);
-        contentBuilder.append(" ");
-        contentBuilder.append(this.description);
-        return contentBuilder.toString();
+        return this.name + " " + this.description;
     }
 
 
@@ -112,6 +107,23 @@ public class Document implements IEntity{
 
     public void setUUid(UUID s) {
         this.id = s;
+    }
+
+    @Override
+    public boolean isContainer(UUID entity_uuid) {
+        return false;
+    }
+
+    @Override
+    public boolean isContained(UUID entity_uuid) {
+        if (this.experiment.getUUid().equals(entity_uuid))
+        {
+            return true;
+        }
+        else
+        {
+            return (this.experiment.isContained(entity_uuid));
+        }
     }
 
     @Override

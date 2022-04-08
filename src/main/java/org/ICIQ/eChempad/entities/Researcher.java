@@ -64,7 +64,6 @@ public class Researcher implements Serializable, IEntity {
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     @MapKey(name = "id")
-    @JsonIgnore
     private List<ElementPermission> permissions;
 
 
@@ -138,6 +137,16 @@ public class Researcher implements Serializable, IEntity {
 
     public void setUUid(UUID s) {
         this.uuid = s;
+    }
+
+    @Override
+    public boolean isContainer(UUID entity_uuid) {
+        return false;
+    }
+
+    @Override
+    public boolean isContained(UUID entity_uuid) {
+        return false;
     }
 
     @Override

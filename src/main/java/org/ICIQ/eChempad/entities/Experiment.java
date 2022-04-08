@@ -45,17 +45,16 @@ public class Experiment implements IEntity{
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
 )
-    @JsonIgnore
     private Set<Document> documents;
 
+    @JsonIgnore
     @ManyToOne(
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             optional = false
     )
     @JoinColumn(
             name = "journal_id",
             nullable = false)
-    @JsonIgnore
     private Journal journal;
 
 
@@ -67,7 +66,6 @@ public class Experiment implements IEntity{
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     @NotNull
-    @JsonIgnore
     private Set<ElementPermission> permissions = new HashSet<>();
 
     public Experiment() {}
@@ -94,6 +92,16 @@ public class Experiment implements IEntity{
 
     public void setUUid(UUID s) {
         this.id = s;
+    }
+
+    @Override
+    public boolean isContainer(UUID entity_uuid) {
+        return this.getDocuments().stream().anyMatch(document -> document.getUUid().equals(entity_uuid));
+    }
+
+    @Override
+    public boolean isContained(UUID entity_uuid) {
+        return this.journal.getUUid().equals(entity_uuid);
     }
 
     @Override

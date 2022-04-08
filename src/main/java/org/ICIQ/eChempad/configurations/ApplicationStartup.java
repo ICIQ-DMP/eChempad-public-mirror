@@ -120,6 +120,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         this.elementPermissionRepository.saveOrUpdate(ethanolPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(CO2ReactionPermission);
 
+        // checking permission state
+        Journal journal = this.journalRepository.get(ethanolProperties.getUUid());
+        System.out.println("sdfsdf");
+
         // Experiment examples
         // Experiments in CO2Reaction journal
         Experiment experimentCO2Reaction1 = new Experiment("Activation energy laser beam 500 W, refraction index 0.4", "Test 1 of the CO2 fixation with laser beams", CO2Reaction);

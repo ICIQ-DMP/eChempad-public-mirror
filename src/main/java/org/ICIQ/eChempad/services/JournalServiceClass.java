@@ -15,6 +15,7 @@ import org.ICIQ.eChempad.repositories.JournalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -53,9 +54,10 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
      */
     public Journal getJournal(UUID journal_uuid) throws ResourceNotExistsException
     {
-        if (this.securityService.isResearcherAuthorized(Authority.READ, journal_uuid, Journal.class))
+        Optional<Journal> option = this.securityService.getAuthorizedJournal(Authority.READ).stream().filter(journal -> journal.getUUid().equals(journal_uuid)).findFirst();
+        if (option.isPresent())
         {
-            return this.genericRepository.get(journal_uuid);
+            return option.get();
         }
         else
         {
@@ -68,8 +70,6 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
      * Saves the supplied entity of journal. We can always save a journal, but in the workspace of the logged user.
      * @param entity Data parsed coming from the REST API call. Some fields such as the id which are managed with
      *               hibernate could be null
-     * @return Returns the same journal that we are adding, but after the transient state is over and all fields are
-     *         available.
      */
     public void addJournal(Journal entity)
     {

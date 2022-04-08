@@ -83,6 +83,16 @@ public class RoleUser implements IEntity{
     }
 
     @Override
+    public boolean isContainer(UUID entity_uuid) {
+        return false;
+    }
+
+    @Override
+    public boolean isContained(UUID entity_uuid) {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "RoleUser{" +
                 "researcher=" + researcher +

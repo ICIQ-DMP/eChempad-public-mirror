@@ -47,17 +47,24 @@ public interface JournalService extends GenericService<Journal, UUID> {
     void addJournal(Journal entity);
 
 
+    /**
+     * Updates the journal with the UUID supplied with data from the journal
+     * @param entity journal data
+     * @param id ID of the journal instance that we are updating.
+     * @return Returns the journal instance that we have updated.
+     * @throws ResourceNotExistsException Thrown if the resource with the supplied UUID does not exist.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority (write) to operate against the
+     * entity
+     */
+    Journal update(Journal entity, UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
 
-
-    Journal update(Journal entity, UUID id) throws ResourceNotExistsException;
-
-
-
-
-    // Not overridden. We can always add our own journals no matter security concerns
-    //void add(T entity);
-
-    void remove(UUID id) throws ResourceNotExistsException;
+    /**
+     * Removes the journal with the supplied UUID from the database.
+     * @param id ID of the journal that we are going to delete.
+     * @throws ResourceNotExistsException Thrown if the journal with this ID does not exist.
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough permissions to operate in this journal.
+     */
+    void remove(UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
 }

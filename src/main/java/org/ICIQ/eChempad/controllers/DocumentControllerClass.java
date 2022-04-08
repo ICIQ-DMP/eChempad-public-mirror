@@ -13,7 +13,6 @@ import org.ICIQ.eChempad.entities.Document;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.DocumentServiceClass;
-import org.ICIQ.eChempad.services.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -50,7 +49,7 @@ public class DocumentControllerClass implements DocumentController{
             produces = "application/json"
     )
     public ResponseEntity<Set<Document>> getDocuments() {
-        HashSet<Document> documents = new HashSet<>(this.documentServiceClass.getAll());
+        HashSet<Document> documents = new HashSet<>(this.documentServiceClass.getDocuments());
         return ResponseEntity.ok(documents);
     }
 

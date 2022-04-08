@@ -75,8 +75,13 @@ public class SecurityServiceClass implements SecurityService{
         // Loop permissions table
         for (ElementPermission elementPermission : this.elementPermissionService.getAll())
         {
-            // Select all permissions of the logged researcher that are pointing to an entity of type experiment and
-            // that have an authority level below the required.
+            /*
+             * Depending on the type we need to ensure permissions in the upper part of the tree, for example, to check
+             * if we have permission to read a document we need to check the permissions of the document, and if we do
+             * not have an explicit permission, we should check the permissions of the experiment that is containing the
+             * documents.
+             */
+            // Explicit permissions in the same level
             if (elementPermission.getResearcher().equals(researcher)
                     && elementPermission.getType().equals(type)
                     && elementPermission.getAuthority().ordinal() >= authority.ordinal()
@@ -85,8 +90,22 @@ public class SecurityServiceClass implements SecurityService{
             {
                 return true;
             }
+            else  // We do not have permissions in the same level. We need to go to the parent if exists.
+            {
+                /*
+                 * The current iterated permission refers to an element that is the container of the element that we are
+                 * querying
+                 */
+                if (elementPermission.getElement().isContainer(uuid))
+                {
+                    // Return true if the container has permissions for the logged user
+                    if (elementPermission.getResearcher().equals(researcher) && elementPermission.getAuthority().ordinal() >= authority.ordinal())
+                    {
+                        return true;
+                    }
+                }
+            }
         }
-
         return false;
     }
 
@@ -122,6 +141,28 @@ public class SecurityServiceClass implements SecurityService{
             return null;
         }
         return element;
+    }
+
+
+    @Override
+    public <T extends IEntity> IEntity getElement(UUID uuid, Class<T> type) {
+        if (type.equals(Experiment.class))
+        {
+            return this.experimentRepository.get(uuid);
+        }
+        else if (type.equals(Journal.class))
+        {
+            return this.journalRepository.get(uuid);
+        }
+        else if (type.equals(Document.class))
+        {
+            return this.documentRepository.get(uuid);
+        }
+        else
+        {
+            // TODO: Error if other type
+            return null;
+        }
     }
 
     /**
@@ -162,13 +203,13 @@ public class SecurityServiceClass implements SecurityService{
         // Loop permissions table
         for (ElementPermission elementPermission : this.elementPermissionService.getAll())
         {
-            // Select all permissions of the logged researcher that are pointing to an entity of type experiment and
+            // Select all permissions of the logged researcher that are pointing to an entity of type and
             // that have an authority level below the required.
             if (elementPermission.getResearcher().equals(researcher)
                     && elementPermission.getType().equals(type)
                     && elementPermission.getAuthority().ordinal() >= authority.ordinal())
             {
-                result.add(elementPermission.getElement());
+                result.add((T)this.getElement(elementPermission.getElement().getUUid(), type));
             }
         }
         return result;

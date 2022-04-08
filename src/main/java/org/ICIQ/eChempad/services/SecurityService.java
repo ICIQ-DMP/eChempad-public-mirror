@@ -28,6 +28,16 @@ public interface SecurityService {
 
     IEntity saveElementWorkspace(IEntity element);
 
+
+    /**
+     * Retrieves an element of the hierarchy using the corresponding repository depending on the supplied class.
+     * @param uuid UUID of the element we want to retrieve
+     * @param type Type of the element we want to retrieve. It will be used to select the adequate repository.
+     * @param <T> IEntity type
+     * @return The entity itself, which should be cast to the correct type.
+     */
+    <T extends IEntity> IEntity getElement(UUID uuid, Class<T> type);
+
     /**
      * Updates the element pointed by the supplied UUID with the data supplied via the IEntity element.
      * @param element contains data used to override the existing

@@ -41,7 +41,7 @@ public class ExperimentControllerClass implements ExperimentController {
             produces = "application/json"
     )
     public ResponseEntity<Set<Experiment>> getExperiments() {
-        HashSet<Experiment> experiments = new HashSet<>(this.experimentService.getAll());
+        HashSet<Experiment> experiments = new HashSet<>(this.experimentService.getExperiments());
         return ResponseEntity.ok(experiments);
     }
 
@@ -58,7 +58,7 @@ public class ExperimentControllerClass implements ExperimentController {
             produces = "application/json"
     )
     public ResponseEntity<Experiment> getExperiment(@PathVariable(value = "id") UUID experiment_uuid) throws ResourceNotExistsException {
-        Experiment experiment = this.experimentService.get(experiment_uuid);
+        Experiment experiment = this.experimentService.getExperiment(experiment_uuid);
         return ResponseEntity.ok().body(experiment);
     }
 

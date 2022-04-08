@@ -21,7 +21,7 @@ public interface ExperimentService extends GenericService<Experiment, UUID> {
      * Obtain all experiments accessible by the logged user.
      * @return Set of Readable experiments by the logged user.
      */
-    Set<Experiment> getAll();
+    Set<Experiment> getExperiments();
 
 
     /**
@@ -52,6 +52,6 @@ public interface ExperimentService extends GenericService<Experiment, UUID> {
      * @throws ResourceNotExistsException Thrown if the received UUID does not correspond to any resource.
      * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the experiment we sent.
      */
-    Experiment get(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    Experiment getExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
 }

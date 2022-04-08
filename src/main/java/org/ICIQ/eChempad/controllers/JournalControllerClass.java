@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,7 +40,8 @@ public class JournalControllerClass implements JournalController{
             produces = "application/json"
     )
     public ResponseEntity<Set<Journal>> getJournals() {
-        return ResponseEntity.ok(this.journalService.getAll());
+        ResponseEntity<Set<Journal>> res = ResponseEntity.ok(this.journalService.getJournals());
+        return res;
     }
 
 
@@ -61,7 +61,7 @@ public class JournalControllerClass implements JournalController{
             produces = "application/json"
     )
     public ResponseEntity<Journal> getJournal(@PathVariable UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        return ResponseEntity.ok().body(this.journalService.get(journal_uuid));
+        return ResponseEntity.ok().body(this.journalService.getAll(journal_uuid));
     }
 
 

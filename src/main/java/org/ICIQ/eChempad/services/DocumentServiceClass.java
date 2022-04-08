@@ -53,7 +53,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
      * @return Collection of readable documents
      */
     @Override
-    public Set<Document> getAll() {
+    public Set<Document> getDocuments() {
         return this.securityService.getAuthorizedDocument(Authority.READ);
     }
 
