@@ -19,5 +19,10 @@
       "name": "file.upload-dir",
       "type": "java.lang.String",
       "description": "Description for file.upload-dir."
+    },
+    {
+      "name": "signals.baseURL",
+      "type": "java.lang.String",
+      "description": "Contains the URL where the API REST of Signals is located."
     }
   ] }
