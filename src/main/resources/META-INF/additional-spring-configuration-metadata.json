@@ -24,5 +24,15 @@
       "name": "signals.baseURL",
       "type": "java.lang.String",
       "description": "Contains the URL where the API REST of Signals is located."
+    },
+    {
+      "name": "signals.APIKeys.path",
+      "type": "java.lang.String",
+      "description": "Contains a path to a file that contains the API key for a testing user."
+    },
+    {
+      "name": "signals.APIKeys.filename",
+      "type": "java.lang.String",
+      "description": "Filename for a file containing the API key. Used in testing."
     }
   ] }

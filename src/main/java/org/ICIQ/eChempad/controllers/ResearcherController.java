@@ -39,12 +39,21 @@ public interface ResearcherController {
      */
     ResponseEntity<Researcher> getResearcher(UUID researcher_uuid) throws ResourceNotExistsException;
 
+
     /**
      * Adds a new researcher by supplying all the required fields to build a researcher. This operation will be done
      * when we sign up in the application.
      * @param researcher Data of the new researcher.
      */
     void addResearcher(Researcher researcher);
+
+
+    /**
+     * Obtain all data from the Signals Notebook and put it inside the eChempad. It uses the Signals notebook API key
+     * stored in the context of the user that is logged in.
+     */
+    void bulkImportSignals();
+
 
 
     /**
@@ -64,4 +73,8 @@ public interface ResearcherController {
      * @throws NotEnoughAuthorityException Thrown if a user tries to update information of a researcher that is not him.
      */
     void putResearcher(Researcher researcher, UUID researcher_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+
+
+
+
 }

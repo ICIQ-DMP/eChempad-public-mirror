@@ -11,6 +11,7 @@ import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.ResearcherServiceClass;
+import org.ICIQ.eChempad.services.SignalsImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,8 +32,11 @@ public class ResearcherControllerClass implements ResearcherController {
 
     private final ResearcherServiceClass researcherServiceClass;
 
+    private final SignalsImportService signalsImportService;
+
     @Autowired
-    public ResearcherControllerClass(ResearcherServiceClass researcherServiceClass) {
+    public ResearcherControllerClass(ResearcherServiceClass researcherServiceClass, SignalsImportService signalsImportService) {
+        this.signalsImportService = signalsImportService;
         this.researcherServiceClass = researcherServiceClass;
     }
 
@@ -83,7 +87,11 @@ public class ResearcherControllerClass implements ResearcherController {
         this.researcherServiceClass.save(researcher);
     }
 
-
+    @GetMapping(value = "/api/researcher/signals")
+    @Override
+    public void bulkImportSignals() {
+        this.signalsImportService.importSignals();
+    }
 
 
 
@@ -131,5 +139,7 @@ public class ResearcherControllerClass implements ResearcherController {
     public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID researcher_uuid) throws ResourceNotExistsException {
         this.researcherServiceClass.update(researcher, researcher_uuid);
     }
+
+
 
 }

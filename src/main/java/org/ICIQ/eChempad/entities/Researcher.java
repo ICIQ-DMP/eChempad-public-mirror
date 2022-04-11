@@ -114,7 +114,7 @@ public class Researcher implements Serializable, IEntity {
                 ", email='" + email + '\'' +
                 ", hashedPassword='" + hashedPassword + '\'' +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
-                //", permissions=" + permissions +
+                ", permissions=" + permissions +
                 ", roles=" + roles +
                 '}';
     }

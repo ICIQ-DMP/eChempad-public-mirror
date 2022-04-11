@@ -12,6 +12,7 @@ import org.ICIQ.eChempad.repositories.*;
 import org.ICIQ.eChempad.services.FileStorageService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mock.web.MockMultipartFile;
@@ -23,9 +24,16 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
+
+    @Value("${signals.APIKeys.path}")
+    private String APIKeysPath;
+
+    @Value("${signals.APIKeys.filename}")
+    private String APIKeyFilename;
 
     private final ResearcherRepository researcherRepository;
 
@@ -71,10 +79,40 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         initializeDB();
     }
 
+    String getAPIKey()
+    {
+        String out = "";
+
+        if (this.APIKeysPath == null || this.APIKeyFilename == null)
+        {
+            return "";
+        }
+        else
+        {
+            // File path is passed as parameter
+            File file = new File(this.APIKeysPath + "/" + this.APIKeyFilename);
+
+            Scanner scanner = null;
+            try {
+                scanner = new Scanner(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            while (scanner.hasNextLine())
+            {
+                out += scanner.nextLine();
+            }
+        }
+        return out;
+    }
+
     private void initializeDB()
     {
+
+        String APIKey = this.getAPIKey();
         // Researcher examples, implicitly are USERs
-        Researcher elvisTech = new Researcher("Elvis Tech", "elvis.not.dead@tech.es", null, "password");
+        Researcher elvisTech = new Researcher("Charles Good", "cgood@gmail.com", APIKey, "password");
         Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password");
         Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password");
 
@@ -119,10 +157,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         this.elementPermissionRepository.saveOrUpdate(waterPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(ethanolPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(CO2ReactionPermission);
-
-        // checking permission state
-        Journal journal = this.journalRepository.get(ethanolProperties.getUUid());
-        System.out.println("sdfsdf");
 
         // Experiment examples
         // Experiments in CO2Reaction journal
