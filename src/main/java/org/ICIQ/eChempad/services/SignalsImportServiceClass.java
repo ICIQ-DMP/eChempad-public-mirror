@@ -33,99 +33,43 @@ public class SignalsImportServiceClass implements SignalsImportService {
     }
 
 
-    public boolean importSignals()
-    {
+    public boolean importSignals() throws IOException {
         Researcher user = this.securityService.getLoggedResearcher();
         String apiKey = user.getSignalsAPIKey();
         Logger.getGlobal().info(apiKey);
 
-        URL myURL = null;
         int journalNumber = 0;
-        try {
-            myURL = new URL(this.baseURL + "/entities");
-                    //"?page[offset]=" + journalNumber + "&page[limit]=1&includeTypes=journal&include=children%2C%20owner");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        URL myURL = new URL(this.baseURL + "/entities");  //"?page[offset]=" + journalNumber + "&page[limit]=1&includeTypes=journal&include=children%2C%20owner");
 
-        HttpURLConnection con = null;
-        try {
-            con = (HttpURLConnection) myURL.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        HttpURLConnection con = (HttpURLConnection) myURL.openConnection();
         // If this header is present: 400 bad request
         // But if it is not present then: 415 unsupported media type
         con.setRequestProperty("Content-Type", "application/vnd.api+json");
         con.setRequestProperty("Accept", "*/*");
-        try {
-            con.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
+        con.setRequestMethod("GET");
         con.setRequestProperty("x-api-key", apiKey);
         con.setDoOutput(true);
-        OutputStream os = null;
-        try {
-            os = con.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        OutputStream os = con.getOutputStream();
+        os.close();
 
 
         StringBuilder sb = new StringBuilder();
-        int HttpResult = 0;
-        try {
-            HttpResult = con.getResponseCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-
+        int HttpResult = con.getResponseCode();
         if (HttpResult == HttpURLConnection.HTTP_OK){
-            BufferedReader br = null;
-            try {
-                br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
 
             String line = null;
-            while (true) {
-                try {
-                    if ((line = br.readLine()) == null) break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            while ((line = br.readLine()) != null) {
                 sb.append(line).append("\n");
             }
-            try {
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println(sb);
+            br.close();
 
+            System.out.println(sb);
         }
         else
         {
-            try {
-                System.out.println(con.getResponseCode());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                System.out.println(con.getResponseMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println(con.getResponseCode());
+            System.out.println(con.getResponseMessage());
         }
 
         return true;
