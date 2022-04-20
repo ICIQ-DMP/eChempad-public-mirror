@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -90,7 +91,11 @@ public class ResearcherControllerClass implements ResearcherController {
     @GetMapping(value = "/api/researcher/signals")
     @Override
     public void bulkImportSignals() {
-        this.signalsImportService.importSignals();
+        try {
+            this.signalsImportService.importSignals();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

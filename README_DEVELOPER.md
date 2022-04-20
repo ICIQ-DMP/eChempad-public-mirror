@@ -26,10 +26,12 @@ In the repository execute the next orders:
 ```bash
 sudo bash install.sh -v -o psql
 bash install.sh -v -o jdk pgadmin postman ideau  # ideac 
+
 ```
 
 This will install:
-  * **JDK8:** Java development kit. Contains the interpreter for the Java programming language. 
+  * **JDK8:** Java development kit. Contains the interpreter for the Java programming language `java` and the tool to 
+    manipulate the certificates used in the java VM `keytool`
   * **psql:** PostGreSQL, SQL DataBase engine
   * **IntelliJ IDEA Community / IntelliJ IDEA Ultimate:** IDE with a high customization via plugins to work with Java. 
     The  ultimate edition needs a license; The community version, which is commented out, has also all the required 
@@ -59,6 +61,37 @@ Then we need to create the database for our software:
 ```bash
 createdb eChempad
 ```
+
+## Creating the file structures
+The eChempad application stores files in the file system under the folder /eChempad/file_db. It also stores the 
+credentials of the APIKeys under /eChempad/APIKeys. Now, for debug purposes we store in this path a file called "key" 
+which contains a dummy APIKey inside a file. To create this file structure use
+
+```bash
+sudo mkdir -p /eChempad/file_db
+sudo mkdir -p /eChempad/APIKeys
+sudo chown eChempad:eChempad /eChempad/file_db
+sudo chown eChempad:eChempad /eChempad/APIKeys
+sudo nano /eChempad/APIKeys/key  # Introduce the key here. Remember to not paste it in the terminal or it will be kept in the history!
+sudo chmod 400 -R /eChempad
+```
+
+You can also use another user if the eChempad is executed from another user.
+
+Also remember that the API key can be generated from [here](https://iciq.signalsnotebook.perkinelmercloud.eu/snconfig/settings/apikey)
+
+## Ceertificates of the JVM
+The certificates of java are stored in the `cacerts` file, which can be located in different places of the system. We 
+have our own cacerts file uploaded to the git repository, which is located in ./eChempad/src/main/resources/CA_certificates/cacerts
+and is the one that we are using. 
+
+To check the presence of certificates inside this cacerts file we can use the following command:
+
+```
+keytool -list -keystore ~/Desktop/eChempad/src/main/resources/CA_certificates/cacerts -storepass changeit
+```
+
+
 
 ## Compile software
 #### Terminal
@@ -137,6 +170,11 @@ configure how this configuration works:
 
 After that we only need to click to the green play button with this configuration selected to run the program. We will
 see the output in the terminal at the bottom.
+
+A thing to notice is that there is an external tool that sends a SIGKILL signals to the eChempad process in order to 
+shut down other instances of the process. To configure it within our run configuration go to the configuration of this 
+run task and add a new external tool before launch by setting the script eChempad/tools/killAppOnPort.sh and passing
+8081 (the port that eChempad is using). The tool will be executed before the run, so any other instances will be killed.
 
 ###### Using the autoconfiguration of the IDE
 Go to the class `EChempadApplication` and in the line where we declare the class:

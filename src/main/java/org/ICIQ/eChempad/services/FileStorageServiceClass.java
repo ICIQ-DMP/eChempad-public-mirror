@@ -39,7 +39,7 @@ public class FileStorageServiceClass implements FileStorageService {
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
+            throw new FileStorageException("Could not create the directory " + this.fileStorageLocation + " where the uploaded files will be stored.", ex);
         }
     }
 

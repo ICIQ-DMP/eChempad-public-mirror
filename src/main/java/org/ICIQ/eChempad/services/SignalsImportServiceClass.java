@@ -1,21 +1,27 @@
 package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.Researcher;
+import org.junit.jupiter.api.Assertions;
+//import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.PKIXParameters;
 import java.util.Collections;
 import java.util.logging.Logger;
 
@@ -34,6 +40,14 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
 
     public boolean importSignals() throws IOException {
+
+        try {
+            this.whenOpeningTrustStore_thenExceptionIsThrown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         Researcher user = this.securityService.getLoggedResearcher();
         String apiKey = user.getSignalsAPIKey();
         Logger.getGlobal().info(apiKey);
@@ -71,8 +85,23 @@ public class SignalsImportServiceClass implements SignalsImportService {
             System.out.println(con.getResponseCode());
             System.out.println(con.getResponseMessage());
         }
-
         return true;
+    }
+
+    private KeyStore getKeyStore() throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
+        String filename = "/home/aleixmt/Desktop/eChempad/src/main/resources/CA_certificates/cacerts";
+        FileInputStream is = new FileInputStream(filename);
+        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+        ks.load(is, "changeit".toCharArray());
+        return ks;
+    }
+
+    @Test
+    public void whenOpeningTrustStore_thenExceptionIsThrown() throws Exception {
+        KeyStore keyStore = getKeyStore();
+        System.out.println(keyStore.size());
+        System.out.println(keyStore.aliases().toString());
+        Assertions.assertAll(() -> new PKIXParameters(keyStore));
     }
 
 }

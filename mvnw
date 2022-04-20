@@ -354,12 +354,15 @@ if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]
          "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
          ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
          "$@"
+
+                  #-Djavax.net.ssl.trustStorePassword=changeit \
+
 fi
 
 # If there is any application listening to port 8080 (which is the one used to deploy the app) kill it.
-if lsof -ti tcp:8080 &> /dev/null; then
+if lsof -ti tcp:8081 &> /dev/null; then
   # if there is someone running in port 8080
-  lsof -ti tcp:8080 | xargs kill
+  lsof -ti tcp:8081 | xargs kill
 fi
 
 exec "${JAVACMD}" ${JAVA_FLAGS} \
@@ -369,3 +372,5 @@ exec "${JAVACMD}" ${JAVA_FLAGS} \
   "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
   ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
   "$@"
+
+  #-Djavax.net.ssl.trustStorePassword=changeit \
