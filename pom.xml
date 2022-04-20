@@ -136,6 +136,12 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Allows the use of the WebClient class, used to perform REST operations as a client. Used to communicate with Signals API-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
 		<!-- DEPENDENCIES WITH DEBATABLE UTILITY -->
 
 		<!--Not used yet?, it serves testing purposes -->

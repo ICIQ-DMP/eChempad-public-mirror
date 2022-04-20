@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.services;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.junit.jupiter.api.Assertions;
 //import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -23,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.PKIXParameters;
 import java.util.Collections;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
@@ -39,7 +42,47 @@ public class SignalsImportServiceClass implements SignalsImportService {
     }
 
 
+    /**
+     * curl -X 'GET' \
+     *   'https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?page%5Boffset%5D=0&page%5Blimit%5D=1&includeTypes=journal' \
+     *   -H 'accept: application/vnd.api+json' \
+     *
+     *
+     *
+     * https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?page%5Boffset%5D=0&page%5Blimit%5D=1&includeTypes=journal
+     *
+     *
+     * @return
+     * @throws IOException
+     */
     public boolean importSignals() throws IOException {
+
+        Researcher user = this.securityService.getLoggedResearcher();
+        String apiKey = user.getSignalsAPIKey();
+        Logger.getGlobal().info(apiKey);
+
+        Map URL_variables = Collections.emptyMap();
+        //URL_variables.put()
+
+        String getURL = this.baseURL;
+        WebClient client = WebClient.create();
+
+        ObjectNode responseSpec = client.get()
+                .uri(this.baseURL + "/entities?page[offset]=0&page[limit]=1&includeTypes=journal")
+                .header("x-api-key", apiKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                //.toEntity(String.class)
+                .block();
+
+
+
+        responseSpec.fields().forEachRemaining(System.out::println);
+
+        return true;
+    }
+
+    /*public boolean importSignals() throws IOException {
 
         try {
             this.whenOpeningTrustStore_thenExceptionIsThrown();
@@ -59,7 +102,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
         // If this header is present: 400 bad request
         // But if it is not present then: 415 unsupported media type
         con.setRequestProperty("Content-Type", "application/vnd.api+json");
-        con.setRequestProperty("Accept", "*/*");
+        con.setRequestProperty("accept", "* /*");
         con.setRequestMethod("GET");
         con.setRequestProperty("x-api-key", apiKey);
         con.setDoOutput(true);
@@ -86,7 +129,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
             System.out.println(con.getResponseMessage());
         }
         return true;
-    }
+    }*/
 
     private KeyStore getKeyStore() throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
         String filename = "/home/aleixmt/Desktop/eChempad/src/main/resources/CA_certificates/cacerts";

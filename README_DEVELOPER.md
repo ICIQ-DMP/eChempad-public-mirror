@@ -91,6 +91,8 @@ To check the presence of certificates inside this cacerts file we can use the fo
 keytool -list -keystore ~/Desktop/eChempad/src/main/resources/CA_certificates/cacerts -storepass changeit
 ```
 
+If you can not see any certificate you must download another cacerts file or update the JDK you are using, since from 
+time to time the certificates expire and will not work.
 
 
 ## Compile software
