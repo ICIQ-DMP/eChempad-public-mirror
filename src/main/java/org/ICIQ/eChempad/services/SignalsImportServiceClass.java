@@ -10,7 +10,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.*;
 import java.util.Collections;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @Service
 @ConfigurationProperties(prefix = "signals")
@@ -27,12 +26,9 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
     public void importSignals() throws IOException {
 
-        Researcher user = this.securityService.getLoggedResearcher();
-        String apiKey = user.getSignalsAPIKey();
-        Logger.getGlobal().info(apiKey);
+        String apiKey = this.securityService.getLoggedResearcher().getSignalsAPIKey();
 
-        Map URL_variables = Collections.emptyMap();
-        //URL_variables.put()
+        Map<Object, Object> URL_variables = Collections.emptyMap();
 
         String getURL = this.baseURL;
         WebClient client = WebClient.create();
@@ -42,7 +38,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .header("x-api-key", apiKey)
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
-                //.toEntity(String.class)
                 .block();
 
 
@@ -50,6 +45,12 @@ public class SignalsImportServiceClass implements SignalsImportService {
         responseSpec.fields().forEachRemaining(System.out::println);
     }
 
+
+    public ObjectNode getJournal(String journal_eid)
+    {
+        String apiKey = this.securityService.getLoggedResearcher().getSignalsAPIKey();
+        return null;
+    }
     /*public boolean importSignals() throws IOException {
 
         try {
