@@ -40,54 +40,6 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
         return this.genericRepository.saveOrUpdate(researcher);
     }
 
-    /**
-     * Generates a JWT token that is used by the researcher to authenticate his requests. This token has a time
-     * expiration, contains the granted authorities associated with the token (things we can do with this token) and is
-     * signed using the researcher password
-     *
-     * @param researcher Instance of the researcher that will be used to generate the token.
-     * @return JWT token, containing granted authorities, expiration date and digital signature.
-     */
-    @Override
-    public String generateJWTToken(Researcher researcher) {
-        String secretKey = "myArbitrarySecretKey";
-
-        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                .commaSeparatedStringToAuthorityList("ROLE_USER");
-/*
-        String token =
-                Jwts
-                .builder()
-                .setId("softtekJWT")
-                .setSubject(researcher.getEmail())
-                .claim("authorities",
-                        grantedAuthorities.stream()
-                                .map(GrantedAuthority::getAuthority)
-                                .collect(Collectors.toList()))
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 600000))
-                .signWith(SignatureAlgorithm.HS512,
-                        secretKey.getBytes()).compact();
-
-        return "Bearer " + token;
-*/
-        return null;
-    }
-
-
-    /**
-     * Exposed (? //RF make public and the inner private if it does conform) method to obtain the details of the user in
-     * the web application in order to authenticate it.
-     * @param email email of the researcher that we are retrieving data from. Unique in the database.
-     * @return Returns an instance of UserDetails, which contains all the data necessary to manage an authentication and
-     * authorization of an user.
-     */
-    @Override
-    public UserDetails loadDetailsByUsername(String email) {
-        return this.loadUserByUsername(email);
-    }
-
-
     @Override
     public Map<UUID, UserDetails> loadAllUserDetails() {
         Map<UUID, UserDetails> ret = new HashMap<>();
@@ -99,14 +51,6 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
         return ret;
     }
 
-    /**
-     * Internal method that will be used to authenticate users. Basically it transforms a Researcher entity to a
-     * UserDetails entity identified by its email. To construct a user details we need to load its username, roles and
-     * password.
-     *
-     * @param s email of the researcher that we are retrieving data from. Unique in the database.
-     * @return A UserDetails instance corresponding to the email received by parameter.
-     */
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         Optional<Researcher> selected = ((ResearcherRepository) this.genericRepository).getResearcherByEmail(s);

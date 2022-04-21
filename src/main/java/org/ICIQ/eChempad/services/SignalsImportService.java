@@ -5,6 +5,10 @@ import java.net.MalformedURLException;
 
 public interface SignalsImportService {
 
-    boolean importSignals() throws IOException;
+    /**
+     * Imports all the data accessible from signals relative to the current user.
+     * @throws IOException Thrown if something is wrong during all the communication with Signals API
+     */
+    void importSignals() throws IOException;
 
 }

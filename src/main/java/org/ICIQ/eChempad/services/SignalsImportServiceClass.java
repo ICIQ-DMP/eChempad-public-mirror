@@ -33,20 +33,8 @@ public class SignalsImportServiceClass implements SignalsImportService {
     }
 
 
-    /**
-     * curl -X 'GET' \
-     *   'https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?page%5Boffset%5D=0&page%5Blimit%5D=1&includeTypes=journal' \
-     *   -H 'accept: application/vnd.api+json' \
-     *
-     *
-     *
-     * https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?page%5Boffset%5D=0&page%5Blimit%5D=1&includeTypes=journal
-     *
-     *
-     * @return
-     * @throws IOException
-     */
-    public boolean importSignals() throws IOException {
+
+    public void importSignals() throws IOException {
 
         Researcher user = this.securityService.getLoggedResearcher();
         String apiKey = user.getSignalsAPIKey();

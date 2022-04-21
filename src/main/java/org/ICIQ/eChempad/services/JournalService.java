@@ -52,7 +52,7 @@ public interface JournalService extends GenericService<Journal, UUID> {
      * @throws NotEnoughAuthorityException Thrown if we do not have enough authority (write) to operate against the
      * entity
      */
-    Journal update(Journal entity, UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    Journal updateJournal(Journal entity, UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
     /**
      * Removes the journal with the supplied UUID from the database.
@@ -60,6 +60,6 @@ public interface JournalService extends GenericService<Journal, UUID> {
      * @throws ResourceNotExistsException Thrown if the journal with this ID does not exist.
      * @throws NotEnoughAuthorityException Thrown if we do not have enough permissions to operate in this journal.
      */
-    void remove(UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    void removeJournal(UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
 }

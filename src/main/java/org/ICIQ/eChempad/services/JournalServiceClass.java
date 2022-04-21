@@ -24,11 +24,6 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
 
     final SecurityService securityService;
 
-    /**
-     * Creates a new Journal service using the SecurityService and a JournalRepository
-     * @param journalRepository Regulates access from Java code to the Table of Journals.
-     * @param securityService Contains auxiliar functions to verify and apply authentication and authorization
-     */
     @Autowired
     public JournalServiceClass(JournalRepository journalRepository, SecurityService securityService) {
         super(journalRepository);
@@ -42,7 +37,7 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
     }
 
     @Override
-    public Journal getJournal(UUID journal_uuid) throws ResourceNotExistsException
+    public Journal getJournal(UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException
     {
         Optional<Journal> option = this.securityService.getAuthorizedJournal(Authority.READ).stream().filter(journal -> journal.getUUid().equals(journal_uuid)).findFirst();
         if (option.isPresent())
@@ -61,13 +56,14 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
         this.securityService.saveElementWorkspace(entity);
     }
 
-
-    public Journal update(Journal entity, UUID id) throws ResourceNotExistsException
+    @Override
+    public Journal updateJournal(Journal entity, UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException
     {
         return (Journal) this.securityService.updateElement(entity, id);
     }
 
-    public void remove(UUID id) throws ResourceNotExistsException
+    @Override
+    public void removeJournal(UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException
     {
         if (this.securityService.isResearcherAuthorized(Authority.EDIT, id, Journal.class))
         {
