@@ -7,7 +7,6 @@
  */
 package org.ICIQ.eChempad.repositories;
 
-import org.ICIQ.eChempad.entities.Document;
 import org.ICIQ.eChempad.entities.ElementPermission;
 
 import java.util.UUID;

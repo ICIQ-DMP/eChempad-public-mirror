@@ -7,17 +7,12 @@
  */
 package org.ICIQ.eChempad.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ICIQ.eChempad.EChempadApplication;
-import org.ICIQ.eChempad.repositories.GenericRepositoryClass;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import java.lang.reflect.ParameterizedType;
-import java.nio.file.Path;
 import java.util.UUID;
 
 /**
@@ -39,17 +34,11 @@ public class ElementPermission implements IEntity {
     @Column(name = "UUID", nullable = false)
     protected UUID id;
 
-
-
-
-    // Resource that we are limiting access to. It cannot be mapped to the DB since it is dynamically bind depending on
-    // the class that is implementing IEntity
-    //@JsonIgnore
-    //protected IEntity resource;
-
-    // Type of resource we are limiting; used to know in which table we need to check the IEntity resource.
-    // This only makes sense with Hibernate since fields have dual format: one serialized for the DB and binarized for
-    // Java code.
+    /**
+     * Type of resource we are limiting; used to know in which table we need to check the IEntity resource.
+     * This only makes sense with Hibernate since fields have dual format: one serialized for the DB and binarized for
+     * Java code.
+     */
     @Column(name = "type", length = 100, nullable = false)
     protected Class<?> type;
 

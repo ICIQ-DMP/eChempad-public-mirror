@@ -7,13 +7,11 @@
  */
 package org.ICIQ.eChempad.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ICIQ.eChempad.configurations.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.security.Permission;
 import java.util.*;
 
 

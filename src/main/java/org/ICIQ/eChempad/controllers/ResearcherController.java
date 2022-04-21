@@ -30,7 +30,6 @@ public interface ResearcherController {
      */
     ResponseEntity<Set<Researcher>> getResearchers();
 
-
     /**
      * Obtains a researcher's information by its UUID. Fails if the researcher does not exist.
      * @param researcher_uuid UUID of the researcher that we want to retrieve.
@@ -39,7 +38,6 @@ public interface ResearcherController {
      */
     ResponseEntity<Researcher> getResearcher(UUID researcher_uuid) throws ResourceNotExistsException;
 
-
     /**
      * Adds a new researcher by supplying all the required fields to build a researcher. This operation will be done
      * when we sign up in the application.
@@ -47,14 +45,11 @@ public interface ResearcherController {
      */
     void addResearcher(Researcher researcher);
 
-
     /**
      * Obtain all data from the Signals Notebook and put it inside the eChempad. It uses the Signals notebook API key
      * stored in the context of the user that is logged in.
      */
     void bulkImportSignals();
-
-
 
     /**
      * Deletes a researcher from the DB, cascading to all of its owned resources, so no data is left behind the user.

@@ -2,19 +2,12 @@ package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.entities.Researcher;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.*;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.PKIXParameters;
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -31,8 +24,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
     public SignalsImportServiceClass(SecurityService securityService) {
         this.securityService = securityService;
     }
-
-
 
     public void importSignals() throws IOException {
 
@@ -57,8 +48,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
 
         responseSpec.fields().forEachRemaining(System.out::println);
-
-        return true;
     }
 
     /*public boolean importSignals() throws IOException {
@@ -109,21 +98,5 @@ public class SignalsImportServiceClass implements SignalsImportService {
         }
         return true;
     }*/
-
-    private KeyStore getKeyStore() throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
-        String filename = "/home/aleixmt/Desktop/eChempad/src/main/resources/CA_certificates/cacerts";
-        FileInputStream is = new FileInputStream(filename);
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(is, "changeit".toCharArray());
-        return ks;
-    }
-
-    @Test
-    public void whenOpeningTrustStore_thenExceptionIsThrown() throws Exception {
-        KeyStore keyStore = getKeyStore();
-        System.out.println(keyStore.size());
-        System.out.println(keyStore.aliases().toString());
-        Assertions.assertAll(() -> new PKIXParameters(keyStore));
-    }
 
 }

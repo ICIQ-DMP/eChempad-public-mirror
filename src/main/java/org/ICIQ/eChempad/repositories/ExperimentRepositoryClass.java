@@ -8,7 +8,6 @@
 package org.ICIQ.eChempad.repositories;
 
 import org.ICIQ.eChempad.entities.Experiment;
-import org.ICIQ.eChempad.entities.Journal;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;

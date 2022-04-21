@@ -20,11 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * This class implements basic generic methods to make standard queries associated to all tables / entities.
- * @param <T>
- * @param <S>
- */
+
 @Repository
 @Transactional
 public abstract class GenericRepositoryClass<T extends IEntity, S extends Serializable> implements GenericRepository<T, S> //, implements CrudRepository<T, S>,
@@ -44,7 +40,6 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
     {
         this.entityClass = (Class<T>)(((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     }
-
 
     protected Session currentSession() {
         return this.sessionFactory.getCurrentSession();
@@ -67,10 +62,6 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
         return entity;
     }
 
-    /**
-     * Update an existing instance. We need the id to perform the update of the entity.
-     * @param entity
-     */
     @Override
     public T update(T entity, S id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
@@ -138,7 +129,6 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
         return res;
     }
 
-
     @Modifying
     @Transactional
     @Override
@@ -163,7 +153,6 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
         }
     }
 
-
     @Override
     public void clear() {
         this.currentSession().clear();
@@ -174,16 +163,8 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
         this.currentSession().flush();
     }
 
-
-    /**
-     * return the entity class of this generic repository.
-     * @return Internal class type, set at the creation of the repository.
-     */
     @Override
     public Class<T> getEntityClass() {
         return this.entityClass;
     }
-
-
-
 }

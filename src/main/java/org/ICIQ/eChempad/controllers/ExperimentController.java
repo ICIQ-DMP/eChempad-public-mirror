@@ -24,7 +24,7 @@ public interface ExperimentController {
     ResponseEntity<Set<Experiment>> getExperiments();
 
     /**
-     * Gets a certain experiment if we have enough permissions to read it and the resource exists
+     * Gets a certain experiment if we have enough permissions to read it and the resource exists.
      * @param experiment_uuid UUID of the accessed experiment.
      * @return Returns the experiment wrapped in an HTTP response.
      * @throws ResourceNotExistsException Thrown if the received UUID does not correspond to any resource.
@@ -35,7 +35,7 @@ public interface ExperimentController {
     /**
      * Adds an experiment to a certain journal if we have enough permissions
      * @param experiment data of the new experiment.
-     * @param journal_uuid Id of the journal we are adding.
+     * @param journal_uuid UUID of the journal we are adding.
      * @throws ResourceNotExistsException Thrown if the referred journal does not exist in the DB
      * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to write into this journal.
      */
@@ -43,25 +43,13 @@ public interface ExperimentController {
 
     /**
      * Gets all the experiments belonging to a certain journal.
+     *
      * @param journal_uuid UUID of the journal we are querying
      * @return returns all experiments inside the journal if they are readable by the logged user.
-     * @throws ResourceNotExistsException Thrown if the referred journal does not exist in the DB
+     * @throws ResourceNotExistsException  Thrown if the referred journal does not exist in the DB
      * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read into this journal.
      */
     ResponseEntity<Set<Experiment>> getExperimentsFromJournal(UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Removes the experiment selected by its UUID if the logged user have enough permissions to do so.

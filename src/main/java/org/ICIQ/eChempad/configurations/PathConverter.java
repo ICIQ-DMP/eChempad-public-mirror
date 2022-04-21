@@ -5,7 +5,6 @@ import javax.persistence.Converter;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 
 @Converter(autoApply = true)  // With autoapply = true performs automatic translation between types implicitly
 public class PathConverter implements AttributeConverter<Path, String>, Serializable {

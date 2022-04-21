@@ -7,9 +7,6 @@
  */
 package org.ICIQ.eChempad.entities;
 
-import java.nio.file.Path;
-import java.util.UUID;
-
 /**
  * Extends the functionality of the abstract class Document for visualizing and manipulating CSV files
  */

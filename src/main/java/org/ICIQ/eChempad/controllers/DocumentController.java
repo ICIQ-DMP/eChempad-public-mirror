@@ -29,13 +29,15 @@ public interface DocumentController {
     ResponseEntity<Set<Document>> getDocuments();
 
     /**
+     * https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
+     * https://restfulapi.net/http-methods/
      * Returns the desired document if it exists in the DB and if we have permissions to read it.
-     * @param uuid id of the desired document
+     * @param document_uuid id of the desired document
      * @return ResponseEntity containing the document desired
      * @throws ResourceNotExistsException Thrown if the UUID does not exist for any document
      * @throws NotEnoughAuthorityException Thrown if we do not have read permissions against the document
      */
-    ResponseEntity<Document> getDocument(UUID uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    ResponseEntity<Document> getDocument(UUID document_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
     /**
      * Obtains the file stream associated with a document
@@ -47,12 +49,14 @@ public interface DocumentController {
     ResponseEntity<Resource> getDocumentData(UUID uuid, HttpServletRequest request) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
     /**
-     * Upload the received file if it does not collide with another into the local filesystem
-     * @param document Document data coming from the HTTP body inside a helper class.
-     * @param experiment_uuid Experiment where we will add the received document.
-     * @return Response containing the relevant information of the uploaded file, such as the download URL.
-     * @throws ResourceNotExistsException Thrown if the UUID of the supplied experiment does not exist.
-     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to write in the desired experiment
+     * Adds a document and its corresponding file to an Experiment designated by its unique UUID. It saves the document
+     * metadata into the DB and the file in the filesystem.
+     * @param document Metadata of the document, from the body of the request
+     * @param experiment_uuid UUID of the experiment where we will add this document
+     * @return A file response where we tell the user where he can find this file using a URL
+     * @throws ResourceNotExistsException Thrown if the experiment where we will add the document does not exist
+     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to add documents to this
+     *         experiment
      */
     UploadFileResponse addDocumentToExperiment(DocumentHelper document, UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
@@ -62,15 +66,6 @@ public interface DocumentController {
      * @return Set of document that belong to this experiment.
      */
     ResponseEntity<Set<Document>> getDocumentsFromExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
-
-
-
-
-
-
-
-
-
 
     /**
      * Removes the selected document from the DB and deletes its associated file.

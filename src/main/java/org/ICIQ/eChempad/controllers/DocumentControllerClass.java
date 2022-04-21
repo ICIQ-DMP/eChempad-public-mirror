@@ -38,11 +38,6 @@ public class DocumentControllerClass implements DocumentController{
         this.documentServiceClass = documentServiceClass;
     }
 
-
-    /**
-     * Returns all the document readable by the logged user
-     * @return Collection of readable documents
-     */
     @Override
     @GetMapping(
             value = "/api/document",
@@ -53,16 +48,6 @@ public class DocumentControllerClass implements DocumentController{
         return ResponseEntity.ok(documents);
     }
 
-
-    /**
-     * https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
-     * https://restfulapi.net/http-methods/
-     * Returns the desired document if it exists in the DB and if we have permissions to read it.
-     * @param document_uuid id of the desired document
-     * @return ResponseEntity containing the document desired
-     * @throws ResourceNotExistsException Thrown if the UUID does not exist for any document
-     * @throws NotEnoughAuthorityException Thrown if we do not have read permissions against the document
-     */
     @Override
     @GetMapping(
             value = "/api/document/{id}",
@@ -73,14 +58,7 @@ public class DocumentControllerClass implements DocumentController{
         return ResponseEntity.ok().body(document);
     }
 
-
-    /**
-     * Obtains the file stream associated with a document
-     * @param uuid Used to uniquely identify the document in the DB
-     * @return ByteArray response (binary response)
-     * @throws ResourceNotExistsException Thrown if the UUID does not exist for any document
-     * @throws NotEnoughAuthorityException Thrown if we do not have read permissions against the document
-     */
+    @Override
     @GetMapping("/api/document/{id}/data")
     public ResponseEntity<Resource> getDocumentData(@PathVariable(value = "id") UUID uuid, HttpServletRequest request) throws ResourceNotExistsException, NotEnoughAuthorityException{
         // Load file as Resource
@@ -105,17 +83,7 @@ public class DocumentControllerClass implements DocumentController{
                 .body(resource);
     }
 
-
-    /**
-     * Adds a document and its corresponding file to an Experiment designated by its unique UUID. It saves the document
-     * metadata into the DB and the file in the filesystem.
-     * @param document Metadata of the document, from the body of the request
-     * @param experiment_uuid UUID of the experiment where we will add this document
-     * @return A file response where we tell the user where he can find this file using a URL
-     * @throws ResourceNotExistsException Thrown if the experiment where we will add the document does not exist
-     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to add documents to this
-     *         experiment
-     */
+    @Override
     @PostMapping(
             value = "/api/experiment/{experiment_uuid}/document",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
@@ -134,12 +102,6 @@ public class DocumentControllerClass implements DocumentController{
                 document.getFile().getContentType(), document.getFile().getSize());
     }
 
-    /**
-     * Obtain the documents that are hanging from a certain experiment designated by its UUID
-     *
-     * @param experiment_uuid UUID of the experiment that we will obtain documents from
-     * @return Set of document that belong to this experiment.
-     */
     @Override
     @GetMapping("/api/experiment/{experiment_uuid}/document")
     public ResponseEntity<Set<Document>> getDocumentsFromExperiment(@PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
@@ -149,43 +111,7 @@ public class DocumentControllerClass implements DocumentController{
         return ResponseEntity.ok(documents);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Removes the selected document from the DB and deletes its associated file.
-     * @param uuid Identifier of the document that will be removed.
-     * @throws ResourceNotExistsException Thrown if the UUID of the supplied experiment does not exist.
-     * @throws NotEnoughAuthorityException Thrown if we do not have EDIT authority to delete documents.
-     */
+    @Override
     @DeleteMapping(
             value = "/api/document/{id}",
             produces = "application/json"
@@ -194,21 +120,12 @@ public class DocumentControllerClass implements DocumentController{
         this.documentServiceClass.remove(uuid);
     }
 
-
-    /**
-     * Updates an existent document if we have enough permissions, includes its file
-     * @param document Data of the new document
-     * @param file Chunk of data associated with this document
-     * @param document_uuid ID of the experiment where we are adding
-     * @throws ResourceNotExistsException Thrown if the resource does not exist
-     * @throws NotEnoughAuthorityException Thrown if we do not have EDIT authority against the updated document
-     */
+    @Override
     @PutMapping(
             value = "/api/document/{document_uuid}",
             produces = "application/json",
             consumes = "application/json"
     )
-    @Override
     public void putDocument(@Validated @RequestBody Document document, @RequestParam("file") MultipartFile file, @PathVariable(value = "document_uuid") UUID document_uuid) throws ResourceNotExistsException {
         this.documentServiceClass.update(document, document_uuid);
     }

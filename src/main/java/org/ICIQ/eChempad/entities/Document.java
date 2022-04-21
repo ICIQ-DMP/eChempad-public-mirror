@@ -10,19 +10,11 @@ package org.ICIQ.eChempad.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.lang.Nullable;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Model class to store, visualize and manage a Document (contained in a file).
@@ -41,7 +33,7 @@ public class Document implements IEntity{
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     @Column(name = "UUID")
     protected UUID id;
 

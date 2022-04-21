@@ -17,7 +17,5 @@ import java.util.Collection;
 import java.util.UUID;
 
 public interface JournalRepository extends GenericRepository<Journal, UUID>{
-    public String getDescription(UUID id);
-    public String getName(UUID id);
 
 }

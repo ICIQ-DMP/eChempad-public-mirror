@@ -11,7 +11,6 @@ import org.ICIQ.eChempad.entities.*;
 import org.ICIQ.eChempad.repositories.DocumentRepository;
 import org.ICIQ.eChempad.repositories.ExperimentRepository;
 import org.ICIQ.eChempad.repositories.JournalRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
@@ -24,9 +23,6 @@ import java.util.*;
 @Service
 @Repository
 public class SecurityServiceClass implements SecurityService{
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     private final DocumentRepository documentRepository;
 

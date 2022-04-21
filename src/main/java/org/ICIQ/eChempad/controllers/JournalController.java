@@ -23,6 +23,8 @@ public interface JournalController {
     ResponseEntity<Set<Journal>> getJournals();
 
     /**
+     * https://stackoverflow.com/questions/30967822/when-do-i-use-path-params-vs-query-params-in-a-restful-api
+     * https://restfulapi.net/http-methods/
      * Gets a certain journal identified by the supplied UUID if the logged user has enough permissions to read the
      * journal.
      * @param journal_uuid UUID of the journal we have to retrieve
@@ -49,14 +51,8 @@ public interface JournalController {
      */
     ResponseEntity<Set<Journal>> getJournalsFromResearcher(UUID researcher_uuid) throws ResourceNotExistsException;
 
-
-
-
-
-
-
     /**
-     * Removes the journal with the supplied UUID. Fails if the journal does not exist or we do not have edition
+     * Removes the journal with the supplied UUID. Fails if the journal does not exist, or we do not have edition
      * permissions against the journal.
      * @param journal_uuid UUID of the journal that we want to delete.
      * @throws ResourceNotExistsException Thrown if the journal with this UUID does not exist.

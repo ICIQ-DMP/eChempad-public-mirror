@@ -7,12 +7,10 @@
  */
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

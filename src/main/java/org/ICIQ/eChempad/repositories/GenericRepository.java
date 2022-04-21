@@ -28,6 +28,10 @@ public interface GenericRepository<T, S extends Serializable> //extends JpaRepos
 
     T saveOrUpdate(T entity);
 
+    /**
+     * Update an existing instance. We need the id to perform the update of the entity.
+     * @param entity
+     */
     T update(T entity, S id);
 
     T get(S id);
@@ -40,9 +44,10 @@ public interface GenericRepository<T, S extends Serializable> //extends JpaRepos
 
     int remove(S id);
 
+    /**
+     * return the entity class of this generic repository.
+     * @return Internal class type, set at the creation of the repository.
+     */
     Class<T> getEntityClass();
-
-    // void remove(T entity);  // We will select the entities using the UUID, there is no point in sending ALL data
-    // of an instance in order to remove it.
 
 }

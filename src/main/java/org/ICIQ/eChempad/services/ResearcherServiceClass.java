@@ -7,22 +7,14 @@
  */
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.entities.ElementPermission;
-import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Role;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-//import io.jsonwebtoken.Jwts;
-
-import java.security.Permissions;
 import java.util.*;
 
 @Service

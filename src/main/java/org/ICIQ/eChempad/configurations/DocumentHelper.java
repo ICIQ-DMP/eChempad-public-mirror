@@ -3,8 +3,6 @@ package org.ICIQ.eChempad.configurations;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
-
 /**
  * Class used to receive the data of the addDocument request because it contains metadata at the same time as a
  * multipart file which gives a lot of troubles.

@@ -7,7 +7,6 @@
  */
 package org.ICIQ.eChempad.entities;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 /**
