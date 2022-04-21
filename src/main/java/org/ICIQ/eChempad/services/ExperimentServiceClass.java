@@ -1,4 +1,4 @@
-/**
+/*
  * |===================================================================================|
  * | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
  * |                                                                                   |
@@ -23,11 +23,8 @@ import java.util.UUID;
 @Service
 public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID> implements ExperimentService {
 
-    final
-    SecurityService securityService;
-
-    final
-    JournalRepository journalRepository;
+    final SecurityService securityService;
+    final JournalRepository journalRepository;
 
     @Autowired
     public ExperimentServiceClass(ExperimentRepository experimentRepository, SecurityService securityService, JournalRepository journalRepository) {
@@ -36,14 +33,6 @@ public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID
         this.journalRepository = journalRepository;
     }
 
-    /**
-     * Adds a new experiment into a certain journal, provided as a URL parameter.
-     *
-     * @param experiment   Data of the addition of the experiment.
-     * @param journal_uuid Journal where er are adding the new experiment. We must have WRITE permissions
-     * @throws ResourceNotExistsException  The resource does not exist.
-     * @throws NotEnoughAuthorityException Thrown if we do not have the required authority to perform the operation in the journal
-     */
     @Override
     public void addExperimentToJournal(Experiment experiment, UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
         // TODO query journal when we know that we have permissions.
@@ -60,25 +49,14 @@ public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID
             journal.getExperiments().add(experiment);
             // And save (update) experiment
             this.journalRepository.saveOrUpdate(journal);
-
             this.securityService.saveElementWorkspace(experiment);
         }
         else
         {
             throw new NotEnoughAuthorityException("Not enough authority to perform operation");
         }
-
-
     }
 
-    /**
-     * gets the experiments of a certain journal if we have enough privileges to do so.
-     *
-     * @param journal_uuid UUID of the journal we are referring
-     * @return Returns all the experiments under this journal if they exist.
-     * @throws ResourceNotExistsException  Thrown if this journal does not exist.
-     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the journal.
-     */
     @Override
     public Set<Experiment> getExperimentsFromJournal(UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
         Journal journal = this.journalRepository.get(journal_uuid);
@@ -92,22 +70,12 @@ public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID
         }
     }
 
-
-    /**
-     * Obtain all experiments accessible by the logged user.
-     * @return Set of Readable experiments by the logged user.
-     */
+    @Override
     public Set<Experiment> getExperiments() {
         return this.securityService.getAuthorizedExperiment(Authority.READ);
     }
 
-    /**
-     * Gets a certain experiment if we have enough permissions to read it and the resource exists
-     * @param experiment_uuid UUID of the accessed experiment.
-     * @return Returns the experiment entity.
-     * @throws ResourceNotExistsException Thrown if the received UUID does not correspond to any resource.
-     * @throws NotEnoughAuthorityException Thrown if we do not have enough authority to read the experiment we sent.
-     */
+    @Override
     public Experiment getExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
         Experiment experiment = this.genericRepository.get(experiment_uuid);
         if (this.securityService.isResearcherAuthorized(Authority.READ, experiment_uuid, Experiment.class))
@@ -119,6 +87,5 @@ public class ExperimentServiceClass extends GenericServiceClass<Experiment, UUID
             throw new NotEnoughAuthorityException("You do not have authority to read this journal");
         }
     }
-
 
 }

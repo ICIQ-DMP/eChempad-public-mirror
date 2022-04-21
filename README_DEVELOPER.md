@@ -293,3 +293,5 @@ For further reference, please consider the following sections:
 * [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.5.4/maven-plugin/reference/html/)
 * [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.5.4/maven-plugin/reference/html/#build-image)
 * [Field injection is not recommended](https://blog.marcnuri.com/inyeccion-de-campos-desaconsejada-field-injection-not-recommended-spring-ioc)
+* [Should JavaDoc be added to implementation](https://stackoverflow.com/questions/3061387/should-javadoc-comments-be-added-to-the-implementation)
+* [Java Google StyleSheet](https://google.github.io/styleguide/javaguide.html)
