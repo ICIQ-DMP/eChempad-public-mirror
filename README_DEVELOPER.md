@@ -235,6 +235,12 @@ Warning: It appends more than one time if executed in sequence.
 mvn -Dthird.party.licenses=true -Dattach.license.header=true generate-resources 
 ```
 
+There is a small problem and is that in Java the headers for the copyright are added as a JavaDoc, which converts the 
+headers to a dangling JavaDoc. Is preferred a normal comment. Issuing this command from the same folder as the project 
+will change them to a normal comment:
+```bash
+IFS=$'\n'; for j in $(grep -r -I -l .); do sed '1 s|/\*\*|/\*|' -i "$j"; done
+```
 
 ## Project file structure
 Here is a list of the folders and files contained inside the root of this project:
