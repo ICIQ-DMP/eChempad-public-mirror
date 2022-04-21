@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -35,7 +34,6 @@ public class FileStorageServiceClass implements FileStorageService {
     public FileStorageServiceClass(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
-
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
@@ -43,27 +41,12 @@ public class FileStorageServiceClass implements FileStorageService {
         }
     }
 
-
-    /**
-     * Stores the received file using the supplied uuid as filename
-     * @param file Chunks of raw data
-     * @param iEntity Entity object which will be used to obtain the unique identifier of the associated document, which
-     *                will be used as name of the file.
-     * @return Absolute path to the created resource.
-     */
     @Override
     public String storeFile(MultipartFile file, IEntity iEntity) {
 
         return this.storeFile(file, iEntity.getUUid());
     }
 
-
-    /**
-     * Stores the received file using the supplied uuid as filename
-     * @param file Chunks of raw data
-     * @param uuid Unique identifier of the associated document, which will be used as name of the file.
-     * @return Absolute path to the created resource.
-     */
     @Override
     public String storeFile(MultipartFile file, UUID uuid) {
         // Normalize file name
@@ -85,11 +68,6 @@ public class FileStorageServiceClass implements FileStorageService {
         }
     }
 
-    /**
-     * Given a certain uuid returns the file that has the same uuid in the filename in the local filesystem
-     * @param uuid ID of the desired resource.
-     * @return Chunk of raw data
-     */
     @Override
     public Resource loadFileAsResource(UUID uuid) {
         try

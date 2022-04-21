@@ -35,23 +35,13 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
         this.securityService = securityService;
     }
 
-
-    /**
-     * Returns all the Journals readable by the logged user.
-     * @return Set of journals
-     */
     @Override
     public Set<Journal> getJournals()
     {
         return this.securityService.getAuthorizedJournal(Authority.READ);
     }
 
-    /**
-     * Returns the journal identified by the supplied UUID if is READABLE by the logged user.
-     * @param journal_uuid UUID of the desired journal
-     * @return Journal data
-     * @throws ResourceNotExistsException if the desired journal does not exist we throw an exception
-     */
+    @Override
     public Journal getJournal(UUID journal_uuid) throws ResourceNotExistsException
     {
         Optional<Journal> option = this.securityService.getAuthorizedJournal(Authority.READ).stream().filter(journal -> journal.getUUid().equals(journal_uuid)).findFirst();
@@ -65,33 +55,17 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
         }
     }
 
-
-    /**
-     * Saves the supplied entity of journal. We can always save a journal, but in the workspace of the logged user.
-     * @param entity Data parsed coming from the REST API call. Some fields such as the id which are managed with
-     *               hibernate could be null
-     */
+    @Override
     public void addJournal(Journal entity)
     {
         this.securityService.saveElementWorkspace(entity);
     }
 
 
-    /**
-     * Updates with the data supplied the journal with the passed UUID
-     * @param entity Data that will override the selected journal
-     * @param id ID of an existing journal that we want to overwrite
-     * @return The same journal that we have updated
-     * @throws ResourceNotExistsException This exception is thrown if the supplied id does not coincide with any
-     * existing journal.
-     */
     public Journal update(Journal entity, UUID id) throws ResourceNotExistsException
     {
         return (Journal) this.securityService.updateElement(entity, id);
     }
-
-
-
 
     public void remove(UUID id) throws ResourceNotExistsException
     {

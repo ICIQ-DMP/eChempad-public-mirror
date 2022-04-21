@@ -53,7 +53,7 @@ public class ResearcherControllerClass implements ResearcherController {
             produces = "application/json"
     )
     public ResponseEntity<Set<Researcher>> getResearchers() {
-        HashSet<Researcher> researchers = new HashSet<>(this.researcherServiceClass.getAll());
+        HashSet<Researcher> researchers = new HashSet<>(this.researcherServiceClass.get());
         return ResponseEntity.ok(researchers);
     }
 
@@ -70,7 +70,7 @@ public class ResearcherControllerClass implements ResearcherController {
             produces = "application/json"
     )
     public ResponseEntity<Researcher> getResearcher(@PathVariable UUID researcher_uuid) throws ResourceNotExistsException {
-        Researcher researcher = this.researcherServiceClass.getAll(researcher_uuid);
+        Researcher researcher = this.researcherServiceClass.get(researcher_uuid);
         return ResponseEntity.ok().body(researcher);
     }
 

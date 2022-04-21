@@ -51,7 +51,7 @@ public class SecurityServiceClass implements SecurityService{
     @Override
     public Researcher getLoggedResearcher() {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        Optional<Researcher> researcher = this.researcherService.getAll().stream().filter(r -> r.getEmail().equals(username)).findFirst();
+        Optional<Researcher> researcher = this.researcherService.get().stream().filter(r -> r.getEmail().equals(username)).findFirst();
 
         // TODO: make error in case of null
         return researcher.orElse(new Researcher());
@@ -73,7 +73,7 @@ public class SecurityServiceClass implements SecurityService{
         Researcher researcher = this.getLoggedResearcher();
 
         // Loop permissions table
-        for (ElementPermission elementPermission : this.elementPermissionService.getAll())
+        for (ElementPermission elementPermission : this.elementPermissionService.get())
         {
             /*
              * Depending on the type we need to ensure permissions in the upper part of the tree, for example, to check
@@ -201,7 +201,7 @@ public class SecurityServiceClass implements SecurityService{
         Researcher researcher = this.getLoggedResearcher();
 
         // Loop permissions table
-        for (ElementPermission elementPermission : this.elementPermissionService.getAll())
+        for (ElementPermission elementPermission : this.elementPermissionService.get())
         {
             // Select all permissions of the logged researcher that are pointing to an entity of type and
             // that have an authority level below the required.

@@ -61,7 +61,7 @@ public class JournalControllerClass implements JournalController{
             produces = "application/json"
     )
     public ResponseEntity<Journal> getJournal(@PathVariable UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        return ResponseEntity.ok().body(this.journalService.getAll(journal_uuid));
+        return ResponseEntity.ok().body(this.journalService.get(journal_uuid));
     }
 
 

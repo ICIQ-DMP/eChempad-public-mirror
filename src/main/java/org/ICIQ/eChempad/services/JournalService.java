@@ -17,17 +17,15 @@ import java.util.UUID;
 
 /**
  * Contains the specific redefinition of all the methods that we can apply to a journal but rewritten to take in account
- * security concerns and extra logic that does only apply to journals.
+ * security concerns and extra logic that does only apply to journal.
  */
 public interface JournalService extends GenericService<Journal, UUID> {
-
 
     /**
      * Obtains all the journals readable by the logged in user.
      * @return Set of readable journals
      */
     Set<Journal> getJournals();
-
 
     /**
      * Obtains the journal identified by its UUID if the logged in reseqarcher has enough permissions to read the
@@ -39,13 +37,11 @@ public interface JournalService extends GenericService<Journal, UUID> {
      */
     Journal getJournal(UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
-
     /**
      * Adds a new journal to the user workspace. It will be always available since it is on the own user workspace.
      * @param entity Journal data to add.
      */
     void addJournal(Journal entity);
-
 
     /**
      * Updates the journal with the UUID supplied with data from the journal
@@ -57,7 +53,6 @@ public interface JournalService extends GenericService<Journal, UUID> {
      * entity
      */
     Journal update(Journal entity, UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException;
-
 
     /**
      * Removes the journal with the supplied UUID from the database.
