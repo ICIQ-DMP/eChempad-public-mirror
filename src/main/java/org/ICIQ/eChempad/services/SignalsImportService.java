@@ -1,9 +1,11 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.buffer.DataBuffer;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public interface SignalsImportService {
 
@@ -26,6 +28,7 @@ public interface SignalsImportService {
      * Obtains the ByteArray corresponding to a file that has been downloaded from the Signals API, identified by the
      * supplied UUID.
      *
+     * https://stackoverflow.com/questions/46460599/how-to-correctly-read-fluxdatabuffer-and-convert-it-to-a-single-inputstream
      * https://iciq.signalsnotebook.perkinelmercloud.eu/docs/extapi/swagger/index.html#/Entities/downloadEntityContent
      *
      * Obtains a document (entity) identified by the supplied UUID. The value of the "format" parameter and "Accept"
@@ -68,6 +71,6 @@ public interface SignalsImportService {
      * @param document_eid EID of the document that we are retrieving from Signals API
      * @return Data that represents a generic file.
      */
-    ByteArrayResource exportDocument(String APIKey, String document_eid);
+    InputStream exportDocument(String APIKey, String document_eid) throws IOException;
 
 }

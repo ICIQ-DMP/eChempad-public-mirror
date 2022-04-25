@@ -8,8 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyExtractors;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.io.*;
 
@@ -29,10 +35,19 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
         ArrayNode responseSpec = this.getJournals(APIKey);
 
-        /*if (responseSpec != null)
-        {
-            responseSpec.fields().forEachRemaining(System.out::println);
-        }*/
+
+        // TODO test to try to download a document
+        // text:f99e67cf-8288-48de-987f-bccc14da012c
+        /*WebClient client = WebClient.create();
+        ByteArrayResource byteArrayResource = client.get()
+                .uri(this.baseURL + "/entities/imageResource:a8d10066-7186-465b-a21d-c56aa819426c/export")
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ByteArrayResource.class)
+                .block();
+        */
+        //System.out.println(byteArrayResource.getByteArray().toString());
+        //System.out.println(byteArrayResource);
     }
 
     public ArrayNode getJournals(String APIKey)
@@ -153,9 +168,13 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
                 documents.add(document);
                 ByteArrayResource byteArrayResource;
-                //if (this.exportDocument(APIKey, document_eid) != null)
-                // TODO activating this line produces a null pointer that has not been originated in this line, so its origin its unknown.
-                //System.out.println("MARCA DOCUMENT CONTENT IS: " + this.exportDocument(APIKey, document_eid));
+                if (this.exportDocument(APIKey, document_eid) != null)
+                {
+                    // TODO activating this line produces a null pointer that has not been originated in this line, so its origin its unknown :D
+                    //this.exportDocument(APIKey, document_eid);
+                }
+                System.out.println("MARCA export finished of cocument");
+
                 i++;
             }
         }
@@ -173,15 +192,52 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .block();
     }
 
-    public ByteArrayResource exportDocument(String APIKey, String document_eid)
-    {
-        WebClient client = WebClient.create();
-        return client.get()
+    public InputStream exportDocument(String APIKey, String document_eid) throws IOException {
+
+        WebClient webClient = WebClient.create();
+        /*return client.get()
                 .uri(this.baseURL + "/entities/" + document_eid + "/export")
                 .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ByteArrayResource.class)
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
+                .exchangeToFlux();
+*/
+
+        String url = this.baseURL + "/entities/" + document_eid + "/export";
+        PipedOutputStream osPipe = new PipedOutputStream();
+        PipedInputStream isPipe = new PipedInputStream(osPipe);
+
+        ClientResponse response = webClient.get().uri(url)
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
+                .exchange()
                 .block();
+
+        final int statusCode = response.rawStatusCode();
+        // check HTTP status code, can throw exception if needed
+        // ....
+
+        Flux<DataBuffer> body = response.body(BodyExtractors.toDataBuffers())
+                .doOnError(t -> {
+                    log.error("Error reading body.", t);
+                    // close pipe to force InputStream to error,
+                    // otherwise the returned InputStream will hang forever if an error occurs
+                    try(isPipe) {
+                        //no-op
+                    } catch (IOException ioe) {
+                        log.error("Error closing streams", ioe);
+                    }
+                })
+                .doFinally(s -> {
+                    try(osPipe) {
+                        //no-op
+                    } catch (IOException ioe) {
+                        log.error("Error closing streams", ioe);
+                    }
+                });
+
+        DataBufferUtils.write(body, osPipe)
+                .subscribe(DataBufferUtils.releaseConsumer());
+
+        return isPipe;
     }
 
 }
