@@ -1,103 +1,187 @@
 package org.ICIQ.eChempad.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.ICIQ.eChempad.entities.Researcher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.Map;
 
+// https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
 @Service
 @ConfigurationProperties(prefix = "signals")
 public class SignalsImportServiceClass implements SignalsImportService {
 
+    // https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0
     @Value("${signals.baseURL}")
     private String baseURL;
 
-    private final SecurityService securityService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    public SignalsImportServiceClass(SecurityService securityService) {
-        this.securityService = securityService;
+    public void importSignals(String APIKey) throws IOException {
+
+        ArrayNode responseSpec = this.getJournals(APIKey);
+
+        /*if (responseSpec != null)
+        {
+            responseSpec.fields().forEachRemaining(System.out::println);
+        }*/
     }
 
-    public void importSignals() throws IOException {
-
-        String apiKey = this.securityService.getLoggedResearcher().getSignalsAPIKey();
-
-        Map<Object, Object> URL_variables = Collections.emptyMap();
-
-        String getURL = this.baseURL;
-        WebClient client = WebClient.create();
-
-        ObjectNode responseSpec = client.get()
-                .uri(this.baseURL + "/entities?page[offset]=0&page[limit]=1&includeTypes=journal")
-                .header("x-api-key", apiKey)
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
-
-
-
-        responseSpec.fields().forEachRemaining(System.out::println);
-    }
-
-
-    public ObjectNode getJournal(String journal_eid)
+    public ArrayNode getJournals(String APIKey)
     {
-        String apiKey = this.securityService.getLoggedResearcher().getSignalsAPIKey();
-        return null;
-    }
-    /*public boolean importSignals() throws IOException {
+        ArrayNode journals = this.objectMapper.createArrayNode();
+        ObjectNode journal;
+        int i = 0;
+        while ((journal = this.getJournal(APIKey, i)) != null)
+        {
+            // Iterate until the data of the entity is empty
+            if (journal.get("data").isEmpty())
+            {
+                break;
+            }
+            else
+            {
+                // Here we will call getExperiments and we will append each experiments into a list inside of
+                // journal{data}[0]{relationships}{children} = []
+                // get("data").get(9).get("relationships").get("children").
+                // Remove quotes and the prefix followed by ":", that indicates the entity we are retrieving. If not, is
+                // not a valid identifier for Signals API
+                String journal_eid = journal.get("data").get(0).get("id").toString().replace("\"", "");
+                System.out.println("THEJOURNALMARCA IS:" + journal_eid);
+
+                journal.putPOJO("experiments", this.getExperimentsFromJournal(APIKey, journal_eid));
+
+                journals.add(journal);
+                i++;
+            }
+        }
 
         try {
-            this.whenOpeningTrustStore_thenExceptionIsThrown();
-        } catch (Exception e) {
+            System.out.println(this.objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(journals));
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
+        return journals;
+    }
 
-        Researcher user = this.securityService.getLoggedResearcher();
-        String apiKey = user.getSignalsAPIKey();
-        Logger.getGlobal().info(apiKey);
+    public ObjectNode getJournal(String APIKey, int pageOffset)
+    {
+        // Map<Object, Object> URL_variables = Collections.emptyMap();
+        WebClient client = WebClient.create();
+        return client.get()
+                .uri(this.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=children%2C%20owner")
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
+    }
 
-        int journalNumber = 0;
-        URL myURL = new URL(this.baseURL + "/entities");  //"?page[offset]=" + journalNumber + "&page[limit]=1&includeTypes=journal&include=children%2C%20owner");
-
-        HttpURLConnection con = (HttpURLConnection) myURL.openConnection();
-        // If this header is present: 400 bad request
-        // But if it is not present then: 415 unsupported media type
-        con.setRequestProperty("Content-Type", "application/vnd.api+json");
-        con.setRequestProperty("accept", "* /*");
-        con.setRequestMethod("GET");
-        con.setRequestProperty("x-api-key", apiKey);
-        con.setDoOutput(true);
-        OutputStream os = con.getOutputStream();
-        os.close();
-
-
-        StringBuilder sb = new StringBuilder();
-        int HttpResult = con.getResponseCode();
-        if (HttpResult == HttpURLConnection.HTTP_OK){
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
-
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            br.close();
-
-            System.out.println(sb);
-        }
-        else
+    public ArrayNode getExperimentsFromJournal(String APIKey, String journal_eid)
+    {
+        ArrayNode experiments = this.objectMapper.createArrayNode();
+        ObjectNode experiment;
+        int i = 0;
+        while ((experiment = this.getExperimentFromJournal(APIKey, i, journal_eid)) != null)
         {
-            System.out.println(con.getResponseCode());
-            System.out.println(con.getResponseMessage());
+            // TODO test remove prints
+            /*try {
+                System.out.println("MARCA 3EXPERIMENT CONTENTS IS " + this.objectMapper.writeValueAsString(experiment));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }*/
+
+            // Iterate until the data of the entity is empty
+            if (experiment.get("data").isEmpty())
+            {
+                break;
+            }
+            else
+            {
+                // Here we will call getDocuments, we will append each document into a list inside of
+                // journal{data}[0]{relationships}{children} = []
+                String experiment_eid = experiment.get("data").get(0).get("id").toString().replace("\"", "");
+                System.out.println("EXPERIMENTeid IS" + experiment_eid);
+
+                experiment.putPOJO("documents", this.getDocumentsFromExperiment(APIKey, experiment_eid));
+                experiments.add(experiment);
+
+                i++;
+            }
         }
-        return true;
-    }*/
+
+        return experiments;
+    }
+
+    public ObjectNode getExperimentFromJournal(String APIKey, int pageOffset, String journal_eid)
+    {
+        WebClient client = WebClient.create();
+        return client.get()
+                .uri(this.baseURL + "/entities/" + journal_eid + "/children?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&include=children%2C%20owner")
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
+    }
+
+    public ArrayNode getDocumentsFromExperiment(String APIKey, String experiment_eid)
+    {
+        ArrayNode documents = this.objectMapper.createArrayNode();
+        ObjectNode document;
+        int i = 0;
+        while ((document = this.getDocumentFromExperiment(APIKey, i, experiment_eid)) != null)
+        {
+            // Iterate until the data of the entity is empty
+            if (document.get("data").isEmpty())
+            {
+                break;
+            }
+            else
+            {
+                // Here we will call getDocuments, we will append each document into a list inside of
+                // journal{data}[0]{relationships}{children} = []
+                String document_eid = document.get("data").get(0).get("id").toString().replace("\"", "");
+                System.out.println("DOCUMENTeid IS" + document_eid);
+
+                documents.add(document);
+                ByteArrayResource byteArrayResource;
+                //if (this.exportDocument(APIKey, document_eid) != null)
+                // TODO activating this line produces a null pointer that has not been originated in this line, so its origin its unknown.
+                //System.out.println("MARCA DOCUMENT CONTENT IS: " + this.exportDocument(APIKey, document_eid));
+                i++;
+            }
+        }
+        return documents;
+    }
+
+    public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
+    {
+        WebClient client = WebClient.create();
+        return client.get()
+                .uri(this.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&include=children%2C%20owner")
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
+    }
+
+    public ByteArrayResource exportDocument(String APIKey, String document_eid)
+    {
+        WebClient client = WebClient.create();
+        return client.get()
+                .uri(this.baseURL + "/entities/" + document_eid + "/export")
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ByteArrayResource.class)
+                .block();
+    }
 
 }

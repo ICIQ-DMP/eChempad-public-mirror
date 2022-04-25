@@ -30,7 +30,7 @@
     <option name="EXECUTE_SCRIPT_FILE" value="true" />
     <envs />
     <method v="2">
-      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_kill8081" />
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_killByPort8081" />
     </method>
   </configuration>
 </component>
