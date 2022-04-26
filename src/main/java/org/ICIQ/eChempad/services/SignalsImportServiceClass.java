@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.ICIQ.eChempad.entities.Journal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,6 +19,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.io.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
 @Service
@@ -28,37 +34,35 @@ public class SignalsImportServiceClass implements SignalsImportService {
     @Value("${signals.baseURL}")
     private String baseURL;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+
+    private final ExperimentService experimentService;
+
+    private final DocumentService documentService;
+
+    private final JournalService journalService;
+
+
+    public SignalsImportServiceClass(ObjectMapper objectMapper, ExperimentService experimentService, DocumentService documentService, JournalService journalService) {
+        this.objectMapper = objectMapper;
+        this.experimentService = experimentService;
+        this.documentService = documentService;
+        this.journalService = journalService;
+    }
 
     public void importSignals(String APIKey) throws IOException {
-
         ArrayNode responseSpec = this.getJournals(APIKey);
-
-
-        // TODO test to try to download a document
-        // text:f99e67cf-8288-48de-987f-bccc14da012c
-        /*WebClient client = WebClient.create();
-        ByteArrayResource byteArrayResource = client.get()
-                .uri(this.baseURL + "/entities/imageResource:a8d10066-7186-465b-a21d-c56aa819426c/export")
-                .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ByteArrayResource.class)
-                .block();
-        */
-        //System.out.println(byteArrayResource.getByteArray().toString());
-        //System.out.println(byteArrayResource);
     }
 
     public ArrayNode getJournals(String APIKey)
     {
         ArrayNode journals = this.objectMapper.createArrayNode();
-        ObjectNode journal;
+        ObjectNode journalJSON;
         int i = 0;
-        while ((journal = this.getJournal(APIKey, i)) != null)
+        while ((journalJSON = this.getJournal(APIKey, i)) != null)
         {
             // Iterate until the data of the entity is empty
-            if (journal.get("data").isEmpty())
+            if (journalJSON.get("data").isEmpty())
             {
                 break;
             }
@@ -69,12 +73,21 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 // get("data").get(9).get("relationships").get("children").
                 // Remove quotes and the prefix followed by ":", that indicates the entity we are retrieving. If not, is
                 // not a valid identifier for Signals API
-                String journal_eid = journal.get("data").get(0).get("id").toString().replace("\"", "");
-                System.out.println("THEJOURNALMARCA IS:" + journal_eid);
+                String journal_eid = journalJSON.get("data").get(0).get("id").toString().replace("\"", "");
+                System.out.println("JOURNAL EID IS:" + journal_eid);
 
-                journal.putPOJO("experiments", this.getExperimentsFromJournal(APIKey, journal_eid));
+                // Create unmanaged journal to save the metadata
+                Journal signalsJournal = new Journal();
+                //signalsJournal.setName(journalJSON.get("data").get(0).get("id") (...) toString());
 
-                journals.add(journal);
+                this.journalService.addJournal(signalsJournal);
+
+
+                // Add to the JSON of the journal
+                journalJSON.putPOJO("experiments", this.getExperimentsFromJournal(APIKey, journal_eid));
+
+
+                journals.add(journalJSON);
                 i++;
             }
         }
@@ -168,10 +181,13 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
                 documents.add(document);
                 ByteArrayResource byteArrayResource;
-                if (this.exportDocument(APIKey, document_eid) != null)
+                try
                 {
-                    // TODO activating this line produces a null pointer that has not been originated in this line, so its origin its unknown :D
-                    //this.exportDocument(APIKey, document_eid);
+                    this.exportDocument(APIKey, document_eid);
+                }
+                catch (Exception e)
+                {
+                    System.out.println(e);
                 }
                 System.out.println("MARCA export finished of cocument");
 
@@ -192,52 +208,26 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .block();
     }
 
-    public InputStream exportDocument(String APIKey, String document_eid) throws IOException {
+    public void exportDocument(String APIKey, String document_eid) throws IOException {
 
-        WebClient webClient = WebClient.create();
-        /*return client.get()
-                .uri(this.baseURL + "/entities/" + document_eid + "/export")
-                .header("x-api-key", APIKey)
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .exchangeToFlux();
-*/
+        final WebClient webClient = WebClient.create();
 
         String url = this.baseURL + "/entities/" + document_eid + "/export";
-        PipedOutputStream osPipe = new PipedOutputStream();
-        PipedInputStream isPipe = new PipedInputStream(osPipe);
 
-        ClientResponse response = webClient.get().uri(url)
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .exchange()
+        final Flux<DataBuffer> dataBufferFlux = webClient.get()
+                .uri(url)
+                .header("x-api-key", APIKey)
+                .accept(MediaType.TEXT_HTML)
+                .retrieve()
+                .bodyToFlux(DataBuffer.class);
+
+
+        System.out.println(url);
+        final Path path = FileSystems.getDefault().getPath(document_eid);
+        DataBufferUtils
+                .write(dataBufferFlux, path, CREATE_NEW)
                 .block();
 
-        final int statusCode = response.rawStatusCode();
-        // check HTTP status code, can throw exception if needed
-        // ....
-
-        Flux<DataBuffer> body = response.body(BodyExtractors.toDataBuffers())
-                .doOnError(t -> {
-                    log.error("Error reading body.", t);
-                    // close pipe to force InputStream to error,
-                    // otherwise the returned InputStream will hang forever if an error occurs
-                    try(isPipe) {
-                        //no-op
-                    } catch (IOException ioe) {
-                        log.error("Error closing streams", ioe);
-                    }
-                })
-                .doFinally(s -> {
-                    try(osPipe) {
-                        //no-op
-                    } catch (IOException ioe) {
-                        log.error("Error closing streams", ioe);
-                    }
-                });
-
-        DataBufferUtils.write(body, osPipe)
-                .subscribe(DataBufferUtils.releaseConsumer());
-
-        return isPipe;
     }
 
 }

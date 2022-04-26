@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.configurations;
 
 
+import org.ICIQ.eChempad.entities.Document;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -11,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  * to the entity class, while transforming the multipart file type into a path type that we will store into the DB which
  * points to a file that have to be stolen on the File DB.
  */
-public class DocumentHelper {
+public class DocumentHelper extends Document {
     private String name;
 
     private String description;

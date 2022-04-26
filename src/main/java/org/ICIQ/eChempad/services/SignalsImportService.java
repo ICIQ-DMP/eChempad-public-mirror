@@ -30,6 +30,7 @@ public interface SignalsImportService {
      *
      * https://stackoverflow.com/questions/46460599/how-to-correctly-read-fluxdatabuffer-and-convert-it-to-a-single-inputstream
      * https://iciq.signalsnotebook.perkinelmercloud.eu/docs/extapi/swagger/index.html#/Entities/downloadEntityContent
+     * https://stackoverflow.com/questions/56210186/spring-webclient-how-to-stream-large-byte-to-file
      *
      * Obtains a document (entity) identified by the supplied UUID. The value of the "format" parameter and "Accept"
      * header can be configured depending on the format that we want to export the entity to and the type of entity we
@@ -71,6 +72,6 @@ public interface SignalsImportService {
      * @param document_eid EID of the document that we are retrieving from Signals API
      * @return Data that represents a generic file.
      */
-    InputStream exportDocument(String APIKey, String document_eid) throws IOException;
+    void exportDocument(String APIKey, String document_eid) throws IOException;
 
 }
