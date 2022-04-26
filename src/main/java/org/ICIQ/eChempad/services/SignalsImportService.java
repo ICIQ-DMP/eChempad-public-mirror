@@ -2,6 +2,7 @@ package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -72,6 +73,6 @@ public interface SignalsImportService {
      * @param document_eid EID of the document that we are retrieving from Signals API
      * @return Data that represents a generic file.
      */
-    Flux<DataBuffer> exportDocument(String APIKey, String document_eid) throws IOException;
+    //Flux<MultipartFile> exportDocument(String APIKey, String document_eid) throws IOException;
 
 }

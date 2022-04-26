@@ -7,27 +7,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.entities.Journal;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyExtractors;
-import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.*;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.UUID;
-import java.util.logging.Logger;
-
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
 @Service
@@ -162,8 +154,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 i++;
             }
         }
-
-        // return experiments;
     }
 
     public ObjectNode getExperimentFromJournal(String APIKey, int pageOffset, String journal_eid)
@@ -196,8 +186,24 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 DocumentHelper documentHelper = new DocumentHelper();
                 documentHelper.setName(documentJSON.get("data").get(0).get("attributes").get("description").toString());
                 documentHelper.setDescription(documentJSON.get("data").get(0).get("attributes").get("name").toString());
+                /**try {
+                    documentHelper.setFile(((MultipartFile) this.exportDocument(APIKey, document_eid)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }**/
+                try {
 
-                //documentHelper.setFile(this.exportDocument(APIKey, document_eid));
+                    ByteArrayResource byteArrayResource = this.exportDocument(APIKey, document_eid);
+                    System.out.println(byteArrayResource);
+
+
+
+                    // This line explodes with null pointer because the multipartfile obtained from the body has a null
+                    // input stream, so it fails when trying to save it.
+                    documentHelper.setFile(new MockMultipartFile("", this.exportDocument(APIKey, document_eid).getInputStream()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 // (...)
                 this.documentService.addDocumentToExperiment(documentHelper, experiment_uuid);
@@ -221,7 +227,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .block();
     }
 
-    public Flux<DataBuffer> exportDocument(String APIKey, String document_eid) throws IOException {
+    public ByteArrayResource exportDocument(String APIKey, String document_eid) throws IOException {
 
         final WebClient webClient = WebClient.create();
 
@@ -230,10 +236,12 @@ public class SignalsImportServiceClass implements SignalsImportService {
         return webClient.get()
                 .uri(url)
                 .header("x-api-key", APIKey)
-                .accept(MediaType.TEXT_HTML)
                 .retrieve()
-                .bodyToFlux(DataBuffer.class);
+                .bodyToMono(ByteArrayResource.class)
+                .block();
 
     }
+
+
 
 }
