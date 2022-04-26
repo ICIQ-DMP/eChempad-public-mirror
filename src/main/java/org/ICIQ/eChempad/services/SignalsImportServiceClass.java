@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.UUID;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
@@ -149,7 +150,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 // Now call getExperimentsFromJournal using the created journal in order to import their children, recursively
                 // This function will fill the passed journal with the new retrieved experiments from Signals. It will also
                 // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
-                this.getDocumentsFromExperiment(APIKey, journal_eid, signalsExperiment.getUUid());
+                this.getDocumentsFromExperiment(APIKey, experiment_eid, signalsExperiment.getUUid());
 
                 i++;
             }
@@ -182,6 +183,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
             {
                 String document_eid = documentJSON.get("data").get(0).get("id").toString().replace("\"", "");
                 System.out.println("DOCUMENT EID IS: " + document_eid);
+                System.out.println("DOCUMENT JSON CONTENT IS: " + documentJSON);
 
                 DocumentHelper documentHelper = new DocumentHelper();
                 documentHelper.setName(documentJSON.get("data").get(0).get("attributes").get("description").toString());
@@ -193,14 +195,14 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 }**/
                 try {
 
-                    ByteArrayResource byteArrayResource = this.exportDocument(APIKey, document_eid);
-                    System.out.println(byteArrayResource);
+                    //ByteArrayResource byteArrayResource = this.exportDocument(APIKey, document_eid);
+                    //System.out.println(Arrays.toString(byteArrayResource.getByteArray()));
 
 
 
                     // This line explodes with null pointer because the multipartfile obtained from the body has a null
                     // input stream, so it fails when trying to save it.
-                    documentHelper.setFile(new MockMultipartFile("", this.exportDocument(APIKey, document_eid).getInputStream()));
+                    documentHelper.setFile(new MockMultipartFile(document_eid, this.exportDocument(APIKey, document_eid).getInputStream()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -236,10 +238,10 @@ public class SignalsImportServiceClass implements SignalsImportService {
         return webClient.get()
                 .uri(url)
                 .header("x-api-key", APIKey)
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
                 .retrieve()
                 .bodyToMono(ByteArrayResource.class)
                 .block();
-
     }
 
 
