@@ -111,8 +111,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         String APIKey = this.getAPIKey();
         // Researcher examples, implicitly are USERs
-        Researcher elvisTech = new Researcher("Charles Good", "cgood@gmail.com", APIKey, "password");
-        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", null, "password");
+        Researcher elvisTech = new Researcher("Charles Good", "cgood@gmail.com", null, "password");
+        Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", APIKey, "password");
         Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password");
 
         RoleUser elvisTechRole = new RoleUser(elvisTech, Role.USER);
@@ -248,7 +248,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         // Document License in experimentEthanol1 Experiment
 
         // Copy an arbitrary file as if it has been uploaded with the API
-        Path document1ExperimentEthanol1_license_path = Paths.get("/home/amarine/Desktop/eChempad/file_db/LICENSE.md");
+        FileStorageProperties fileStorageProperties = new FileStorageProperties();
+        Path document1ExperimentEthanol1_license_path = Paths.get("/home/amarine/Desktop/eChempad/LICENSE.md");
         byte[] document1ExperimentEthanol1_license_content = null;
         try {
             document1ExperimentEthanol1_license_content = Files.readAllBytes(document1ExperimentEthanol1_license_path);
@@ -275,7 +276,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         // Documents photo in experimentEthanol2 Experiment
         // Copy an arbitrary file as if it has been uploaded with the API
-        Path document2ExperimentEthanol1_photo_path = Paths.get("/home/amarine/Desktop/eChempad/file_db/3.jpg");
+        Path document2ExperimentEthanol1_photo_path = Paths.get("/home/amarine/Desktop/eChempad/src/main/resources/CA_certificates/cacerts");
         byte[] document2ExperimentEthanol1_photo_content = null;
         try {
             document2ExperimentEthanol1_photo_content = Files.readAllBytes(document2ExperimentEthanol1_photo_path);

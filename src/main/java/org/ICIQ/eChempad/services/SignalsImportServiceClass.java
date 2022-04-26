@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -81,8 +82,8 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
                 // Create unmanaged journal to save the metadata
                 Journal signalsJournal = new Journal();
-                signalsJournal.setName(journalJSON.get("data").get(0).get("attributes").get("description").toString());
-                signalsJournal.setDescription(journalJSON.get("data").get(0).get("attributes").get("name").toString());
+                signalsJournal.setName(journalJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
+                signalsJournal.setDescription(journalJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
                 // (...)
 
                 this.journalService.addJournal(signalsJournal);
@@ -141,8 +142,8 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
                 // Create unmanaged journal to save the metadata
                 Experiment signalsExperiment = new Experiment();
-                signalsExperiment.setName(experimentJSON.get("data").get(0).get("attributes").get("description").toString());
-                signalsExperiment.setDescription(experimentJSON.get("data").get(0).get("attributes").get("name").toString());
+                signalsExperiment.setName(experimentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
+                signalsExperiment.setDescription(experimentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
                 // (...)
                 this.experimentService.addExperimentToJournal(signalsExperiment, journal_uuid);
 
@@ -186,8 +187,8 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 System.out.println("DOCUMENT JSON CONTENT IS: " + documentJSON);
 
                 DocumentHelper documentHelper = new DocumentHelper();
-                documentHelper.setName(documentJSON.get("data").get(0).get("attributes").get("description").toString());
-                documentHelper.setDescription(documentJSON.get("data").get(0).get("attributes").get("name").toString());
+                documentHelper.setName(documentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
+                documentHelper.setDescription(documentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
                 /**try {
                     documentHelper.setFile(((MultipartFile) this.exportDocument(APIKey, document_eid)));
                 } catch (IOException e) {

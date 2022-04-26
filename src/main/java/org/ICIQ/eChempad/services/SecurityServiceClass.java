@@ -98,7 +98,7 @@ public class SecurityServiceClass implements SecurityService{
         this.elementPermissionService.save(permission);
         if (element.getMyType().equals(Experiment.class))
         {
-            this.experimentRepository.saveOrUpdate((Experiment) element);
+            //this.experimentRepository.saveOrUpdate((Experiment) element);
             ((Experiment) element).getPermissions().add(permission);
             this.experimentRepository.saveOrUpdate((Experiment) element);
         }

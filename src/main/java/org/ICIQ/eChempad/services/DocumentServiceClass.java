@@ -10,6 +10,7 @@ package org.ICIQ.eChempad.services;
 import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.entities.Authority;
 import org.ICIQ.eChempad.entities.Document;
+import org.ICIQ.eChempad.entities.ElementPermission;
 import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -63,17 +64,16 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
         {
             // Regenerate document and make it point to the experiment
             Document document = new Document(documentHelper.getName(), documentHelper.getDescription(), experiment);
-            // Save the doc to obtain its UUID and persist it in the DB
-            document = this.genericRepository.saveOrUpdate(document);
-            // Then make the experiment have this document
-            experiment.getDocuments().add(document);
-            // And save (update) experiment
-            this.experimentRepository.saveOrUpdate(experiment);
+            this.genericRepository.saveOrUpdate(document);
 
-            // Store file and obtain path to store it in the document instance and update instance.
             String path = this.fileStorageService.storeFile(documentHelper.getFile(), document.getUUid());
             document.setPath(path);
+            document.setExperiment(experiment);
+
             this.genericRepository.saveOrUpdate(document);
+            experiment.getDocuments().add(document);
+            this.experimentRepository.saveOrUpdate(experiment);
+            this.securityService.saveElementWorkspace(document);
 
             return document;
         }

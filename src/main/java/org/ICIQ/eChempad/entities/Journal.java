@@ -7,6 +7,8 @@
  */
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -22,6 +24,7 @@ import java.util.*;
 @Table(name="Journal", uniqueConstraints = {
         @UniqueConstraint(columnNames = "UUID")
 })
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // https://stackoverflow.com/questions/67353793/what-does-jsonignorepropertieshibernatelazyinitializer-handler-do
 public class Journal implements IEntity{
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
@@ -37,14 +40,11 @@ public class Journal implements IEntity{
     @Column(name = "UUID")
     private UUID id;
 
-
     @Column(name = "name", length = 1000, nullable = false)
     private String name;
 
-
     @Column(name = "description", length = 1000, nullable = false)
     private String description;
-
 
     @OneToMany(
             targetEntity = Experiment.class,
@@ -54,14 +54,15 @@ public class Journal implements IEntity{
 )
     private Set<Experiment> experiments;
 
-
     @OneToMany(
             targetEntity = ElementPermission.class,
-            mappedBy = "id",
+            mappedBy = "journal",
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
+    @JsonIgnore
     private Set<ElementPermission> permissions = new HashSet<>();
+
 
     public Journal() {}
 

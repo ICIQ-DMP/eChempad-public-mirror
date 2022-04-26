@@ -61,8 +61,8 @@ public class Researcher implements Serializable, IEntity {
             // if a researcher is deleted all of its Permissions have to be deleted.
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
-    @MapKey(name = "id")
-    private List<ElementPermission> permissions;
+    //@MapKey(name = "id")
+    private Set<ElementPermission> permissions = new HashSet<>();
 
 
     @OneToMany(
@@ -99,7 +99,7 @@ public class Researcher implements Serializable, IEntity {
         this.name = fullName;
         this.email = email;
         this.signalsAPIKey = signalsAPIKey;
-        this.permissions = new LinkedList<>();
+        this.permissions = new HashSet<>();
         this.hashedPassword = hashedPassword;
         this.roles = new HashSet<>();
     }
@@ -176,11 +176,11 @@ public class Researcher implements Serializable, IEntity {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public List<ElementPermission> getPermissions() {
+    public Set<ElementPermission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<ElementPermission> permissions) {
+    public void setPermissions(Set<ElementPermission> permissions) {
         this.permissions = permissions;
     }
 

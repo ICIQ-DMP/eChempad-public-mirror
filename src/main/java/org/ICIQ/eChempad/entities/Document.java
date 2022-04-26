@@ -58,11 +58,12 @@ public class Document implements IEntity{
 
     @OneToMany(
             targetEntity = ElementPermission.class,
-            mappedBy = "id",
+            mappedBy = "document",
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     @Nullable
+    @JsonIgnore
     private Set<ElementPermission> permissions = new HashSet<>();
 
     public Document() {}
