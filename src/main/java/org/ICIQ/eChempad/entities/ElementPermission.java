@@ -52,7 +52,8 @@ public class ElementPermission implements IEntity {
     @JoinColumn(name = "researcher")
     @ManyToOne(
             fetch = FetchType.EAGER,
-            optional = false
+            optional = false,
+            cascade = CascadeType.ALL
     )
     protected Researcher researcher;
 
@@ -62,7 +63,8 @@ public class ElementPermission implements IEntity {
 
     @ManyToOne(
             fetch = FetchType.EAGER,
-            optional = true
+            optional = true,
+            cascade = CascadeType.ALL
     )
     @JoinColumn(
             name = "experiment_id",
@@ -73,7 +75,8 @@ public class ElementPermission implements IEntity {
 
     @ManyToOne(
             fetch = FetchType.EAGER,
-            optional = true
+            optional = true,
+            cascade = CascadeType.ALL
     )
     @JoinColumn(
             name = "journal_id",
@@ -84,7 +87,8 @@ public class ElementPermission implements IEntity {
 
     @ManyToOne(
             fetch = FetchType.LAZY,
-            optional = true
+            optional = true,
+            cascade = CascadeType.ALL
     )
     @JoinColumn(
             name = "document_id",

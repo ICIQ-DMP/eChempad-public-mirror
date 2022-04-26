@@ -63,7 +63,7 @@ public class Document implements IEntity{
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     @Nullable
-    private Set<ElementPermission> permissions;
+    private Set<ElementPermission> permissions = new HashSet<>();
 
     public Document() {}
 

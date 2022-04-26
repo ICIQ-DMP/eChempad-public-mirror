@@ -72,6 +72,6 @@ public interface SignalsImportService {
      * @param document_eid EID of the document that we are retrieving from Signals API
      * @return Data that represents a generic file.
      */
-    void exportDocument(String APIKey, String document_eid) throws IOException;
+    Flux<DataBuffer> exportDocument(String APIKey, String document_eid) throws IOException;
 
 }
