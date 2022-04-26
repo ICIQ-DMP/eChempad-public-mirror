@@ -32,8 +32,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
     @Value("${signals.baseURL}")
     private String baseURL;
 
-    private final ObjectMapper objectMapper;
-
     private final ExperimentService experimentService;
 
     private final DocumentService documentService;
@@ -41,20 +39,29 @@ public class SignalsImportServiceClass implements SignalsImportService {
     private final JournalService journalService;
 
 
-    public SignalsImportServiceClass(ObjectMapper objectMapper, ExperimentService experimentService, DocumentService documentService, JournalService journalService) {
-        this.objectMapper = objectMapper;
+    static void printJSON(ObjectNode objectNode)
+    {
+        final ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            System.out.println("JOURNAL JSON" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectNode));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public SignalsImportServiceClass(ExperimentService experimentService, DocumentService documentService, JournalService journalService) {
         this.experimentService = experimentService;
         this.documentService = documentService;
         this.journalService = journalService;
     }
 
     public void importSignals(String APIKey) throws IOException {
-        ArrayNode responseSpec = this.getJournals(APIKey);
+        this.getJournals(APIKey);
     }
 
-    public ArrayNode getJournals(String APIKey)
+    public void getJournals(String APIKey)
     {
-        ArrayNode journals = this.objectMapper.createArrayNode();
         ObjectNode journalJSON;
         int i = 0;
         while ((journalJSON = this.getJournal(APIKey, i)) != null)
@@ -66,19 +73,9 @@ public class SignalsImportServiceClass implements SignalsImportService {
             }
             else
             {
-                // Here we will call getExperiments and we will append each experiments into a list inside of
-                // journal{data}[0]{relationships}{children} = []
-                // get("data").get(9).get("relationships").get("children").
-                // Remove quotes and the prefix followed by ":", that indicates the entity we are retrieving. If not, is
-                // not a valid identifier for Signals API
+                // Remove quotes and obtain the EID of this entity.
                 String journal_eid = journalJSON.get("data").get(0).get("id").toString().replace("\"", "");
-                System.out.println("JOURNAL EID IS: " + journal_eid);
 
-                try {
-                    System.out.println("JOURNAL JSON" + this.objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(journalJSON));
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
 
                 // Create unmanaged journal to save the metadata
                 Journal signalsJournal = new Journal();
@@ -88,25 +85,18 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
                 this.journalService.addJournal(signalsJournal);
 
+                printJSON(journalJSON);
+
                 // Now call getExperimentsFromJournal using the created journal in order to import their children, recursively
                 // This function will fill the passed journal with the new retrieved experiments from Signals. It will also
                 // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
                 this.getExperimentsFromJournal(APIKey, journal_eid, signalsJournal.getUUid());
-
-                // Add to the JSON of the journal
-                //journalJSON.putPOJO("experiments", this.getExperimentsFromJournal(APIKey, journal_eid, signalsJournal.getUUid()));
-                //journals.add(journalJSON);
                 i++;
             }
         }
 
-        try {
-            System.out.println(this.objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(journals));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
 
-        return journals;
+
     }
 
     public ObjectNode getJournal(String APIKey, int pageOffset)

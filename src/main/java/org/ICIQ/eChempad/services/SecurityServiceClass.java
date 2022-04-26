@@ -67,7 +67,7 @@ public class SecurityServiceClass implements SecurityService{
              */
             // Explicit permissions in the same level
             if (elementPermission.getResearcher().equals(researcher)
-                    && elementPermission.getType().equals(type)
+                    && elementPermission.getMyType().equals(type)
                     && elementPermission.getAuthority().ordinal() >= authority.ordinal()
                     && elementPermission.getElement().getUUid().equals(uuid) )
             {
@@ -144,7 +144,7 @@ public class SecurityServiceClass implements SecurityService{
             // Select all permissions of the logged researcher that are pointing to an entity of type and
             // that have an authority level below the required.
             if (elementPermission.getResearcher().equals(researcher)
-                    && elementPermission.getType().equals(type)
+                    && elementPermission.getMyType().equals(type)
                     && elementPermission.getAuthority().ordinal() >= authority.ordinal())
             {
                 result.add((T)elementPermission.getElement());

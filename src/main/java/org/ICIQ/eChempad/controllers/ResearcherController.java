@@ -49,7 +49,7 @@ public interface ResearcherController {
      * Obtain all data from the Signals Notebook and put it inside the eChempad. It uses the Signals notebook API key
      * stored in the context of the user that is logged in.
      */
-    void bulkImportSignals();
+    ResponseEntity<String> bulkImportSignals();
 
     /**
      * Deletes a researcher from the DB, cascading to all of its owned resources, so no data is left behind the user.

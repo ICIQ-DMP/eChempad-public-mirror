@@ -8,6 +8,7 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.lang.Nullable;
 
@@ -46,6 +47,17 @@ public class Document implements IEntity{
     @Column(name = "file", length = 1000, nullable = true)
     protected String path;
 
+    @OneToMany(
+            targetEntity = ElementPermission.class,
+            mappedBy = "document",
+            fetch = FetchType.EAGER,
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
+    )
+    @Nullable
+    @JsonIgnore
+    @JsonManagedReference
+    private Set<ElementPermission> permissions = new HashSet<>();
+
     @ManyToOne(
             fetch = FetchType.EAGER,
             optional = false
@@ -55,16 +67,6 @@ public class Document implements IEntity{
             nullable = false)
     @JsonIgnore
     protected Experiment experiment;
-
-    @OneToMany(
-            targetEntity = ElementPermission.class,
-            mappedBy = "document",
-            fetch = FetchType.EAGER,
-            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
-    )
-    @Nullable
-    @JsonIgnore
-    private Set<ElementPermission> permissions = new HashSet<>();
 
     public Document() {}
 

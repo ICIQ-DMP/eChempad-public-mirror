@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.ICIQ.eChempad.EChempadApplication;
 import org.hibernate.annotations.GenericGenerator;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,7 @@ public class ElementPermission implements IEntity {
             optional = false,
             cascade = CascadeType.ALL
     )
+    @JsonBackReference
     protected Researcher researcher;
 
 
@@ -70,6 +72,7 @@ public class ElementPermission implements IEntity {
             name = "experiment_id",
             nullable = true)
     @Nullable
+    @JsonBackReference
     protected Experiment experiment;
 
 
@@ -82,6 +85,7 @@ public class ElementPermission implements IEntity {
             name = "journal_id",
             nullable = true)
     @Nullable
+    @JsonBackReference
     protected Journal journal;
 
 
@@ -94,6 +98,7 @@ public class ElementPermission implements IEntity {
             name = "document_id",
             nullable = true)
     @Nullable
+    @JsonBackReference
     protected Document document;
 
     // }
@@ -125,7 +130,7 @@ public class ElementPermission implements IEntity {
         this.researcher = researcher;
     }
 
-
+    @JsonBackReference
     public <T extends IEntity> T getElement()
     {
         if (this.type.equals(Experiment.class))
@@ -158,6 +163,16 @@ public class ElementPermission implements IEntity {
         this.id = id;
     }
 
+    /**
+     * Implemented by every class to return its own class.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends IEntity> Class<T> getMyType() {
+        return (Class<T>) this.type;
+    }
+
     @Override
     public boolean isContainer(UUID entity_uuid) {
         return false;
@@ -166,15 +181,6 @@ public class ElementPermission implements IEntity {
     @Override
     public boolean isContained(UUID entity_uuid) {
         return false;
-    }
-
-    @Override
-    public Class<?> getMyType() {
-        return ElementPermission.class;
-    }
-
-    public Class<?> getType() {
-        return type;
     }
 
     public void setType(Class<?> type) {

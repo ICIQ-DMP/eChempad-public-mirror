@@ -8,6 +8,7 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.Nullable;
@@ -40,6 +41,17 @@ public class Experiment implements IEntity{
     private String description;
 
     @OneToMany(
+            targetEntity = ElementPermission.class,
+            mappedBy = "experiment",
+            fetch = FetchType.EAGER,
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
+    )
+    @NotNull
+    @JsonIgnore
+    @JsonManagedReference
+    private Set<ElementPermission> permissions = new HashSet<>();
+
+    @OneToMany(
             targetEntity = Document.class,
             mappedBy = "experiment",
             fetch = FetchType.EAGER,
@@ -57,17 +69,6 @@ public class Experiment implements IEntity{
             nullable = false)
     private Journal journal;
 
-
-
-    @OneToMany(
-            targetEntity = ElementPermission.class,
-            mappedBy = "experiment",
-            fetch = FetchType.EAGER,
-            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
-    )
-    @NotNull
-    @JsonIgnore
-    private Set<ElementPermission> permissions = new HashSet<>();
 
     public Experiment() {}
 

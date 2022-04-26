@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.ICIQ.eChempad.configurations.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -61,7 +62,7 @@ public class Researcher implements Serializable, IEntity {
             // if a researcher is deleted all of its Permissions have to be deleted.
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
-    //@MapKey(name = "id")
+    @JsonManagedReference
     private Set<ElementPermission> permissions = new HashSet<>();
 
 

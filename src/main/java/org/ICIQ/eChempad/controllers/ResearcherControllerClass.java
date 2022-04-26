@@ -69,12 +69,14 @@ public class ResearcherControllerClass implements ResearcherController {
 
     @Override
     @GetMapping(value = "/api/researcher/signals")
-    public void bulkImportSignals() {
+    public ResponseEntity<String> bulkImportSignals() {
         try {
             this.signalsImportService.importSignals(this.securityService.getLoggedResearcher().getSignalsAPIKey());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return ResponseEntity.ok().body("The content accessible with your Signals API key has been exported to eChempad. " +
+                "Now you can access it using the API REST methods.");
     }
 
     @Override

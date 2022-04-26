@@ -14,7 +14,7 @@ public interface SignalsImportService {
      * Imports all the data accessible from signals relative to the current user.
      * @throws IOException Thrown if something is wrong during all the communication with Signals API
      */
-    void importSignals(String APIKey) throws IOException;
+    //void importSignals(String APIKey) throws IOException;
 
     /**
      * Scraps all the journal accessible with the supplied API key until the retrieved data field is an empty JSON
@@ -22,7 +22,7 @@ public interface SignalsImportService {
      * @param APIKey APIKey used for the authorization against the Signals web server application.
      * @return Array of JSON nodes. Each position of the array corresponds to a single journal.
      */
-    ArrayNode getJournals(String APIKey);
+    //ArrayNode getJournals(String APIKey);
 
 
     /**

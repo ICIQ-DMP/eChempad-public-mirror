@@ -7,6 +7,8 @@
  */
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.UUID;
 
 /**
@@ -49,9 +51,12 @@ public interface IEntity {
 
 
     /**
-     * Implemented by every class to return its own class.
+     * Implemented by every class to return its own type, except for element permission, which returns the type of the
+     * element that is giving permissions to.
+     * @param <T> Parametrized type in order to return any type of class.
      * @return Class of the object implementing this interface.
      */
+    @JsonBackReference
     <T extends IEntity> Class<T> getMyType();
 
 
@@ -71,6 +76,4 @@ public interface IEntity {
      * @return True if the supplied UUID is a container of the current object.
      */
     boolean isContained(UUID entity_uuid);
-
-
 }
