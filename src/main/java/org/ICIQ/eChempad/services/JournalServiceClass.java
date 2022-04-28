@@ -51,9 +51,9 @@ public class JournalServiceClass extends GenericServiceClass<Journal, UUID> impl
     }
 
     @Override
-    public void addJournal(Journal entity)
+    public Journal addJournal(Journal entity)
     {
-        this.securityService.saveElementWorkspace(entity);
+        return (Journal) this.securityService.saveElementWorkspace(entity);
     }
 
     @Override

@@ -100,17 +100,17 @@ public class SecurityServiceClass implements SecurityService{
         {
             //this.experimentRepository.saveOrUpdate((Experiment) element);
             ((Experiment) element).getPermissions().add(permission);
-            this.experimentRepository.saveOrUpdate((Experiment) element);
+            element = this.experimentRepository.saveOrUpdate((Experiment) element);
         }
         else if (element.getMyType().equals(Journal.class))
         {
             ((Journal) element).getPermissions().add(permission);
-            this.journalRepository.saveOrUpdate((Journal) element);
+            element = this.journalRepository.saveOrUpdate((Journal) element);
         }
         else if (element.getMyType().equals(Document.class))
         {
             ((Document) element).getPermissions().add(permission);
-            this.documentRepository.saveOrUpdate((Document) element);
+            element = this.documentRepository.saveOrUpdate((Document) element);
         }
         else
         {

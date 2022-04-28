@@ -1,12 +1,14 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.ICIQ.eChempad.entities.Journal;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 
 public interface SignalsImportService {
 
@@ -14,7 +16,7 @@ public interface SignalsImportService {
      * Imports all the data accessible from signals relative to the current user.
      * @throws IOException Thrown if something is wrong during all the communication with Signals API
      */
-    //void importSignals(String APIKey) throws IOException;
+    String importSignals(String APIKey) throws IOException;
 
     /**
      * Scraps all the journal accessible with the supplied API key until the retrieved data field is an empty JSON

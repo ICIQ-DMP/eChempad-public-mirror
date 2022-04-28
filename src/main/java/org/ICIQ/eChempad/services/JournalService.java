@@ -40,8 +40,9 @@ public interface JournalService extends GenericService<Journal, UUID> {
     /**
      * Adds a new journal to the user workspace. It will be always available since it is on the own user workspace.
      * @param entity Journal data to add.
+     * @return Returns the journal instance that we have updated.
      */
-    void addJournal(Journal entity);
+    Journal addJournal(Journal entity);
 
     /**
      * Updates the journal with the UUID supplied with data from the journal

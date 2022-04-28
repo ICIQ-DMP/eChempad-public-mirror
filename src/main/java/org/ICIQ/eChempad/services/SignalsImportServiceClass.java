@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.UUID;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
@@ -56,11 +57,13 @@ public class SignalsImportServiceClass implements SignalsImportService {
         this.journalService = journalService;
     }
 
-    public void importSignals(String APIKey) throws IOException {
-        this.getJournals(APIKey);
+    public String importSignals(String APIKey) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("IMPORTED RESOURCES FROM SIGNALS NOTEBOOK: \n");
+        return this.getJournals(APIKey, stringBuilder).toString();
     }
 
-    public void getJournals(String APIKey)
+    public StringBuilder getJournals(String APIKey, StringBuilder stringBuilder)
     {
         ObjectNode journalJSON;
         int i = 0;
@@ -76,27 +79,34 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 // Remove quotes and obtain the EID of this entity.
                 String journal_eid = journalJSON.get("data").get(0).get("id").toString().replace("\"", "");
 
-
                 // Create unmanaged journal to save the metadata
                 Journal signalsJournal = new Journal();
-                signalsJournal.setName(journalJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
-                signalsJournal.setDescription(journalJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
-                // (...)
+
+                // Parse and log journal name
+                String signalsJournalName = journalJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
+                if (signalsJournalName.equals(""))
+                {
+                    signalsJournalName = "(No name provided)";
+                }
+                signalsJournal.setName(signalsJournalName);
+                stringBuilder.append(" * Journal ").append(i).append(" with EID ").append(journal_eid).append(": ").append(signalsJournalName).append("\n");
+
+                // Parse journal description
+                String signalsJournalDescription = journalJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
+                signalsJournal.setDescription(signalsJournalDescription);
+
+                // metadata parsing (...)
 
                 this.journalService.addJournal(signalsJournal);
-
-                printJSON(journalJSON);
 
                 // Now call getExperimentsFromJournal using the created journal in order to import their children, recursively
                 // This function will fill the passed journal with the new retrieved experiments from Signals. It will also
                 // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
-                this.getExperimentsFromJournal(APIKey, journal_eid, signalsJournal.getUUid());
+                this.getExperimentsFromJournal(APIKey, journal_eid, signalsJournal.getUUid(), stringBuilder);
                 i++;
             }
         }
-
-
-
+        return stringBuilder;
     }
 
     public ObjectNode getJournal(String APIKey, int pageOffset)
@@ -111,7 +121,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .block();
     }
 
-    public void getExperimentsFromJournal(String APIKey, String journal_eid, UUID journal_uuid)
+    public StringBuilder getExperimentsFromJournal(String APIKey, String journal_eid, UUID journal_uuid, StringBuilder stringBuilder)
     {
         // ArrayNode experiments = this.objectMapper.createArrayNode();
         ObjectNode experimentJSON;
@@ -132,20 +142,34 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
                 // Create unmanaged journal to save the metadata
                 Experiment signalsExperiment = new Experiment();
-                signalsExperiment.setName(experimentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
+
+                // Parse and log experiment name
+                String signalsExperimentName = experimentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
+                if (signalsExperimentName.equals(""))
+                {
+                    signalsExperimentName = "(No name provided)";
+                }
+                signalsExperiment.setName(signalsExperimentName);
+                stringBuilder.append("   - Experiment ").append(i).append(" with EID ").append(experiment_eid).append(": ").append(signalsExperimentName).append("\n");
+
+                // Parse experiment description
                 signalsExperiment.setDescription(experimentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
-                // (...)
+
+                // metadata parsing (...)
+
                 this.experimentService.addExperimentToJournal(signalsExperiment, journal_uuid);
 
+                // printJSON(experimentJSON);
 
                 // Now call getExperimentsFromJournal using the created journal in order to import their children, recursively
                 // This function will fill the passed journal with the new retrieved experiments from Signals. It will also
                 // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
-                this.getDocumentsFromExperiment(APIKey, experiment_eid, signalsExperiment.getUUid());
+                this.getDocumentsFromExperiment(APIKey, experiment_eid, signalsExperiment.getUUid(), stringBuilder);
 
                 i++;
             }
         }
+        return stringBuilder;
     }
 
     public ObjectNode getExperimentFromJournal(String APIKey, int pageOffset, String journal_eid)
@@ -159,7 +183,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .block();
     }
 
-    public void getDocumentsFromExperiment(String APIKey, String experiment_eid, UUID experiment_uuid)
+    public StringBuilder getDocumentsFromExperiment(String APIKey, String experiment_eid, UUID experiment_uuid, StringBuilder stringBuilder)
     {
         ObjectNode documentJSON;
         int i = 0;
@@ -173,40 +197,34 @@ public class SignalsImportServiceClass implements SignalsImportService {
             else
             {
                 String document_eid = documentJSON.get("data").get(0).get("id").toString().replace("\"", "");
-                System.out.println("DOCUMENT EID IS: " + document_eid);
-                System.out.println("DOCUMENT JSON CONTENT IS: " + documentJSON);
 
                 DocumentHelper documentHelper = new DocumentHelper();
-                documentHelper.setName(documentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
+                // Parse and log document name
+                String documentHelperName = documentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
+                if (documentHelperName.equals(""))
+                {
+                    documentHelperName = "(No name provided)";
+                }
+                documentHelper.setName(documentHelperName);
+                stringBuilder.append("     # Document ").append(i).append(" with EID ").append(document_eid).append(": ").append(documentHelperName).append("\n");
+
+                // Parse description
                 documentHelper.setDescription(documentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
-                /**try {
-                    documentHelper.setFile(((MultipartFile) this.exportDocument(APIKey, document_eid)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }**/
+
+                // Parse file
                 try {
-
-                    //ByteArrayResource byteArrayResource = this.exportDocument(APIKey, document_eid);
-                    //System.out.println(Arrays.toString(byteArrayResource.getByteArray()));
-
-
-
-                    // This line explodes with null pointer because the multipartfile obtained from the body has a null
-                    // input stream, so it fails when trying to save it.
                     documentHelper.setFile(new MockMultipartFile(document_eid, this.exportDocument(APIKey, document_eid).getInputStream()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                // (...)
+                // metadata parsing (...)
+
                 this.documentService.addDocumentToExperiment(documentHelper, experiment_uuid);
-
-                // Stop recursion calls
-
                 i++;
             }
         }
-        // return documents;
+        return stringBuilder;
     }
 
     public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
