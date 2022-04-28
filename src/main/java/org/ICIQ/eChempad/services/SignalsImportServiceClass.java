@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.entities.Journal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
@@ -41,6 +42,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
     private final JournalService journalService;
 
+    private final WebClient webClient;
 
     static void printJSON(ObjectNode objectNode)
     {
@@ -53,10 +55,11 @@ public class SignalsImportServiceClass implements SignalsImportService {
         }
     }
 
-    public SignalsImportServiceClass(ExperimentService experimentService, DocumentService documentService, JournalService journalService) {
+    public SignalsImportServiceClass(ExperimentService experimentService, DocumentService documentService, JournalService journalService, WebClient webClient) {
         this.experimentService = experimentService;
         this.documentService = documentService;
         this.journalService = journalService;
+        this.webClient = webClient;
     }
 
 
@@ -134,8 +137,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
     public ObjectNode getJournal(String APIKey, int pageOffset)
     {
         // Map<Object, Object> URL_variables = Collections.emptyMap();
-        WebClient client = WebClient.create();
-        return client.get()
+        return this.webClient.get()
                 .uri(this.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=children%2C%20owner")
                 .header("x-api-key", APIKey)
                 .retrieve()
@@ -195,8 +197,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
     public ObjectNode getExperimentFromJournal(String APIKey, int pageOffset, String journal_eid)
     {
-        WebClient client = WebClient.create();
-        return client.get()
+        return this.webClient.get()
                 .uri(this.baseURL + "/entities/" + journal_eid + "/children?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&include=children%2C%20owner")
                 .header("x-api-key", APIKey)
                 .retrieve()
@@ -249,8 +250,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
     public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
     {
-        WebClient client = WebClient.create();
-        return client.get()
+        return this.webClient.get()
                 .uri(this.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&include=children%2C%20owner")
                 .header("x-api-key", APIKey)
                 .retrieve()
@@ -260,13 +260,11 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
     public ByteArrayResource exportDocument(String APIKey, String document_eid) throws IOException {
 
-        final WebClient webClient = WebClient.create();
-
         String url = this.baseURL + "/entities/" + document_eid + "/export";
 
         //Logger.getGlobal().info("\n\n\n the document EID is: " + document_eid);
 
-        ByteArrayResource byteArrayResource = webClient.get()
+        ByteArrayResource byteArrayResource = this.webClient.get()
                 .uri(url)
                 .header("x-api-key", APIKey)
                 .accept(MediaType.APPLICATION_OCTET_STREAM)
