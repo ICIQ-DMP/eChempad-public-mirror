@@ -20,9 +20,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
 @Service
@@ -57,13 +59,34 @@ public class SignalsImportServiceClass implements SignalsImportService {
         this.journalService = journalService;
     }
 
+
+   /** public ByteArrayResource testexportDocument(String APIKey, String document_eid) throws IOException {
+
+        final WebClient webClient = WebClient.create();
+
+        String url = this.baseURL + "/entities/" + document_eid + "/export";
+
+        Logger.getGlobal().info("\n\n\n the document expoding is: " + document_eid);
+
+        return webClient.get()
+                .uri(url)
+                .header("x-api-key", APIKey)
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
+                .retrieve()
+                .bodyToMono(ByteArrayResource.class)
+                .block();
+    }*/
+
+
     public String importSignals(String APIKey) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("IMPORTED RESOURCES FROM SIGNALS NOTEBOOK: \n");
-        return this.getJournals(APIKey, stringBuilder).toString();
+        //testexportDocument(APIKey, "text:9c256377-ca14-4c1c-8258-f38926c8f948");
+        this.getJournals(APIKey, stringBuilder);
+        return stringBuilder.toString();
     }
 
-    public StringBuilder getJournals(String APIKey, StringBuilder stringBuilder)
+    public void getJournals(String APIKey, StringBuilder stringBuilder)
     {
         ObjectNode journalJSON;
         int i = 0;
@@ -106,7 +129,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 i++;
             }
         }
-        return stringBuilder;
     }
 
     public ObjectNode getJournal(String APIKey, int pageOffset)
@@ -121,7 +143,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .block();
     }
 
-    public StringBuilder getExperimentsFromJournal(String APIKey, String journal_eid, UUID journal_uuid, StringBuilder stringBuilder)
+    public void getExperimentsFromJournal(String APIKey, String journal_eid, UUID journal_uuid, StringBuilder stringBuilder)
     {
         // ArrayNode experiments = this.objectMapper.createArrayNode();
         ObjectNode experimentJSON;
@@ -169,7 +191,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 i++;
             }
         }
-        return stringBuilder;
     }
 
     public ObjectNode getExperimentFromJournal(String APIKey, int pageOffset, String journal_eid)
@@ -183,7 +204,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .block();
     }
 
-    public StringBuilder getDocumentsFromExperiment(String APIKey, String experiment_eid, UUID experiment_uuid, StringBuilder stringBuilder)
+    public void getDocumentsFromExperiment(String APIKey, String experiment_eid, UUID experiment_uuid, StringBuilder stringBuilder)
     {
         ObjectNode documentJSON;
         int i = 0;
@@ -224,7 +245,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 i++;
             }
         }
-        return stringBuilder;
     }
 
     public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
@@ -244,15 +264,24 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
         String url = this.baseURL + "/entities/" + document_eid + "/export";
 
-        return webClient.get()
+        //Logger.getGlobal().info("\n\n\n the document EID is: " + document_eid);
+
+        ByteArrayResource byteArrayResource = webClient.get()
                 .uri(url)
                 .header("x-api-key", APIKey)
                 .accept(MediaType.APPLICATION_OCTET_STREAM)
                 .retrieve()
                 .bodyToMono(ByteArrayResource.class)
                 .block();
+
+        // In the cases where there is stored an empty file in Signals we receive a nullPointer instead of a ByteArrayResource empty
+        if (byteArrayResource == null)
+        {
+            return new ByteArrayResource("".getBytes());
+        }
+        else
+        {
+            return byteArrayResource;
+        }
     }
-
-
-
 }
