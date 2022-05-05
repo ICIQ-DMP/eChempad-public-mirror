@@ -249,14 +249,14 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         // Copy an arbitrary file as if it has been uploaded with the API
         FileStorageProperties fileStorageProperties = new FileStorageProperties();
-        Path document1ExperimentEthanol1_license_path = Paths.get("/home/amarine/Desktop/eChempad/LICENSE.md");
+        Path document1ExperimentEthanol1_license_path = Paths.get("/home/aleixmt/Escritorio/eChempad/LICENSE.md");
         byte[] document1ExperimentEthanol1_license_content = null;
         try {
             document1ExperimentEthanol1_license_content = Files.readAllBytes(document1ExperimentEthanol1_license_path);
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1);
+        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1, "text/plain");
 
 
 
@@ -264,7 +264,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
         document1ExperimentEthanol1 = this.documentRepository.saveOrUpdate(document1ExperimentEthanol1);
         this.elementPermissionRepository.saveOrUpdate(document1ExperimentEthanol1Permission);
-        MultipartFile document1ExperimentEthanol1_license = new MockMultipartFile(document1ExperimentEthanol1.getUUid().toString(), document1ExperimentEthanol1.getUUid().toString(), "application/octet-stream", document1ExperimentEthanol1_license_content);
+        MultipartFile document1ExperimentEthanol1_license = new MockMultipartFile(document1ExperimentEthanol1.getUUid().toString(), document1ExperimentEthanol1.getUUid().toString(), "text/plain", document1ExperimentEthanol1_license_content);
 
         document1ExperimentEthanol1.setPath(Paths.get(this.fileStorageService.storeFile(document1ExperimentEthanol1_license, document1ExperimentEthanol1.getUUid())).toString());
 
@@ -276,7 +276,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         // Documents photo in experimentEthanol2 Experiment
         // Copy an arbitrary file as if it has been uploaded with the API
-        Path document2ExperimentEthanol1_photo_path = Paths.get("/home/amarine/Desktop/eChempad/src/main/resources/CA_certificates/cacerts");
+        Path document2ExperimentEthanol1_photo_path = Paths.get("/home/aleixmt/Escritorio/eChempad/src/main/resources/CA_certificates/cacerts");
         byte[] document2ExperimentEthanol1_photo_content = null;
         try {
             document2ExperimentEthanol1_photo_content = Files.readAllBytes(document2ExperimentEthanol1_photo_path);
@@ -284,7 +284,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
             e.printStackTrace();
         }
 
-        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1);
+        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1, "application/octet-stream");
 
 
         ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);

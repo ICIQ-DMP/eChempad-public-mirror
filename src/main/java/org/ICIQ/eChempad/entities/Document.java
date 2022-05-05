@@ -44,6 +44,9 @@ public class Document implements IEntity{
     @Column(name = "description", length = 1000, nullable = false)
     protected String description;
 
+    @Column(name = "content_type", length = 1000, nullable = false)
+    protected String contentType;
+
     @Column(name = "file", length = 1000, nullable = true)
     protected String path;
 
@@ -77,21 +80,14 @@ public class Document implements IEntity{
         this.permissions = new HashSet<>();
     }
 
-    public Document(String name, String description, Experiment experiment) {
+    public Document(String name, String description, Experiment experiment, String contentType) {
         this.name = name;
         this.description = description;
         this.experiment = experiment;
         this.permissions = new HashSet<>();
+        this.contentType = contentType;
     }
 
-    /**
-     * Default display of a File: By default an instance of a File is always considered as text.
-     * @return String containing a representation for a generic document.
-     */
-    public String displayFile()
-    {
-        return this.name + " " + this.description;
-    }
 
 
     // GETTERS AND SETTERS
@@ -150,6 +146,7 @@ public class Document implements IEntity{
         this.experiment = experiment;
     }
 
+    @JsonIgnore
     public String getPath() {
         return path;
     }
@@ -165,5 +162,13 @@ public class Document implements IEntity{
 
     public void setPermissions(@Nullable Set<ElementPermission> permissions) {
         this.permissions = permissions;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

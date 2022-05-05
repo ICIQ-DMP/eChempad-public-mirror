@@ -17,20 +17,10 @@ public class DocumentCSV extends Document {
      * its parameters.
      * @param name Name of the document (file)
      */
-    public DocumentCSV(String name, String description, Experiment experiment) {
-        super(name, description, experiment);
+    public DocumentCSV(String name, String description, Experiment experiment, String contentType) {
+        super(name, description, experiment, contentType);
     }
 
-
-    /**
-     * CSVs can be treated as text files, so we can call directly the method of the parent where we have the logic to
-     * printing text files.
-     * @return String that contains the whole file data.
-     */
-    @Override
-    public String displayFile() {
-        return super.displayFile();
-    }
 
 
 

@@ -62,15 +62,27 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
 
         if (this.securityService.isResearcherAuthorized(Authority.WRITE, experiment_uuid, Experiment.class))
         {
+            // Create logic to handle description and name if not supplied with documentHelper to override with
+            // information from the file
+            if (documentHelper.getName() == null)
+            {
+                documentHelper.setName(documentHelper.getFile().getOriginalFilename());
+            }
+            if (documentHelper.getDescription() == null)
+            {
+                // TODO raise custom exception to supply description since it can be null
+                documentHelper.setDescription("");
+            }
+
             // Regenerate document and make it point to the experiment
-            Document document = new Document(documentHelper.getName(), documentHelper.getDescription(), experiment);
-            this.genericRepository.saveOrUpdate(document);
+
+            Document document = this.genericRepository.saveOrUpdate(new Document(documentHelper.getName(), documentHelper.getDescription(), experiment, documentHelper.getFile().getContentType()));
 
             String path = this.fileStorageService.storeFile(documentHelper.getFile(), document.getUUid());
             document.setPath(path);
             document.setExperiment(experiment);
 
-            this.genericRepository.saveOrUpdate(document);
+            document = this.genericRepository.saveOrUpdate(document);
             experiment.getDocuments().add(document);
             this.experimentRepository.saveOrUpdate(experiment);
             this.securityService.saveElementWorkspace(document);
