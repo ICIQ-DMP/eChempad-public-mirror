@@ -138,7 +138,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
     {
         // Map<Object, Object> URL_variables = Collections.emptyMap();
         return this.webClient.get()
-                .uri(this.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=children%2C%20owner")
+                .uri(this.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=children%2C%20owner&includeOptions=mine")
                 .header("x-api-key", APIKey)
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
