@@ -1,31 +1,21 @@
 package org.ICIQ.eChempad.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.DocumentHelper;
 import org.ICIQ.eChempad.entities.Experiment;
 import org.ICIQ.eChempad.entities.Journal;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
 @Service
@@ -44,6 +34,8 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
     private final WebClient webClient;
 
+    private final SecurityService securityService;
+
     static void printJSON(ObjectNode objectNode)
     {
         final ObjectMapper objectMapper = new ObjectMapper();
@@ -55,11 +47,12 @@ public class SignalsImportServiceClass implements SignalsImportService {
         }
     }
 
-    public SignalsImportServiceClass(ExperimentService experimentService, DocumentService documentService, JournalService journalService, WebClient webClient) {
+    public SignalsImportServiceClass(ExperimentService experimentService, DocumentService documentService, JournalService journalService, WebClient webClient, SecurityService securityService) {
         this.experimentService = experimentService;
         this.documentService = documentService;
         this.journalService = journalService;
         this.webClient = webClient;
+        this.securityService = securityService;
     }
 
 
@@ -102,6 +95,12 @@ public class SignalsImportServiceClass implements SignalsImportService {
             }
             else
             {
+                // Check if the journal owner email coincides with the email of the logged user, if not discard journal
+                if (! this.securityService.getLoggedResearcher().getEmail().equals(journalJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", "")))
+                {
+                    continue;
+                }
+
                 // Remove quotes and obtain the EID of this entity.
                 String journal_eid = journalJSON.get("data").get(0).get("id").toString().replace("\"", "");
 
@@ -159,6 +158,11 @@ public class SignalsImportServiceClass implements SignalsImportService {
             }
             else
             {
+                // Check if the experiment owner email coincides with the email of the logged user, if not discard experiment
+                if (! this.securityService.getLoggedResearcher().getEmail().equals(experimentJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", "")))
+                {
+                    continue;
+                }
                 // Here we will call getDocuments, we will append each document into a list inside of
                 // journal{data}[0]{relationships}{children} = []
                 String experiment_eid = experimentJSON.get("data").get(0).get("id").toString().replace("\"", "");
@@ -218,10 +222,17 @@ public class SignalsImportServiceClass implements SignalsImportService {
             }
             else
             {
+                // Check if the document owner email coincides with the email of the logged user, if not discard document
+                if (! this.securityService.getLoggedResearcher().getEmail().equals(documentJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", "")))
+                {
+                    continue;
+                }
+
+                // Parse document EID Signals
                 String document_eid = documentJSON.get("data").get(0).get("id").toString().replace("\"", "");
 
                 DocumentHelper documentHelper = new DocumentHelper();
-                // Parse and log document name
+                // Parse and log document (metadata) name
                 String documentHelperName = documentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
                 if (documentHelperName.equals(""))
                 {
@@ -271,6 +282,11 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .retrieve()
                 .bodyToMono(ByteArrayResource.class)
                 .block();
+
+        // TODO: recover original filename from HTTP header Content-Disposition and return it.
+        // Content-Disposition=attachment; filename="MZ7-085-DC_10%5B1%5D.zip"; filename*=utf-8''MZ7-085-DC_10%5B1%5D.zip
+        // TODO: recover mimetype from HTTP header Content-Type
+        // TODO: recover fileSize from HTTP header Content-Length
 
         // In the cases where there is stored an empty file in Signals we receive a nullPointer instead of a ByteArrayResource empty
         if (byteArrayResource == null)
