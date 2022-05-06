@@ -79,12 +79,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Creates the http form login in the default URL /login· The first parameter is a string corresponding
                 // to the URL where we will map the login form
                     .formLogin()
+                    .permitAll()
 
-                /*
+
                 .and()
                 .authorizeRequests()
 
-                    .antMatchers("/api/researcher").authenticated()
+                    .antMatchers("/api/researcher").hasRole("ADMIN")
                     .antMatchers("/api/journal").authenticated()
                     .antMatchers("/api/experiment").authenticated()
                     .antMatchers("/api/document").authenticated()
@@ -125,12 +126,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationBuilder.userDetailsService(this.userDetailsService()).passwordEncoder(this.passwordEncoder()).and()
                 .jdbcAuthentication().dataSource(this.dataSource)
                 // .withDefaultSchema()  // Does not work with psql
-                .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = ?");
-                /**.authoritiesByUsernameQuery("SELECT researcher.email, CONCAT(elementpermission.journal_id, '_', elementpermission.authority)\n" +
+                .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = ?")
+                .authoritiesByUsernameQuery("SELECT researcher.email, CONCAT(elementpermission.journal_id, '_', elementpermission.authority)\n" +
                         "FROM researcher, elementpermission\n" +
                         "WHERE elementpermission.researcher = researcher.uuid \n" +
                         "AND researcher.email = ?");
-                        //.withUser(user);  // Add admin account**/
+                        //.withUser(user);  // Add admin account
                 //.withUser("patatero").password(passwordEncoder().encode("password")).roles("USER");
 
         session.getTransaction().commit();

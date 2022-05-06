@@ -18,6 +18,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +47,15 @@ public class DocumentControllerClass implements DocumentController{
             produces = "application/json"
     )
     public ResponseEntity<Set<Document>> getDocuments() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            auth.getAuthorities().stream().forEach((t) -> System.out.println(t.getAuthority().toString()));
+        }
+
+
+
+
         HashSet<Document> documents = new HashSet<>(this.documentServiceClass.getDocuments());
         return ResponseEntity.ok(documents);
     }
