@@ -152,6 +152,23 @@ public class ElementPermission implements IEntity {
         }
     }
 
+    /**
+     * For the JSON printing in the API REST.
+     * @return The type of data that this element permission refers as a serializable string.
+     */
+    public String getType()
+    {
+        return this.type.getSimpleName();
+    }
+
+    /**
+     *  For the JSON printing in the API REST.
+     * @return The UUID of the element that this permission is referring to.
+     */
+    public String getEntityUUID()
+    {
+        return this.getElement().getUUid().toString();
+    }
     // Getters and setters
 
 
