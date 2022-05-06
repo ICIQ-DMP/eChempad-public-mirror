@@ -41,11 +41,17 @@ public class Document implements IEntity{
     @Column(name = "name", length = 1000, nullable = false)
     protected String name;
 
+    @Column(name = "original_filename", length = 1000, nullable = false)
+    protected String originalFilename;
+
     @Column(name = "description", length = 1000, nullable = false)
     protected String description;
 
     @Column(name = "content_type", length = 1000, nullable = false)
     protected String contentType;
+
+    @Column(name = "file_size", length = 1000, nullable = true)
+    protected long fileSize;
 
     @Column(name = "file", length = 1000, nullable = true)
     protected String path;
@@ -170,5 +176,21 @@ public class Document implements IEntity{
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public String getOriginalFilename() {
+        return originalFilename;
+    }
+
+    public void setOriginalFilename(String originalFilename) {
+        this.originalFilename = originalFilename;
     }
 }

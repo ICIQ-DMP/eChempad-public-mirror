@@ -10,6 +10,7 @@ package org.ICIQ.eChempad.configurations;
 import org.ICIQ.eChempad.entities.*;
 import org.ICIQ.eChempad.repositories.*;
 import org.ICIQ.eChempad.services.FileStorageService;
+import org.ICIQ.eChempad.services.ResearcherService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Scanner;
 
 @Component
@@ -47,6 +49,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     private final RoleUserRepository roleUserRepository;
 
     private final FileStorageService fileStorageService;
+
+
+    private final ResearcherService researcherService;
     /**
      * Using classic constructor since when using autowired injection in the fields is discouraged because breaks
      * encapsulation and very random behaviour was happening.
@@ -57,9 +62,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
      * @param documentRepository
      * @param elementPermissionRepository
      * @param roleUserRepository
+     * @param researcherService
      */
     @Autowired
-    public ApplicationStartup(ResearcherRepository researcherRepository, JournalRepository journalRepository, ExperimentRepository experimentRepository, DocumentRepository documentRepository, ElementPermissionRepository elementPermissionRepository, RoleUserRepository roleUserRepository, FileStorageService fileStorageService) {
+    public ApplicationStartup(ResearcherRepository researcherRepository, JournalRepository journalRepository, ExperimentRepository experimentRepository, DocumentRepository documentRepository, ElementPermissionRepository elementPermissionRepository, RoleUserRepository roleUserRepository, FileStorageService fileStorageService, ResearcherService researcherService) {
         this.researcherRepository = researcherRepository;
         this.journalRepository = journalRepository;
         this.experimentRepository = experimentRepository;
@@ -67,7 +73,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         this.elementPermissionRepository = elementPermissionRepository;
         this.roleUserRepository = roleUserRepository;
         this.fileStorageService = fileStorageService;
+        this.researcherService = researcherService;
     }
+
+
 
     /**
      * This event is executed as late as conceivably possible to indicate that
@@ -75,7 +84,31 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
      */
     @Override
     public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
-        initializeDB();
+        //initializeDB();
+        this.addUserWithSignalsKey();
+    }
+
+    public void addUserWithSignalsKey()
+    {
+        Researcher cbo = new Researcher();
+
+        cbo.setFullName("Carles Bo");
+        cbo.setEmail("cbo@iciq.cat");
+        cbo.setSignalsAPIKey(this.getAPIKey());
+        cbo.setHashedPassword("password");
+
+        HashSet<Role> roles = new HashSet<>();
+        roles.add(Role.ADMIN);
+        roles.add(Role.USER);
+
+        cbo.setRoles(roles);
+        this.researcherService.save(cbo);
+
+        RoleUser cboRoleUser = new RoleUser(cbo, Role.USER);
+        RoleUser cboRoleAdmin = new RoleUser(cbo, Role.ADMIN);
+
+        this.roleUserRepository.saveOrUpdate(cboRoleUser);
+        this.roleUserRepository.saveOrUpdate(cboRoleAdmin);
     }
 
     String getAPIKey()
@@ -111,7 +144,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         String APIKey = this.getAPIKey();
         // Researcher examples, implicitly are USERs
-        Researcher elvisTech = new Researcher("Charles Good", "cgood@gmail.com", null, "password");
+        Researcher elvisTech = new Researcher("Carles Bo", "cbo@gmail.com", null, "password");
         Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", APIKey, "password");
         Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password");
 

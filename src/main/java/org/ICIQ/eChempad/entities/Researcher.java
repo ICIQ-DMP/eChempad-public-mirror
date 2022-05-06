@@ -153,6 +153,14 @@ public class Researcher implements Serializable, IEntity {
         return Researcher.class;
     }
 
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
+    }
+
+    public String getHashedPassword() {
+        return hashedPassword;
+    }
+
     public String getFullName() {
         return this.name;
     }
@@ -185,9 +193,6 @@ public class Researcher implements Serializable, IEntity {
         this.permissions = permissions;
     }
 
-    public String getHashedPassword() {
-        return hashedPassword;
-    }
 
     @Override
     public boolean equals(Object o) {

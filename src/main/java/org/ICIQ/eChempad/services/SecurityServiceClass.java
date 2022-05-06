@@ -42,11 +42,12 @@ public class SecurityServiceClass implements SecurityService{
         this.elementPermissionService = elementPermissionService;
     }
 
-
     @Override
     public Researcher getLoggedResearcher() {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<Researcher> researcher = this.researcherService.get().stream().filter(r -> r.getEmail().equals(username)).findFirst();
+
+        UserDetails userDetails = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         // TODO: make error in case of null
         return researcher.orElse(new Researcher());

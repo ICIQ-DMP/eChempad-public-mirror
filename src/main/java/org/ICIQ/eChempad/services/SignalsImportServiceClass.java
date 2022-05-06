@@ -228,21 +228,25 @@ public class SignalsImportServiceClass implements SignalsImportService {
                     continue;
                 }
 
-                // Parse document EID Signals
+                // Parse Signals document
                 String document_eid = documentJSON.get("data").get(0).get("id").toString().replace("\"", "");
-
                 DocumentHelper documentHelper = new DocumentHelper();
-                // Parse and log document (metadata) name
+
+                // Parse document name
                 String documentHelperName = documentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
                 if (documentHelperName.equals(""))
                 {
                     documentHelperName = "(No name provided)";
                 }
                 documentHelper.setName(documentHelperName);
-                stringBuilder.append("     # Document ").append(i).append(" with EID ").append(document_eid).append(": ").append(documentHelperName).append("\n");
 
-                // Parse description
-                documentHelper.setDescription(documentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
+                // Parse document description
+                String documentHelperDescription = documentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
+                if (documentHelperDescription.equals(""))
+                {
+                    documentHelperDescription = "(No description provided)";
+                }
+                documentHelper.setDescription(documentHelperDescription);
 
                 // Parse file
                 try {
@@ -251,7 +255,13 @@ public class SignalsImportServiceClass implements SignalsImportService {
                     e.printStackTrace();
                 }
 
-                // metadata parsing (...)
+
+
+                stringBuilder.append("     # Document ").append(i).append(" with EID ").append(document_eid).append(": ").append(documentHelperName).append("\n");
+                // TODO: recover original filename from HTTP header Content-Disposition and return it.
+                // Content-Disposition=attachment; filename="MZ7-085-DC_10%5B1%5D.zip"; filename*=utf-8''MZ7-085-DC_10%5B1%5D.zip
+                // TODO: recover mimetype from HTTP header Content-Type
+                // TODO: recover fileSize from HTTP header Content-Length
 
                 this.documentService.addDocumentToExperiment(documentHelper, experiment_uuid);
                 i++;
@@ -283,10 +293,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .bodyToMono(ByteArrayResource.class)
                 .block();
 
-        // TODO: recover original filename from HTTP header Content-Disposition and return it.
-        // Content-Disposition=attachment; filename="MZ7-085-DC_10%5B1%5D.zip"; filename*=utf-8''MZ7-085-DC_10%5B1%5D.zip
-        // TODO: recover mimetype from HTTP header Content-Type
-        // TODO: recover fileSize from HTTP header Content-Length
+
 
         // In the cases where there is stored an empty file in Signals we receive a nullPointer instead of a ByteArrayResource empty
         if (byteArrayResource == null)

@@ -62,30 +62,37 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
 
         if (this.securityService.isResearcherAuthorized(Authority.WRITE, experiment_uuid, Experiment.class))
         {
-            // Create logic to handle description and name if not supplied with documentHelper to override with
-            // information from the file
-            if (documentHelper.getName() == null)
-            {
-                documentHelper.setName(documentHelper.getFile().getOriginalFilename());
-            }
-            if (documentHelper.getDescription() == null)
-            {
-                // TODO raise custom exception to supply description since it can be null
-                documentHelper.setDescription("");
-            }
+            Document document = new Document(documentHelper.getName(), documentHelper.getDescription(), experiment, documentHelper.getFile().getContentType());
 
-            // Regenerate document and make it point to the experiment
+            // Parse data from the file to be included into the document entity
+            // Parse document metadata description
+            document.setDescription(document.getDescription());
 
-            Document document = this.genericRepository.saveOrUpdate(new Document(documentHelper.getName(), documentHelper.getDescription(), experiment, documentHelper.getFile().getContentType()));
+            // Parse document metadata name
+            document.setName(documentHelper.getName());
+
+            // Parse document original filename
+            document.setOriginalFilename(documentHelper.getFile().getOriginalFilename());
+
+            // Parse document fileSize
+            document.setFileSize(documentHelper.getFile().getSize());
+
+            // Parse content type
+            document.setContentType(documentHelper.getFile().getContentType());
+
+            // Make document point to the experiment it is in
+            document.setExperiment(experiment);
+
+            // Manage document entity, so we can get its UUID to save it in the file DB
+            document = this.genericRepository.saveOrUpdate(document);
 
             String path = this.fileStorageService.storeFile(documentHelper.getFile(), document.getUUid());
             document.setPath(path);
-            document.setExperiment(experiment);
 
             document = this.genericRepository.saveOrUpdate(document);
             experiment.getDocuments().add(document);
             this.experimentRepository.saveOrUpdate(experiment);
-            this.securityService.saveElementWorkspace(document);
+            // this.securityService.saveElementWorkspace(document);
 
             return document;
         }
