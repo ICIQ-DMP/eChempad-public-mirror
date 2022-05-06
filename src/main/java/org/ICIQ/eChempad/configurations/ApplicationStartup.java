@@ -84,8 +84,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
      */
     @Override
     public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
-        //initializeDB();
-        this.addUserWithSignalsKey();
+        this.initializeDB();
+        //this.addUserWithSignalsKey();
     }
 
     public void addUserWithSignalsKey()
@@ -144,7 +144,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         String APIKey = this.getAPIKey();
         // Researcher examples, implicitly are USERs
-        Researcher elvisTech = new Researcher("Carles Bo", "cbo@gmail.com", null, "password");
+        Researcher elvisTech = new Researcher("Carles Bo", "cbo@iciq.cat", APIKey, "password");
         Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", APIKey, "password");
         Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password");
 
@@ -291,7 +291,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         }
         Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1, "text/plain");
 
-
+        document1ExperimentEthanol1.setContentType("text/plain");
 
         ElementPermission document1ExperimentEthanol1Permission = new ElementPermission(document1ExperimentEthanol1, Authority.OWN, aitorMenta);
         document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
@@ -319,6 +319,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 
         Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1, "application/octet-stream");
 
+        document2ExperimentEthanol1.setContentType("application/octet-stream");
 
         ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);
         document2ExperimentEthanol1.getPermissions().add(document2ExperimentEthanol1Permission);

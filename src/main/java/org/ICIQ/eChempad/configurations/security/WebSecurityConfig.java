@@ -79,8 +79,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Creates the http form login in the default URL /login· The first parameter is a string corresponding
                 // to the URL where we will map the login form
                     .formLogin()
-                    .permitAll()
 
+                /*
                 .and()
                 .authorizeRequests()
 
@@ -92,7 +92,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // https://stackoverflow.com/questions/57574981/what-is-httpbasic-method-in-spring-security
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
-                // will show a 401 unauthenticated
+                // will show a 401 unauthenticated*/
                 .and()
                     .httpBasic(Customizer.withDefaults());
 
@@ -125,12 +125,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationBuilder.userDetailsService(this.userDetailsService()).passwordEncoder(this.passwordEncoder()).and()
                 .jdbcAuthentication().dataSource(this.dataSource)
                 // .withDefaultSchema()  // Does not work with psql
-                .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = ?")
-                .authoritiesByUsernameQuery("SELECT researcher.email, CONCAT(elementpermission.journal_id, '_', elementpermission.authority)\n" +
+                .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = ?");
+                /**.authoritiesByUsernameQuery("SELECT researcher.email, CONCAT(elementpermission.journal_id, '_', elementpermission.authority)\n" +
                         "FROM researcher, elementpermission\n" +
                         "WHERE elementpermission.researcher = researcher.uuid \n" +
                         "AND researcher.email = ?");
-                        //.withUser(user);  // Add admin account
+                        //.withUser(user);  // Add admin account**/
                 //.withUser("patatero").password(passwordEncoder().encode("password")).roles("USER");
 
         session.getTransaction().commit();
