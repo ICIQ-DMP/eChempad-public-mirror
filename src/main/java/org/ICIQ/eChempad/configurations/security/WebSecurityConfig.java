@@ -162,7 +162,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean()
     public PasswordEncoder passwordEncoder()
     {
-
         return NoOpPasswordEncoder.getInstance();
         //return new BCryptPasswordEncoder();
     }
@@ -178,5 +177,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
