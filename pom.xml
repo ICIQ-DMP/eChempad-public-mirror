@@ -142,6 +142,33 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+		<!-- Used to control the ACL security infrastructure -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl</artifactId>
+		</dependency>
+
+		<!-- Used to control the ACL security infrastructure -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+
+		<!-- Used to control the ACL security infrastructure, probably for some annotations -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+
+		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
+		And, to support Ehcache in Spring, we also need the spring-context-support -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.6.11</version>
+		</dependency>
+
+
 		<!-- DEPENDENCIES WITH DEBATABLE UTILITY -->
 
 		<!--Not used yet?, it serves testing purposes -->
