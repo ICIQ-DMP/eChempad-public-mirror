@@ -47,7 +47,7 @@ public class Document implements IEntity{
     @Column(name = "description", length = 1000, nullable = false)
     protected String description;
 
-    @Column(name = "content_type", length = 1000, nullable = false)
+    @Column(name = "content_type", length = 1000, nullable = true)
     protected String contentType;
 
     @Column(name = "file_size", length = 1000, nullable = true)

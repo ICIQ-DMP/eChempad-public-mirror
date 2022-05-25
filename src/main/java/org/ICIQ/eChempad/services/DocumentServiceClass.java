@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class DocumentServiceClass extends GenericServiceClass<Document, UUID> implements DocumentService{
@@ -78,6 +79,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
             document.setFileSize(documentHelper.getFile().getSize());
 
             // Parse content type
+            Logger.getGlobal().info(documentHelper.getFile().getContentType());  //TODO
             document.setContentType(documentHelper.getFile().getContentType());
 
             // Make document point to the experiment it is in

@@ -106,6 +106,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
 
                 if (! this.securityService.getLoggedResearcher().getEmail().equals(ownerNameTrimmed))
                 {
+                    i++;
                     continue;
                 }
 
@@ -137,14 +138,13 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
                 this.getExperimentsFromJournal(APIKey, journal_eid, signalsJournal.getUUid(), stringBuilder);
                 i++;
+                Logger.getGlobal().info("JOURNAL NUMBER " + i + " FINISHED IMPORT");
             }
         }
     }
 
     public ObjectNode getJournal(String APIKey, int pageOffset)
     {
-        // Map<Object, Object> URL_variables = Collections.emptyMap();
-        Logger.getGlobal().info("JOURNAL NUMBER " + pageOffset);
         return this.webClient.get()
                 .uri(this.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=owner&includeOptions=mine")
                 .header("x-api-key", APIKey)
@@ -167,11 +167,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
             }
             else
             {
-                // Check if the experiment owner email coincides with the email of the logged user, if not discard experiment
-                if (! this.securityService.getLoggedResearcher().getEmail().equals(experimentJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", "")))
-                {
-                    continue;
-                }
                 // Here we will call getDocuments, we will append each document into a list inside of
                 // journal{data}[0]{relationships}{children} = []
                 String experiment_eid = experimentJSON.get("data").get(0).get("id").toString().replace("\"", "");
@@ -231,12 +226,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
             }
             else
             {
-                // Check if the document owner email coincides with the email of the logged user, if not discard document
-                if (! this.securityService.getLoggedResearcher().getEmail().equals(documentJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", "")))
-                {
-                    continue;
-                }
-
                 // Parse Signals document
                 String document_eid = documentJSON.get("data").get(0).get("id").toString().replace("\"", "");
                 DocumentHelper documentHelper = new DocumentHelper();
