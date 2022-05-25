@@ -7,6 +7,8 @@
  */
 package org.ICIQ.eChempad.entities;
 
+import org.springframework.http.MediaType;
+
 /**
  * Extends the functionality of the abstract class Document for visualizing and manipulating CSV files
  */
@@ -17,7 +19,7 @@ public class DocumentCSV extends Document {
      * its parameters.
      * @param name Name of the document (file)
      */
-    public DocumentCSV(String name, String description, Experiment experiment, String contentType) {
+    public DocumentCSV(String name, String description, Experiment experiment, MediaType contentType) {
         super(name, description, experiment, contentType);
     }
 

@@ -299,8 +299,13 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 .toEntity(ByteArrayResource.class)
                 .block();
 
-        // We are using the headers parameter of the function as an output parameter.
-        receivedHeaders = responseEntity.getHeaders();
+        // We are using the headers parameter of the function as an output parameter. But remember that in Java
+        // everything is a pointer but args in functions are read-only. So we can modify the inside of the object but
+        // not make the pointer go to another location by pointing to another object.
+        for (String headerKey: responseEntity.getHeaders().keySet())
+        {
+            receivedHeaders.put(headerKey, responseEntity.getHeaders().get(headerKey));
+        }
 
         // In the cases where there is stored an empty file in Signals we receive a nullPointer instead of a ByteArrayResource empty
         if (responseEntity.getBody() == null)

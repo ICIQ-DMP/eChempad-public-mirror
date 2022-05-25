@@ -299,9 +299,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1, new MediaType("text/plain"));
+        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1, new MediaType(MediaType.TEXT_PLAIN));
 
-        document1ExperimentEthanol1.setContentType(new MediaType("text/plain"));
+        document1ExperimentEthanol1.setContentType(new MediaType(MediaType.TEXT_PLAIN));
 
         ElementPermission document1ExperimentEthanol1Permission = new ElementPermission(document1ExperimentEthanol1, Authority.OWN, aitorMenta);
         document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
@@ -327,9 +327,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
             e.printStackTrace();
         }
 
-        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1, new MediaType("application/octet-stream"));
+        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1, new MediaType(MediaType.APPLICATION_OCTET_STREAM));
 
-        document2ExperimentEthanol1.setContentType(new MediaType("application/octet-stream"));
+        document2ExperimentEthanol1.setContentType(new MediaType(MediaType.APPLICATION_OCTET_STREAM));
 
         ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);
         document2ExperimentEthanol1.getPermissions().add(document2ExperimentEthanol1Permission);

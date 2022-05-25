@@ -73,7 +73,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
             document.setName(documentHelper.getName());
 
             // Parse document original filename
-            document.setOriginalFilename(documentHelper.getFile().getOriginalFilename());
+            document.setOriginalFilename(documentHelper.getOriginalFilename());
 
             // Parse document fileSize
             document.setFileSize(documentHelper.getFile().getSize());
