@@ -18,11 +18,11 @@ import org.ICIQ.eChempad.repositories.DocumentRepository;
 import org.ICIQ.eChempad.repositories.ExperimentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @Service
 public class DocumentServiceClass extends GenericServiceClass<Document, UUID> implements DocumentService{
@@ -63,7 +63,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
 
         if (this.securityService.isResearcherAuthorized(Authority.WRITE, experiment_uuid, Experiment.class))
         {
-            Document document = new Document(documentHelper.getName(), documentHelper.getDescription(), experiment, documentHelper.getFile().getContentType());
+            Document document = new Document(documentHelper.getName(), documentHelper.getDescription(), experiment, documentHelper.getContentType());
 
             // Parse data from the file to be included into the document entity
             // Parse document metadata description
@@ -79,8 +79,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
             document.setFileSize(documentHelper.getFile().getSize());
 
             // Parse content type
-            Logger.getGlobal().info(documentHelper.getFile().getContentType());  //TODO
-            document.setContentType(documentHelper.getFile().getContentType());
+            document.setContentType(documentHelper.getContentType());
 
             // Make document point to the experiment it is in
             document.setExperiment(experiment);
