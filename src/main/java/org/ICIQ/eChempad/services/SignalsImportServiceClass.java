@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.DocumentHelper;
@@ -16,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.*;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
 @Service
@@ -77,7 +79,6 @@ public class SignalsImportServiceClass implements SignalsImportService {
     public String importSignals(String APIKey) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("IMPORTED RESOURCES FROM SIGNALS NOTEBOOK: \n");
-        //testexportDocument(APIKey, "text:9c256377-ca14-4c1c-8258-f38926c8f948");
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
@@ -96,7 +97,14 @@ public class SignalsImportServiceClass implements SignalsImportService {
             else
             {
                 // Check if the journal owner email coincides with the email of the logged user, if not discard journal
-                if (! this.securityService.getLoggedResearcher().getEmail().equals(journalJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", "")))
+                JsonNode includedData = journalJSON.get("included");
+                JsonNode includedOwner = includedData.get(0);
+                JsonNode ownerAttributes = includedOwner.get("attributes");
+                JsonNode ownerName = ownerAttributes.get("userName");
+                String ownerNameTrimmed = ownerName.toString().replace("\"", "");
+                Logger.getGlobal().info(ownerNameTrimmed);
+
+                if (! this.securityService.getLoggedResearcher().getEmail().equals(ownerNameTrimmed))
                 {
                     continue;
                 }
@@ -136,8 +144,9 @@ public class SignalsImportServiceClass implements SignalsImportService {
     public ObjectNode getJournal(String APIKey, int pageOffset)
     {
         // Map<Object, Object> URL_variables = Collections.emptyMap();
+        Logger.getGlobal().info("JOURNAL NUMBER " + pageOffset);
         return this.webClient.get()
-                .uri(this.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=children%2C%20owner&includeOptions=mine")
+                .uri(this.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=owner&includeOptions=mine")
                 .header("x-api-key", APIKey)
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
