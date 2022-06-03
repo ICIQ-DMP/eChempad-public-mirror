@@ -18,7 +18,6 @@ import org.ICIQ.eChempad.repositories.DocumentRepository;
 import org.ICIQ.eChempad.repositories.ExperimentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -93,7 +92,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
             document = this.genericRepository.saveOrUpdate(document);
             experiment.getDocuments().add(document);
             this.experimentRepository.saveOrUpdate(experiment);
-            // this.securityService.saveElementWorkspace(document);
+            this.securityService.saveElementWorkspace(document);
 
             return document;
         }

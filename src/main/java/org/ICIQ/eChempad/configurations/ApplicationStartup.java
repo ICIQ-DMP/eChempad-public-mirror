@@ -25,8 +25,10 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
@@ -86,6 +88,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Override
     public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
         this.initializeDB();
+        OffsetDateTime dateTime = OffsetDateTime.parse("2020-04-19T18:58:41.966Z");
+
+        Logger.getGlobal().info(dateTime.toString());
         //this.addUserWithSignalsKey();
     }
 

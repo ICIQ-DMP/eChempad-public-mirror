@@ -87,7 +87,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
                 JsonNode ownerAttributes = includedOwner.get("attributes");
                 JsonNode ownerName = ownerAttributes.get("userName");
                 String ownerNameTrimmed = ownerName.toString().replace("\"", "");
-                Logger.getGlobal().info("ownername " + ownerName.toString());
+                Logger.getGlobal().info("ownername " + ownerName);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -280,7 +280,7 @@ public class SignalsImportServiceClass implements SignalsImportService {
     public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
     {
         return this.webClient.get()
-                .uri(this.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&include=children%2C%20owner")
+                .uri(this.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + ((Integer) pageOffset) + "&page[limit]=1&include=children%2C%20owner")
                 .header("x-api-key", APIKey)
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
