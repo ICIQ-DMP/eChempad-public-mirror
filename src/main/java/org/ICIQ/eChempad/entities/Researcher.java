@@ -55,24 +55,7 @@ public class Researcher implements Serializable, IEntity {
     @Column(name = "signalsAPIKey", length = 73, nullable = true)
     private String signalsAPIKey;
 
-    @OneToMany(
-            targetEntity = ElementPermission.class,
-            mappedBy = "researcher",
-            fetch = FetchType.EAGER,
-            // if a researcher is deleted all of its Permissions have to be deleted.
-            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
-    )
-    @JsonManagedReference
-    private Set<ElementPermission> permissions = new HashSet<>();
 
-
-    @OneToMany(
-            targetEntity = RoleUser.class,
-            mappedBy = "researcher",
-            fetch = FetchType.EAGER,
-            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
-    )
-    private Set<Role> roles;
 
 
     /**
@@ -100,9 +83,7 @@ public class Researcher implements Serializable, IEntity {
         this.name = fullName;
         this.email = email;
         this.signalsAPIKey = signalsAPIKey;
-        this.permissions = new HashSet<>();
         this.hashedPassword = hashedPassword;
-        this.roles = new HashSet<>();
     }
 
     @Override
@@ -113,22 +94,11 @@ public class Researcher implements Serializable, IEntity {
                 ", email='" + email + '\'' +
                 ", hashedPassword='" + hashedPassword + '\'' +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
-                ", permissions=" + permissions +
-                ", roles=" + roles +
                 '}';
     }
 
 
     // GETTERS AND SETTERS
-
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 
     public UUID getUUid() {
         return this.uuid;
@@ -185,13 +155,6 @@ public class Researcher implements Serializable, IEntity {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public Set<ElementPermission> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(Set<ElementPermission> permissions) {
-        this.permissions = permissions;
-    }
 
 
     @Override

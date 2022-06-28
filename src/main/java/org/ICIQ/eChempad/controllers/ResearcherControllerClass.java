@@ -10,8 +10,6 @@ package org.ICIQ.eChempad.controllers;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.ResearcherServiceClass;
-import org.ICIQ.eChempad.services.SecurityService;
-import org.ICIQ.eChempad.services.SignalsImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,15 +25,11 @@ public class ResearcherControllerClass implements ResearcherController {
 
     private final ResearcherServiceClass researcherServiceClass;
 
-    private final SignalsImportService signalsImportService;
 
-    private final SecurityService securityService;
 
     @Autowired
-    public ResearcherControllerClass(ResearcherServiceClass researcherServiceClass, SignalsImportService signalsImportService, SecurityService securityService) {
-        this.signalsImportService = signalsImportService;
+    public ResearcherControllerClass(ResearcherServiceClass researcherServiceClass) {
         this.researcherServiceClass = researcherServiceClass;
-        this.securityService = securityService;
     }
 
     @Override
@@ -70,11 +64,6 @@ public class ResearcherControllerClass implements ResearcherController {
     @Override
     @GetMapping(value = "/api/researcher/signals")
     public ResponseEntity<String> bulkImportSignals() {
-        try {
-            return ResponseEntity.ok().body(this.signalsImportService.importSignals(this.securityService.getLoggedResearcher().getSignalsAPIKey()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return ResponseEntity.ok().body("Data from this Signals account could not have been imported.");
     }
 

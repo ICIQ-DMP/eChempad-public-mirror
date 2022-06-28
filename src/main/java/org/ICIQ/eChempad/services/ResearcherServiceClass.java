@@ -7,7 +7,6 @@
  */
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.entities.Role;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Optional<Researcher> selected = ((ResearcherRepository) this.genericRepository).getResearcherByEmail(s);
+        /**Optional<Researcher> selected = ((ResearcherRepository) this.genericRepository).getResearcherByEmail(s);
 
         if (selected.isPresent())
         {
@@ -69,7 +68,8 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
         else
         {
             throw new UsernameNotFoundException("The researcher with email " + s + " is not registered in the database");
-        }
+        }**/
+        return null;
     }
 
 
