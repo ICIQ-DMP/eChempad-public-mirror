@@ -51,6 +51,19 @@ public class DocumentHelper extends Document {
     public void setFile(MultipartFile file) {
         this.file = file;
     }
+
+    @Override
+    public String toString() {
+        return "DocumentHelper{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", file={" +
+                " name: " + file.getName() +
+                " originalName: " + file.getOriginalFilename() +
+                " contentType: " + file.getContentType() +
+                "}" +
+                '}';
+    }
 }
 
 

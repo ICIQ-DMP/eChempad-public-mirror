@@ -96,7 +96,4 @@ public class ResearcherControllerClass implements ResearcherController {
     public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID researcher_uuid) throws ResourceNotExistsException {
         this.researcherServiceClass.update(researcher, researcher_uuid);
     }
-
-
-
 }

@@ -62,7 +62,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
 
         if (this.securityService.isResearcherAuthorized(Authority.WRITE, experiment_uuid, Experiment.class))
         {
-            Document document = new Document(documentHelper.getName(), documentHelper.getDescription(), experiment, documentHelper.getFile().getContentType());
+            Document document = new Document(documentHelper.getName(), documentHelper.getDescription(), experiment, documentHelper.getContentType());
 
             // Parse data from the file to be included into the document entity
             // Parse document metadata description
@@ -72,13 +72,13 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
             document.setName(documentHelper.getName());
 
             // Parse document original filename
-            document.setOriginalFilename(documentHelper.getFile().getOriginalFilename());
+            document.setOriginalFilename(documentHelper.getOriginalFilename());
 
             // Parse document fileSize
             document.setFileSize(documentHelper.getFile().getSize());
 
             // Parse content type
-            document.setContentType(documentHelper.getFile().getContentType());
+            document.setContentType(documentHelper.getContentType());
 
             // Make document point to the experiment it is in
             document.setExperiment(experiment);
@@ -92,7 +92,7 @@ public class DocumentServiceClass extends GenericServiceClass<Document, UUID> im
             document = this.genericRepository.saveOrUpdate(document);
             experiment.getDocuments().add(document);
             this.experimentRepository.saveOrUpdate(experiment);
-            // this.securityService.saveElementWorkspace(document);
+            this.securityService.saveElementWorkspace(document);
 
             return document;
         }

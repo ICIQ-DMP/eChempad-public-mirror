@@ -102,8 +102,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * https://www.arteco-consulting.com/securizando-una-aplicacion-con-spring-boot/
-     * @param authenticationBuilder
-     * @throws Exception
+     * WARNING! This method is executed before the initialization method in ApplicationStartup, so if the database is
+     * not already initialized with the users that we want to authorize we will not be able to input requests from any
+     * users, even if they have been loaded afterwards.
+     * @param authenticationBuilder Object instance used to build authentication objects.
+     * @throws Exception Any type of exception
      */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception

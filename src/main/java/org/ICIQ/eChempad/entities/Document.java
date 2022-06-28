@@ -10,6 +10,7 @@ package org.ICIQ.eChempad.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -47,8 +48,8 @@ public class Document implements IEntity{
     @Column(name = "description", length = 1000, nullable = false)
     protected String description;
 
-    @Column(name = "content_type", length = 1000, nullable = false)
-    protected String contentType;
+    @Column(name = "content_type", length = 1000)
+    protected MediaType contentType;
 
     @Column(name = "file_size", length = 1000, nullable = true)
     protected long fileSize;
@@ -86,7 +87,7 @@ public class Document implements IEntity{
         this.permissions = new HashSet<>();
     }
 
-    public Document(String name, String description, Experiment experiment, String contentType) {
+    public Document(String name, String description, Experiment experiment, MediaType contentType) {
         this.name = name;
         this.description = description;
         this.experiment = experiment;
@@ -170,11 +171,11 @@ public class Document implements IEntity{
         this.permissions = permissions;
     }
 
-    public String getContentType() {
+    public MediaType getContentType() {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
+    public void setContentType(MediaType contentType) {
         this.contentType = contentType;
     }
 

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +25,10 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
@@ -85,6 +88,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Override
     public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
         this.initializeDB();
+        OffsetDateTime dateTime = OffsetDateTime.parse("2020-04-19T18:58:41.966Z");
+
+        Logger.getGlobal().info(dateTime.toString());
         //this.addUserWithSignalsKey();
     }
 
@@ -147,48 +153,57 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         Researcher elvisTech = new Researcher("Carles Bo", "cbo@iciq.cat", APIKey, "password");
         Researcher aitorMenta = new Researcher("Aitor Menta", "mentolado@gmail.com", APIKey, "password");
         Researcher administrator = new Researcher("Administrator", "admin@eChempad.com", null, "password");
+        Researcher inma = new Researcher("Inma", "iescofet@iciq.es", APIKey, "password");
 
         RoleUser elvisTechRole = new RoleUser(elvisTech, Role.USER);
         RoleUser aitorMentaRole = new RoleUser(aitorMenta, Role.USER);
         RoleUser administratorRole = new RoleUser(administrator, Role.USER);
         RoleUser administratorRoleAdmin = new RoleUser(administrator, Role.ADMIN);
+        RoleUser inmaRole = new RoleUser(inma, Role.ADMIN);
 
         this.researcherRepository.saveOrUpdate(elvisTech);
         this.researcherRepository.saveOrUpdate(aitorMenta);
         this.researcherRepository.saveOrUpdate(administrator);
+        this.researcherRepository.saveOrUpdate(inma);
 
         this.roleUserRepository.saveOrUpdate(elvisTechRole);
         this.roleUserRepository.saveOrUpdate(aitorMentaRole);
         this.roleUserRepository.saveOrUpdate(administratorRole);
         this.roleUserRepository.saveOrUpdate(administratorRoleAdmin);
+        this.roleUserRepository.saveOrUpdate(inmaRole);
 
         // Journal examples
         Journal activationEnergy = new Journal("Comparation of the activation energy of reactions catalyzed by enzymes with copper ligands", "In these experiments we are trying to obtain experimentally the difference between the activation energy of a human cupredoxin when it is attached to its copper ligands");
         Journal waterProperties = new Journal("Water Properties", "Experiments that take advantage of the special physical properties of the H2O molecule, regarding its H2 bonds.");
         Journal ethanolProperties = new Journal("Ethanol properties", "Set of reaction that use ethanol as reactive or media to improve yield");
         Journal CO2Reaction = new Journal("CO2 reduction to HCO3- using laser beams as an initial alternative approach to CO2 fixation to fight global warming", "In these set of experiments we are trying different approaches and parameters to activate CO2 using a high-energy laser beam, which will allow us to ionize our CO2 molecule, and transform to other carbon forms that produce less global warmign effect.");
+        Journal example = new Journal("Testing journal", "A journal to test a very strange behaviour regarding authorization.");
 
         // Journal permissions
         ElementPermission activationEnergyPermission = new ElementPermission(activationEnergy, Authority.OWN, elvisTech);
         ElementPermission waterPropertiesPermission = new ElementPermission(waterProperties, Authority.EDIT, elvisTech);
         ElementPermission ethanolPropertiesPermission = new ElementPermission(ethanolProperties, Authority.WRITE, aitorMenta);
         ElementPermission CO2ReactionPermission= new ElementPermission(CO2Reaction, Authority.READ, administrator);
+        ElementPermission examplePermission = new ElementPermission(example, Authority.OWN, inma);
 
         // Add permissions to the journals
         activationEnergy.getPermissions().add(activationEnergyPermission);
         waterProperties.getPermissions().add(waterPropertiesPermission);
         ethanolProperties.getPermissions().add(ethanolPropertiesPermission);
         CO2Reaction.getPermissions().add(CO2ReactionPermission);
+        example.getPermissions().add(examplePermission);
 
         this.journalRepository.saveOrUpdate(activationEnergy);
         this.journalRepository.saveOrUpdate(waterProperties);
         this.journalRepository.saveOrUpdate(ethanolProperties);
         this.journalRepository.saveOrUpdate(CO2Reaction);
+        this.journalRepository.saveOrUpdate(example);
 
         this.elementPermissionRepository.saveOrUpdate(activationEnergyPermission);
         this.elementPermissionRepository.saveOrUpdate(waterPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(ethanolPropertiesPermission);
         this.elementPermissionRepository.saveOrUpdate(CO2ReactionPermission);
+        this.elementPermissionRepository.saveOrUpdate(examplePermission);
 
         // Experiment examples
         // Experiments in CO2Reaction journal
@@ -289,9 +304,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1, "text/plain");
+        Document document1ExperimentEthanol1 = new Document("License", "Contains text that indicates the state of the copyright", experimentEthanol1, new MediaType(MediaType.TEXT_PLAIN));
 
-        document1ExperimentEthanol1.setContentType("text/plain");
+        document1ExperimentEthanol1.setContentType(new MediaType(MediaType.TEXT_PLAIN));
 
         ElementPermission document1ExperimentEthanol1Permission = new ElementPermission(document1ExperimentEthanol1, Authority.OWN, aitorMenta);
         document1ExperimentEthanol1.getPermissions().add(document1ExperimentEthanol1Permission);
@@ -317,9 +332,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
             e.printStackTrace();
         }
 
-        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1, "application/octet-stream");
+        Document document2ExperimentEthanol1 = new Document("Photo", "Example photo of springboot", experimentEthanol1, new MediaType(MediaType.APPLICATION_OCTET_STREAM));
 
-        document2ExperimentEthanol1.setContentType("application/octet-stream");
+        document2ExperimentEthanol1.setContentType(new MediaType(MediaType.APPLICATION_OCTET_STREAM));
 
         ElementPermission document2ExperimentEthanol1Permission = new ElementPermission(document2ExperimentEthanol1, Authority.OWN, aitorMenta);
         document2ExperimentEthanol1.getPermissions().add(document2ExperimentEthanol1Permission);
