@@ -36,25 +36,14 @@ import java.util.Arrays;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    // Value obtained from .properties files, outside the env of the JAVA project. Configures Cross-site request forgery
-    // protection.
-    @Value("#{new Boolean('${security.disable.csrf}')}")
+    @Value("${eChempad.security.csrf}")
     private boolean csrfDisabled;
 
-    @Value("#{new Boolean('${security.disable.cors}')}")
+    @Value("${eChempad.security.csrf}")
     private boolean corsDisabled;
-
-    @Value("${spring.security.user.name}")
-    private String admin_username;
-
-    @Value("${spring.security.user.password}")
-    private String admin_password;
 
     @Autowired
     private DataSource dataSource;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     /**
      * https://stackoverflow.com/questions/2952196/ant-path-style-patterns
@@ -63,17 +52,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param http HTTP security class. Can be used to configure a lot of different parameters regarding HTTP security.
      * @throws Exception Any type of exception that occurs during the HTTP configuration
      */
-    //TODO:
-
     @Override
     protected void configure(@NotNull HttpSecurity http) throws Exception {
         // Conditional activation depending on the profile properties
         // https://www.yawintutor.com/how-to-enable-and-disable-csrf/
-        if (this.csrfDisabled) {
+        if (! this.csrfDisabled) {
             http.csrf().disable();
         }
 
-        if (this.corsDisabled) {
+        if (! this.corsDisabled) {
             http.cors().disable();
         }
 

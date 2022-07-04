@@ -113,6 +113,13 @@
 			<version>5.6.5.Final</version>
 		</dependency>
 
+		<!-- To disable javax.validation.NoProviderFoundException, which can happen in initialization -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.4.Final</version>
+		</dependency>
+
 		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->
 		<!-- By default, filters everything out, so we need to configure it -->
 		<dependency>

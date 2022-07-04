@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,13 @@ public class DBAccessConfiguration {
     private String policy;
 
     @Value("${eChempad.db.show-sql}")
-    private String showSQL;
+    private boolean showSQL;
+
+    @Value("${eChempad.db.format_sql}")
+    private boolean formatSQL;
+
+    @Value("${eChempad.db.naming_strategy}")
+    private String namingStrategy;
 
     @Bean
     public DataSource dataSource() {
@@ -50,19 +58,31 @@ public class DBAccessConfiguration {
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource());
+        sessionFactory.setDataSource(this.dataSource());
+
         Properties hibernateProperties = new Properties();
+
+        //Configures the used database dialect. This allows Hibernate to create SQL
+        //that is optimized for the used database.
         hibernateProperties.put("hibernate.dialect", this.dialect);
+
+        //If the value of this property is true, Hibernate writes all SQL
+        //statements to the console.
         hibernateProperties.put("hibernate.show_sql", this.showSQL);
+
+        //Specifies the action that is invoked to the database when the Hibernate
+        //SessionFactory is created or closed.
         hibernateProperties.put("hibernate.hbm2ddl.auto", this.policy);
+
+        //If the value of this property is true, Hibernate will format the SQL
+        //that is written to the console.
+        hibernateProperties.put("hibernate.format_sql", this.formatSQL);
+
+        //Configures the naming strategy that is used when Hibernate creates
+        //new database objects and schema elements
+        hibernateProperties.put("hibernate.ejb.naming_strategy", this.namingStrategy);
+
         sessionFactory.setHibernateProperties(hibernateProperties);
         return sessionFactory;
     }
-
-    /**@Bean
-    public HibernateTransactionManager transactionManager() {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(this.sessionFactory().getObject());
-        return transactionManager;
-    }*/
 }
