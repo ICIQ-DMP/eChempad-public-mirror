@@ -60,6 +60,21 @@
 			<version>${spring.version}</version>
 		</dependency>
 
+		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
+		 hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.6.5.Final</version>
+		</dependency>
+
+		<!-- To disable javax.validation.NoProviderFoundException, which can happen in initialization -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.4.Final</version>
+		</dependency>
+
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -104,20 +119,6 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-
-		<!-- To import hibernate, which is used to achieve transparent persistence to a Database -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.6.5.Final</version>
-		</dependency>
-
-		<!-- To disable javax.validation.NoProviderFoundException, which can happen in initialization -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>5.2.4.Final</version>
 		</dependency>
 
 		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->

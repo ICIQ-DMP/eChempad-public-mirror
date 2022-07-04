@@ -68,8 +68,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Creates the http form login in the default URL /login· The first parameter is a string corresponding
                 // to the URL where we will map the login form
                     .formLogin()
-                    .permitAll()
-
+                    .loginPage("/login")
+                .permitAll()
 
                 .and()
                 .authorizeRequests()
@@ -115,7 +115,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         authenticationBuilder.userDetailsService(this.userDetailsService()).passwordEncoder(this.passwordEncoder()).and()
                 .jdbcAuthentication().dataSource(this.dataSource)
-                // .withDefaultSchema()  // Does not work with psql
                 .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = ?")
                 .authoritiesByUsernameQuery("SELECT researcher.email, CONCAT(elementpermission.journal_id, '_', elementpermission.authority)\n" +
                         "FROM researcher, elementpermission\n" +

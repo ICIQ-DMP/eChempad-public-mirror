@@ -1,10 +1,12 @@
 package org.ICIQ.eChempad.configurations.security;
 
+import org.ICIQ.eChempad.configurations.DBAccessConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
@@ -21,12 +23,17 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-/**
+
 @Configuration
-//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
+    @Autowired
+    MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler;
 
+    @Override
+    protected MethodSecurityExpressionHandler createExpressionHandler() {
+        return defaultMethodSecurityExpressionHandler;
+    }
 
 }
- **/
