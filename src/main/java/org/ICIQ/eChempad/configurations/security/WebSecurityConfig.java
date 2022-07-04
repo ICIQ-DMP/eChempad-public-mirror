@@ -21,6 +21,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -109,6 +111,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @throws Exception Any type of exception
      */
     @Autowired
+    @Transactional
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
 
@@ -123,9 +126,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         //UserDetails user = User.builder().username("eChempad").password(passwordEncoder().encode("chemistry")).authorities("USER", "ADMIN").build();
 
-        Session session = this.sessionFactory.getCurrentSession();
-        session.beginTransaction();
-
         authenticationBuilder.userDetailsService(this.userDetailsService()).passwordEncoder(this.passwordEncoder()).and()
                 .jdbcAuthentication().dataSource(this.dataSource)
                 // .withDefaultSchema()  // Does not work with psql
@@ -136,9 +136,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "AND researcher.email = ?");
                         //.withUser(user);  // Add admin account
                 //.withUser("patatero").password(passwordEncoder().encode("password")).roles("USER");
-
-        session.getTransaction().commit();
-        session.close();
 
         /**
         for (UserDetails userDetails: this.researcherService.loadAllUserDetails().values())
@@ -180,4 +177,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
 }

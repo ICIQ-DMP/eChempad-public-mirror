@@ -56,8 +56,8 @@ public interface IEntity {
      * @param <T> Parametrized type in order to return any type of class.
      * @return Class of the object implementing this interface.
      */
-    @JsonBackReference
-    <T extends IEntity> Class<T> getMyType();
+    //@JsonBackReference
+    //<T extends IEntity> Class<T> getMyType();
 
 
     /**
@@ -66,7 +66,7 @@ public interface IEntity {
      * @param entity_uuid UUID of an entity of type journal, experiment and document that is contained by this instance
      * @return True if the supplied UUID is contained by the current object.
      */
-    boolean isContainer(UUID entity_uuid);
+    //boolean isContainer(UUID entity_uuid);
 
 
     /**
@@ -75,5 +75,5 @@ public interface IEntity {
      * @param entity_uuid UUID of the entity of type journal, experiment and document that can contain this instance
      * @return True if the supplied UUID is a container of the current object.
      */
-    boolean isContained(UUID entity_uuid);
+    //boolean isContained(UUID entity_uuid);
 }

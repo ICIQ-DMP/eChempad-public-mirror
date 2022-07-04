@@ -8,12 +8,12 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@EnableTransactionManagement
 public class DBAccessConfiguration {
 
     @Value("${eChempad.db.driver}")
@@ -47,7 +47,6 @@ public class DBAccessConfiguration {
         return dataSource;
     }
 
-
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
@@ -60,10 +59,10 @@ public class DBAccessConfiguration {
         return sessionFactory;
     }
 
-    @Bean
+    /**@Bean
     public HibernateTransactionManager transactionManager() {
         HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
+        transactionManager.setSessionFactory(this.sessionFactory().getObject());
         return transactionManager;
-    }
+    }*/
 }

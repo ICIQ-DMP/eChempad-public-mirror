@@ -292,6 +292,10 @@ Here is a list of the folders and files contained inside the root of this projec
 - `README.md`: Contains a description of the project and a wide review of its important elements and goals.
 - `README_DEVEL.md`: Contains a more technical description of the project in order to obtain a valid deployment of the application.
 
+## Conventions
+The names of the columns in the DB will be the same as the name of the corresponding variables in the Java code. 
+
+
 ## Reference Documentation
 For further reference, please consider the following sections:
 
@@ -301,3 +305,6 @@ For further reference, please consider the following sections:
 * [Field injection is not recommended](https://blog.marcnuri.com/inyeccion-de-campos-desaconsejada-field-injection-not-recommended-spring-ioc)
 * [Should JavaDoc be added to implementation](https://stackoverflow.com/questions/3061387/should-javadoc-comments-be-added-to-the-implementation)
 * [Java Google StyleSheet](https://google.github.io/styleguide/javaguide.html)
+* [UUID keys 1](https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148)
+* [UUID keys 2](https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/)
+* [UUID keys 3](https://stackoverflow.com/questions/43056220/store-uuid-v4-in-mysql)

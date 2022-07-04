@@ -10,6 +10,9 @@ package org.ICIQ.eChempad.entities;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.ICIQ.eChempad.configurations.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,12 +28,7 @@ import java.util.*;
 @Table(name="researcher", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"UUID", "email"})
 })
-public class Researcher implements Serializable, IEntity {
-    /*
-     * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
-     * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
-     * https://stackoverflow.com/questions/43056220/store-uuid-v4-in-mysql (psql stores in binary but displays properly)
-     */
+public class Researcher implements Serializable, IEntity, UserDetails {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -38,7 +36,7 @@ public class Researcher implements Serializable, IEntity {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Convert(converter = UUIDConverter.class)
-    @Column(name = "UUID")
+    @Column(name = "uuid")
     private UUID uuid;
 
     @Column(name = "name", length = 1000, nullable = false)
@@ -47,7 +45,7 @@ public class Researcher implements Serializable, IEntity {
     @Column(name = "email", length = 1000, nullable = false)
     private String email;
 
-    //RF set a certain length for the used hashed algorithm
+    //TODO set a certain length for the used hashed algorithm
     @Column(name = "hashedPassword", length = 1000, nullable = false)
     private String hashedPassword;
 
@@ -56,35 +54,7 @@ public class Researcher implements Serializable, IEntity {
     private String signalsAPIKey;
 
 
-
-
-    /**
-     * Used to create "ghost" instances only with the internal UUIDs in order to perform deletion.
-     * This is used by springboot since it uses reflection to call the methods.
-     * @param uuid
-     */
-    public Researcher(UUID uuid)
-    {
-        this.uuid = uuid;
-    }
-
-    /**
-     * Internally used by SpringBoot when using reflection.
-     */
     public Researcher() {}
-
-
-    /**
-     * Constructor
-     * @param fullName First name
-     * @param email valid e-mail direction.
-     */
-    public Researcher(String fullName, String email, String signalsAPIKey, String hashedPassword) {
-        this.name = fullName;
-        this.email = email;
-        this.signalsAPIKey = signalsAPIKey;
-        this.hashedPassword = hashedPassword;
-    }
 
     @Override
     public String toString() {
@@ -106,21 +76,6 @@ public class Researcher implements Serializable, IEntity {
 
     public void setUUid(UUID s) {
         this.uuid = s;
-    }
-
-    @Override
-    public boolean isContainer(UUID entity_uuid) {
-        return false;
-    }
-
-    @Override
-    public boolean isContained(UUID entity_uuid) {
-        return false;
-    }
-
-    @Override
-    public Class<?> getMyType() {
-        return Researcher.class;
     }
 
     public void setHashedPassword(String hashedPassword) {
@@ -156,13 +111,80 @@ public class Researcher implements Serializable, IEntity {
     }
 
 
-
+    /**
+     * Returns the authorities granted to the user. Cannot return <code>null</code>.
+     *
+     * @return the authorities, sorted by natural key (never <code>null</code>)
+     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Researcher that = (Researcher) o;
-        return Objects.equals(uuid, that.uuid);
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
+    /**
+     * Returns the password used to authenticate the user.
+     *
+     * @return the password
+     */
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    /**
+     * Returns the username used to authenticate the user. Cannot return
+     * <code>null</code>.
+     *
+     * @return the username (never <code>null</code>)
+     */
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    /**
+     * Indicates whether the user's account has expired. An expired account cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user's account is valid (ie non-expired),
+     * <code>false</code> if no longer valid (ie expired)
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    /**
+     * Indicates whether the user is locked or unlocked. A locked user cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    /**
+     * Indicates whether the user's credentials (password) has expired. Expired
+     * credentials prevent authentication.
+     *
+     * @return <code>true</code> if the user's credentials are valid (ie non-expired),
+     * <code>false</code> if no longer valid (ie expired)
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    /**
+     * Indicates whether the user is enabled or disabled. A disabled user cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
+     */
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }
