@@ -14,15 +14,14 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-//@SpringBootApplication
-// @SpringBootApplication is equivalent to:
-// @Configuration
-//@EnableAutoConfiguration
-//@ComponentScan
 
-//@EntityScan("org.ICIQ.eChempad")
 @SpringBootApplication
+// Scan packages to look for jpaRepositories interfaces where we need to inject dependencies
+@EnableJpaRepositories(basePackages = {
+		"org.ICIQ.eChempad.repositories"
+})
 public class EChempadApplication {
 
 	public static void main(String[] args) {

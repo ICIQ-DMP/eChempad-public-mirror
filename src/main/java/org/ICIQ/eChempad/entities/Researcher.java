@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
 
@@ -39,33 +40,32 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name = "name", length = 1000, nullable = false)
-    private String name;
-
-    @Column(name = "email", length = 1000, nullable = false)
-    private String email;
-
     //TODO set a certain length for the used hashed algorithm
-    @Column(name = "hashedPassword", length = 1000, nullable = false)
-    private String hashedPassword;
+    @Column(name = "password", length = 1000, nullable = false)
+    private String password;
+
+    @Column(name = "username", length = 1000, nullable = false)
+    private String username;
+
+    private Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+
+    @NotNull
+    private boolean accountNonExpired;
+
+    @NotNull
+    private boolean accountNonLocked;
+
+    @NotNull
+    private boolean credentialsNonExpired;
+
+    @NotNull
+    private boolean enabled;
 
     // Exactly 73 characters
     @Column(name = "signalsAPIKey", length = 73, nullable = true)
     private String signalsAPIKey;
-
-
+    
     public Researcher() {}
-
-    @Override
-    public String toString() {
-        return "Researcher{" +
-                "uuid=" + uuid +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", hashedPassword='" + hashedPassword + '\'' +
-                ", signalsAPIKey='" + signalsAPIKey + '\'' +
-                '}';
-    }
 
 
     // GETTERS AND SETTERS
@@ -78,28 +78,12 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         this.uuid = s;
     }
 
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getHashedPassword() {
-        return hashedPassword;
-    }
-
-    public String getFullName() {
-        return this.name;
-    }
-
-    public void setFullName(String fullName) {
-        this.name = fullName;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getSignalsAPIKey() {

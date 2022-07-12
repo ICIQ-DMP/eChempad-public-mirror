@@ -8,11 +8,15 @@
 package org.ICIQ.eChempad.repositories;
 
 import org.ICIQ.eChempad.entities.Researcher;
+import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
+
+@Repository
+@Transactional
 public interface ResearcherRepository extends GenericRepository<Researcher, UUID>{
 
-    Optional<Researcher> getResearcherByEmail(String email);
 }

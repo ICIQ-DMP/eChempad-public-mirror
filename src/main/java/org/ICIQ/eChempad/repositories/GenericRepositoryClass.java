@@ -7,9 +7,15 @@
  */
 package org.ICIQ.eChempad.repositories;
 import org.ICIQ.eChempad.entities.IEntity;
+import org.ICIQ.eChempad.entities.Researcher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +25,13 @@ import javax.persistence.criteria.*;
 import java.lang.reflect.ParameterizedType;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
 
 
 @Repository
 @Transactional
-public abstract class GenericRepositoryClass<T extends IEntity, S extends Serializable> implements GenericRepository<T, S> //, implements CrudRepository<T, S>,
+public abstract class GenericRepositoryClass<T extends IEntity, S extends Serializable> implements GenericRepository<T, S>
 {
-
-    // autowired sessionFactory magically obtained (not explicitly set, adequate set deducted from hibernate conf)
     @Autowired
     protected SessionFactory sessionFactory;
 
@@ -167,4 +172,5 @@ public abstract class GenericRepositoryClass<T extends IEntity, S extends Serial
     public Class<T> getEntityClass() {
         return this.entityClass;
     }
+
 }

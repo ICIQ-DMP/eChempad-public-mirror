@@ -7,6 +7,8 @@
  */
 package org.ICIQ.eChempad.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -21,8 +23,7 @@ import java.util.Set;
  * @param <S> Generic primary key (data for unique identification).
  */
 
-public interface GenericRepository<T, S extends Serializable> //extends JpaRepository<Researcher, Long> {
-{
+public interface GenericRepository<T, S> extends JpaRepository<T, S> {
 
     void add(T entity);
 
@@ -44,10 +45,11 @@ public interface GenericRepository<T, S extends Serializable> //extends JpaRepos
 
     int remove(S id);
 
+
     /**
      * return the entity class of this generic repository.
      * @return Internal class type, set at the creation of the repository.
      */
     Class<T> getEntityClass();
-
 }
+

@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
 
-                    .antMatchers("/api/researcher").hasRole("ADMIN")
+                    .antMatchers("/api/researcher").authenticated()
                     .antMatchers("/api/journal").authenticated()
                     .antMatchers("/api/experiment").authenticated()
                     .antMatchers("/api/document").authenticated()
@@ -146,14 +146,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @return Returns an instance of encode, which can be used by accessing to encode(String) method
      */
     @Bean()
-    public PasswordEncoder passwordEncoder()
+    public static PasswordEncoder passwordEncoder()
     {
         return NoOpPasswordEncoder.getInstance();
         //return new BCryptPasswordEncoder();
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public static CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("*"));

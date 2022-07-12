@@ -37,7 +37,7 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
 
         for (Researcher res: this.genericRepository.getAll())
         {
-            ret.put(res.getUUid(), this.loadUserByUsername(res.getEmail()));
+            ret.put(res.getUUid(), this.loadUserByUsername(res.getUsername()));
         }
         return ret;
     }
