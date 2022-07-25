@@ -33,7 +33,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler;
 
     @Bean
-    public static MethodSecurityExpressionHandler
+    public MethodSecurityExpressionHandler
     defaultMethodSecurityExpressionHandler(DataSource dataSource) {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         AclService aclService = aclService(dataSource);
@@ -44,22 +44,22 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     @Bean
     @Autowired
-    public static JdbcMutableAclService aclService(DataSource dataSource) {
+    public JdbcMutableAclService aclService(DataSource dataSource) {
         return new JdbcMutableAclService(dataSource, lookupStrategy(dataSource), aclCache());
     }
 
     @Bean
-    public static AclAuthorizationStrategy aclAuthorizationStrategy() {
+    public AclAuthorizationStrategy aclAuthorizationStrategy() {
         return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     @Bean
-    public static PermissionGrantingStrategy permissionGrantingStrategy() {
+    public PermissionGrantingStrategy permissionGrantingStrategy() {
         return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
     }
 
     @Bean
-    public static EhCacheBasedAclCache aclCache() {
+    public EhCacheBasedAclCache aclCache() {
         return new EhCacheBasedAclCache(
                 aclEhCacheFactoryBean().getObject(),
                 permissionGrantingStrategy(),
@@ -68,7 +68,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     }
 
     @Bean
-    public static EhCacheFactoryBean aclEhCacheFactoryBean() {
+    public EhCacheFactoryBean aclEhCacheFactoryBean() {
         EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
         ehCacheFactoryBean.setCacheManager(aclCacheManager().getObject());
         ehCacheFactoryBean.setCacheName("aclCache");
@@ -76,12 +76,12 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     }
 
     @Bean
-    public static EhCacheManagerFactoryBean aclCacheManager() {
+    public EhCacheManagerFactoryBean aclCacheManager() {
         return new EhCacheManagerFactoryBean();
     }
 
     @Bean
-    public static LookupStrategy lookupStrategy(DataSource dataSource) {
+    public LookupStrategy lookupStrategy(DataSource dataSource) {
         return new BasicLookupStrategy(
                 dataSource,
                 aclCache(),
