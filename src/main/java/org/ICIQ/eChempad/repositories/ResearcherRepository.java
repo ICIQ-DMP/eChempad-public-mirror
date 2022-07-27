@@ -38,7 +38,10 @@ public interface ResearcherRepository extends GenericRepository<Researcher, UUID
      * @return Returns all the information of a user using and UserDetails class, which is used by spring to manage the
      * user authentication internally.
      */
-    @Query("SELECT * FROM researcher r WHERE r.username = '?1'")
+    @Query(
+            value = "SELECT * FROM researcher r WHERE r.username = '?1'",
+            nativeQuery = true
+    )
     UserDetails loadUserByUsername(String email);
 
     /**
@@ -47,6 +50,9 @@ public interface ResearcherRepository extends GenericRepository<Researcher, UUID
      * matching.
      * @return List of all the user details.
      */
-    @Query("SELECT * FROM researcher")
+    @Query(
+            value = "SELECT * FROM researcher ",
+            nativeQuery = true
+    )
     Map<UUID, UserDetails> loadAllUserDetails();
 }
