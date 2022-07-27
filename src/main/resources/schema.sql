@@ -1,3 +1,14 @@
+
+/*
+create table researchers_authorities(
+    authority_id bigserial not null primary key,
+    researcher_id bigserial not null primary key,
+    constraint foreign_fk_1 foreign key(authority_id)references authority(uuid),
+    constraint foreign_fk_1 foreign key(researcher_id)references researcher(uuid),
+
+    constraint unique_uk_1 unique(authority_id,researcher_id)
+);*/
+
 create table acl_sid(
                         id bigserial not null primary key,
                         principal boolean not null,

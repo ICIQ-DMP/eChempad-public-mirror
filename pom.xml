@@ -60,6 +60,13 @@
 			<version>${spring.version}</version>
 		</dependency>
 
+		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
+		<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threetenbp</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
 		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
 		 hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
 		<dependency>

@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 
 import java.io.Serializable;
@@ -31,7 +32,7 @@ import java.util.Set;
  * @param <T> Actual type, such as Experiment, Journal, etc.
  * @param <S> Serializable type used to identify the T type inside the database, usually an UUID
  */
-public interface GenericService<T, S extends Serializable> {
+public interface GenericService<T extends IEntity, S extends Serializable> {
 
     /**
      * Saves the entity T to the database.

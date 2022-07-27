@@ -28,14 +28,13 @@ public class ResearcherServiceClass extends GenericServiceClass<Researcher, UUID
     @Override
     public Researcher save(Researcher researcher) {
 
-        return this.genericRepository.saveOrUpdate(researcher);
+        return this.genericRepository.save(researcher);
     }
 
-    @Override
     public Map<UUID, UserDetails> loadAllUserDetails() {
         Map<UUID, UserDetails> ret = new HashMap<>();
 
-        for (Researcher res: this.genericRepository.getAll())
+        for (Researcher res: this.genericRepository.findAll())
         {
             ret.put(res.getUUid(), this.loadUserByUsername(res.getUsername()));
         }

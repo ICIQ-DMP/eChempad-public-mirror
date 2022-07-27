@@ -8,8 +8,12 @@
 package org.ICIQ.eChempad.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.Set;
 
 /**
@@ -23,33 +27,17 @@ import java.util.Set;
  * @param <S> Generic primary key (data for unique identification).
  */
 
+@NoRepositoryBean
 public interface GenericRepository<T, S> extends JpaRepository<T, S> {
-
-    void add(T entity);
-
-    T saveOrUpdate(T entity);
-
-    /**
-     * Update an existing instance. We need the id to perform the update of the entity.
-     * @param entity
-     */
-    T update(T entity, S id);
-
-    T get(S id);
-
-    Set<T> getAll();
-
-    void clear();
-
-    void flush();
-
-    int remove(S id);
-
 
     /**
      * return the entity class of this generic repository.
-     * @return Internal class type, set at the creation of the repository.
+     * Note: Default methods are a special Java 8 feature in where interfaces can define implementations for methods.
+     * @return Internal class type of this generic repository, set at the creation of the repository.
      */
-    Class<T> getEntityClass();
+    default Class<T> getEntityClass()
+    {
+        return (Class<T>)(((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+    }
 }
 

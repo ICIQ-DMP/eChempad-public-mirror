@@ -7,11 +7,9 @@
  */
 package org.ICIQ.eChempad.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.ICIQ.eChempad.configurations.UUIDConverter;
+import org.ICIQ.eChempad.configurations.Converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -27,7 +25,7 @@ import java.util.*;
  */
 @Entity
 @Table(name="researcher", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"UUID", "email"})
+        @UniqueConstraint(columnNames = {"uuid", "username"})
 })
 public class Researcher implements Serializable, IEntity, UserDetails {
     @Id
@@ -47,7 +45,8 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     @Column(name = "username", length = 1000, nullable = false)
     private String username;
 
-    private Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+    @OneToMany
+    private Set<Authority> authorities = new HashSet<>();
 
     @NotNull
     private boolean accountNonExpired;

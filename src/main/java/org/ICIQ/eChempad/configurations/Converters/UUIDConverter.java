@@ -5,7 +5,7 @@
  * | This software is the property of ICIQ.                                            |
  * |===================================================================================|
  */
-package org.ICIQ.eChempad.configurations;
+package org.ICIQ.eChempad.configurations.Converters;
 
 
 import javax.persistence.AttributeConverter;
@@ -13,7 +13,7 @@ import javax.persistence.Converter;
 import java.io.Serializable;
 import java.util.UUID;
 
-/*
+/**
  * https://stackoverflow.com/questions/53199558/hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path
  * To transparently convert UUID objects to String from DB to memory and the opposite.
  *

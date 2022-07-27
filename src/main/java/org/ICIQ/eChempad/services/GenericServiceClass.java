@@ -7,15 +7,17 @@
  */
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.*;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class GenericServiceClass<T, S extends Serializable> implements GenericService<T, S> {
+public class GenericServiceClass<T extends IEntity, S extends Serializable> implements GenericService<T, S> {
 
     protected GenericRepository<T, S> genericRepository;
 
@@ -26,54 +28,56 @@ public class GenericServiceClass<T, S extends Serializable> implements GenericSe
         this.genericRepository = repository;
     }
 
-    @Override
+
+    /**
+     * calling save() on an object with predefined id will update the corresponding database record rather than
+     * insert a new one
+     * @return
+     */
     public T update(T entity, S id) throws ResourceNotExistsException {
-        T t = this.genericRepository.update(entity, id);
-        if (t == null)
-        {
-            throw new ResourceNotExistsException("The resource of type " + entity.getClass().getName() + " with ID " + id.toString() + " does not exist.");
-        }
-        else
-        {
-            return t;
-        }
+        // If we
+        entity.setUUid((UUID) id);
+        T t = this.genericRepository.save(entity);
+        return entity;
     }
 
     @Override
     public T save(T entity) {
-        return this.genericRepository.saveOrUpdate(entity);
+        return this.genericRepository.save(entity);
     }
 
     @Override
     public Set<T> get() {
-        return this.genericRepository.getAll();
+        return new HashSet<>(this.genericRepository.findAll());
     }
 
     @Override
     public T get(S id) throws ResourceNotExistsException {
-        T t = this.genericRepository.get(id);
-        if (t == null)
+        Optional<T> entity = this.genericRepository.findById(id);
+        if (entity.isPresent())
         {
-            throw new ResourceNotExistsException("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
+            return entity.get();
         }
         else
         {
-            return t;
+            throw new ResourceNotExistsException("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
         }
     }
 
     @Override
     public void add(T entity) {
-        this.genericRepository.add(entity);
+        this.genericRepository.save(entity);
 
     }
 
     @Override
     public void remove(S id) throws ResourceNotExistsException {
-        int removeResult = this.genericRepository.remove(id);
-        if (removeResult > 0)
+        if (this.genericRepository.findById(id).isPresent())
         {
-            // Returned 1, element could not have been deleted
+            this.genericRepository.deleteById(id);
+        }
+        else
+        {
             throw new ResourceNotExistsException("The resource of type " + this.genericRepository.getEntityClass() + " with ID " + id.toString() + " does not exist.");
         }
     }

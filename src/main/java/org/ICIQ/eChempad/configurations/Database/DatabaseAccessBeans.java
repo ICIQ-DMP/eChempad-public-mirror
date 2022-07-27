@@ -1,7 +1,7 @@
-package org.ICIQ.eChempad.configurations;
+package org.ICIQ.eChempad.configurations.Database;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -11,26 +11,23 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+/**
+ * This class defines the beans used to configure the access to the database taking in count the ACL implementation.
+ * The data that the beans are used is autowired from the class DBAccessConfiguration, which reads all data from
+ * application.properties file. This has been done like this because there was a circularity in the dependency of the
+ * beans when declaring data + beans in the same class.
+ */
 @Component
 @Configuration
-public class DBAccessBeans {
-
-    private static DBAccessConfiguration dbAccessConfiguration;
+public class DatabaseAccessBeans {
 
     @Autowired
-    private DBAccessConfiguration dbAccessConfigurationInstance;
-
-    // This method will be automatically called to inject the dependencies since we cannot autowire static fields.
-    @PostConstruct
-    private void init() {
-        DBAccessBeans.dbAccessConfiguration = this.dbAccessConfigurationInstance;
-    }
+    private DatabaseAccessConfiguration dbAccessConfigurationInstance;
 
     @Bean
     public DataSource dataSource() {
@@ -47,7 +44,7 @@ public class DBAccessBeans {
 
     @Bean
     @Autowired
-    LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Properties jpaProperties) {
+    LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, @Qualifier("hibernateProperties") Properties jpaProperties) {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource);
         entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());

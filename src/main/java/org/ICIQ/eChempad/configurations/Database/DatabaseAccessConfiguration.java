@@ -1,29 +1,13 @@
-package org.ICIQ.eChempad.configurations;
+package org.ICIQ.eChempad.configurations.Database;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.util.Properties;
-import java.util.logging.Logger;
-
+/**
+ * Contains (and collects) all data coming from application.properties regarding database config.
+ */
 @Configuration
-public class DBAccessConfiguration {
+public class DatabaseAccessConfiguration {
     @Value("${eChempad.db.driver}")
     private String driver;
 
@@ -51,7 +35,7 @@ public class DBAccessConfiguration {
     @Value("${eChempad.db.naming_strategy}")
     private String namingStrategy;
 
-    public DBAccessConfiguration() {}
+    public DatabaseAccessConfiguration() {}
 
     public String getDriver() {
         return driver;
