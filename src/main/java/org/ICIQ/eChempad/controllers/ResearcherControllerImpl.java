@@ -9,27 +9,25 @@ package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.services.ResearcherServiceClass;
+import org.ICIQ.eChempad.services.ResearcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 @RestController
-public class ResearcherControllerClass implements ResearcherController {
+public class ResearcherControllerImpl implements ResearcherController {
 
-    private final ResearcherServiceClass researcherServiceClass;
-
-
+    private final ResearcherService<Researcher, UUID> researcherService;
 
     @Autowired
-    public ResearcherControllerClass(ResearcherServiceClass researcherServiceClass) {
-        this.researcherServiceClass = researcherServiceClass;
+    public ResearcherControllerImpl(ResearcherService<Researcher, UUID> researcherService) {
+        this.researcherService = researcherService;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class ResearcherControllerClass implements ResearcherController {
             produces = "application/json"
     )
     public ResponseEntity<Set<Researcher>> getResearchers() {
-        HashSet<Researcher> researchers = new HashSet<>(this.researcherServiceClass.get());
+        HashSet<Researcher> researchers = new HashSet<>(this.researcherService.findAll());
         return ResponseEntity.ok(researchers);
     }
 
@@ -48,8 +46,15 @@ public class ResearcherControllerClass implements ResearcherController {
             produces = "application/json"
     )
     public ResponseEntity<Researcher> getResearcher(@PathVariable UUID researcher_uuid) throws ResourceNotExistsException {
-        Researcher researcher = this.researcherServiceClass.get(researcher_uuid);
-        return ResponseEntity.ok().body(researcher);
+        Optional<Researcher> opt = this.researcherService.findById(researcher_uuid);
+        if (opt.isPresent())
+        {
+            return ResponseEntity.ok().body(opt.get());
+        }
+        else
+        {
+            throw new ResourceNotExistsException();
+        }
     }
 
     @Override
@@ -58,7 +63,7 @@ public class ResearcherControllerClass implements ResearcherController {
             consumes = "application/json"
     )
     public void addResearcher(@Validated @RequestBody Researcher researcher) {
-        this.researcherServiceClass.save(researcher);
+        this.researcherService.save(researcher);
     }
 
     @Override
@@ -73,7 +78,7 @@ public class ResearcherControllerClass implements ResearcherController {
             produces = "application/json"
     )
     public void removeResearcher(@PathVariable UUID researcher_uuid) throws ResourceNotExistsException {
-        this.researcherServiceClass.remove(researcher_uuid);
+        this.researcherService.deleteById(researcher_uuid);
     }
 
     @Override
@@ -83,6 +88,7 @@ public class ResearcherControllerClass implements ResearcherController {
             consumes = "application/json"
     )
     public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID researcher_uuid) throws ResourceNotExistsException {
-        this.researcherServiceClass.update(researcher, researcher_uuid);
+        researcher.setUUid(researcher_uuid);
+        this.researcherService.save(researcher);
     }
 }
