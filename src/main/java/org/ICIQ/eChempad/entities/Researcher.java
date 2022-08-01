@@ -38,15 +38,14 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     @Column(name = "uuid")
     private UUID uuid;
 
+    Set<GrantedAuthority> authorities = new HashSet<>();
+
     //TODO set a certain length for the used hashed algorithm
     @Column(name = "password", length = 1000, nullable = false)
     private String password;
 
     @Column(name = "username", length = 1000, nullable = false)
     private String username;
-
-    @OneToMany
-    private Set<Authority> authorities = new HashSet<>();
 
     @NotNull
     private boolean accountNonExpired;
@@ -111,7 +110,7 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      */
     @Override
     public String getPassword() {
-        return null;
+        return this.password;
     }
 
     /**
@@ -122,7 +121,7 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      */
     @Override
     public String getUsername() {
-        return null;
+        return this.username;
     }
 
     /**
@@ -134,7 +133,7 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      */
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return this.accountNonExpired;
     }
 
     /**
@@ -145,7 +144,7 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      */
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return this.accountNonLocked;
     }
 
     /**
@@ -157,7 +156,7 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      */
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return this.credentialsNonExpired;
     }
 
     /**
@@ -168,6 +167,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return false;
+        return this.enabled;
     }
 }
