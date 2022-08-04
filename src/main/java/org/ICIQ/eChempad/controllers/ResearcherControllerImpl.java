@@ -88,7 +88,7 @@ public class ResearcherControllerImpl implements ResearcherController {
             consumes = "application/json"
     )
     public void putResearcher(@Validated @RequestBody Researcher researcher, @PathVariable(value = "id") UUID researcher_uuid) throws ResourceNotExistsException {
-        researcher.setUUid(researcher_uuid);
+        researcher.setId(researcher_uuid);
         this.researcherService.save(researcher);
     }
 }

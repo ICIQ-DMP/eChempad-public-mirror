@@ -25,6 +25,7 @@ public class ResearcherServiceImpl extends GenericServiceImpl<Researcher, UUID> 
 
     @Override
     public UserDetails loadUserByUsername(String email) {
+        // @TODO retrieve user from DB but retrieve authorities from the ACL
         return ((ResearcherRepository) (super.genericRepository)).loadUserByUsername(email);
     }
 

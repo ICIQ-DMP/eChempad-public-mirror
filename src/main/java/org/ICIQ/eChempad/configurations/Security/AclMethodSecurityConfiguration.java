@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.configurations.security;
+package org.ICIQ.eChempad.configurations.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
@@ -40,10 +40,23 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
         return expressionHandler;
     }
 
+    /**
+     * You will have to set the classIdentityQuery and sidIdentityQuery properties of JdbcMutableAclService to the following values, respectively:
+     *
+     * select currval(pg_get_serial_sequence('acl_class', 'id'))
+     * select currval(pg_get_serial_sequence('acl_sid', 'id'))
+     *
+     * From https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/appendix-schema.html
+     * @param dataSource Autowired default Datasource (postgreSQL)
+     * @return A JdbcMutableService which implements the mutability of the ACL objects
+     */
     @Bean
     @Autowired
     public JdbcMutableAclService aclService(DataSource dataSource) {
-        return new JdbcMutableAclService(dataSource, lookupStrategy(dataSource), aclCache());
+        JdbcMutableAclService jdbcMutableAclService = new JdbcMutableAclService(dataSource, lookupStrategy(dataSource), aclCache());
+        jdbcMutableAclService.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
+        jdbcMutableAclService.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
+        return jdbcMutableAclService;
     }
 
     @Bean

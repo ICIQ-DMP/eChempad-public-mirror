@@ -24,27 +24,26 @@ import java.util.*;
  * It has a list containing the different Journal that conform the workspace.
  */
 @Entity
-@Table(name="researcher", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"uuid", "username"})
+@Table(
+        uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"id", "username"})
 })
 public class Researcher implements Serializable, IEntity, UserDetails {
-    @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Convert(converter = UUIDConverter.class)
-    @Column(name = "uuid")
-    private UUID uuid;
-
-    Set<GrantedAuthority> authorities = new HashSet<>();
+    @Column(unique = true)
+    private UUID id;
 
     //TODO set a certain length for the used hashed algorithm
-    @Column(name = "password", length = 1000, nullable = false)
+    @Column(length = 50, nullable = false)
     private String password;
 
-    @Column(name = "username", length = 1000, nullable = false)
+    @Id
+    @Column(length = 50, nullable = false, unique = true)
     private String username;
 
     @NotNull
@@ -60,20 +59,26 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     private boolean enabled;
 
     // Exactly 73 characters
-    @Column(name = "signalsAPIKey", length = 73, nullable = true)
+    @Column(length = 73, nullable = true)
     private String signalsAPIKey;
-    
+
+    @OneToMany(
+            targetEntity = Authority.class, orphanRemoval = true, mappedBy = "authority"
+    )
+    Set<GrantedAuthority> authorities = new HashSet<>();
+
+
     public Researcher() {}
 
 
     // GETTERS AND SETTERS
 
-    public UUID getUUid() {
-        return this.uuid;
+    public Serializable getId() {
+        return this.id;
     }
 
-    public void setUUid(UUID s) {
-        this.uuid = s;
+    public void setId(Serializable s) {
+        this.id = (UUID) s;
     }
 
     public void setPassword(String password) {

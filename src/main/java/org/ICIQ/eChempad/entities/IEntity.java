@@ -9,6 +9,7 @@ package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -35,7 +36,7 @@ public interface IEntity {
      * Exposes and returns the UUID of an entity.
      * @return UUID of the entity.
      */
-    UUID getUUid();
+    Serializable getId();
 
     /**
      * Sets the UUID of an entity.
@@ -47,7 +48,7 @@ public interface IEntity {
      * data object.
      * @param id ID that will be set. Only usable on dettached spring boot instances
      */
-    void setUUid(UUID id);
+    void setId(Serializable id);
 
 
     /**
