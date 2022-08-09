@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -32,33 +32,60 @@ public class GenericControllerImpl<T extends IEntity, S extends Serializable> im
     }
 
     @GetMapping(
-            value = "/getAll",
+            value = "",
             produces = "application/json"
     )
     @Override
-    public ResponseEntity<Set<T>> getAll(@PathVariable(value = "entityType") String entityType) {
+    public ResponseEntity<Set<T>> getAll() {
         Logger.getGlobal().info("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         HashSet<T> entities = new HashSet<>(this.genericService.findAll());
         return ResponseEntity.ok(entities);
     }
 
+    @GetMapping(
+            value = "/get/{id}",
+            produces = "application/json"
+    )
     @Override
-    public ResponseEntity<T> get(S id) throws ResourceNotExistsException {
-        return null;
+    public ResponseEntity<T> get(@PathVariable S id) throws ResourceNotExistsException {
+        T entity = this.genericService.getById(id);
+        return ResponseEntity.ok(entity);
     }
 
+    @PostMapping(
+            value = "",
+            produces = "application/json",
+            consumes = "application/json"
+    )
     @Override
-    public ResponseEntity<T> add(T t) {
-        return null;
+    public ResponseEntity<T> add(@Validated @RequestBody T t) {
+        T entity = this.genericService.save(t);
+        return ResponseEntity.ok(entity);
     }
 
+    @DeleteMapping(
+            value = "/{id}",
+            produces = "application/json"
+    )
     @Override
-    public ResponseEntity<T> remove(S id) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        return null;
+    public ResponseEntity<T> remove(@PathVariable S id) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        Optional<T> entity = this.genericService.findById(id);
+        this.genericService.deleteById(id);
+        if (entity.isPresent())
+            return ResponseEntity.ok(entity.get());
+        else
+            throw new ResourceNotExistsException();
     }
 
+    @PutMapping(
+            value = "/{id}",
+            produces = "application/json",
+            consumes = "application/json"
+    )
     @Override
-    public ResponseEntity<T> put(T t, S id) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        return null;
+    public ResponseEntity<T> put(@Validated @RequestBody T t, @PathVariable(value = "id") S id) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        t.setId(id);
+        T entity = this.genericService.save(t);
+        return ResponseEntity.ok(entity);
     }
 }

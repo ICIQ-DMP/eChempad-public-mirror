@@ -41,14 +41,11 @@ public class Authority implements GrantedAuthority {
     @Column(length = 50, nullable = false)
     private String authority;
 
+    // Constructors
+
     public Authority(String username, String authority) {
         this.username = username;
         this.authority = authority;
-    }
-
-    @Override
-    public String getAuthority() {
-        return this.authority;
     }
 
     public Authority() {}
@@ -59,12 +56,29 @@ public class Authority implements GrantedAuthority {
         this.authority = authority;
     }
 
+    @Override
+    public String toString() {
+        return "Authority{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", authority='" + authority + '\'' +
+                '}';
+    }
+
+    // GETTERS AND SETTERS
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+
+    @Override
+    public String getAuthority() {
+        return this.authority;
     }
 
     public void setAuthority(String authority) {

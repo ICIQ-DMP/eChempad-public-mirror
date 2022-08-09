@@ -10,6 +10,7 @@ package org.ICIQ.eChempad.entities;
 import org.ICIQ.eChempad.configurations.Converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -63,14 +64,14 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     private String signalsAPIKey;
 
     @OneToMany(
-            targetEntity = Authority.class, orphanRemoval = true, mappedBy = "authority"
+            targetEntity = Authority.class, orphanRemoval = true, mappedBy = "username"
     )
-    Set<GrantedAuthority> authorities = new HashSet<>();
-
+    Set<Authority> authorities = new HashSet<>();
 
     public Researcher() {}
 
-    public Researcher(String password, String username, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, String signalsAPIKey, Set<GrantedAuthority> authorities) {
+    public Researcher(UUID id, String password, String username, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, String signalsAPIKey, Set<Authority> authorities) {
+        this.id = id;
         this.password = password;
         this.username = username;
         this.accountNonExpired = accountNonExpired;
@@ -81,7 +82,22 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         this.authorities = authorities;
     }
 
-// GETTERS AND SETTERS
+    @Override
+    public String toString() {
+        return "Researcher{" +
+                "id=" + id +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", accountNonExpired=" + accountNonExpired +
+                ", accountNonLocked=" + accountNonLocked +
+                ", credentialsNonExpired=" + credentialsNonExpired +
+                ", enabled=" + enabled +
+                ", signalsAPIKey='" + signalsAPIKey + '\'' +
+                ", authorities=" + authorities +
+                '}';
+    }
+
+    // GETTERS AND SETTERS
 
     public Serializable getId() {
         return this.id;
@@ -91,35 +107,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         this.id = (UUID) s;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getSignalsAPIKey() {
-        return this.signalsAPIKey;
-    }
-
-    public void setSignalsAPIKey(String signalsAPIKey) {
-        this.signalsAPIKey = signalsAPIKey;
-    }
-
-    public void setAuthorities(Set<GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
-
-    /**
-     * Returns the authorities granted to the user. Cannot return <code>null</code>.
-     *
-     * @return the authorities, sorted by natural key (never <code>null</code>)
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
 
     /**
      * Returns the password used to authenticate the user.
@@ -131,6 +118,11 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         return this.password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
     /**
      * Returns the username used to authenticate the user. Cannot return
      * <code>null</code>.
@@ -141,6 +133,35 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     public String getUsername() {
         return this.username;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
+    public String getSignalsAPIKey() {
+        return this.signalsAPIKey;
+    }
+
+    public void setSignalsAPIKey(String signalsAPIKey) {
+        this.signalsAPIKey = signalsAPIKey;
+    }
+
+
+    /**
+     * Returns the authorities granted to the user. Cannot return <code>null</code>.
+     *
+     * @return the authorities, sorted by natural key (never <code>null</code>)
+     */
+    @Override
+    public Collection<Authority> getAuthorities() {
+        return this.authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
 
     /**
      * Indicates whether the user's account has expired. An expired account cannot be
@@ -154,6 +175,10 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         return this.accountNonExpired;
     }
 
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
     /**
      * Indicates whether the user is locked or unlocked. A locked user cannot be
      * authenticated.
@@ -164,6 +189,11 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     public boolean isAccountNonLocked() {
         return this.accountNonLocked;
     }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
 
     /**
      * Indicates whether the user's credentials (password) has expired. Expired
@@ -177,6 +207,11 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         return this.credentialsNonExpired;
     }
 
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+
     /**
      * Indicates whether the user is enabled or disabled. A disabled user cannot be
      * authenticated.
@@ -187,4 +222,9 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     public boolean isEnabled() {
         return this.enabled;
     }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
 }

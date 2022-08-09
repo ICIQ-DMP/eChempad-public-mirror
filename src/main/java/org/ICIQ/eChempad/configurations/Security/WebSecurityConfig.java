@@ -96,49 +96,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Transactional
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
-
-        //authenticationBuilder.inMemoryAuthentication().withUser(this.admin_username).password("{noop}" + this.admin_password).roles("USER");
-
-        // https://www.baeldung.com/spring-security-jdbc-authentication
-        // https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/jdbc.html
-        // https://stackoverflow.com/questions/51642604/jdbcauthentication-instead-of-inmemoryauthentication-doesnt-give-access-s
-        // Get all userdetails and load them into the authentication manager
-
-        //LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE BEGIN");
-
-        //UserDetails user = User.builder().username("eChempad").password(passwordEncoder().encode("chemistry")).authorities("USER", "ADMIN").build();
-
-
         authenticationBuilder
-                    // Provide the
+                    // Provide the service to retrieve user details
                     .userDetailsService(super.userDetailsService())
+                    // Provide the password encoder used to store password in the database
                     .passwordEncoder(WebSecurityConfig.passwordEncoder())
                 .and()
                     .jdbcAuthentication()
                         // Provide the datasource to retrieve authentication data from
                         .dataSource(this.dataSource)
                         // Provide a query to obtain all the triplets (username, password and account_status)
-                        .usersByUsernameQuery("select username, password, true from researcher where username = ?")
+                        .usersByUsernameQuery("SELECT username, password, true FROM researcher WHERE username = ?")
                         // Provide a query to obtain all the tuples (username, security_principal_name)
                         .authoritiesByUsernameQuery("SELECT researcher.username,acl_sid.sid FROM researcher, acl_sid WHERE researcher.id = acl_sid.id AND researcher.username = ? AND acl_sid.principal = true");
-                        //.withUser(user);  // Add admin account
-                //.withUser("patatero").password(passwordEncoder().encode("password")).roles("USER");
-
-        /**
-        for (UserDetails userDetails: this.researcherService.loadAllUserDetails().values())
-        {
-            am.withUser(userDetails);
-            Thread.sleep(10000);
-            LoggerFactory.getLogger(EChempadApplication.class).info("FOOL FOOL FOOOL FOOL " + userDetails.toString());
-        }
-         **/
-
-        //am.getUserDetailsService().createUser(this.researcherService.loadDetailsByUsername("admin@eChempad.com"));
-        //am.withUser(User.withUsername(this.admin_username).password(passwordEncoder().encode(this.admin_password)).roles("USER", "ADMIN"));
-
-
-        //LoggerFactory.getLogger(EChempadApplication.class).info("THIS IS THE END");
-
     }
 
 
