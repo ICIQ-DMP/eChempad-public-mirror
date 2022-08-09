@@ -40,7 +40,6 @@ public interface ResearcherRepository<T extends IEntity, S extends Serializable>
      * @return Returns all the information of a user using and UserDetails class, which is used by spring to manage the
      * user authentication internally.
      */
-    //@Query(value = "SELECT r.username, r.password, true FROM Researcher r WHERE r.username = '?1'")
     @Query(value = "SELECT r FROM Researcher r WHERE r.username = '?1'")
     UserDetails loadUserByUsername(String email);
 }

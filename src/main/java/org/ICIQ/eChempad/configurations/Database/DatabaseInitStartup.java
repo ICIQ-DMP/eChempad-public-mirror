@@ -49,58 +49,16 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     @Override
     public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
         Researcher res = (Researcher) researcherRepository.loadUserByUsername("eChempad@iciq.es");
-        Logger.getGlobal().info("" + res);
+        Logger.getGlobal().info("echempad: " + res);
         this.initializeDB();
-        //OffsetDateTime dateTime = OffsetDateTime.parse("2020-04-19T18:58:41.966Z");
     }
 
     private void initializeDB()
     {
-        HashSet<Authority> authorities = new HashSet<>();
-        authorities.add(new Authority("eChempad@iciq.es", "ROLE_ADMIN"));
-
-        Researcher researcher = new Researcher();
-        researcher.setUsername("eChempad@iciq.es");
-        researcher.setPassword("chemistry");
-        researcher.setAuthorities(authorities);
-        researcher.setAccountNonExpired(true);
-        researcher.setAccountNonLocked(true);
-        researcher.setEnabled(true);
-        researcher.setCredentialsNonExpired(true);
-
-        UserDetails userDetails = this.researcherService.save(researcher);
-
-
-
-
-
-
-
-        HashSet<Authority> authorities2 = new HashSet<>();
-        authorities.add(new Authority("eChempad@iciq.es", "ROLE_ADMIN"));
-
-        Researcher researcher2 = new Researcher();
-        researcher2.setUsername("caca");
-        researcher2.setPassword("chemistry");
-        researcher2.setAuthorities(authorities);
-        researcher2.setAccountNonExpired(true);
-        researcher2.setAccountNonLocked(true);
-        researcher2.setEnabled(true);
-        researcher2.setCredentialsNonExpired(true);
-
-        UserDetails userDetails2 = this.researcherService.save(researcher2);
-
-
-        Logger.getGlobal().info("1" + userDetails2.toString());
 
 
         Researcher researcher1 = (Researcher) researcherService.loadUserByUsername("eChempad@iciq.es");
-        Logger.getGlobal().info("3" + researcher1);
-
-        Researcher researcher3 = (Researcher) researcherRepository.loadUserByUsername("caca");
-        Logger.getGlobal().info("3333" + researcher2);
-
-        Logger.getGlobal().info("last" + researcher3);
+        Logger.getGlobal().info("echempad2: " + researcher1);
 
 
     }
