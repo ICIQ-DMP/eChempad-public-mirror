@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 /**
  * This class contains the beans used in the manipulation of the ACL tables.
@@ -56,6 +57,10 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
         JdbcMutableAclService jdbcMutableAclService = new JdbcMutableAclService(dataSource, lookupStrategy(dataSource), aclCache());
         jdbcMutableAclService.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
         jdbcMutableAclService.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
+
+        // To use UUIDs in the ACL classes, specified in https://github.com/spring-projects/spring-security/issues/7978
+        jdbcMutableAclService.setAclClassIdSupported(true);
+
         return jdbcMutableAclService;
     }
 
@@ -81,7 +86,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     @Bean
     public EhCacheFactoryBean aclEhCacheFactoryBean() {
         EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
-        ehCacheFactoryBean.setCacheManager(aclCacheManager().getObject());
+        ehCacheFactoryBean.setCacheManager(Objects.requireNonNull(this.aclCacheManager().getObject()));
         ehCacheFactoryBean.setCacheName("aclCache");
         return ehCacheFactoryBean;
     }
@@ -93,11 +98,14 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     @Bean
     public LookupStrategy lookupStrategy(DataSource dataSource) {
-        return new BasicLookupStrategy(
+        BasicLookupStrategy lookupStrategy = new BasicLookupStrategy(
                 dataSource,
                 aclCache(),
                 aclAuthorizationStrategy(),
                 new ConsoleAuditLogger()
         );
+        // To use UUIDs in the ACL classes, specified in https://github.com/spring-projects/spring-security/issues/7978
+        lookupStrategy.setAclClassIdSupported(true);
+        return lookupStrategy;
     }
 }

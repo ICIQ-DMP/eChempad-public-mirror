@@ -108,13 +108,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         //UserDetails user = User.builder().username("eChempad").password(passwordEncoder().encode("chemistry")).authorities("USER", "ADMIN").build();
 
-        authenticationBuilder.userDetailsService(this.userDetailsService()).passwordEncoder(this.passwordEncoder()).and()
-                .jdbcAuthentication().dataSource(this.dataSource)
-                .usersByUsernameQuery("select email, hashed_password as passw, true from researcher where email = ?")
-                .authoritiesByUsernameQuery("SELECT researcher.email, CONCAT(elementpermission.journal_id, '_', elementpermission.authority)\n" +
-                        "FROM researcher, elementpermission\n" +
-                        "WHERE elementpermission.researcher = researcher.uuid \n" +
-                        "AND researcher.email = ?");
+
+        authenticationBuilder
+                    // Provide the
+                    .userDetailsService(super.userDetailsService())
+                    .passwordEncoder(WebSecurityConfig.passwordEncoder())
+                .and()
+                    .jdbcAuthentication()
+                        // Provide the datasource to retrieve authentication data from
+                        .dataSource(this.dataSource)
+                        // Provide a query to obtain all the triplets (username, password and account_status)
+                        .usersByUsernameQuery("select username, password, true from researcher where username = ?")
+                        // Provide a query to obtain all the tuples (username, security_principal_name)
+                        .authoritiesByUsernameQuery("SELECT researcher.username,acl_sid.sid FROM researcher, acl_sid WHERE researcher.id = acl_sid.id AND researcher.username = ? AND acl_sid.principal = true");
                         //.withUser(user);  // Add admin account
                 //.withUser("patatero").password(passwordEncoder().encode("password")).roles("USER");
 

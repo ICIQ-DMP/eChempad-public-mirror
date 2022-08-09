@@ -41,9 +41,14 @@ public class Authority implements GrantedAuthority {
     @Column(length = 50, nullable = false)
     private String authority;
 
+    public Authority(String username, String authority) {
+        this.username = username;
+        this.authority = authority;
+    }
+
     @Override
     public String getAuthority() {
-        return null;
+        return this.authority;
     }
 
     public Authority() {}

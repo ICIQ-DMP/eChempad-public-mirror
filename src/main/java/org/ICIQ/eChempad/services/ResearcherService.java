@@ -29,10 +29,4 @@ public interface ResearcherService<T extends IEntity, S extends Serializable> ex
      */
     UserDetails loadUserByUsername(String email);
 
-    /**
-     * Same as in the repository, but in this case we delegate to the repository layer
-     * @return Map of all the UserDetails of the application
-     */
-    Map<UUID, UserDetails> loadAllUserDetails();
-
 }

@@ -36,13 +36,13 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     )
     @Convert(converter = UUIDConverter.class)
     @Column(unique = true)
+    @Id
     private UUID id;
 
     //TODO set a certain length for the used hashed algorithm
     @Column(length = 50, nullable = false)
     private String password;
 
-    @Id
     @Column(length = 50, nullable = false, unique = true)
     private String username;
 
@@ -70,8 +70,18 @@ public class Researcher implements Serializable, IEntity, UserDetails {
 
     public Researcher() {}
 
+    public Researcher(String password, String username, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, String signalsAPIKey, Set<GrantedAuthority> authorities) {
+        this.password = password;
+        this.username = username;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonLocked = accountNonLocked;
+        this.credentialsNonExpired = credentialsNonExpired;
+        this.enabled = enabled;
+        this.signalsAPIKey = signalsAPIKey;
+        this.authorities = authorities;
+    }
 
-    // GETTERS AND SETTERS
+// GETTERS AND SETTERS
 
     public Serializable getId() {
         return this.id;
@@ -97,6 +107,9 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         this.signalsAPIKey = signalsAPIKey;
     }
 
+    public void setAuthorities(Set<GrantedAuthority> authorities) {
+        this.authorities = authorities;
+    }
 
     /**
      * Returns the authorities granted to the user. Cannot return <code>null</code>.

@@ -62,6 +62,11 @@ Then we need to create the database for our software:
 createdb eChempad
 ```
 
+#### Connect to the database manually using terminal
+``` 
+psql -d eChempad -h localhost -p 5432 -U amarine
+```
+
 ## Creating the file structures
 The eChempad application stores files in the file system under the folder /eChempad/file_db. It also stores the 
 credentials of the APIKeys under /eChempad/APIKeys. Now, for debug purposes we store in this path a file called "key" 

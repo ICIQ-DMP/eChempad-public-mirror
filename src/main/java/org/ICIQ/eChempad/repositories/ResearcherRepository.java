@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.repositories;
 
+import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,7 +27,7 @@ import java.util.UUID;
  */
 @Repository
 @Transactional
-public interface ResearcherRepository extends GenericRepository<Researcher, UUID>, UserDetailsService{
+public interface ResearcherRepository<T extends IEntity, S extends Serializable> extends GenericRepository<Researcher, UUID>, UserDetailsService{
 
     /**
      * Internal method that will be used to authenticate users. Basically it transforms a Researcher entity to a
@@ -39,20 +41,7 @@ public interface ResearcherRepository extends GenericRepository<Researcher, UUID
      * user authentication internally.
      */
     @Query(
-            value = "SELECT * FROM researcher r WHERE r.username = '?1'",
-            nativeQuery = true
+            value = "SELECT r FROM Researcher r WHERE r.username = '?1'"
     )
     UserDetails loadUserByUsername(String email);
-
-    /**
-     * Loads all user details in a single list, which will be used by the authentication manager to know the
-     * authentication data of each user, to know how to authenticate to perform the authentication itself by password
-     * matching.
-     * @return List of all the user details.
-     */
-    @Query(
-            value = "SELECT * FROM researcher ",
-            nativeQuery = true
-    )
-    Map<UUID, UserDetails> loadAllUserDetails();
 }

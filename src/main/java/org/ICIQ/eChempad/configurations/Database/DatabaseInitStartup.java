@@ -7,12 +7,20 @@
  */
 package org.ICIQ.eChempad.configurations.Database;
 
+import org.ICIQ.eChempad.entities.Authority;
+import org.ICIQ.eChempad.entities.Researcher;
+import org.ICIQ.eChempad.services.ResearcherService;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -25,6 +33,9 @@ import java.util.logging.Logger;
 @Component
 public class DatabaseInitStartup implements ApplicationListener<ApplicationReadyEvent> {
 
+    @Autowired
+    private ResearcherService<Researcher, UUID> researcherService;
+
     public DatabaseInitStartup() {}
 
     @Override
@@ -35,8 +46,15 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
     private void initializeDB()
     {
+        HashSet<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new Authority("eChempad@iciq.es", "ROLE_ADMIN"));
 
+        Researcher researcher = new Researcher();
+        researcher.setUsername("eChempad@iciq.es");
+        researcher.setPassword("chemistry");
+        researcher.setAuthorities(authorities);
 
+        this.researcherService.save(researcher);
     }
 
 }
