@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.ICIQ.eChempad.configurations.Converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +30,7 @@ import java.util.*;
         uniqueConstraints = {
         @UniqueConstraint(columnNames = {"id", "username"})
 })
-public class Researcher implements Serializable, IEntity, UserDetails {
+public class Researcher implements Serializable, IEntity {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
@@ -64,13 +65,19 @@ public class Researcher implements Serializable, IEntity, UserDetails {
     private String signalsAPIKey;
 
     @OneToMany(
-            targetEntity = Authority.class, orphanRemoval = true, mappedBy = "username"
+            targetEntity = Authority.class,
+            mappedBy = "researcher",
+            fetch = FetchType.EAGER,  // Eager so the authorizations are loaded when loading a researcher
+            // if a researcher is deleted all of its Permissions have to be deleted.
+            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
-    Set<Authority> authorities = new HashSet<>();
+    @JsonManagedReference
+    private Set<Authority> permissions = new HashSet<>();
+
 
     public Researcher() {}
 
-    public Researcher(UUID id, String password, String username, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, String signalsAPIKey, Set<Authority> authorities) {
+    public Researcher(UUID id, String password, String username, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, String signalsAPIKey) {
         this.id = id;
         this.password = password;
         this.username = username;
@@ -79,7 +86,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
         this.signalsAPIKey = signalsAPIKey;
-        this.authorities = authorities;
     }
 
     @Override
@@ -93,7 +99,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
                 ", credentialsNonExpired=" + credentialsNonExpired +
                 ", enabled=" + enabled +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
-                ", authorities=" + authorities +
                 '}';
     }
 
@@ -113,7 +118,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      *
      * @return the password
      */
-    @Override
     public String getPassword() {
         return this.password;
     }
@@ -129,7 +133,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      *
      * @return the username (never <code>null</code>)
      */
-    @Override
     public String getUsername() {
         return this.username;
     }
@@ -149,28 +152,12 @@ public class Researcher implements Serializable, IEntity, UserDetails {
 
 
     /**
-     * Returns the authorities granted to the user. Cannot return <code>null</code>.
-     *
-     * @return the authorities, sorted by natural key (never <code>null</code>)
-     */
-    @Override
-    public Collection<Authority> getAuthorities() {
-        return this.authorities;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
-
-
-    /**
      * Indicates whether the user's account has expired. An expired account cannot be
      * authenticated.
      *
      * @return <code>true</code> if the user's account is valid (ie non-expired),
      * <code>false</code> if no longer valid (ie expired)
      */
-    @Override
     public boolean isAccountNonExpired() {
         return this.accountNonExpired;
     }
@@ -185,7 +172,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      *
      * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
      */
-    @Override
     public boolean isAccountNonLocked() {
         return this.accountNonLocked;
     }
@@ -202,7 +188,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      * @return <code>true</code> if the user's credentials are valid (ie non-expired),
      * <code>false</code> if no longer valid (ie expired)
      */
-    @Override
     public boolean isCredentialsNonExpired() {
         return this.credentialsNonExpired;
     }
@@ -218,7 +203,6 @@ public class Researcher implements Serializable, IEntity, UserDetails {
      *
      * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
      */
-    @Override
     public boolean isEnabled() {
         return this.enabled;
     }
@@ -227,4 +211,12 @@ public class Researcher implements Serializable, IEntity, UserDetails {
         this.enabled = enabled;
     }
 
+
+    public Set<Authority> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<Authority> permissions) {
+        this.permissions = permissions;
+    }
 }

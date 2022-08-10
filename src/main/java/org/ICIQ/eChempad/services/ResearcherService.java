@@ -20,13 +20,13 @@ import java.util.UUID;
  * Non-generic functions used to manipulate the in-memory data structures of the researchers. The generic calls are
  * provided in GenericServiceClass
  */
-public interface ResearcherService<T extends IEntity, S extends Serializable> extends GenericService<Researcher, UUID>, UserDetailsService {
+public interface ResearcherService<T extends IEntity, S extends Serializable> extends GenericService<Researcher, UUID> {
 
     /**
      * Same as in the repository, but in this case we delegate to the repository layer
      * @param email email of the selected user
      * @return Returns the userdetails of a user
      */
-    UserDetails loadUserByUsername(String email);
+    Researcher loadUserByUsername(String email);
 
 }

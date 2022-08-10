@@ -8,23 +8,21 @@
 package org.ICIQ.eChempad.configurations.Database;
 
 import org.ICIQ.eChempad.entities.Authority;
+import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
+import org.ICIQ.eChempad.repositories.AuthorityRepository;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
+import org.ICIQ.eChempad.services.JournalService;
 import org.ICIQ.eChempad.services.ResearcherService;
-import org.apache.catalina.User;
-import org.apache.juli.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -42,25 +40,55 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     private ResearcherService<Researcher, UUID> researcherService;
 
     @Autowired
-    private ResearcherRepository<Researcher, UUID> researcherRepository;
+    private JournalService<Journal, UUID> journalService;
+
+    @Autowired
+    private AuthorityRepository<Authority, UUID> authorityRepository;
 
     public DatabaseInitStartup() {}
 
     @Override
     public void onApplicationEvent(final @NotNull ApplicationReadyEvent event) {
-        Researcher res = (Researcher) researcherRepository.loadUserByUsername("eChempad@iciq.es");
-        Logger.getGlobal().info("echempad: " + res);
         this.initializeDB();
     }
 
     private void initializeDB()
     {
+        this.initAdminResearcher();
+        this.initJournal();
+    }
 
+    private void initAdminResearcher()
+    {
+        Researcher researcher = new Researcher();
+        researcher.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        researcher.setSignalsAPIKey("basure");
+        researcher.setAccountNonExpired(true);
+        researcher.setEnabled(true);
+        researcher.setCredentialsNonExpired(true);
+        researcher.setPassword("chemistry");
+        researcher.setUsername("eChempad@iciq.es");
+        researcher.setAccountNonLocked(true);
 
-        Researcher researcher1 = (Researcher) researcherService.loadUserByUsername("eChempad@iciq.es");
-        Logger.getGlobal().info("echempad2: " + researcher1);
+        Authority authority = null;
+        if (this.researcherService.getById((UUID) researcher.getId()) == null)
+        {
+            authority = this.authorityRepository.save(new Authority("ROLE_ADMIN", researcher));
+            researcher = this.researcherService.save(researcher);
+        }
+    }
 
+    private void initJournal()
+    {
+        Journal journal = new Journal();
+        journal.setId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
+        journal.setDescription("the example journal");
+        journal.setName("H2O");
 
+        if (this.journalService.getById((UUID) journal.getId()) == null)
+        {
+            this.journalService.save(journal);
+        }
     }
 
 }

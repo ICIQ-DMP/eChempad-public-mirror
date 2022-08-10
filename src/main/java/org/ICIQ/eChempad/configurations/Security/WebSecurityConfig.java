@@ -9,6 +9,7 @@ package org.ICIQ.eChempad.configurations.Security;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     /**
      * https://stackoverflow.com/questions/2952196/ant-path-style-patterns
@@ -98,17 +103,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     {
         authenticationBuilder
                     // Provide the service to retrieve user details
-                    .userDetailsService(super.userDetailsService())
+                    .userDetailsService(this.userDetailsService)
                     // Provide the password encoder used to store password in the database
                     .passwordEncoder(WebSecurityConfig.passwordEncoder())
-                .and()
-                    .jdbcAuthentication()
+                .and();
+                //    .jdbcAuthentication()
+
                         // Provide the datasource to retrieve authentication data from
-                        .dataSource(this.dataSource)
+                  //      .dataSource(this.dataSource);
                         // Provide a query to obtain all the triplets (username, password and account_status)
-                        .usersByUsernameQuery("SELECT username, password, true FROM researcher WHERE username = ?")
+                        //.usersByUsernameQuery("SELECT username, password, true FROM researcher WHERE username = ?")
                         // Provide a query to obtain all the tuples (username, security_principal_name)
-                        .authoritiesByUsernameQuery("SELECT researcher.username,acl_sid.sid FROM researcher, acl_sid WHERE researcher.id = acl_sid.id AND researcher.username = ? AND acl_sid.principal = true");
+                        //.authoritiesByUsernameQuery("SELECT researcher.username,acl_sid.sid FROM researcher, acl_sid WHERE researcher.id = acl_sid.id AND researcher.username = ? AND acl_sid.principal = true");
     }
 
 

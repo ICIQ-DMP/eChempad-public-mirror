@@ -1,80 +1,66 @@
 package org.ICIQ.eChempad.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.ICIQ.eChempad.configurations.Converters.UUIDConverter;
-import org.ICIQ.eChempad.configurations.Helpers.AuthorityUsernameId;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.UUID;
 
-@Entity
-@IdClass(AuthorityUsernameId.class)
-@Table(
-        uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"id"})
-        }
-    )
-public class Authority implements GrantedAuthority {
 
+@Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id")
+})
+public class Authority implements Serializable, IEntity, GrantedAuthority{
     @Id
+    @Convert(converter = UUIDConverter.class)
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Convert(converter = UUIDConverter.class)
-    @Column
-    private UUID id;
+    @Column(name = "id", nullable = false, unique = true)
+    protected UUID id;
 
-    @Id
-    @ManyToOne(targetEntity = Researcher.class, optional = false)
-    @JoinColumn(nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-    private String username;
+    // Authority that this user has against this resource.
+    @Column(name = "authority", length = 100, nullable = false)
+    protected String authority;
 
-    @Id
-    @Column(length = 50, nullable = false)
-    private String authority;
 
-    // Constructors
-
-    public Authority(String username, String authority) {
-        this.username = username;
-        this.authority = authority;
-    }
+    @JoinColumn(name = "researcher")
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false,
+            cascade = CascadeType.ALL
+    )
+    @JsonBackReference
+    protected Researcher researcher;
 
     public Authority() {}
 
-    public Authority(UUID id, String username, String authority) {
-        this.id = id;
-        this.username = username;
+    public Authority(String authority, Researcher researcher) {
+        this.authority = authority;
+        this.researcher = researcher;
+    }
+
+    public Authority(String authority) {
         this.authority = authority;
     }
 
     @Override
-    public String toString() {
-        return "Authority{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", authority='" + authority + '\'' +
-                '}';
+    public Serializable getId() {
+        return this.id;
     }
 
-    // GETTERS AND SETTERS
-
-    public String getUsername() {
-        return username;
+    @Override
+    public void setId(Serializable id) {
+        this.id = (UUID)id;
     }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
 
     @Override
     public String getAuthority() {
@@ -83,5 +69,21 @@ public class Authority implements GrantedAuthority {
 
     public void setAuthority(String authority) {
         this.authority = authority;
+    }
+
+    public Researcher getResearcher() {
+        return researcher;
+    }
+
+    public void setResearcher(Researcher researcher) {
+        this.researcher = researcher;
+    }
+
+    @Override
+    public String toString() {
+        return "Authority{" +
+                "authority='" + authority + '\'' +
+                ", researcher=" + researcher +
+                '}';
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -26,20 +27,7 @@ import java.util.UUID;
  * implement.
  */
 @Repository
-@Transactional
-public interface ResearcherRepository<T extends IEntity, S extends Serializable> extends GenericRepository<Researcher, UUID>, UserDetailsService{
+public interface ResearcherRepository<T extends IEntity, S extends Serializable> extends GenericRepository<Researcher, UUID>{
 
-    /**
-     * Internal method that will be used to authenticate users. Basically it transforms a Researcher entity to a
-     * UserDetails entity identified by its email. To construct a user details we need to load its username, roles and
-     * password.
-     * Gets the UserDetails instance of a user if required by using the user repository underneath by using its email.
-     * Used to obtain credentials and permissions and perform authentication and authorization.
-     *
-     * @param email email of the researcher that we are retrieving data from. Unique in the database.
-     * @return Returns all the information of a user using and UserDetails class, which is used by spring to manage the
-     * user authentication internally.
-     */
-    @Query(value = "SELECT r FROM Researcher r WHERE r.username = '?1'")
-    UserDetails loadUserByUsername(String email);
+    Researcher findByUsername(String username);
 }

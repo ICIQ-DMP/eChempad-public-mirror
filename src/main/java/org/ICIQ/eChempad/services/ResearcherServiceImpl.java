@@ -27,9 +27,9 @@ public class ResearcherServiceImpl<T extends IEntity, S extends Serializable>  e
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
+    public Researcher loadUserByUsername(String email) {
         // @TODO retrieve user from DB but retrieve authorities from the ACL
-        return ((ResearcherRepository<Researcher, UUID>) (super.genericRepository)).loadUserByUsername(email);
+        return ((ResearcherRepository<Researcher, UUID>) (super.genericRepository)).findByUsername(email);
     }
 
 }

@@ -11,6 +11,7 @@ import org.ICIQ.eChempad.entities.IEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;

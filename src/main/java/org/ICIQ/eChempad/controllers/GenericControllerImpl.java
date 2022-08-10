@@ -37,8 +37,10 @@ public class GenericControllerImpl<T extends IEntity, S extends Serializable> im
     )
     @Override
     public ResponseEntity<Set<T>> getAll() {
-        Logger.getGlobal().info("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         HashSet<T> entities = new HashSet<>(this.genericService.findAll());
+
+        Logger.getGlobal().info("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" + entities);
+
         return ResponseEntity.ok(entities);
     }
 
