@@ -85,9 +85,28 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         journal.setDescription("the example journal");
         journal.setName("H2O");
 
-        if (this.journalService.getById((UUID) journal.getId()) == null)
+        boolean found = false;
+        for (Journal journal1 : this.journalService.findAll())
         {
-            this.journalService.save(journal);
+            if (journal1.equals(journal))
+            {
+                found = true;
+                break;
+            }
+        }
+
+        Logger.getGlobal().info(journal.toString());
+        if (! found)
+        {
+            Journal journal2 = this.journalService.save(journal);
+            Logger.getGlobal().info(journal2.toString());
+
+            Logger.getGlobal().info("saved");
+        }
+        else
+        {
+            Logger.getGlobal().info("nosaved");
+
         }
     }
 
