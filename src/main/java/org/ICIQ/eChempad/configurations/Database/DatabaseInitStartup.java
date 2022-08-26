@@ -19,8 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -45,6 +50,9 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     @Autowired
     private AuthorityRepository<Authority, UUID> authorityRepository;
 
+    @Autowired
+    private MutableAclService aclService;
+
     public DatabaseInitStartup() {}
 
     @Override
@@ -61,7 +69,9 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     private void initAdminResearcher()
     {
         Researcher researcher = new Researcher();
+        // It is not used... Useless line overridden by hibernate behaviour
         researcher.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+
         researcher.setSignalsAPIKey("basure");
         researcher.setAccountNonExpired(true);
         researcher.setEnabled(true);
@@ -76,6 +86,25 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
             authority = this.authorityRepository.save(new Authority("ROLE_ADMIN", researcher));
             researcher = this.researcherService.save(researcher);
         }
+
+
+        // ACL code
+        // Prepare the information we'd like in our access control entry (ACE)
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Researcher.class, (Serializable) UUID.randomUUID());
+        Sid sid = new PrincipalSid("Administrator");
+        Permission permission = BasePermission.ADMINISTRATION;
+
+        // Create or update the relevant ACL
+        MutableAcl acl = null;
+        try {
+            acl = (MutableAcl) aclService.readAclById(objectIdentity);
+        } catch (NotFoundException nfe) {
+            acl = aclService.createAcl(objectIdentity);
+        }
+
+        // Now grant some permissions via an access control entry (ACE)
+        acl.insertAce(acl.getEntries().size(), permission, sid, true);
+        aclService.updateAcl(acl);
     }
 
     private void initJournal()

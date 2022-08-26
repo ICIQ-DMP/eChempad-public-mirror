@@ -60,27 +60,27 @@
 			<version>${spring.version}</version>
 		</dependency>
 
-		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
+		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime
 		<dependency>
 			<groupId>org.threeten</groupId>
 			<artifactId>threetenbp</artifactId>
 			<version>1.6.0</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
 		 hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.6.5.Final</version>
+			<!-- <version>5.6.5.Final</version> -->
 		</dependency>
 
 		<!-- To disable javax.validation.NoProviderFoundException, which can happen in initialization -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>5.2.4.Final</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
 		<dependency>
@@ -180,7 +180,7 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
-			<version>2.6.11</version>
+			<!-- <version>2.6.11</version> -->
 		</dependency>
 
 
