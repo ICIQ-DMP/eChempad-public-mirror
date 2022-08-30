@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS acl_class(
 CREATE TABLE IF NOT EXISTS acl_object_identity(
                                     id uuid primary key,
                                     object_id_class uuid not null,
-                                    object_id_identity uuid not null,
+                                    object_id_identity varchar(36) not null,
                                     parent_object uuid,
                                     owner_sid uuid,
                                     entries_inheriting boolean not null,
