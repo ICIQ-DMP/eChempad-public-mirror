@@ -43,7 +43,7 @@ public class GenericControllerImpl<T extends IEntity, S extends Serializable> im
     }
 
     @GetMapping(
-            value = "/get/{id}",
+            value = "/{id}",
             produces = "application/json"
     )
     @Override

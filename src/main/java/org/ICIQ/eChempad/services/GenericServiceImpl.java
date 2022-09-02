@@ -14,6 +14,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -47,15 +49,16 @@ import java.util.*;
 public abstract class GenericServiceImpl<T extends IEntity, S extends Serializable> implements GenericService<T, S>{
 
     protected GenericRepository<T, S> genericRepository;
+    protected AclRepository aclRepository;
 
     public GenericServiceImpl() {}
 
-    public GenericServiceImpl(GenericRepository<T, S> repository)
+    public GenericServiceImpl(GenericRepository<T, S> repository, AclRepository aclRepository)
     {
         this.genericRepository = repository;
+        this.aclRepository = aclRepository;
     }
 
-    
     // Delegated methods to the repository
 
     public Class<T> getEntityClass() {
@@ -75,6 +78,7 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     }
 
     public <S1 extends T> List<S1> saveAll(Iterable<S1> entities) {
+        this.aclRepository.addGenericAclPermissions(this.getEntityClass(), BasePermission.ADMINISTRATION);
         return genericRepository.saveAll(entities);
     }
 
@@ -111,6 +115,7 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     }
 
     public <S1 extends T> List<S1> findAll(Example<S1> example, Sort sort) {
+        this.aclRepository.addGenericAclPermissions(this.getEntityClass(), BasePermission.ADMINISTRATION);
         return genericRepository.findAll(example, sort);
     }
 

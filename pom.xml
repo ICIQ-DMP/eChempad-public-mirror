@@ -43,7 +43,7 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 			<comments>A business-friendly OSS license</comments>
-
+		</license>
 	</licenses>
 
 
@@ -76,11 +76,11 @@
 		</dependency>
 
 		<!-- To disable javax.validation.NoProviderFoundException, which can happen in initialization -->
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>5.2.4.Final</version>
-		</dependency> -->
+		</dependency>
 
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
 		<dependency>

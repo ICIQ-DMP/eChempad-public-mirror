@@ -87,24 +87,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
             researcher = this.researcherService.save(researcher);
         }
 
-
-        // ACL code
-        // Prepare the information we'd like in our access control entry (ACE)
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Researcher.class, (Serializable) UUID.randomUUID());
-        Sid sid = new PrincipalSid("Administrator");
-        Permission permission = BasePermission.ADMINISTRATION;
-
-        // Create or update the relevant ACL
-        MutableAcl acl = null;
-        try {
-            acl = (MutableAcl) aclService.readAclById(objectIdentity);
-        } catch (NotFoundException nfe) {
-            acl = aclService.createAcl(objectIdentity);
-        }
-
-        // Now grant some permissions via an access control entry (ACE)
-        acl.insertAce(acl.getEntries().size(), permission, sid, true);
-        aclService.updateAcl(acl);
     }
 
     private void initJournal()
