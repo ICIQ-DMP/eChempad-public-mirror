@@ -27,6 +27,7 @@ import java.util.UUID;
  * implement.
  */
 @Repository
+@Transactional
 public interface ResearcherRepository<T extends IEntity, S extends Serializable> extends GenericRepository<Researcher, UUID>{
 
     Researcher findByUsername(String username);

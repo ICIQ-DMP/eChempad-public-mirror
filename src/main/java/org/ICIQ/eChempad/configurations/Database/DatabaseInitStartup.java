@@ -81,10 +81,10 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         researcher.setAccountNonLocked(true);
 
         Authority authority = null;
-        if (this.researcherService.getById((UUID) researcher.getId()) == null)
+        if (this.researcherService.loadUserByUsername(researcher.getUsername()) == null)
         {
-            authority = this.authorityRepository.save(new Authority("ROLE_ADMIN", researcher));
             researcher = this.researcherService.save(researcher);
+            authority = this.authorityRepository.save(new Authority("ROLE_ADMIN", researcher));
         }
 
     }

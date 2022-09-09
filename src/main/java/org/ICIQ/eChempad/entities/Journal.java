@@ -88,13 +88,6 @@ public class Journal implements IEntity{
         }
     }
 
-    @Override
-    public boolean isContained(UUID entity_uuid) {
-        return false;
-    }
-
-    @Override
-    public Class<Journal> getMyType() { return Journal.class; }
     */
 
     public String getName() {
@@ -113,15 +106,6 @@ public class Journal implements IEntity{
         this.description = description;
     }
 
-    /*
-    public Set<Experiment> getExperiments() {
-        return this.experiments;
-    }
-
-    public void setExperiments(Set<Experiment> experiments) {
-        this.experiments = experiments;
-    }
-    */
 
     @Override
     public String toString() {
@@ -129,7 +113,6 @@ public class Journal implements IEntity{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-              //  ", experiments=" + experiments +
                 '}';
     }
 

@@ -8,6 +8,7 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -31,6 +32,8 @@ import java.util.UUID;
  *
  * and implements the required methods by the interface.
  */
+// To deserialize generics
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public interface IEntity {
     /**
      * Exposes and returns the UUID of an entity.

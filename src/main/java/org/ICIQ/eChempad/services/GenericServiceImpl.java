@@ -9,6 +9,9 @@ package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.repositories.*;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -18,10 +21,12 @@ import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
+import javax.persistence.*;
+import javax.transaction.Transactional;
+import javax.transaction.UserTransaction;
 import java.io.Serializable;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Contains all the main methods implemented by the generic repository to manipulate the database. All the methods
@@ -51,6 +56,10 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     protected GenericRepository<T, S> genericRepository;
     protected AclRepository aclRepository;
 
+    //@PersistenceContext(type = PersistenceContextType.EXTENDED)
+    //@Qualifier("sessionFactory")
+    //private EntityManager entityManager;
+
     public GenericServiceImpl() {}
 
     public GenericServiceImpl(GenericRepository<T, S> repository, AclRepository aclRepository)
@@ -66,7 +75,9 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     }
 
     public List<T> findAll() {
-        return genericRepository.findAll();
+        List<T> list = genericRepository.findAll();
+        Logger.getGlobal().info(list.toString());
+        return list;
     }
 
     public List<T> findAll(Sort sort) {
@@ -107,7 +118,9 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     }
 
     public T getById(S s) {
-        return genericRepository.getById(s);
+        T t = this.genericRepository.getById(s);
+        t.toString();
+        return t;
     }
 
     public <S1 extends T> List<S1> findAll(Example<S1> example) {

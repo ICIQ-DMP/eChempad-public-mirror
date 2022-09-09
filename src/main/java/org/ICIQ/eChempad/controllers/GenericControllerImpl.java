@@ -4,9 +4,11 @@ import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.GenericService;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +50,9 @@ public class GenericControllerImpl<T extends IEntity, S extends Serializable> im
     )
     @Override
     public ResponseEntity<T> get(@PathVariable S id) throws ResourceNotExistsException {
-        T entity = this.genericService.getById(id);
-        return ResponseEntity.ok(entity);
+        Optional<T> opt = this.genericService.findById(id);
+
+        return opt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping(

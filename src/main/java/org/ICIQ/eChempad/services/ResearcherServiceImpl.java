@@ -16,6 +16,7 @@ import org.springframework.security.acls.model.AclService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Logger;

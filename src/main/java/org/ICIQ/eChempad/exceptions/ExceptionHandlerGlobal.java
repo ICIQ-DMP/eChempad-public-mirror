@@ -16,6 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 /**
  * Used to handle the errors that occur in the application from a single class.
  */
+/**
 @ControllerAdvice
 public class ExceptionHandlerGlobal {
 
@@ -32,3 +33,5 @@ public ResponseEntity<Object> handleResourceNotExists(ResourceNotExistsException
 
 
 }
+
+ **/
