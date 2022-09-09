@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class UserDetailsImpl implements UserDetails{
 
-    private Researcher researcher;
+    private final Researcher researcher;
 
     public UserDetailsImpl(Researcher researcher) {
         this.researcher = researcher;

@@ -67,6 +67,7 @@ public class Researcher implements Serializable, IEntity {
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "researcher",
+            cascade = {CascadeType.ALL},
             fetch = FetchType.EAGER,  // Eager so the authorizations are loaded when loading a researcher
             // if a researcher is deleted all of its Permissions have to be deleted.
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
@@ -110,6 +111,17 @@ public class Researcher implements Serializable, IEntity {
 
     public void setId(Serializable s) {
         this.id = (UUID) s;
+    }
+
+    /**
+     * Implemented by every class to return its own type, except for element permission, which returns the type of the
+     * element that is giving permissions to.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends IEntity> Class<T> getMyType() {
+        return (Class<T>) Researcher.class;
     }
 
 

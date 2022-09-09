@@ -31,12 +31,10 @@ public class Authority implements Serializable, IEntity, GrantedAuthority{
     @Column(name = "authority", length = 100, nullable = false)
     protected String authority;
 
-
     @JoinColumn(name = "researcher")
     @ManyToOne(
             fetch = FetchType.LAZY,
-            optional = false,
-            cascade = CascadeType.ALL
+            optional = false
     )
     @JsonBackReference
     protected Researcher researcher;
@@ -60,6 +58,17 @@ public class Authority implements Serializable, IEntity, GrantedAuthority{
     @Override
     public void setId(Serializable id) {
         this.id = (UUID)id;
+    }
+
+    /**
+     * Implemented by every class to return its own type, except for element permission, which returns the type of the
+     * element that is giving permissions to.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends IEntity> Class<T> getMyType() {
+        return (Class<T>) Authority.class;
     }
 
     @Override

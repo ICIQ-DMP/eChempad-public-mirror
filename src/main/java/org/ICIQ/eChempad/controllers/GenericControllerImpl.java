@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +22,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
-public class GenericControllerImpl<T extends IEntity, S extends Serializable> implements GenericController<T, S> {
+public abstract class GenericControllerImpl<T extends IEntity, S extends Serializable> implements GenericController<T, S> {
 
     protected GenericService<T, S> genericService;
 
-    public GenericControllerImpl(GenericService<T, S> genericService)
-    {
+    public GenericControllerImpl(GenericService<T, S> genericService) {
         this.genericService = genericService;
     }
 
@@ -37,17 +39,17 @@ public class GenericControllerImpl<T extends IEntity, S extends Serializable> im
             value = "",
             produces = "application/json"
     )
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @Override
-    public ResponseEntity<Set<T>> getAll() {
-        HashSet<T> entities = new HashSet<>(this.genericService.findAll());
-
-        return ResponseEntity.ok(entities);
+    public Set<T> getAll() {
+        return new HashSet<>(this.genericService.findAll());
     }
 
     @GetMapping(
             value = "/{id}",
             produces = "application/json"
     )
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
     @Override
     public ResponseEntity<T> get(@PathVariable S id) throws ResourceNotExistsException {
         Optional<T> opt = this.genericService.findById(id);
@@ -85,6 +87,7 @@ public class GenericControllerImpl<T extends IEntity, S extends Serializable> im
             produces = "application/json",
             consumes = "application/json"
     )
+    @PreAuthorize("hasPermission(#noticeMessage, 'WRITE')")
     @Override
     public ResponseEntity<T> put(@Validated @RequestBody T t, @PathVariable(value = "id") S id) throws ResourceNotExistsException, NotEnoughAuthorityException {
         t.setId(id);

@@ -169,6 +169,14 @@
 			<artifactId>spring-security-config</artifactId>
 		</dependency>
 
+		<!-- For the annotation that lets you use mock users -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>4.2.2.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Used to control the ACL security infrastructure, probably for some annotations -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -210,9 +218,13 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
         </dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+		</dependency>
 
 
-    </dependencies>
+	</dependencies>
 
 
 

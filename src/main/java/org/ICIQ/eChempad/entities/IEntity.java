@@ -33,7 +33,7 @@ import java.util.UUID;
  * and implements the required methods by the interface.
  */
 // To deserialize generics
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface IEntity {
     /**
      * Exposes and returns the UUID of an entity.
@@ -60,8 +60,8 @@ public interface IEntity {
      * @param <T> Parametrized type in order to return any type of class.
      * @return Class of the object implementing this interface.
      */
-    //@JsonBackReference
-    //<T extends IEntity> Class<T> getMyType();
+    @JsonBackReference
+    <T extends IEntity> Class<T> getMyType();
 
 
     /**

@@ -73,6 +73,17 @@ public class Journal implements IEntity{
         this.id = (UUID) s;
     }
 
+    /**
+     * Implemented by every class to return its own type, except for element permission, which returns the type of the
+     * element that is giving permissions to.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends IEntity> Class<T> getMyType() {
+        return (Class<T>) Journal.class;
+    }
+
     /*
     @Override
     public boolean isContainer(UUID entity_uuid) {

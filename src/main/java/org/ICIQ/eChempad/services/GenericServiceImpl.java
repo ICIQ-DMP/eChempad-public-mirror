@@ -9,21 +9,13 @@ package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.repositories.*;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.*;
-import javax.transaction.Transactional;
-import javax.transaction.UserTransaction;
 import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Logger;
@@ -54,7 +46,7 @@ import java.util.logging.Logger;
 public abstract class GenericServiceImpl<T extends IEntity, S extends Serializable> implements GenericService<T, S>{
 
     protected GenericRepository<T, S> genericRepository;
-    protected AclRepository aclRepository;
+    protected AclRepositoryImpl aclRepository;
 
     //@PersistenceContext(type = PersistenceContextType.EXTENDED)
     //@Qualifier("sessionFactory")
@@ -62,13 +54,13 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
 
     public GenericServiceImpl() {}
 
-    public GenericServiceImpl(GenericRepository<T, S> repository, AclRepository aclRepository)
+    public GenericServiceImpl(GenericRepository<T, S> repository, AclRepositoryImpl aclRepository)
     {
         this.genericRepository = repository;
         this.aclRepository = aclRepository;
     }
 
-    // Delegated methods to the repository
+    // Delegated // decorated methods to the repository
 
     public Class<T> getEntityClass() {
         return genericRepository.getEntityClass();
@@ -89,7 +81,6 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     }
 
     public <S1 extends T> List<S1> saveAll(Iterable<S1> entities) {
-        this.aclRepository.addGenericAclPermissions(this.getEntityClass(), BasePermission.ADMINISTRATION);
         return genericRepository.saveAll(entities);
     }
 
@@ -117,10 +108,11 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
         genericRepository.deleteAllInBatch();
     }
 
+    /*
+     * Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
+     */
     public T getById(S s) {
-        T t = this.genericRepository.getById(s);
-        t.toString();
-        return t;
+        return this.genericRepository.getById(s);
     }
 
     public <S1 extends T> List<S1> findAll(Example<S1> example) {
@@ -137,7 +129,9 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     }
 
     public <S1 extends T> S1 save(S1 entity) {
-        return genericRepository.save(entity);
+        S1 t = genericRepository.save(entity);
+        this.aclRepository.addPermissionToUserInEntity(t, BasePermission.ADMINISTRATION);
+        return t;
     }
 
     public Optional<T> findById(S s) {

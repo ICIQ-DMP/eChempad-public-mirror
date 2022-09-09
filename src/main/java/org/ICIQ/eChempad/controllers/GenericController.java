@@ -19,7 +19,7 @@ public interface GenericController <T extends IEntity, S extends Serializable> {
      */
     public Class<T> getEntityClass();
 
-    ResponseEntity<Set<T>> getAll();
+    Set<T> getAll();
 
     ResponseEntity<T> get(S id) throws ResourceNotExistsException;
 
