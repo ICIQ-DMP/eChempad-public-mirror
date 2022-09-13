@@ -87,7 +87,7 @@ public abstract class GenericControllerImpl<T extends IEntity, S extends Seriali
             produces = "application/json",
             consumes = "application/json"
     )
-    @PreAuthorize("hasPermission(#noticeMessage, 'WRITE')")
+    @PreAuthorize("hasPermission(#t, 'WRITE')")
     @Override
     public ResponseEntity<T> put(@Validated @RequestBody T t, @PathVariable(value = "id") S id) throws ResourceNotExistsException, NotEnoughAuthorityException {
         t.setId(id);
