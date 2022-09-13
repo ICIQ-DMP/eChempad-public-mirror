@@ -32,7 +32,7 @@ public class AclRepositoryImpl {
         // Obtain the identity of the object by using its class and its id
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(entity.getMyType(), entity.getId());
 
-        Logger.getGlobal().info("la cosita de cosar " + objectIdentity);
+        Logger.getGlobal().info("object identity " + objectIdentity);
 
         // Obtain the identity of the user
         Sid sid;
@@ -45,6 +45,7 @@ public class AclRepositoryImpl {
             sid = new PrincipalSid(userName);
         }
 
+        Logger.getGlobal().info("security identity " + objectIdentity);
 
         // Create or update the relevant ACL
         MutableAcl acl;
@@ -55,6 +56,8 @@ public class AclRepositoryImpl {
 
             acl = aclService.createAcl(objectIdentity);
         }
+
+        Logger.getGlobal().info("Obtained acl " + objectIdentity);
 
         // Set administration permission if not received
         Permission setPermission;

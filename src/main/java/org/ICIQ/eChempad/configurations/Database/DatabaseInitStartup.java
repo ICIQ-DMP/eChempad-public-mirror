@@ -25,8 +25,8 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.io.Serializable;
 import java.util.*;

@@ -34,16 +34,6 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
         if (researcher == null) {
             throw new UsernameNotFoundException(username);
         }
-        //researcher.getPermissions().size();
-
-
-
-
-        // Researcher is not null, retrieve his authorities
-
-        // initialize lazy collection
-        //Hibernate.
-        //Hibernate.initialize(researcher.getPermissions());
 
         return new UserDetailsImpl(researcher);
     }
