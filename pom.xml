@@ -28,7 +28,7 @@
 		<java.version>1.8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<spring.version>2.6.5</spring.version>
+		<spring.version>5.3.22</spring.version>
 		<!--Used by the licenses plugin-->
 		<license.licenseName>apache_v2</license.licenseName>
 		<current.year>2022</current.year>
@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>${spring.version}</version>
+			<!-- <version>${spring.version}</version> -->
 		</dependency>
 
 		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
