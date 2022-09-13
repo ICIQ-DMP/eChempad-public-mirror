@@ -55,11 +55,13 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     @Autowired
     public JdbcMutableAclService aclService(DataSource dataSource) {
         JdbcMutableAclService jdbcMutableAclService = new JdbcMutableAclService(dataSource, lookupStrategy(dataSource), aclCache());
+
+        jdbcMutableAclService.setAclClassIdSupported(true);
+
         jdbcMutableAclService.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
         jdbcMutableAclService.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
 
         // To use UUIDs in the ACL classes, specified in https://github.com/spring-projects/spring-security/issues/7978
-        jdbcMutableAclService.setAclClassIdSupported(true);
 
         return jdbcMutableAclService;
     }
