@@ -29,12 +29,12 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<spring.version>5.3.22</spring.version>
+		<spring-security.version>5.7.3</spring-security.version>
+
 		<!--Used by the licenses plugin-->
 		<license.licenseName>apache_v2</license.licenseName>
 		<current.year>2022</current.year>
 	</properties>
-
-
 
 	<!--Licenses -->
 	<licenses>
@@ -47,9 +47,6 @@
 	</licenses>
 
 
-
-
-
     <!--Dependencies -->
 	<dependencies>
 		<!-- Java persistence API, uses
@@ -58,6 +55,34 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<!-- <version>${spring.version}</version> -->
+		</dependency>
+
+		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->
+		<!-- By default, filters everything out, so we need to configure it -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- Used to control the ACL security infrastructure -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
+		<!-- Used to control the ACL security infrastructure -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+
+		<!-- For the annotation that lets you use mock users -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<!-- <version>4.2.2.RELEASE</version> -->
+			<scope>test</scope>
 		</dependency>
 
 		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
@@ -128,13 +153,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->
-		<!-- By default, filters everything out, so we need to configure it -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-			<version>2.6.3</version>
-		</dependency>
+
 
 		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
 		<dependency>
@@ -157,25 +176,6 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
-		<!-- Used to control the ACL security infrastructure -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-acl</artifactId>
-		</dependency>
-
-		<!-- Used to control the ACL security infrastructure -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-		</dependency>
-
-		<!-- For the annotation that lets you use mock users -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<version>4.2.2.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
 
 		<!-- Used to control the ACL security infrastructure, probably for some annotations -->
 		<dependency>
