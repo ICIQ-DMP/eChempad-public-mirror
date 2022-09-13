@@ -28,14 +28,21 @@ import java.util.Objects;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
-    @Autowired
+    final
     MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler;
 
+    @Autowired
+    public AclMethodSecurityConfiguration(DataSource dataSource) {
+        this.defaultMethodSecurityExpressionHandler = this.defaultMethodSecurityExpressionHandler(dataSource);
+    }
+
+
     @Bean
+    @Autowired
     public MethodSecurityExpressionHandler
     defaultMethodSecurityExpressionHandler(DataSource dataSource) {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        AclService aclService = aclService(dataSource);
+        AclService aclService = this.aclService(dataSource);
         AclPermissionEvaluator permissionEvaluator = new AclPermissionEvaluator(aclService);
         expressionHandler.setPermissionEvaluator(permissionEvaluator);
         return expressionHandler;
@@ -97,6 +104,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     }
 
     @Bean
+    @Autowired
     public LookupStrategy lookupStrategy(DataSource dataSource) {
         BasicLookupStrategy lookupStrategy = new BasicLookupStrategy(
                 dataSource,
