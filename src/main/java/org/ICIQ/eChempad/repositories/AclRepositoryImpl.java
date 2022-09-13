@@ -29,6 +29,7 @@ public class AclRepositoryImpl {
      */
     public void addPermissionToUserInEntity(IEntity entity, Permission permission, String userName)
     {
+        Logger.getGlobal().info("entity: " + entity + "permissions: " + permission + "user " + userName);
         // Obtain the identity of the object by using its class and its id
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(entity.getMyType(), entity.getId());
 
@@ -45,19 +46,17 @@ public class AclRepositoryImpl {
             sid = new PrincipalSid(userName);
         }
 
-        Logger.getGlobal().info("security identity " + objectIdentity);
+        Logger.getGlobal().info("security identity " + sid);
 
         // Create or update the relevant ACL
         MutableAcl acl;
         try {
             acl = (MutableAcl) aclService.readAclById(objectIdentity);
         } catch (NotFoundException nfe) {
-            Logger.getGlobal().info("the acl en cuestion " + objectIdentity);
-
             acl = aclService.createAcl(objectIdentity);
         }
 
-        Logger.getGlobal().info("Obtained acl " + objectIdentity);
+        Logger.getGlobal().info("Obtained acl " + acl);
 
         // Set administration permission if not received
         Permission setPermission;

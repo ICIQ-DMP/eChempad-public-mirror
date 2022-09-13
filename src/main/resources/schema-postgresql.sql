@@ -8,6 +8,8 @@ create table researchers_authorities(
 
     constraint unique_uk_1 unique(authority_id,researcher_id)
 );*/
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 
 CREATE TABLE IF NOT EXISTS acl_sid(
                         id uuid not null primary key,
@@ -24,11 +26,11 @@ CREATE TABLE IF NOT EXISTS acl_class(
 );
 
 CREATE TABLE IF NOT EXISTS acl_object_identity(
-                                    id uuid primary key,
+                                    id uuid not null primary key,
                                     object_id_class uuid not null,
-                                    object_id_identity varchar(36) not null,
-                                    parent_object uuid,
-                                    owner_sid uuid,
+                                    object_id_identity varchar(255) not null,
+                                    parent_object uuid default null,
+                                    owner_sid uuid default null,
                                     entries_inheriting boolean not null,
                                     constraint unique_uk_3 unique(object_id_class,object_id_identity),
                                     constraint foreign_fk_1 foreign key(parent_object)references acl_object_identity(id),
@@ -37,7 +39,7 @@ CREATE TABLE IF NOT EXISTS acl_object_identity(
 );
 
 CREATE TABLE IF NOT EXISTS acl_entry(
-                          id uuid primary key,
+                          id uuid not null primary key,
                           acl_object_identity uuid not null,
                           ace_order int not null,
                           sid uuid not null,

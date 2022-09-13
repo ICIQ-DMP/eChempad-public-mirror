@@ -1,10 +1,11 @@
-/*
-insert into acl_sid(id, principal, sid) values
-    (1, true, 'admin@eChempad.es'),
-    (2, false, 'ROLE_ADMIN'),
-    (3, true, 'eChempad@iciq.es'),
-    (4, false, 'ROLE_USER');
 
+insert into acl_sid(id, principal, sid) values
+    ('123e4567-e89b-12d3-a456-426614174000', true, 'admin@eChempad.es'),
+    ('cd249d53-8539-4ff5-aadf-429dd21e7ef8', false, 'ROLE_ADMIN'),
+    ('4d14a554-83e5-4be1-bb03-352225e6d9c3', true, 'eChempad@iciq.es'),
+    ('a08e914f-1719-4bc1-900a-eb6d370d1670', false, 'ROLE_USER');
+
+/*
 INSERT INTO acl_class (id, class) VALUES
     (1, 'org.ICIQ.eChempad.entities.Researcher');
 
