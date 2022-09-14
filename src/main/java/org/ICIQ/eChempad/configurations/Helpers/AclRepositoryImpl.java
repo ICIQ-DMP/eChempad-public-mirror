@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.repositories;
+package org.ICIQ.eChempad.configurations.Helpers;
 
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Researcher;
@@ -68,6 +68,7 @@ public class AclRepositoryImpl {
         }
 
         // Now grant some permissions via an access control entry (ACE)
+        Logger.getGlobal().info("the acl" + acl.toString());
         acl.insertAce(acl.getEntries().size(), setPermission, sid, true);
         aclService.updateAcl(acl);
     }

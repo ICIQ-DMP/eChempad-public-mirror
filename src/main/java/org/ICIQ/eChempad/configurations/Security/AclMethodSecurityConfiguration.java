@@ -28,8 +28,6 @@ import java.util.Objects;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
-    @Autowired
-    MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler;
 
     @Bean
     public MethodSecurityExpressionHandler

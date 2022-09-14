@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.configurations.Security;
+package org.ICIQ.eChempad.configurations.Helpers;
 
 import org.ICIQ.eChempad.entities.Researcher;
 import org.springframework.data.jpa.repository.Query;

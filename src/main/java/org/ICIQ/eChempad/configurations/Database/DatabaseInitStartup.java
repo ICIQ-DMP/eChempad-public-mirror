@@ -10,25 +10,18 @@ package org.ICIQ.eChempad.configurations.Database;
 import org.ICIQ.eChempad.entities.Authority;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.repositories.AclRepositoryImpl;
+import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
 import org.ICIQ.eChempad.repositories.AuthorityRepository;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.ICIQ.eChempad.services.JournalService;
-import org.ICIQ.eChempad.services.ResearcherService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.domain.PrincipalSid;
-import org.springframework.security.acls.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.jdbc.Sql;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Logger;
 

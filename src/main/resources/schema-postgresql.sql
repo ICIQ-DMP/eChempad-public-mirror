@@ -1,36 +1,27 @@
 
-/*
-create table researchers_authorities(
-    authority_id bigserial not null primary key,
-    researcher_id bigserial not null primary key,
-    constraint foreign_fk_1 foreign key(authority_id)references authority(uuid),
-    constraint foreign_fk_1 foreign key(researcher_id)references researcher(uuid),
-
-    constraint unique_uk_1 unique(authority_id,researcher_id)
-);*/
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 CREATE TABLE IF NOT EXISTS acl_sid(
-                        id uuid not null primary key,
+                        id bigserial not null primary key,
                         principal boolean not null,
                         sid varchar(100) not null,
                         constraint unique_uk_1 unique(sid,principal)
 );
 
 CREATE TABLE IF NOT EXISTS acl_class(
-                          id uuid not null primary key,
+                          id bigserial not null primary key,
                           class varchar(100) not null,
                           class_id_type varchar(100),
                           constraint unique_uk_2 unique(class)
 );
 
 CREATE TABLE IF NOT EXISTS acl_object_identity(
-                                    id uuid not null primary key,
-                                    object_id_class uuid not null,
-                                    object_id_identity uuid not null,
-                                    parent_object uuid,
-                                    owner_sid uuid,
+                                    id bigserial primary key,
+                                    object_id_class bigint not null,
+                                    object_id_identity varchar(36) not null,
+                                    parent_object bigint,
+                                    owner_sid bigint,
                                     entries_inheriting boolean not null,
                                     constraint unique_uk_3 unique(object_id_class,object_id_identity),
                                     constraint foreign_fk_1 foreign key(parent_object)references acl_object_identity(id),
@@ -39,10 +30,10 @@ CREATE TABLE IF NOT EXISTS acl_object_identity(
 );
 
 CREATE TABLE IF NOT EXISTS acl_entry(
-                          id uuid not null primary key,
-                          acl_object_identity uuid not null,
+                          id bigserial primary key,
+                          acl_object_identity bigint not null,
                           ace_order int not null,
-                          sid uuid not null,
+                          sid bigint not null,
                           mask integer not null,
                           granting boolean not null,
                           audit_success boolean not null,
