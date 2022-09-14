@@ -78,7 +78,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
         if (this.researcherRepository.findByUsername(researcher.getUsername()) == null)
         {
-            Logger.getGlobal().info("_________________________________________________________________________________________________");
             this.researcherRepository.save(researcher);  // Save of the authority is cascaded
         }
 
@@ -94,7 +93,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         String idOfJournalAlreadyInTheDatabase = "264a3c6e-21e6-450e-8cfc-cba1d97eb92d";
 
         Researcher res = (Researcher) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Logger.getGlobal().info(res.toString());
         Optional<Journal> journalDatabase = this.journalService.findById(UUID.fromString(idOfJournalAlreadyInTheDatabase));
         if (! journalDatabase.isPresent())
         {

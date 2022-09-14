@@ -8,6 +8,7 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.io.Serializable;
@@ -34,6 +35,7 @@ import java.util.UUID;
  */
 // To deserialize generics
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  //https://stackoverflow.com/questions/67353793/what-does-jsonignorepropertieshibernatelazyinitializer-handler-do
 public interface IEntity {
     /**
      * Exposes and returns the UUID of an entity.

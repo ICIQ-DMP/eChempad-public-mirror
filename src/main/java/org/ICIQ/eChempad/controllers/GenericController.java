@@ -17,17 +17,17 @@ public interface GenericController <T extends IEntity, S extends Serializable> {
      * Note: Default methods are a special Java 8 feature in where interfaces can define implementations for methods.
      * @return Internal class type of this generic repository, set at the creation of the repository.
      */
-    public Class<T> getEntityClass();
+    Class<T> getEntityClass();
 
     Set<T> getAll();
 
-    ResponseEntity<T> get(S id) throws ResourceNotExistsException;
+    T get(S id) throws ResourceNotExistsException;
 
-    ResponseEntity<T> add(T t);
+    T add(T t);
 
-    ResponseEntity<T> remove(S id) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    T remove(S id) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
-    ResponseEntity<T> put(T t, S id) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    T put(T t, S id) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
 
 }

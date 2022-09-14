@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.acls.domain.AbstractPermission;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -74,7 +75,13 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
      */
     public <S1 extends T> S1 save(S1 entity) {
         S1 t = genericRepository.save(entity);
-        this.aclRepository.addPermissionToUserInEntity(t, PermissionBuilder.getFullPermissions());
+
+        // Save all possible permission against the saved entity with the current logged user
+        Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
+        while (iterator.hasNext()) {
+            this.aclRepository.addPermissionToUserInEntity(t, iterator.next());
+        }
+
         return t;
     }
 

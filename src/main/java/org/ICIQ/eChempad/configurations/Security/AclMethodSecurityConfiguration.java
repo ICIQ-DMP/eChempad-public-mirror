@@ -5,6 +5,7 @@ import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.acls.AclPermissionEvaluator;
@@ -33,9 +34,8 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     public MethodSecurityExpressionHandler
     defaultMethodSecurityExpressionHandler(DataSource dataSource) {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        AclService aclService = aclService(dataSource);
-        AclPermissionEvaluator permissionEvaluator = new AclPermissionEvaluator(aclService);
-        expressionHandler.setPermissionEvaluator(permissionEvaluator);
+
+        expressionHandler.setPermissionEvaluator(new PermissionEvaluatorCustomImpl(this.aclService(dataSource)));
         return expressionHandler;
     }
 

@@ -75,6 +75,7 @@ public class Researcher implements Serializable, IEntity {
     @JsonManagedReference
     private Set<Authority> permissions = new HashSet<>();
 
+    private final String className = "org.ICIQ.eChempad.entities.Journal";
 
     public Researcher() {}
 
