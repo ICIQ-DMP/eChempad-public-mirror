@@ -34,5 +34,20 @@
       "name": "signals.APIKeys.filename",
       "type": "java.lang.String",
       "description": "Filename for a file containing the API key. Used in testing."
+    },
+    {
+      "name": "eChempad.db.dialect",
+      "type": "java.lang.String",
+      "description": "Description for eChempad.db.dialect."
+    },
+    {
+      "name": "eChempad.db.driver",
+      "type": "java.lang.String",
+      "description": "Description for eChempad.db.driver."
+    },
+    {
+      "name": "eChempad.db.url",
+      "type": "java.lang.String",
+      "description": "Description for eChempad.db.url."
     }
   ] }

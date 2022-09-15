@@ -1,19 +1,12 @@
-/*
- * |===================================================================================|
- * | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
- * |                                                                                   |
- * | This software is the property of ICIQ.                                            |
- * |===================================================================================|
- */
 package org.ICIQ.eChempad.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Model class to ideally store Experiments that are related to the same project.
@@ -22,10 +15,10 @@ import java.util.*;
  * structure with other users.
  */
 @Entity
-@Table(name="Journal", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "UUID")
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id")
 })
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // https://stackoverflow.com/questions/67353793/what-does-jsonignorepropertieshibernatelazyinitializer-handler-do
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  //https://stackoverflow.com/questions/67353793/what-does-jsonignorepropertieshibernatelazyinitializer-handler-do
 public class Journal implements IEntity{
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
@@ -38,33 +31,23 @@ public class Journal implements IEntity{
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "UUID")
+    @Column(unique = true)
     private UUID id;
 
-    @Column(name = "name", length = 1000, nullable = false)
+    @Column(length = 1000, nullable = false)
     private String name;
 
-    @Column(name = "description", length = 1000, nullable = false)
+    @Column(length = 1000, nullable = false)
     private String description;
 
-    @OneToMany(
-            targetEntity = ElementPermission.class,
-            mappedBy = "journal",
-            fetch = FetchType.EAGER,
-            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
-    )
-    @JsonIgnore
-    @JsonManagedReference
-    private Set<ElementPermission> permissions = new HashSet<>();
-
-    @OneToMany(
+    /* @OneToMany(
             targetEntity = Experiment.class,
             mappedBy = "journal",
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
-)
+    )
     private Set<Experiment> experiments;
-
+    */
 
     public Journal() {}
 
@@ -77,20 +60,31 @@ public class Journal implements IEntity{
     public Journal(String name, String description) {
         this.name = name;
         this.description = description;
-        this.experiments = new HashSet<>();
-        this.permissions = new HashSet<>();
+        // this.experiments = new HashSet<>();
     }
 
     // GETTERS AND SETTERS
 
-    public UUID getUUid() {
+    public Serializable getId() {
         return this.id;
     }
 
-    public void setUUid(UUID s) {
-        this.id = s;
+    public void setId(Serializable s) {
+        this.id = (UUID) s;
     }
 
+    /**
+     * Implemented by every class to return its own type, except for element permission, which returns the type of the
+     * element that is giving permissions to.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends IEntity> Class<T> getMyType() {
+        return (Class<T>) Journal.class;
+    }
+
+    /*
     @Override
     public boolean isContainer(UUID entity_uuid) {
         // Search UUID for the inner experiment
@@ -105,13 +99,7 @@ public class Journal implements IEntity{
         }
     }
 
-    @Override
-    public boolean isContained(UUID entity_uuid) {
-        return false;
-    }
-
-    @Override
-    public Class<Journal> getMyType() { return Journal.class; }
+    */
 
     public String getName() {
         return this.name;
@@ -129,13 +117,6 @@ public class Journal implements IEntity{
         this.description = description;
     }
 
-    public Set<Experiment> getExperiments() {
-        return this.experiments;
-    }
-
-    public void setExperiments(Set<Experiment> experiments) {
-        this.experiments = experiments;
-    }
 
     @Override
     public String toString() {
@@ -143,18 +124,7 @@ public class Journal implements IEntity{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", experiments=" + experiments +
                 '}';
     }
 
-    public Set<ElementPermission> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(Set<ElementPermission> permissions) {
-        this.permissions = permissions;
-    }
 }
-
-
-

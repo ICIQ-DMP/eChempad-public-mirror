@@ -8,10 +8,14 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.ICIQ.eChempad.configurations.UUIDConverter;
+import org.ICIQ.eChempad.configurations.Converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
 
@@ -22,160 +26,133 @@ import java.util.*;
  * It has a list containing the different Journal that conform the workspace.
  */
 @Entity
-@Table(name="researcher", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"UUID", "email"})
+@Table(
+        uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"id", "username"})
 })
 public class Researcher implements Serializable, IEntity {
-    /*
-     * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
-     * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
-     * https://stackoverflow.com/questions/43056220/store-uuid-v4-in-mysql (psql stores in binary but displays properly)
-     */
-    @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Convert(converter = UUIDConverter.class)
-    @Column(name = "UUID")
-    private UUID uuid;
+    @Column(unique = true)
+    @Id
+    private UUID id;
 
-    @Column(name = "name", length = 1000, nullable = false)
-    private String name;
+    //TODO set a certain length for the used hashed algorithm
+    @Column(length = 50, nullable = false)
+    private String password;
 
-    @Column(name = "email", length = 1000, nullable = false)
-    private String email;
+    @Column(length = 50, nullable = false, unique = true)
+    private String username;
 
-    //RF set a certain length for the used hashed algorithm
-    @Column(name = "hashedPassword", length = 1000, nullable = false)
-    private String hashedPassword;
+    @NotNull
+    private boolean accountNonExpired;
+
+    @NotNull
+    private boolean accountNonLocked;
+
+    @NotNull
+    private boolean credentialsNonExpired;
+
+    @NotNull
+    private boolean enabled;
 
     // Exactly 73 characters
-    @Column(name = "signalsAPIKey", length = 73, nullable = true)
+    @Column(length = 73, nullable = true)
     private String signalsAPIKey;
 
     @OneToMany(
-            targetEntity = ElementPermission.class,
+            targetEntity = Authority.class,
             mappedBy = "researcher",
-            fetch = FetchType.EAGER,
+            cascade = {CascadeType.ALL},
+            fetch = FetchType.EAGER,  // Eager so the authorizations are loaded when loading a researcher
             // if a researcher is deleted all of its Permissions have to be deleted.
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     @JsonManagedReference
-    private Set<ElementPermission> permissions = new HashSet<>();
+    private Set<Authority> permissions = new HashSet<>();
 
 
-    @OneToMany(
-            targetEntity = RoleUser.class,
-            mappedBy = "researcher",
-            fetch = FetchType.EAGER,
-            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
-    )
-    private Set<Role> roles;
-
-
-    /**
-     * Used to create "ghost" instances only with the internal UUIDs in order to perform deletion.
-     * This is used by springboot since it uses reflection to call the methods.
-     * @param uuid
-     */
-    public Researcher(UUID uuid)
-    {
-        this.uuid = uuid;
-    }
-
-    /**
-     * Internally used by SpringBoot when using reflection.
-     */
     public Researcher() {}
 
-
-    /**
-     * Constructor
-     * @param fullName First name
-     * @param email valid e-mail direction.
-     */
-    public Researcher(String fullName, String email, String signalsAPIKey, String hashedPassword) {
-        this.name = fullName;
-        this.email = email;
+    public Researcher(UUID id, String password, String username, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, String signalsAPIKey) {
+        this.id = id;
+        this.password = password;
+        this.username = username;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonLocked = accountNonLocked;
+        this.credentialsNonExpired = credentialsNonExpired;
+        this.enabled = enabled;
         this.signalsAPIKey = signalsAPIKey;
-        this.permissions = new HashSet<>();
-        this.hashedPassword = hashedPassword;
-        this.roles = new HashSet<>();
     }
 
     @Override
     public String toString() {
         return "Researcher{" +
-                "uuid=" + uuid +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", hashedPassword='" + hashedPassword + '\'' +
+                "id=" + id +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", accountNonExpired=" + accountNonExpired +
+                ", accountNonLocked=" + accountNonLocked +
+                ", credentialsNonExpired=" + credentialsNonExpired +
+                ", enabled=" + enabled +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
-                ", permissions=" + permissions +
-                ", roles=" + roles +
                 '}';
     }
 
-
     // GETTERS AND SETTERS
 
-
-    public Set<Role> getRoles() {
-        return roles;
+    public Serializable getId() {
+        return this.id;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setId(Serializable s) {
+        this.id = (UUID) s;
     }
 
-    public UUID getUUid() {
-        return this.uuid;
-    }
-
-    public void setUUid(UUID s) {
-        this.uuid = s;
-    }
-
+    /**
+     * Implemented by every class to return its own type, except for element permission, which returns the type of the
+     * element that is giving permissions to.
+     *
+     * @return Class of the object implementing this interface.
+     */
     @Override
-    public boolean isContainer(UUID entity_uuid) {
-        return false;
+    public <T extends IEntity> Class<T> getMyType() {
+        return (Class<T>) Researcher.class;
     }
 
-    @Override
-    public boolean isContained(UUID entity_uuid) {
-        return false;
+
+    /**
+     * Returns the password used to authenticate the user.
+     *
+     * @return the password
+     */
+    public String getPassword() {
+        return this.password;
     }
 
-    @Override
-    public Class<?> getMyType() {
-        return Researcher.class;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
+
+    /**
+     * Returns the username used to authenticate the user. Cannot return
+     * <code>null</code>.
+     *
+     * @return the username (never <code>null</code>)
+     */
+    public String getUsername() {
+        return this.username;
     }
 
-    public String getHashedPassword() {
-        return hashedPassword;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getFullName() {
-        return this.name;
-    }
-
-    public void setFullName(String fullName) {
-        this.name = fullName;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getSignalsAPIKey() {
         return this.signalsAPIKey;
@@ -185,21 +162,73 @@ public class Researcher implements Serializable, IEntity {
         this.signalsAPIKey = signalsAPIKey;
     }
 
-    public Set<ElementPermission> getPermissions() {
+
+    /**
+     * Indicates whether the user's account has expired. An expired account cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user's account is valid (ie non-expired),
+     * <code>false</code> if no longer valid (ie expired)
+     */
+    public boolean isAccountNonExpired() {
+        return this.accountNonExpired;
+    }
+
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    /**
+     * Indicates whether the user is locked or unlocked. A locked user cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
+     */
+    public boolean isAccountNonLocked() {
+        return this.accountNonLocked;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+
+    /**
+     * Indicates whether the user's credentials (password) has expired. Expired
+     * credentials prevent authentication.
+     *
+     * @return <code>true</code> if the user's credentials are valid (ie non-expired),
+     * <code>false</code> if no longer valid (ie expired)
+     */
+    public boolean isCredentialsNonExpired() {
+        return this.credentialsNonExpired;
+    }
+
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+
+    /**
+     * Indicates whether the user is enabled or disabled. A disabled user cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
+     */
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+
+    public Set<Authority> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Set<ElementPermission> permissions) {
+    public void setPermissions(Set<Authority> permissions) {
         this.permissions = permissions;
     }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Researcher that = (Researcher) o;
-        return Objects.equals(uuid, that.uuid);
-    }
-
 }

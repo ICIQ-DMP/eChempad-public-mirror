@@ -8,7 +8,9 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -30,12 +32,14 @@ import java.util.UUID;
  *
  * and implements the required methods by the interface.
  */
+// To deserialize generics
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface IEntity {
     /**
      * Exposes and returns the UUID of an entity.
      * @return UUID of the entity.
      */
-    UUID getUUid();
+    Serializable getId();
 
     /**
      * Sets the UUID of an entity.
@@ -47,7 +51,7 @@ public interface IEntity {
      * data object.
      * @param id ID that will be set. Only usable on dettached spring boot instances
      */
-    void setUUid(UUID id);
+    void setId(Serializable id);
 
 
     /**
@@ -66,7 +70,7 @@ public interface IEntity {
      * @param entity_uuid UUID of an entity of type journal, experiment and document that is contained by this instance
      * @return True if the supplied UUID is contained by the current object.
      */
-    boolean isContainer(UUID entity_uuid);
+    //boolean isContainer(UUID entity_uuid);
 
 
     /**
@@ -75,5 +79,5 @@ public interface IEntity {
      * @param entity_uuid UUID of the entity of type journal, experiment and document that can contain this instance
      * @return True if the supplied UUID is a container of the current object.
      */
-    boolean isContained(UUID entity_uuid);
+    //boolean isContained(UUID entity_uuid);
 }
