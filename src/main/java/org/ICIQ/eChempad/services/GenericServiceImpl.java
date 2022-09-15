@@ -7,13 +7,18 @@
  */
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
+import org.ICIQ.eChempad.configurations.Utilities.PermissionBuilder;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.repositories.*;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.acls.domain.AbstractPermission;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.CumulativePermission;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -48,10 +53,6 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     protected GenericRepository<T, S> genericRepository;
     protected AclRepositoryImpl aclRepository;
 
-    //@PersistenceContext(type = PersistenceContextType.EXTENDED)
-    //@Qualifier("sessionFactory")
-    //private EntityManager entityManager;
-
     public GenericServiceImpl() {}
 
     public GenericServiceImpl(GenericRepository<T, S> repository, AclRepositoryImpl aclRepository)
@@ -60,17 +61,48 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
         this.aclRepository = aclRepository;
     }
 
-    // Delegated // decorated methods to the repository
-
     public Class<T> getEntityClass() {
         return genericRepository.getEntityClass();
     }
 
-    public List<T> findAll() {
-        List<T> list = genericRepository.findAll();
-        Logger.getGlobal().info(list.toString());
-        return list;
+    // Business methods: Contains the logic of the application
+
+    /**
+     * Saves entity and gives full permissions to the creator
+     * @param entity must not be {@literal null}.
+     * @param <S1> entity to be saved
+     * @return entity that has been saved
+     */
+    public <S1 extends T> S1 save(S1 entity) {
+        S1 t = genericRepository.save(entity);
+
+        // Save all possible permission against the saved entity with the current logged user
+        Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
+        while (iterator.hasNext()) {
+            this.aclRepository.addPermissionToUserInEntity(t, iterator.next());
+        }
+
+        return t;
     }
+
+    /**
+     * Returns all entities of a certain type T
+     * @return List of entities
+     */
+    public List<T> findAll() {
+        return genericRepository.findAll();
+    }
+
+    /**
+     * Fins the entity of type T with a certain id
+     * @param s must not be {@literal null}.
+     * @return entity T wrapped in optional<T>
+     */
+    public Optional<T> findById(S s) {
+        return genericRepository.findById(s);
+    }
+
+    // Decorated methods: Delegate and decorate method call to the repository
 
     public List<T> findAll(Sort sort) {
         return genericRepository.findAll(sort);
@@ -108,9 +140,7 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
         genericRepository.deleteAllInBatch();
     }
 
-    /*
-     * Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
-     */
+    //Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
     public T getById(S s) {
         return this.genericRepository.getById(s);
     }
@@ -120,22 +150,11 @@ public abstract class GenericServiceImpl<T extends IEntity, S extends Serializab
     }
 
     public <S1 extends T> List<S1> findAll(Example<S1> example, Sort sort) {
-        this.aclRepository.addGenericAclPermissions(this.getEntityClass(), BasePermission.ADMINISTRATION);
         return genericRepository.findAll(example, sort);
     }
 
     public Page<T> findAll(Pageable pageable) {
         return genericRepository.findAll(pageable);
-    }
-
-    public <S1 extends T> S1 save(S1 entity) {
-        S1 t = genericRepository.save(entity);
-        this.aclRepository.addPermissionToUserInEntity(t, BasePermission.ADMINISTRATION);
-        return t;
-    }
-
-    public Optional<T> findById(S s) {
-        return genericRepository.findById(s);
     }
 
     public boolean existsById(S s) {

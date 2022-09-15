@@ -1,6 +1,6 @@
 package org.ICIQ.eChempad.controllers;
 
-import org.ICIQ.eChempad.repositories.AclRepositoryImpl;
+import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
 import org.ICIQ.eChempad.services.JournalService;
 import org.ICIQ.eChempad.services.ResearcherService;
 import org.springframework.beans.factory.annotation.Autowired;

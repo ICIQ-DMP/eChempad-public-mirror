@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.ICIQ.eChempad.configurations.Converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = Authority.class)
 public class Authority implements Serializable, IEntity, GrantedAuthority{
     @Id
     @Convert(converter = UUIDConverter.class)
@@ -31,7 +33,7 @@ public class Authority implements Serializable, IEntity, GrantedAuthority{
     @Column(name = "authority", length = 100, nullable = false)
     protected String authority;
 
-    @JoinColumn(name = "researcher")
+    @JoinColumn(name = "researcher", nullable = true)
     @ManyToOne(
             fetch = FetchType.LAZY,
             optional = false

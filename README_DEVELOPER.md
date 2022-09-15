@@ -300,6 +300,14 @@ Here is a list of the folders and files contained inside the root of this projec
 ## Conventions
 The names of the columns in the DB will be the same as the name of the corresponding variables in the Java code. 
 
+## Access Control List permissions
+We use the default permission evaluator of Spring Security, which does not do bitwise operations to check the 
+permissions against something. So the default with this code is the following:
+- 1 means "READ"
+- 2 means "Write"
+- 4 means "Create"
+- 8 means "Delete" 
+- 16 means "Administer"
 
 ## Reference Documentation
 For further reference, please consider the following sections:
