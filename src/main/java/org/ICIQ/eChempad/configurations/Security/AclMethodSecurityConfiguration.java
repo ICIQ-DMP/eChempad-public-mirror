@@ -31,8 +31,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
 
     @Bean
-    public MethodSecurityExpressionHandler
-    defaultMethodSecurityExpressionHandler(DataSource dataSource) {
+    public MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler(DataSource dataSource) {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
 
         expressionHandler.setPermissionEvaluator(new PermissionEvaluatorCustomImpl(this.aclService(dataSource)));
@@ -71,7 +70,10 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     @Bean
     public PermissionGrantingStrategy permissionGrantingStrategy() {
-        return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
+        DefaultPermissionGrantingStrategy defaultPermissionGrantingStrategy = new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
+
+
+        return defaultPermissionGrantingStrategy;
     }
 
     @Bean

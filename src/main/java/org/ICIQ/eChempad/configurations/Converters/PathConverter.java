@@ -7,10 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * A converter is a class that defines two methods to interchange the format between two classes. It is particularly
- * used when in need to convert a memory object to a serializable type when introducing it into the DB and vice-versa.
+ * Provides automatic transparent conversion between UUID and String types
  */
-@Converter(autoApply = true)  // With autoapply = true performs automatic translation between types implicitly
+@Converter(autoApply = true)
 public class PathConverter implements AttributeConverter<Path, String>, Serializable {
 
     @Override

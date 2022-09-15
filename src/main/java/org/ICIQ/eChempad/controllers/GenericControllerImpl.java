@@ -31,7 +31,6 @@ public abstract class GenericControllerImpl<T extends IEntity, S extends Seriali
 
     protected GenericService<T, S> genericService;
 
-
     public GenericControllerImpl(GenericService<T, S> genericService) {
         this.genericService = genericService;
     }

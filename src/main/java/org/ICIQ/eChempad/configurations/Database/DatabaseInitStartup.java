@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.configurations.Database;
 
+import org.ICIQ.eChempad.configurations.Utilities.PermissionBuilder;
 import org.ICIQ.eChempad.entities.Authority;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
@@ -19,18 +20,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.logging.Logger;
 
+import static org.ICIQ.eChempad.configurations.Utilities.PermissionBuilder.getFullPermissionsIterator;
+
 /**
  * This class contains the method
  * public void onApplicationEvent(final @NotNull ApplicationReadyEvent event)
  * which is executed after the application is "ready", which usually is after all the initializations, but before
- * accepting traffic. In here we can implement ways to load data to the database at the start when we are in dev
- * profile.
+ * accepting traffic. In here we can implement ways to load data to the database at the start.
  */
 @Component
 public class DatabaseInitStartup implements ApplicationListener<ApplicationReadyEvent> {
@@ -60,8 +63,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         // this.initJournal();
     }
 
-    private void initAdminResearcher()
-    {
+    private void initAdminResearcher() {
         Researcher researcher = new Researcher();
 
         researcher.setSignalsAPIKey("basure");
@@ -72,19 +74,23 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         researcher.setUsername("eChempad@iciq.es");
         researcher.setAccountNonLocked(true);
 
+        // TODO: obtain authorities from acls
         HashSet<Authority> authorities = new HashSet<>();
         authorities.add(new Authority("ROLE_ADMIN", researcher));
         researcher.setPermissions(authorities);
 
         if (this.researcherRepository.findByUsername(researcher.getUsername()) == null)
         {
-            this.researcherRepository.save(researcher);  // Save of the authority is cascaded
+            researcher = this.researcherRepository.save(researcher);  // Save of the authority is cascaded
+            Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
+            while (it.hasNext())
+            {
+                this.aclRepository.addPermissionToUserInEntity(researcher, it.next(), researcher.getUsername());
+            }
         }
-
     }
 
-    private void initJournal()
-    {
+    private void initJournal() {
         Journal journal = new Journal();
 
         journal.setDescription("the example admin journal");
