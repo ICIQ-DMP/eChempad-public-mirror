@@ -7,11 +7,10 @@
  */
 package org.ICIQ.eChempad.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.UUID;
 
 /**
@@ -33,9 +32,8 @@ import java.util.UUID;
  *
  * and implements the required methods by the interface.
  */
-// To deserialize generics
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  //https://stackoverflow.com/questions/67353793/what-does-jsonignorepropertieshibernatelazyinitializer-handler-do
+
+
 public interface IEntity {
     /**
      * Exposes and returns the UUID of an entity.
@@ -57,14 +55,19 @@ public interface IEntity {
 
 
     /**
-     * Implemented by every class to return its own type, except for element permission, which returns the type of the
-     * element that is giving permissions to.
+     * Implemented by every class to return its own type.
      * @param <T> Parametrized type in order to return any type of class.
      * @return Class of the object implementing this interface.
      */
-    @JsonBackReference
-    <T extends IEntity> Class<T> getMyType();
+    @JsonIgnore
+    <T extends IEntity> Class<T> getType();
 
+    /**
+     * Obtains the typeName, used by jackson to deserialize generics.
+     * @return Name of the class as string.
+     */
+    @JsonIgnore
+    String getTypeName();
 
     /**
      * Implemented differently by every entity class to know if the passed entity_uuid is contained by the current

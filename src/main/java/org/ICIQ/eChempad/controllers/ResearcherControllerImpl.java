@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.controllers;
 
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
@@ -29,7 +30,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/researcher")
-public class ResearcherControllerImpl<T extends IEntity, S extends Serializable> extends GenericControllerImpl<Researcher, UUID> implements ResearcherController<Researcher, UUID>  {
+public class ResearcherControllerImpl<T extends GenericEntity, S extends Serializable> extends GenericControllerImpl<Researcher, UUID> implements ResearcherController<Researcher, UUID>  {
 
     @Autowired
     public ResearcherControllerImpl(ResearcherService<Researcher, UUID> researcherService) {

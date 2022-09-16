@@ -8,6 +8,8 @@
 package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.ICIQ.eChempad.configurations.Converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +32,12 @@ import java.util.*;
         uniqueConstraints = {
         @UniqueConstraint(columnNames = {"id", "username"})
 })
-public class Researcher implements Serializable, IEntity {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "typeName",
+        defaultImpl = Researcher.class)
+public class Researcher extends GenericEntity implements Serializable, IEntity {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
@@ -75,9 +82,14 @@ public class Researcher implements Serializable, IEntity {
     @JsonManagedReference
     private Set<Authority> permissions = new HashSet<>();
 
-    private final String className = "org.ICIQ.eChempad.entities.Journal";
-
     public Researcher() {}
+
+    // For generic deserialization for the authority, since needs a constructor for Researcher using String in the
+    // deserialization
+    public Researcher(String uuid)
+    {
+        this.id = UUID.fromString(uuid);
+    }
 
     public Researcher(UUID id, String password, String username, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, String signalsAPIKey) {
         this.id = id;
@@ -121,8 +133,18 @@ public class Researcher implements Serializable, IEntity {
      * @return Class of the object implementing this interface.
      */
     @Override
-    public <T extends IEntity> Class<T> getMyType() {
+    public <T extends IEntity> Class<T> getType() {
         return (Class<T>) Researcher.class;
+    }
+
+    /**
+     * Obtains the typeName, used by jackson to deserialize generics.
+     *
+     * @return Name of the class as string.
+     */
+    @Override
+    public String getTypeName() {
+        return this.getType().getName();
     }
 
 

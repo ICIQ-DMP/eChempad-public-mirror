@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.controllers;
 
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/journal")
-public class JournalControllerImpl<T extends IEntity, S extends Serializable> extends GenericControllerImpl<Journal, UUID> implements JournalController<Journal, UUID> {
+public class JournalControllerImpl<T extends GenericEntity, S extends Serializable> extends GenericControllerImpl<Journal, UUID> implements JournalController<Journal, UUID> {
 
     @Autowired
     public JournalControllerImpl(JournalService<Journal, UUID> journalService) {

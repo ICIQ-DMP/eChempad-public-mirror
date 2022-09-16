@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.repositories;
 
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
@@ -17,6 +18,6 @@ import java.util.UUID;
  */
 @Repository
 @Transactional
-public interface JournalRepository<T extends IEntity, S extends Serializable> extends GenericRepository<Journal, UUID> {
+public interface JournalRepository<T extends GenericEntity, S extends Serializable> extends GenericRepository<Journal, UUID> {
 
 }

@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.controllers;
 
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-public interface GenericController <T extends IEntity, S extends Serializable> {
+public interface GenericController <T extends GenericEntity, S extends Serializable> {
 
     /**
      * return the entity class of this generic repository.

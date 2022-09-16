@@ -9,6 +9,7 @@ package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
 import org.ICIQ.eChempad.configurations.Utilities.PermissionBuilder;
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.repositories.*;
 import org.springframework.data.domain.Example;
@@ -48,7 +49,7 @@ import java.util.logging.Logger;
  * bounding an entity to an inheriting class in order to add the necessary business logic in the application.
  */
 @Service
-public abstract class GenericServiceImpl<T extends IEntity, S extends Serializable> implements GenericService<T, S>{
+public abstract class GenericServiceImpl<T extends GenericEntity, S extends Serializable> implements GenericService<T, S>{
 
     protected GenericRepository<T, S> genericRepository;
     protected AclRepositoryImpl aclRepository;

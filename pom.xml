@@ -49,62 +49,14 @@
 
 
 	<dependencies>
+		<!-- Spring Starters -->
+
 		<!-- Java persistence API, uses
 		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<!-- <version>${spring.version}</version> -->
-		</dependency>
-
-		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->
-		<!-- By default, filters everything out, so we need to configure it -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-
-		<!-- Used to control the ACL security infrastructure -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-acl</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-
-		<!-- Used to control the ACL security infrastructure -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-		</dependency>
-
-		<!-- For the annotation that lets you use mock users -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<!-- <version>4.2.2.RELEASE</version> -->
-			<scope>test</scope>
-		</dependency>
-
-		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
-		<dependency>
-			<groupId>org.threeten</groupId>
-			<artifactId>threetenbp</artifactId>
-			<version>1.6.0</version>
-		</dependency>
-
-		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
-		 hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<!-- <version>5.6.5.Final</version> -->
-		</dependency>
-
-		<!-- To disable javax.validation.NoProviderFoundException, which can happen in initialization -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>5.2.4.Final</version>
 		</dependency>
 
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
@@ -130,6 +82,86 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->
+		<!-- By default, filters everything out, so we need to configure it -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- Allows the use of the WebClient class, used to perform REST operations as a client. Used to communicate with Signals API-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+
+		<!-- Spring and Spring Boot packages -->
+
+		<!-- Used to control the ACL security infrastructure -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
+		<!-- Used to control the ACL security infrastructure -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+
+		<!-- For the annotation that lets you use mock users -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<!-- <version>4.2.2.RELEASE</version> -->
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Allows the creation of our own properties in application.properties file -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Used to control the ACL security infrastructure, probably for some annotations -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+
+		<!-- Test functionalities -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+
+
+
+		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
+		<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threetenbp</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
+		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
+		 hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<!-- <version>5.6.5.Final</version> -->
+		</dependency>
+
+		<!-- To disable javax.validation.NoProviderFoundException, which can happen in initialization -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>8.0.0.Final</version>
 		</dependency>
 
 		<!-- https://www.baeldung.com/javax-validation
@@ -163,26 +195,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- Allows the creation of our own properties in application.properties file -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-		<!-- Allows the use of the WebClient class, used to perform REST operations as a client. Used to communicate with Signals API-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
-
-
-		<!-- Used to control the ACL security infrastructure, probably for some annotations -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-		</dependency>
-
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
 		And, to support Ehcache in Spring, we also need the spring-context-support -->
 		<dependency>
@@ -206,14 +218,12 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>

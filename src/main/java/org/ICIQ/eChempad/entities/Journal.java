@@ -2,6 +2,8 @@ package org.ICIQ.eChempad.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,7 +20,12 @@ import java.util.UUID;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
-public class Journal implements IEntity{
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "typeName",
+        defaultImpl = Journal.class)
+public class Journal extends GenericEntity implements IEntity{
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
@@ -79,8 +86,18 @@ public class Journal implements IEntity{
      * @return Class of the object implementing this interface.
      */
     @Override
-    public <T extends IEntity> Class<T> getMyType() {
+    public <T extends IEntity> Class<T> getType() {
         return (Class<T>) Journal.class;
+    }
+
+    /**
+     * Obtains the typeName, used by jackson to deserialize generics.
+     *
+     * @return Name of the class as string.
+     */
+    @Override
+    public String getTypeName() {
+        return this.getType().getName();
     }
 
     /*

@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Service
-public class JournalServiceImpl<T extends IEntity, S extends Serializable> extends GenericServiceImpl<Journal, UUID> implements JournalService<Journal, UUID> {
+public class JournalServiceImpl<T extends GenericEntity, S extends Serializable> extends GenericServiceImpl<Journal, UUID> implements JournalService<Journal, UUID> {
 
     @Autowired
     public JournalServiceImpl(JournalRepository<T, S> journalRepository, AclRepositoryImpl aclRepository) {

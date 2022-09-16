@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.controllers;
 
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
@@ -25,7 +26,7 @@ import java.util.UUID;
  * own user, except for the administrator who can call all the methods over all researchers.
  * Researcher in this application is what we generically call the users.
  */
-public interface ResearcherController<T extends IEntity, S extends Serializable> extends GenericController<Researcher, UUID> {
+public interface ResearcherController<T extends GenericEntity, S extends Serializable> extends GenericController<Researcher, UUID> {
 
     /**
      * Obtain all data from the Signals Notebook and put it inside the eChempad. It uses the Signals notebook API key

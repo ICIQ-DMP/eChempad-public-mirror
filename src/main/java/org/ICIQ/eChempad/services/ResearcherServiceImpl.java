@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
@@ -18,7 +19,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Service
-public class ResearcherServiceImpl<T extends IEntity, S extends Serializable>  extends GenericServiceImpl<Researcher, UUID> implements ResearcherService<Researcher, UUID> {
+public class ResearcherServiceImpl<T extends GenericEntity, S extends Serializable>  extends GenericServiceImpl<Researcher, UUID> implements ResearcherService<Researcher, UUID> {
 
     @Autowired
     public ResearcherServiceImpl(ResearcherRepository<T, S> researcherRepository, AclRepositoryImpl aclRepository) {

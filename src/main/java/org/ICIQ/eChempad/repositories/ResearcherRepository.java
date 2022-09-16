@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.repositories;
 
+import org.ICIQ.eChempad.entities.GenericEntity;
 import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Researcher;
 import org.springframework.data.jpa.repository.Query;
@@ -28,7 +29,7 @@ import java.util.UUID;
  */
 @Repository
 @Transactional
-public interface ResearcherRepository<T extends IEntity, S extends Serializable> extends GenericRepository<Researcher, UUID>{
+public interface ResearcherRepository<T extends GenericEntity, S extends Serializable> extends GenericRepository<Researcher, UUID>{
 
     Researcher findByUsername(String username);
 }

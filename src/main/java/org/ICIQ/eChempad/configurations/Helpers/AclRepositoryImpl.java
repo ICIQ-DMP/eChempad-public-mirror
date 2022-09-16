@@ -1,7 +1,6 @@
 package org.ICIQ.eChempad.configurations.Helpers;
 
 import org.ICIQ.eChempad.entities.IEntity;
-import org.ICIQ.eChempad.entities.Researcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -15,7 +14,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @Repository
 public class AclRepositoryImpl {
@@ -30,7 +28,7 @@ public class AclRepositoryImpl {
     public void addPermissionToUserInEntity(IEntity entity, Permission permission, String userName)
     {
         // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(entity.getMyType(), entity.getId());
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(entity.getType(), entity.getId());
 
         // Obtain the identity of the user
         Sid sid;
