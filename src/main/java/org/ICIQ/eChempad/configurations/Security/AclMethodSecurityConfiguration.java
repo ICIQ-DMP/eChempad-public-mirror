@@ -1,7 +1,10 @@
 package org.ICIQ.eChempad.configurations.Security;
 
+import org.ehcache.Cache;
 import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.core.Ehcache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheCache;
@@ -26,6 +29,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.sql.DataSource;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * This class contains the beans used in the manipulation of the ACL tables.
@@ -56,7 +60,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     @Bean
     @Autowired
     public JdbcMutableAclService aclService(DataSource dataSource) {
-        JdbcMutableAclService jdbcMutableAclService = new JdbcMutableAclService(dataSource, lookupStrategy(dataSource), aclCache());
+        JdbcMutableAclService jdbcMutableAclService = new JdbcMutableAclService(dataSource, this.lookupStrategy(dataSource), (AclCache) this.aclCache());
 
         jdbcMutableAclService.setAclClassIdSupported(true);
 
@@ -75,41 +79,33 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     @Bean
     public PermissionGrantingStrategy permissionGrantingStrategy() {
-        DefaultPermissionGrantingStrategy defaultPermissionGrantingStrategy = new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
-
-
-        return defaultPermissionGrantingStrategy;
+        return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
     }
 
     @Bean
     public AclCache aclCache() {
-
         return new EhCacheBasedAclCache(
-                aclEhCacheFactoryBean().getObject(),
+                this.aclCacheManager().getCache("aclCache", Long.class, String.class),
                 permissionGrantingStrategy(),
                 aclAuthorizationStrategy()
         );
+
+
     }
 
     @Bean
-    public EhCacheFactoryBean aclEhCacheFactoryBean() {
-        EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
-        ehCacheFactoryBean.setCacheManager((net.sf.ehcache.CacheManager) Objects.requireNonNull(this.aclCacheManager().getObject()));
-        ehCacheFactoryBean.setCacheName("aclCache");
-        return ehCacheFactoryBean;
-    }
-
-    @Bean
-    public EhCacheManagerFactoryBean aclCacheManager() {
-        return new EhCacheManagerFactoryBean();
+    public CacheManager aclCacheManager() {
+        return CacheManagerBuilder.newCacheManagerBuilder()
+                .withCache("aclCache", CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class, ResourcePoolsBuilder.heap(10)))
+                .build(true);
     }
 
     @Bean
     public LookupStrategy lookupStrategy(DataSource dataSource) {
         BasicLookupStrategy lookupStrategy = new BasicLookupStrategy(
                 dataSource,
-                aclCache(),
-                aclAuthorizationStrategy(),
+                this.aclCache(),
+                this.aclAuthorizationStrategy(),
                 new ConsoleAuditLogger()
         );
         // To use UUIDs in the ACL classes, specified in https://github.com/spring-projects/spring-security/issues/7978
