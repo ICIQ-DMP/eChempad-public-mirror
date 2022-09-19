@@ -1,8 +1,10 @@
 package org.ICIQ.eChempad.configurations.Security;
 
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.core.Ehcache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.ehcache.EhCacheCache;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
@@ -92,7 +94,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     @Bean
     public EhCacheFactoryBean aclEhCacheFactoryBean() {
         EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
-        ehCacheFactoryBean.setCacheManager(Objects.requireNonNull(this.aclCacheManager().getObject()));
+        ehCacheFactoryBean.setCacheManager((net.sf.ehcache.CacheManager) Objects.requireNonNull(this.aclCacheManager().getObject()));
         ehCacheFactoryBean.setCacheName("aclCache");
         return ehCacheFactoryBean;
     }
