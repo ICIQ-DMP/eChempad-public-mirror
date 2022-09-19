@@ -1,6 +1,8 @@
 package org.ICIQ.eChempad.configurations.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +15,7 @@ import org.springframework.security.acls.domain.*;
 import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.jdbc.LookupStrategy;
+import org.springframework.security.acls.model.AclCache;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -77,7 +80,8 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     }
 
     @Bean
-    public EhCacheBasedAclCache aclCache() {
+    public AclCache aclCache() {
+
         return new EhCacheBasedAclCache(
                 aclEhCacheFactoryBean().getObject(),
                 permissionGrantingStrategy(),

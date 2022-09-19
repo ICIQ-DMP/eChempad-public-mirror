@@ -74,7 +74,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         researcher.setUsername("eChempad@iciq.es");
         researcher.setAccountNonLocked(true);
 
-        // TODO: obtain authorities from acls
         HashSet<Authority> authorities = new HashSet<>();
         authorities.add(new Authority("ROLE_ADMIN", researcher));
         researcher.setPermissions(authorities);

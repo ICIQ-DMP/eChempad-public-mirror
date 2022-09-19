@@ -49,14 +49,15 @@
 
 
 	<dependencies>
-		<!-- Spring Starters -->
+		<!-- Spring Boot Starters -->
 
 		<!-- Java persistence API, uses
 		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
+ hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<!-- <version>${spring.version}</version> -->
 		</dependency>
 
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
@@ -97,6 +98,13 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+		<!-- For the NoProviderFoundException, used to provide implementation for the validation API, used by Hibernate -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+
 
 		<!-- Spring and Spring Boot packages -->
 
@@ -111,14 +119,7 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-		</dependency>
-
-		<!-- For the annotation that lets you use mock users -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<!-- <version>4.2.2.RELEASE</version> -->
-			<scope>test</scope>
+			<version>${spring-security.version}</version>
 		</dependency>
 
 		<!-- Allows the creation of our own properties in application.properties file -->
@@ -128,17 +129,12 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Used to control the ACL security infrastructure, probably for some annotations -->
+		<!-- Used to control the ACL security infrastructure, if not present the ehcache is cannot be found -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
 
-		<!-- Test functionalities -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>
 
 
 
@@ -149,43 +145,12 @@
 			<version>1.6.0</version>
 		</dependency>
 
-		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
-		 hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<!-- <version>5.6.5.Final</version> -->
-		</dependency>
-
-		<!-- To disable javax.validation.NoProviderFoundException, which can happen in initialization -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>8.0.0.Final</version>
-		</dependency>
-
-		<!-- https://www.baeldung.com/javax-validation
-        Ensures that annotation in beans such as @NotNull meet a specific criteria -->
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
-
-		<!-- To import the @ Entity annotation and allow persistence of the memory DB in a relational DB -->
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.1-api</artifactId>
-			<version>1.0.2.Final</version>
-		</dependency>
-
 		<!-- To use postgresql dialect in spring -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-
 
 		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
 		<dependency>
@@ -196,7 +161,7 @@
 		</dependency>
 
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
-		And, to support Ehcache in Spring, we also need the spring-context-support -->
+		And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
@@ -206,28 +171,6 @@
 
 		<!-- DEPENDENCIES WITH DEBATABLE UTILITY -->
 
-		<!--Not used yet?, it serves testing purposes -->
-		<dependency>
-			<groupId>org.xmlunit</groupId>
-			<artifactId>xmlunit-core</artifactId>
-		</dependency>
-
-		<!--Not used yet?, it serves testing purposes -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-		</dependency>
 
 
 	</dependencies>
