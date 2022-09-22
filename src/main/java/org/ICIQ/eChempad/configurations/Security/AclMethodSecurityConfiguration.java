@@ -60,7 +60,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     @Bean
     @Autowired
     public JdbcMutableAclService aclService(DataSource dataSource) {
-        JdbcMutableAclService jdbcMutableAclService = new JdbcMutableAclService(dataSource, this.lookupStrategy(dataSource), (AclCache) this.aclCache());
+        JdbcMutableAclService jdbcMutableAclService = new JdbcMutableAclService(dataSource, this.lookupStrategy(dataSource), this.aclCache());
 
         jdbcMutableAclService.setAclClassIdSupported(true);
 
@@ -84,20 +84,25 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     @Bean
     public AclCache aclCache() {
+
         return new EhCacheBasedAclCache(
-                this.aclCacheManager().getCache("aclCache", Long.class, String.class),
+                aclEhCacheFactoryBean().getObject(),
                 permissionGrantingStrategy(),
                 aclAuthorizationStrategy()
         );
-
-
     }
 
     @Bean
-    public CacheManager aclCacheManager() {
-        return CacheManagerBuilder.newCacheManagerBuilder()
-                .withCache("aclCache", CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class, ResourcePoolsBuilder.heap(10)))
-                .build(true);
+    public EhCacheFactoryBean aclEhCacheFactoryBean() {
+        EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
+        ehCacheFactoryBean.setCacheManager(Objects.requireNonNull(this.aclCacheManager().getObject()));
+        ehCacheFactoryBean.setCacheName("aclCache");
+        return ehCacheFactoryBean;
+    }
+
+    @Bean
+    public EhCacheManagerFactoryBean aclCacheManager() {
+        return new EhCacheManagerFactoryBean();
     }
 
     @Bean
