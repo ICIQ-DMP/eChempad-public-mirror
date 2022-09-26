@@ -5,14 +5,14 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS acl_sid(
                         id bigserial not null primary key,
                         principal boolean not null,
-                        sid varchar(100) not null,
+                        sid varchar(252) not null,
                         constraint unique_uk_1 unique(sid,principal)
 );
 
 CREATE TABLE IF NOT EXISTS acl_class(
                           id bigserial not null primary key,
-                          class varchar(100) not null,
-                          class_id_type varchar(100),
+                          class varchar(257) not null,
+                          class_id_type varchar(257),
                           constraint unique_uk_2 unique(class)
 );
 

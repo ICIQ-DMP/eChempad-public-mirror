@@ -1,7 +1,7 @@
 
 
 
-
+/*
 insert into acl_sid(id, principal, sid)  values
     (0, false, 'ROLE_ADMIN'),
     (1, true, 'eChempad@iciq.es')
@@ -23,3 +23,4 @@ INSERT INTO acl_entry (id, acl_object_identity, ace_order, sid, mask, granting, 
     (0, 0, 0, 1, 1, true, true, true)
 ON CONFLICT DO NOTHING;
 
+*/

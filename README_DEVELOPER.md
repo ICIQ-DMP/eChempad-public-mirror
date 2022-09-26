@@ -309,6 +309,30 @@ permissions against something. So the default with this code is the following:
 - 8 means "Delete" 
 - 16 means "Administer"
 
+## ACL SQL schema & JPA entities SQL schema
+The application combines two different strategies to initialize the SQL schema for our database, which will use 
+postgresql. The first strategy is using a `schema.sql` file, which by activating some properties in 
+`application.properties` it can be executed every time our application goes up. We can add sql conditionals to 
+initialize the schema if and only if the schema is not present. The schema is mainly used to initialize the SQL tables 
+for the ACL initialization. 
+
+The other strategy is using the automatic schema initialization that comes with JPA data repositories / entities.
+By modifying the corresponding property in `application.properties` we can choose to initialize the schema when our app
+goes up, validate it, or do nothing.
+
+The problem and the reason why I am documenting this is that there is an ACL table that also has an associated JPA 
+repository, and as such, the table can be initialized in both ways, which is wrong, since we need to use the ACL SQL 
+schema for the schema and the JPA repository to modify the tables programmatically.
+
+#### Steps to reproduce a clean initialization
+1- To ensure the proper initialization of the schema first begin by dropping all tables. 
+2- Deactivate the initialization of JPA schema by setting the DB policy to *none*.
+3- Run application. The ACL SQL schema will be read from the `schema.sql` script and the app will fail because the 
+schema for the JPA entities will not be present. The *acl_sid* table will be created using the schema. 
+4- Reactivate the JPA initializations by setting the DB policy to *update*.
+5- Rerun the application, which now will be working. The ACL tables from the schema, and the JPA tables 
+(except the *acl_sid* table, which comes from IdSecurity entity JPA initialization) from the Entities.
+
 ## Reference Documentation
 For further reference, please consider the following sections:
 

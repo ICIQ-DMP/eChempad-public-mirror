@@ -9,12 +9,8 @@ package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.ICIQ.eChempad.configurations.Converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -80,7 +76,7 @@ public class Researcher extends GenericEntity implements Serializable, IEntity {
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     @JsonManagedReference
-    private Set<Authority> permissions = new HashSet<>();
+    private Set<Authority> authorities = new HashSet<>();
 
     public Researcher() {}
 
@@ -247,11 +243,11 @@ public class Researcher extends GenericEntity implements Serializable, IEntity {
     }
 
 
-    public Set<Authority> getPermissions() {
-        return permissions;
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
-    public void setPermissions(Set<Authority> permissions) {
-        this.permissions = permissions;
+    public void setAuthorities(Set<Authority> permissions) {
+        this.authorities = permissions;
     }
 }

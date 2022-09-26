@@ -26,8 +26,11 @@ import java.util.logging.Logger;
 @Configuration
 public class DatabaseAccessBeans {
 
-    @Autowired
-    private DatabaseAccessConfiguration dbAccessConfigurationInstance;
+    private final DatabaseAccessConfiguration dbAccessConfigurationInstance;
+
+    public DatabaseAccessBeans(DatabaseAccessConfiguration dbAccessConfigurationInstance) {
+        this.dbAccessConfigurationInstance = dbAccessConfigurationInstance;
+    }
 
     @Bean
     public DataSource dataSource() {

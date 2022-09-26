@@ -7,24 +7,19 @@
  */
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
+import org.ICIQ.eChempad.configurations.Security.AclServiceCustomImpl;
 import org.ICIQ.eChempad.configurations.Utilities.PermissionBuilder;
 import org.ICIQ.eChempad.entities.GenericEntity;
-import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.repositories.*;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.acls.domain.AbstractPermission;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.domain.CumulativePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Contains all the main methods implemented by the generic repository to manipulate the database. All the methods
@@ -52,11 +47,11 @@ import java.util.logging.Logger;
 public abstract class GenericServiceImpl<T extends GenericEntity, S extends Serializable> implements GenericService<T, S>{
 
     protected GenericRepository<T, S> genericRepository;
-    protected AclRepositoryImpl aclRepository;
+    protected AclServiceCustomImpl aclRepository;
 
     public GenericServiceImpl() {}
 
-    public GenericServiceImpl(GenericRepository<T, S> repository, AclRepositoryImpl aclRepository)
+    public GenericServiceImpl(GenericRepository<T, S> repository, AclServiceCustomImpl aclRepository)
     {
         this.genericRepository = repository;
         this.aclRepository = aclRepository;

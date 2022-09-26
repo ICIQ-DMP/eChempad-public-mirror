@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.configurations.Helpers;
+package org.ICIQ.eChempad.configurations.Security;
 
 import org.ICIQ.eChempad.entities.IEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,22 +9,24 @@ import org.springframework.security.acls.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Repository
-public class AclRepositoryImpl {
+public class AclServiceCustomImpl implements AclService{
 
     @Autowired
     private MutableAclService aclService;
 
-
     /**
      * We assume that the security context is full
      */
+    @Transactional
     public void addPermissionToUserInEntity(IEntity entity, Permission permission, String userName)
     {
         // Obtain the identity of the object by using its class and its id
@@ -41,6 +43,7 @@ public class AclRepositoryImpl {
             sid = new PrincipalSid(userName);
         }
 
+        Logger.getGlobal().info("" + objectIdentity);
         // Create or update the relevant ACL
         MutableAcl acl;
         try {
@@ -62,6 +65,7 @@ public class AclRepositoryImpl {
         acl.insertAce(acl.getEntries().size(), setPermission, sid, true);
         aclService.updateAcl(acl);
     }
+
 
     /**
      * We assume that the security context is full

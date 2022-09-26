@@ -35,7 +35,11 @@ public class DatabaseAccessConfiguration {
     @Value("${eChempad.db.naming_strategy}")
     private String namingStrategy;
 
+
+
     public DatabaseAccessConfiguration() {}
+
+
 
     public String getDriver() {
         return driver;

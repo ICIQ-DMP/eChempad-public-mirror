@@ -11,7 +11,9 @@ import org.ICIQ.eChempad.configurations.Utilities.PermissionBuilder;
 import org.ICIQ.eChempad.entities.Authority;
 import org.ICIQ.eChempad.entities.Journal;
 import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
+import org.ICIQ.eChempad.configurations.Security.AclServiceCustomImpl;
+import org.ICIQ.eChempad.entities.SecurityId;
+import org.ICIQ.eChempad.repositories.SecurityIdRepository;
 import org.ICIQ.eChempad.repositories.AuthorityRepository;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.ICIQ.eChempad.services.JournalService;
@@ -21,13 +23,13 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.logging.Logger;
-
-import static org.ICIQ.eChempad.configurations.Utilities.PermissionBuilder.getFullPermissionsIterator;
 
 /**
  * This class contains the method
@@ -48,7 +50,10 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     private AuthorityRepository<Authority, UUID> authorityRepository;
 
     @Autowired
-    private AclRepositoryImpl aclRepository;
+    private AclServiceCustomImpl aclService;
+
+    @Autowired
+    private SecurityIdRepository securityIdRepository;
 
     public DatabaseInitStartup() {}
 
@@ -59,11 +64,16 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
     private void initializeDB()
     {
-        this.initAdminResearcher();
         // this.initJournal();
+        // Authentication required; nested exception is java.lang.IllegalArgumentException: Authentication required
+
+
+
+        this.initAdminResearcher();
     }
 
     private void initAdminResearcher() {
+        // Init the admin user
         Researcher researcher = new Researcher();
 
         researcher.setSignalsAPIKey("basure");
@@ -76,16 +86,32 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
         HashSet<Authority> authorities = new HashSet<>();
         authorities.add(new Authority("ROLE_ADMIN", researcher));
-        researcher.setPermissions(authorities);
+        researcher.setAuthorities(authorities);
 
+        // If the user is not in the DB create it
         if (this.researcherRepository.findByUsername(researcher.getUsername()) == null)
         {
             researcher = this.researcherRepository.save(researcher);  // Save of the authority is cascaded
+
+            // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
+            Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), null, researcher.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            // Insert role ROLE_AADMIN and ROLE_USER in the db, in acl_sid
+            SecurityId securityIdAdmin = this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));
+            SecurityId securityIdUser = this.securityIdRepository.save(new SecurityId(false, "ROLE_USER"));
+
+            // Add ACL permissions, so the admin user can edit its own details
             Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
             while (it.hasNext())
             {
-                this.aclRepository.addPermissionToUserInEntity(researcher, it.next(), researcher.getUsername());
+                this.aclService.addPermissionToUserInEntity(researcher, it.next(), researcher.getUsername());
             }
+
+
+            Logger.getGlobal().warning("init end");
+            // If the admin user does not exist, create some data for it
+
         }
     }
 
@@ -97,13 +123,13 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
         String idOfJournalAlreadyInTheDatabase = "264a3c6e-21e6-450e-8cfc-cba1d97eb92d";
 
-        Researcher res = (Researcher) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Journal> journalDatabase = this.journalService.findById(UUID.fromString(idOfJournalAlreadyInTheDatabase));
+
+        journal.setId(UUID.randomUUID());
+        this.aclService.addPermissionToUserInEntity(journal, BasePermission.ADMINISTRATION, "eChempad@iciq.es");
         if (! journalDatabase.isPresent())
         {
             Journal journal2 = this.journalService.save(journal);
-            this.aclRepository.addPermissionToUserInEntity(journal2, BasePermission.ADMINISTRATION, "eChempad@iciq.es");
-            Logger.getGlobal().info(journal2.toString());
         }
     }
 

@@ -8,9 +8,8 @@
 package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.GenericEntity;
-import org.ICIQ.eChempad.entities.IEntity;
 import org.ICIQ.eChempad.entities.Researcher;
-import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
+import org.ICIQ.eChempad.configurations.Security.AclServiceCustomImpl;
 import org.ICIQ.eChempad.repositories.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ import java.util.*;
 public class ResearcherServiceImpl<T extends GenericEntity, S extends Serializable>  extends GenericServiceImpl<Researcher, UUID> implements ResearcherService<Researcher, UUID> {
 
     @Autowired
-    public ResearcherServiceImpl(ResearcherRepository<T, S> researcherRepository, AclRepositoryImpl aclRepository) {
+    public ResearcherServiceImpl(ResearcherRepository<T, S> researcherRepository, AclServiceCustomImpl aclRepository) {
         super(researcherRepository, aclRepository);
     }
 
