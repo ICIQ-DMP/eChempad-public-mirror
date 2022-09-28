@@ -331,7 +331,7 @@ schema for the schema and the JPA repository to modify the tables programmatical
 schema for the JPA entities will not be present. The *acl_sid* table will be created using the schema. 
 4- Reactivate the JPA initializations by setting the DB policy to *update*.
 5- Rerun the application, which now will be working. The ACL tables from the schema, and the JPA tables 
-(except the *acl_sid* table, which comes from IdSecurity entity JPA initialization) from the Entities.
+(except the *acl_sid* table, which comes from IdSecurity JPAEntity JPA initialization) from the Entities.
 
 ## Reference Documentation
 For further reference, please consider the following sections:

@@ -7,7 +7,7 @@
  */
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.GenericJPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.springframework.http.ResponseEntity;
 
@@ -20,7 +20,7 @@ import java.util.UUID;
  * own user, except for the administrator who can call all the methods over all researchers.
  * Researcher in this application is what we generically call the users.
  */
-public interface ResearcherController<T extends GenericJPAEntity, S extends Serializable> extends GenericController<Researcher, UUID> {
+public interface ResearcherController<T extends JPAEntityImpl, S extends Serializable> extends GenericController<Researcher, UUID> {
 
     /**
      * Obtain all data from the Signals Notebook and put it inside the eChempad. It uses the Signals notebook API key

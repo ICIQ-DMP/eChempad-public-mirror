@@ -10,6 +10,7 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 import com.fasterxml.jackson.annotation.*;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * Used to limit the generic inheritance to entities to make them comply with this contract, which ensures the
@@ -32,7 +33,7 @@ import java.io.Serializable;
  */
 
 
-public interface Entity {
+public interface JPAEntity {
     /**
      * Exposes and returns the UUID of an entity.
      * @return UUID of the entity.
@@ -58,7 +59,10 @@ public interface Entity {
      * @return Class of the object implementing this interface.
      */
     @JsonIgnore
-    <T extends Entity> Class<T> getType();
+    default <T extends JPAEntity> Class<T> getType()
+    {
+        return (Class<T>) getClass().getGenericSuperclass();
+    }
 
     /**
      * Obtains the typeName, used by jackson to deserialize generics.

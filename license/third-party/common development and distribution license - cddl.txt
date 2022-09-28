@@ -3,7 +3,7 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
 
       1. Definitions.
 
-            1.1. "Contributor" means each individual or entity that
+            1.1. "Contributor" means each individual or JPAEntity that
             creates or contributes to the creation of Modifications.
 
             1.2. "Contributor Version" means the combination of the
@@ -19,7 +19,7 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
             1.4. "Executable" means the Covered Software in any form
             other than Source Code. 
 
-            1.5. "Initial Developer" means the individual or entity
+            1.5. "Initial Developer" means the individual or JPAEntity
             that first makes Original Software available under this
             License. 
             
@@ -62,15 +62,15 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
             associated documentation included in or with such code.
 
             1.13. "You" (or "Your") means an individual or a legal
-            entity exercising rights under, and complying with all of
+            JPAEntity exercising rights under, and complying with all of
             the terms of, this License. For legal entities, "You"
-            includes any entity which controls, is controlled by, or is
+            includes any JPAEntity which controls, is controlled by, or is
             under common control with You. For purposes of this
             definition, "control" means (a) the power, direct or
             indirect, to cause the direction or management of such
-            entity, whether by contract or otherwise, or (b) ownership
+            JPAEntity, whether by contract or otherwise, or (b) ownership
             of more than fifty percent (50%) of the outstanding shares
-            or beneficial ownership of such entity.
+            or beneficial ownership of such JPAEntity.
 
       2. License Grants. 
 

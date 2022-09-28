@@ -1,6 +1,7 @@
 package org.ICIQ.eChempad.configurations.security.ACL;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
+import org.ICIQ.eChempad.configurations.utilities.PermissionBuilder;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,10 +29,10 @@ public class AclServiceCustomImpl implements AclService{
      * We assume that the security context is full
      */
     @Transactional
-    public void addPermissionToUserInEntity(Entity entity, Permission permission, String userName)
+    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission, String userName)
     {
         // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(entity.getType(), entity.getId());
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
 
         // Obtain the identity of the user
         Sid sid;
@@ -43,7 +45,6 @@ public class AclServiceCustomImpl implements AclService{
             sid = new PrincipalSid(userName);
         }
 
-        Logger.getGlobal().info("" + objectIdentity);
         // Create or update the relevant ACL
         MutableAcl acl;
         try {
@@ -66,21 +67,96 @@ public class AclServiceCustomImpl implements AclService{
         aclService.updateAcl(acl);
     }
 
-
-    /**
-     * We assume that the security context is full
-     */
-    public void addPermissionToUserInEntity(Entity entity, Permission permission, UserDetails userDetails)
+    @Transactional
+    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity)
     {
-        this.addPermissionToUserInEntity(entity, permission, userDetails.getUsername());
+        // Obtain the identity of the object by using its class and its id
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
+
+        // Obtain the identity of the user
+        UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Sid sid = new PrincipalSid(u.getUsername());
+
+        // Create or update the relevant ACL
+        MutableAcl acl;
+        try {
+            acl = (MutableAcl) this.aclService.readAclById(objectIdentity);
+        } catch (NotFoundException nfe) {
+            acl = this.aclService.createAcl(objectIdentity);
+        }
+
+        // Now grant some permissions via an access control entry (ACE)
+        Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
+        while (it.hasNext())
+        {
+            acl.insertAce(acl.getEntries().size(), it.next(), sid, true);
+        }
+
+        this.aclService.updateAcl(acl);
+    }
+
+    @Transactional
+    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> theClass)
+    {
+        // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
+        // initialization will be triggered in order to retrieve the full object from DB, and the method will fail
+
+        // Obtain the identity of the object by using its class and its id
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
+
+        // Obtain the identity of the user
+        UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Sid sid = new PrincipalSid(u.getUsername());
+
+        // Create or update the relevant ACL
+        MutableAcl acl;
+        try {
+            acl = (MutableAcl) this.aclService.readAclById(objectIdentity);
+        } catch (NotFoundException nfe) {
+            acl = this.aclService.createAcl(objectIdentity);
+        }
+
+        // Now grant all permissions via an access control entry (ACE)
+        Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
+        while (it.hasNext())
+        {
+            acl.insertAce(acl.getEntries().size(), it.next(), sid, true);
+        }
+
+        if (inheriting)
+        {
+            acl.setEntriesInheriting(true);
+
+            // Construct identity of parent object
+            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(theClass, parentEntity.getId());
+
+            // Retrieve ACL of parent object
+            MutableAcl acl_parent;
+            try {
+                acl_parent = (MutableAcl) this.aclService.readAclById(objectIdentity_parent);
+            } catch (NotFoundException nfe) {
+                acl_parent = this.aclService.createAcl(objectIdentity_parent);
+            }
+            acl.setParent(acl_parent);
+        }
+
+        this.aclService.updateAcl(acl);
     }
 
     /**
      * We assume that the security context is full
      */
-    public void addPermissionToUserInEntity(Entity entity, Permission permission)
+    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission, UserDetails userDetails)
     {
-        this.addPermissionToUserInEntity(entity, permission, (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        this.addPermissionToUserInEntity(JPAEntity, permission, userDetails.getUsername());
+    }
+
+    /**
+     * We assume that the security context is full
+     */
+    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission)
+    {
+        this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 
     /**

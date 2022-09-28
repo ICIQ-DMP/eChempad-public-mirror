@@ -94,7 +94,7 @@ Journal:
   },
   "data": [
     {
-      "type": "entity",
+      "type": "JPAEntity",
       "id": "journal:ddac1092-5f55-4952-a5f1-7f2c553fef46",
       "links": {
         "self": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities/journal:ddac1092-5f55-4952-a5f1-7f2c553fef46"

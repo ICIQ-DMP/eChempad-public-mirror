@@ -1,6 +1,6 @@
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.GenericJPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/journal")
-public class JournalControllerImpl<T extends GenericJPAEntity, S extends Serializable> extends GenericControllerImpl<Journal, UUID> implements JournalController<Journal, UUID> {
+public class JournalControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<Journal, UUID> implements JournalController<Journal, UUID> {
 
     @Autowired
     public JournalControllerImpl(JournalService<Journal, UUID> journalService) {

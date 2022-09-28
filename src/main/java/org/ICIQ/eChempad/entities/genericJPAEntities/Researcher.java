@@ -23,7 +23,7 @@ import java.util.*;
  *
  * It has a list containing the different Journal that conform the workspace.
  */
-@javax.persistence.Entity
+@Entity
 @Table(
         uniqueConstraints = {
         @UniqueConstraint(columnNames = {"id", "username"})
@@ -33,7 +33,7 @@ import java.util.*;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Researcher.class)
-public class Researcher extends GenericJPAEntity implements Serializable, Entity {
+public class Researcher extends JPAEntityImpl implements JPAEntity {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
@@ -120,17 +120,6 @@ public class Researcher extends GenericJPAEntity implements Serializable, Entity
 
     public void setId(Serializable s) {
         this.id = (UUID) s;
-    }
-
-    /**
-     * Implemented by every class to return its own type, except for element permission, which returns the type of the
-     * element that is giving permissions to.
-     *
-     * @return Class of the object implementing this interface.
-     */
-    @Override
-    public <T extends Entity> Class<T> getType() {
-        return (Class<T>) Researcher.class;
     }
 
     /**

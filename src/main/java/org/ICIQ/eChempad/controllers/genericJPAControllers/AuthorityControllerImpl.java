@@ -1,7 +1,7 @@
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
-import org.ICIQ.eChempad.entities.genericJPAEntities.GenericJPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.genericJPAServices.AuthorityService;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/authority")
-public class AuthorityControllerImpl<T extends GenericJPAEntity, S extends Serializable> extends GenericControllerImpl<Authority, UUID> implements AuthorityController<Authority, UUID> {
+public class AuthorityControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<Authority, UUID> implements AuthorityController<Authority, UUID> {
 
     @Autowired
     public AuthorityControllerImpl(AuthorityService<Authority, UUID> authorityService) {
@@ -31,7 +31,6 @@ public class AuthorityControllerImpl<T extends GenericJPAEntity, S extends Seria
      * @throws ResourceNotExistsException If the resource does not exist.
      * @throws NotEnoughAuthorityException If we cannot delete the resource because of permissions.
      */
-
     @DeleteMapping(
             value = "/{id}",
             produces = "application/json"

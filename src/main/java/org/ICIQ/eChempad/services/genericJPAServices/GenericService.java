@@ -1,6 +1,6 @@
 package org.ICIQ.eChempad.services.genericJPAServices;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.GenericJPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public interface GenericService<T extends GenericJPAEntity, S extends Serializable> {
+public interface GenericService<T extends JPAEntityImpl, S extends Serializable> {
 
     /**
      * return the entity class of this generic repository.

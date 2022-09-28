@@ -28,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * This class contains the method
@@ -62,7 +63,10 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
     private void initializeDB()
     {
+        Logger.getGlobal().info("INITIALIZING DB");
         this.initAdminResearcher();
+        Logger.getGlobal().info("END INITIALIZING DB");
+
     }
 
     private void initAdminResearcher() {

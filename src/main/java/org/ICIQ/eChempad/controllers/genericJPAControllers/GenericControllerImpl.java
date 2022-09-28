@@ -1,6 +1,6 @@
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.GenericJPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericService;
@@ -17,10 +17,11 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @Component
 @Configuration
-public abstract class GenericControllerImpl<T extends GenericJPAEntity, S extends Serializable> implements GenericController<T, S> {
+public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericController<T, S> {
 
     protected GenericService<T, S> genericService;
 
@@ -34,13 +35,6 @@ public abstract class GenericControllerImpl<T extends GenericJPAEntity, S extend
     public Class<T> getEntityClass() {
         return this.genericService.getEntityClass();
     }
-
-
-
-
-
-
-
 
     @GetMapping(
             value = "",
@@ -74,6 +68,8 @@ public abstract class GenericControllerImpl<T extends GenericJPAEntity, S extend
     @ResponseStatus(HttpStatus.CREATED)
     @Override
     public T add(@Validated @RequestBody T t) {
+        Logger.getGlobal().info(t.toString());
+
         return this.genericService.save(t);
     }
 

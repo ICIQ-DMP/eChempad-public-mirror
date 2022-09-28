@@ -6,15 +6,13 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 /**
- * Model class to ideally store Experiments that are related to the same project.
- *
- * A Journal contains many Experiment and some metadata (description, name). A Journal is the only shareable
- * structure with other users.
+ * A Journal contains many Experiment and some metadata (description, name).
  */
-@javax.persistence.Entity
+@Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
@@ -23,7 +21,7 @@ import java.util.UUID;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Journal.class)
-public class Journal extends GenericJPAEntity implements Entity {
+public class Journal extends JPAEntityImpl implements JPAEntity {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
@@ -44,14 +42,13 @@ public class Journal extends GenericJPAEntity implements Entity {
     @Column(length = 1000, nullable = false)
     private String description;
 
-    /* @OneToMany(
+    @OneToMany(
             targetEntity = Experiment.class,
             mappedBy = "journal",
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
     )
     private Set<Experiment> experiments;
-    */
 
     public Journal() {}
 
@@ -69,23 +66,14 @@ public class Journal extends GenericJPAEntity implements Entity {
 
     // GETTERS AND SETTERS
 
+    @Override
     public Serializable getId() {
         return this.id;
     }
 
+    @Override
     public void setId(Serializable s) {
         this.id = (UUID) s;
-    }
-
-    /**
-     * Implemented by every class to return its own type, except for element permission, which returns the type of the
-     * element that is giving permissions to.
-     *
-     * @return Class of the object implementing this interface.
-     */
-    @Override
-    public <T extends Entity> Class<T> getType() {
-        return (Class<T>) Journal.class;
     }
 
     /**
@@ -97,23 +85,6 @@ public class Journal extends GenericJPAEntity implements Entity {
     public String getTypeName() {
         return this.getType().getName();
     }
-
-    /*
-    @Override
-    public boolean isContainer(UUID entity_uuid) {
-        // Search UUID for the inner experiment
-        if (this.getExperiments().stream().anyMatch(experiment -> experiment.getUUid().equals(entity_uuid)))
-        {
-            // Return true if there is match
-            return true;
-        }
-        else  // If we can find it in the immediate level, we ask the next level
-        {
-            return this.getExperiments().stream().anyMatch(experiment -> experiment.isContainer(entity_uuid));
-        }
-    }
-
-    */
 
     public String getName() {
         return this.name;
@@ -131,6 +102,13 @@ public class Journal extends GenericJPAEntity implements Entity {
         this.description = description;
     }
 
+    public Set<Experiment> getExperiments() {
+        return experiments;
+    }
+
+    public void setExperiments(Set<Experiment> experiments) {
+        this.experiments = experiments;
+    }
 
     @Override
     public String toString() {

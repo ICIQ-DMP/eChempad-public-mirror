@@ -7,7 +7,7 @@
  */
 package org.ICIQ.eChempad.repositories.genericJPARepositories;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.GenericJPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -26,7 +26,7 @@ import java.lang.reflect.ParameterizedType;
  */
 
 @NoRepositoryBean
-public interface GenericRepository<T extends GenericJPAEntity, S extends Serializable> extends JpaRepository<T, S> {
+public interface GenericRepository<T extends JPAEntityImpl, S extends Serializable> extends JpaRepository<T, S> {
 
     /**
      * return the entity class of this generic repository.

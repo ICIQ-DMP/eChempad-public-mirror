@@ -9,8 +9,9 @@ package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.configurations.utilities.PermissionBuilder;
-import org.ICIQ.eChempad.entities.genericJPAEntities.GenericJPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.GenericRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.util.*;
 
@@ -44,7 +47,10 @@ import java.util.*;
  * bounding an entity to an inheriting class in order to add the necessary business logic in the application.
  */
 @Service
-public abstract class GenericServiceImpl<T extends GenericJPAEntity, S extends Serializable> implements GenericService<T, S>{
+public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericService<T, S>{
+
+    @PersistenceContext
+    protected EntityManager entityManager;
 
     protected GenericRepository<T, S> genericRepository;
     protected AclServiceCustomImpl aclRepository;
