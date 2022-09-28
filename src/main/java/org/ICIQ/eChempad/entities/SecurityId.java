@@ -1,17 +1,17 @@
 package org.ICIQ.eChempad.entities;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
+@javax.persistence.Entity
 @Table(
         name = "acl_sid",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"id"})
         })
-public class SecurityId implements Serializable, IEntity {
+public class SecurityId implements Serializable, Entity {
     @Column(unique = true)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -90,7 +90,7 @@ public class SecurityId implements Serializable, IEntity {
      * @return Class of the object implementing this interface.
      */
     @Override
-    public <T extends IEntity> Class<T> getType() {
+    public <T extends Entity> Class<T> getType() {
         return (Class<T>) this.getClass();
     }
 

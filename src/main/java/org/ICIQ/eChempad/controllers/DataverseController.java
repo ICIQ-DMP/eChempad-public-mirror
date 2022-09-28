@@ -1,8 +1,8 @@
 package org.ICIQ.eChempad.controllers;
 
-import org.ICIQ.eChempad.configurations.Security.AclServiceCustomImpl;
-import org.ICIQ.eChempad.services.JournalService;
-import org.ICIQ.eChempad.services.ResearcherService;
+import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
+import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;

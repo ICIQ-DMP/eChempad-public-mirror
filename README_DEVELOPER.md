@@ -345,3 +345,5 @@ For further reference, please consider the following sections:
 * [UUID keys 1](https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148)
 * [UUID keys 2](https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/)
 * [UUID keys 3](https://stackoverflow.com/questions/43056220/store-uuid-v4-in-mysql)
+* [Disable CSRF depending on application.properties](https://www.yawintutor.com/how-to-enable-and-disable-csrf/)
+* [PostGreSQL + ACL with UUID SQL schema](https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/appendix-schema.html)
