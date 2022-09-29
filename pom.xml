@@ -207,7 +207,9 @@
 			</activation>
 			<build>
 				<plugins>
+
 					<plugin>
+
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
 						<version>2.0.0</version>
@@ -223,11 +225,11 @@
 									<inceptionYear>${project.inceptionYear}</inceptionYear>
 									<organizationName>${project.organization.name}</organizationName>
 									<projectName>${project.name}</projectName>
-									<outputDirectory>${session.executionRootDirectory}/license</outputDirectory>
+									<outputDirectory>${maven.multiModuleProjectDirectory}/license</outputDirectory>
 									<thirdPartyFilename>THIRD-PARTY.md</thirdPartyFilename>
-									<fileTemplate>${session.executionRootDirectory}/license/resources/third-party-file-groupByMultiLicense-markdown.ftl</fileTemplate>
+									<fileTemplate>${maven.multiModuleProjectDirectory}/license/resources/third-party-file-groupByMultiLicense-markdown.ftl</fileTemplate>
 									<useMissingFile>true</useMissingFile>
-									<missingFile>${session.executionRootDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
+									<missingFile>${maven.multiModuleProjectDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
 										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms</licenseMerge>
@@ -276,10 +278,10 @@
 									<inceptionYear>${project.inceptionYear}</inceptionYear>
 									<organizationName>${project.organization.name}</organizationName>
 									<projectName>${project.name}</projectName>
-									<outputDirectory>${session.executionRootDirectory}/license</outputDirectory>
-									<fileTemplate>${session.executionRootDirectory}/license/resources/third-party-file-groupByMultiLicense.ftl</fileTemplate>
+									<outputDirectory>${maven.multiModuleProjectDirectory}/license</outputDirectory>
+									<fileTemplate>${maven.multiModuleProjectDirectory}/license/resources/third-party-file-groupByMultiLicense.ftl</fileTemplate>
 									<useMissingFile>true</useMissingFile>
-									<missingFile>${session.executionRootDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
+									<missingFile>${maven.multiModuleProjectDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
 										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms</licenseMerge>
@@ -326,18 +328,20 @@
 								<configuration>
 									<errorRemedy>ignore</errorRemedy>
 									<cleanLicensesOutputDirectory>false</cleanLicensesOutputDirectory>
-									<missingFile>${session.executionRootDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
-									<licensesOutputDirectory>${session.executionRootDirectory}/license/third-party</licensesOutputDirectory>
+									<missingFile>${maven.multiModuleProjectDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
+									<licensesOutputDirectory>${maven.multiModuleProjectDirectory}/license/third-party</licensesOutputDirectory>
 								</configuration>
 							</execution>
 						</executions>
 					</plugin>
+
 				</plugins>
 			</build>
 		</profile>
 		<!--  This profile should ONLY be active when user specifies -Dattach.license.header=true on command-line.  -->
 		<!--  This profile will add license headers to all source files  -->
 		<profile>
+
 			<id>license-header-attach</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
@@ -345,25 +349,29 @@
 					<name>attach.license.header</name>
 				</property>
 			</activation>
+
 			<build>
 				<plugins>
+
 					<plugin>
 						<groupId>com.mycila</groupId>
 						<artifactId>license-maven-plugin</artifactId>
 						<version>4.1</version>
 						<configuration>
-							<header>${session.executionRootDirectory}/license/resources/header.txt</header>
+							<header>${maven.multiModuleProjectDirectory}/license/resources/header.txt</header>
 							<properties>
 								<owner>${project.organization.name}</owner>
 								<email>contact@iochem-bd.org</email>
 								<inceptionYear>${project.inceptionYear}</inceptionYear>
-								<latestYearOfContribution>${project.inceptionYear}</latestYearOfContribution>
+								<latestYearOfContribution>${current.year}</latestYearOfContribution>
 							</properties>
+							<!-- Exclusions from license addition -->
 							<excludes>
 								<exclude>**/README</exclude>
 								<exclude>license/**</exclude>
 								<exclude>src/log4j2.xml</exclude>
 								<exclude>target/**</exclude>
+								<exclude>src/main/resources/CA_certificates/**</exclude>
 							</excludes>
 							<includes>
 								<include>src/**</include>
@@ -383,6 +391,7 @@
 							</execution>
 						</executions>
 					</plugin>
+
 				</plugins>
 			</build>
 		</profile>
