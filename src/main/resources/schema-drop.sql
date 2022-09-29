@@ -1,3 +1,11 @@
+--
+-- |===================================================================================|
+-- | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
+-- |                                                                                   |
+-- | This software is the property of ICIQ.                                            |
+-- |===================================================================================|
+--
+
 DROP TABLE IF EXISTS acl_class CASCADE;
 DROP TABLE IF EXISTS acl_entry CASCADE;
 DROP TABLE IF EXISTS acl_object_identity CASCADE;
