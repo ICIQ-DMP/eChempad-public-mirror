@@ -5,5 +5,6 @@
 # | This software is the property of ICIQ.                                            |
 # |===================================================================================|
 #
+
 export MAVEN_FLAGS=""
 export JAVA_FLAGS=""
