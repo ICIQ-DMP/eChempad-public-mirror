@@ -225,11 +225,11 @@
 									<inceptionYear>${project.inceptionYear}</inceptionYear>
 									<organizationName>${project.organization.name}</organizationName>
 									<projectName>${project.name}</projectName>
-									<outputDirectory>${maven.multiModuleProjectDirectory}/license</outputDirectory>
+									<outputDirectory>${project.baseUri}/license</outputDirectory>
 									<thirdPartyFilename>THIRD-PARTY.md</thirdPartyFilename>
-									<fileTemplate>${maven.multiModuleProjectDirectory}/license/resources/third-party-file-groupByMultiLicense-markdown.ftl</fileTemplate>
+									<fileTemplate>${project.baseUri}/license/resources/third-party-file-groupByMultiLicense-markdown.ftl</fileTemplate>
 									<useMissingFile>true</useMissingFile>
-									<missingFile>${maven.multiModuleProjectDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
+									<missingFile>${project.baseUri}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
 										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms</licenseMerge>
@@ -278,10 +278,10 @@
 									<inceptionYear>${project.inceptionYear}</inceptionYear>
 									<organizationName>${project.organization.name}</organizationName>
 									<projectName>${project.name}</projectName>
-									<outputDirectory>${maven.multiModuleProjectDirectory}/license</outputDirectory>
-									<fileTemplate>${maven.multiModuleProjectDirectory}/license/resources/third-party-file-groupByMultiLicense.ftl</fileTemplate>
+									<outputDirectory>${project.baseUri}/license</outputDirectory>
+									<fileTemplate>${project.baseUri}/license/resources/third-party-file-groupByMultiLicense.ftl</fileTemplate>
 									<useMissingFile>true</useMissingFile>
-									<missingFile>${maven.multiModuleProjectDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
+									<missingFile>${project.baseUri}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
 										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms</licenseMerge>
@@ -328,8 +328,8 @@
 								<configuration>
 									<errorRemedy>ignore</errorRemedy>
 									<cleanLicensesOutputDirectory>false</cleanLicensesOutputDirectory>
-									<missingFile>${maven.multiModuleProjectDirectory}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
-									<licensesOutputDirectory>${maven.multiModuleProjectDirectory}/license/third-party</licensesOutputDirectory>
+									<missingFile>${project.baseUri}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
+									<licensesOutputDirectory>${project.baseUri}/license/third-party</licensesOutputDirectory>
 								</configuration>
 							</execution>
 						</executions>
@@ -358,7 +358,7 @@
 						<artifactId>license-maven-plugin</artifactId>
 						<version>4.1</version>
 						<configuration>
-							<header>${maven.multiModuleProjectDirectory}/license/resources/header.txt</header>
+							<header>${project.baseUri}/license/resources/header.txt</header>
 							<properties>
 								<owner>${project.organization.name}</owner>
 								<email>contact@iochem-bd.org</email>
