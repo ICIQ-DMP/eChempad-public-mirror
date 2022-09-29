@@ -232,7 +232,7 @@
 									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms</licenseMerge>
+										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms|apache license, version 2.0 - license-2.0|apache license 2.0 - license-2.0</licenseMerge>
 										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
 										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
 										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
@@ -252,7 +252,7 @@
 										<licenseMerge>GPL-1.0-only|GNU General Public Library</licenseMerge>
 										<licenseMerge>GPL-2.0|GNU General Public License v2.0</licenseMerge>
 										<licenseMerge>GPL-3.0-only|GNU Public License, Version 3.0|GNU General Public License v3</licenseMerge>
-										<licenseMerge>MIT|MIT License|The MIT License|MIT LICENSE|The MIT License (MIT)|MIT license</licenseMerge>
+										<licenseMerge>MIT|MIT License|The MIT License|MIT LICENSE|The MIT License (MIT)|MIT license|the mit license - mit|the mit license - license|mit license - mit-license</licenseMerge>
 										<licenseMerge>Bouncy Castle|Bouncy Castle Licence</licenseMerge>
 										<licenseMerge>MPL-1.0|Mozilla Public License</licenseMerge>
 										<licenseMerge>MPL-1.1|Mozilla Public License version 1.1|Mozilla Public License 1.1 (MPL 1.1)|MPL 1.1</licenseMerge>
@@ -284,7 +284,7 @@
 									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms</licenseMerge>
+										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms|apache license, version 2.0 - license-2.0|apache license 2.0 - license-2.0</licenseMerge>
 										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
 										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
 										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
@@ -304,7 +304,7 @@
 										<licenseMerge>GPL-1.0-only|GNU General Public Library</licenseMerge>
 										<licenseMerge>GPL-2.0|GNU General Public License v2.0</licenseMerge>
 										<licenseMerge>GPL-3.0-only|GNU Public License, Version 3.0|GNU General Public License v3</licenseMerge>
-										<licenseMerge>MIT|MIT License|The MIT License|MIT LICENSE|The MIT License (MIT)|MIT license</licenseMerge>
+										<licenseMerge>MIT|MIT License|The MIT License|MIT LICENSE|The MIT License (MIT)|MIT license|the mit license - mit|the mit license - license|mit license - mit-license</licenseMerge>
 										<licenseMerge>Bouncy Castle|Bouncy Castle Licence</licenseMerge>
 										<licenseMerge>MPL-1.0|Mozilla Public License</licenseMerge>
 										<licenseMerge>MPL-1.1|Mozilla Public License version 1.1|Mozilla Public License 1.1 (MPL 1.1)|MPL 1.1</licenseMerge>
