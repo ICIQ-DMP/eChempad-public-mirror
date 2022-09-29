@@ -33,7 +33,7 @@ import java.util.*;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Researcher.class)
-public class Researcher extends JPAEntityImpl implements JPAEntity {
+public class Researcher extends JPAEntityImpl {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",

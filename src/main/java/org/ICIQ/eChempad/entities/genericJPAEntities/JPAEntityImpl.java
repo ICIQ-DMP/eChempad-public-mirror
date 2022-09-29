@@ -21,7 +21,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Journal.class, name = "Journal"),
         @JsonSubTypes.Type(value = Authority.class, name = "Authority"),
         @JsonSubTypes.Type(value = Researcher.class, name = "Researcher"),
-        @JsonSubTypes.Type(value = Experiment.class, name = "Experiment")
+        @JsonSubTypes.Type(value = Experiment.class, name = "Experiment"),
+        @JsonSubTypes.Type(value = Document.class, name = "Document")
 })
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  //https://stackoverflow.com/questions/67353793/what-does-jsonignorepropertieshibernatelazyinitializer-handler-do
 public abstract class JPAEntityImpl implements JPAEntity {

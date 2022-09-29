@@ -69,7 +69,10 @@ public interface JPAEntity {
      * @return Name of the class as string.
      */
     @JsonIgnore
-    String getTypeName();
+    default String getTypeName()
+    {
+        return this.getType().getCanonicalName();
+    }
 
     /**
      * Implemented differently by every entity class to know if the passed entity_uuid is contained by the current

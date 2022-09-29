@@ -27,7 +27,7 @@ import java.util.UUID;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Authority.class)
-public class Authority extends JPAEntityImpl implements JPAEntity, GrantedAuthority{
+public class Authority extends JPAEntityImpl implements GrantedAuthority{
     @Id
     @Convert(converter = UUIDConverter.class)
     @GeneratedValue(generator = "UUID")
