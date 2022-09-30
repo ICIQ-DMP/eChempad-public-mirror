@@ -86,7 +86,7 @@ public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends S
             produces = "application/json",
             consumes = "application/json"
     )
-    @PreAuthorize("hasPermission(,., #t.getType().getCanonicalName(), 'WRITE')")
+    @PreAuthorize("hasPermission(#t.getType().getCanonicalName(), 'WRITE')")
     @ResponseStatus(HttpStatus.OK)
     @Override
     public T put(@Validated @RequestBody T t, @PathVariable(value = "id") S id) throws ResourceNotExistsException, NotEnoughAuthorityException {

@@ -1,7 +1,6 @@
 package org.ICIQ.eChempad.services.genericJPAServices;
 
-import org.ICIQ.eChempad.configurations.wrappers.DocumentWrapper;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;

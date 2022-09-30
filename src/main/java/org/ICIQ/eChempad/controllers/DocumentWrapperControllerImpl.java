@@ -1,16 +1,13 @@
-package org.ICIQ.eChempad.controllers.genericJPAControllers;
+package org.ICIQ.eChempad.controllers;
 
-import org.ICIQ.eChempad.configurations.wrappers.DocumentWrapper;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
 import org.ICIQ.eChempad.configurations.wrappers.UploadFileResponse;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
+import org.ICIQ.eChempad.controllers.genericJPAControllers.GenericControllerImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.services.genericJPAServices.AuthorityService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
-import org.dom4j.DocumentHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -31,10 +28,10 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/document")
-public class DocumentControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<Document, UUID> implements DocumentController<Document, UUID> {
+public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<DocumentWrapper, UUID> implements DocumentWrapperController<DocumentWrapper, UUID> {
 
     @Autowired
-    public DocumentControllerImpl(DocumentService<Document, UUID> documentService) {
+    public DocumentWrapperControllerImpl(DocumentService<Document, UUID> documentService) {
         super(documentService);
     }
 

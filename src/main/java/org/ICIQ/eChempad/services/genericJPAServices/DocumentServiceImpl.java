@@ -1,11 +1,10 @@
 package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
-import org.ICIQ.eChempad.configurations.wrappers.DocumentWrapper;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.repositories.genericJPARepositories.AuthorityRepository;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.DocumentRepository;
 import org.ICIQ.eChempad.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;

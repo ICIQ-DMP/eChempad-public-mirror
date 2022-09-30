@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.UUID;
 
 @Entity
@@ -56,6 +57,9 @@ public class Document extends JPAEntityImpl{
             nullable = true)
     @JsonIgnore
     protected Experiment experiment;
+
+    @Lob
+    protected Blob blob;
 
     public Document() {}
 
@@ -135,4 +139,11 @@ public class Document extends JPAEntityImpl{
         this.experiment = experiment;
     }
 
+    public Blob getBlob() {
+        return blob;
+    }
+
+    public void setBlob(Blob blob) {
+        this.blob = blob;
+    }
 }

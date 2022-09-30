@@ -1,20 +1,30 @@
-package org.ICIQ.eChempad.configurations.wrappers;
+package org.ICIQ.eChempad.entities.genericJPAEntities;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Class used to receive the data of the addDocument request because it contains metadata at the same time as a
  * multipart file which gives a lot of troubles.
  *
- * This class will contain all the fields that are present in the Document class so they can be mapped from this class
- * to the entity class, while transforming the multipart file type into a path type that we will store into the DB which
- * points to a file that have to be stolen on the File DB.
+ * This class will contain all the fields that are present in the Document class, so they can be mapped from this class
+ * to the entity class, while transforming the multipart file type into a LOB type that we will store into the DB.
  */
-public class DocumentWrapper extends Document {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "typeName",
+        defaultImpl = DocumentWrapper.class)
+public class DocumentWrapper extends JPAEntityImpl {
+
+    private UUID id;
+
     private String name;
 
     private String description;
@@ -80,5 +90,31 @@ public class DocumentWrapper extends Document {
                 " contentType: " + file.getContentType() +
                 "}" +
                 '}';
+    }
+
+    /**
+     * Exposes and returns the UUID of an entity.
+     *
+     * @return UUID of the entity.
+     */
+    @Override
+    public Serializable getId() {
+        return this.id;
+    }
+
+    /**
+     * Sets the UUID of an entity.
+     * This is a method that will have collisions with hibernate because hibernate uses the id field as a PK
+     * (Primary Key) for accessing the database. As such, this method has to be only used against entities that are
+     * not managed by hibernate.
+     * This interface is specially designed to expose this specific method of all the entities, and is specially
+     * designed to perform updates of existing entities of the database when an ID is not supplied with the received
+     * data object.
+     *
+     * @param id ID that will be set. Only usable on dettached spring boot instances
+     */
+    @Override
+    public void setId(Serializable id) {
+        this.id = (UUID) id;
     }
 }
