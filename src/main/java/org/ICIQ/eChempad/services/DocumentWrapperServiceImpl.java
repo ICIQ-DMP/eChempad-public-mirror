@@ -11,10 +11,7 @@ import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -93,108 +90,152 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public <S1 extends DocumentWrapper> S1 save(S1 entity) {
-        return null;
+        return (S1) this.documentWrapperConverter.convertToEntityAttribute(this.documentService.save(this.documentWrapperConverter.convertToDatabaseColumn(entity)));
     }
 
     @Override
     public Optional<DocumentWrapper> findById(UUID uuid) {
-        return Optional.empty();
+        return Optional.of(this.documentWrapperConverter.convertToEntityAttribute(this.documentService.findById(uuid).get()));
     }
 
     @Override
     public boolean existsById(UUID uuid) {
-        return false;
+        return this.documentService.existsById(uuid);
     }
 
     @Override
     public long count() {
-        return 0;
+        return this.documentService.count();
     }
 
     @Override
     public void deleteById(UUID uuid) {
-
+        this.documentService.deleteById(uuid);
     }
 
     @Override
     public void delete(DocumentWrapper entity) {
-
+        this.documentService.delete(this.documentWrapperConverter.convertToDatabaseColumn(entity));
     }
 
     @Override
     public void deleteAllById(Iterable<? extends UUID> uuids) {
-
+        this.documentService.deleteAllById(uuids);
     }
 
     @Override
     public void deleteAll(Iterable<? extends DocumentWrapper> entities) {
+        List<Document> documentList = new LinkedList<>();
+        for (DocumentWrapper entity : entities) {
+            documentList.add(this.documentWrapperConverter.convertToDatabaseColumn(entity));
+        }
 
+        this.documentService.deleteAll(documentList);
     }
 
     @Override
     public void deleteAll() {
-
+        this.documentService.deleteAll();
     }
 
 
     @Override
     public <S1 extends DocumentWrapper> S1 saveAndFlush(S1 entity) {
-        return null;
+        return (S1) this.documentWrapperConverter.convertToEntityAttribute(this.documentService.saveAndFlush(this.documentWrapperConverter.convertToDatabaseColumn(entity)));
     }
 
     @Override
     public <S1 extends DocumentWrapper> List<S1> saveAllAndFlush(Iterable<S1> entities) {
-        return null;
+        List<Document> documentList = new LinkedList<>();
+        for (S1 entity : entities) {
+            documentList.add(this.documentWrapperConverter.convertToDatabaseColumn(entity));
+        }
+
+        documentList = this.documentService.saveAllAndFlush(documentList);
+
+        return (List<S1>) documentList.stream().map(
+                d ->
+                {
+                    return this.documentWrapperConverter.convertToEntityAttribute(d);
+                }
+        ).collect(Collectors.toList());
     }
 
     @Override
     public void deleteAllInBatch(Iterable<DocumentWrapper> entities) {
+        List<Document> documentList = new LinkedList<>();
+        for (DocumentWrapper entity : entities) {
+            documentList.add(this.documentWrapperConverter.convertToDatabaseColumn(entity));
+        }
 
+        this.documentService.deleteAllInBatch(documentList);
     }
 
     @Override
     public void deleteAllByIdInBatch(Iterable<UUID> uuids) {
-
+        this.documentService.deleteAllByIdInBatch(uuids);
     }
 
     @Override
     public void deleteAllInBatch() {
-
+        this.documentService.deleteAllInBatch();
     }
 
     @Override
     public <S1 extends DocumentWrapper> List<S1> findAll(Example<S1> example) {
-        return null;
+        List<Document> list = this.documentService.findAll(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
+        return (List<S1>) list.stream().map(
+                d ->
+                {
+                    return this.documentWrapperConverter.convertToEntityAttribute(d);
+                }
+        ).collect(Collectors.toList());
     }
 
     @Override
     public <S1 extends DocumentWrapper> List<S1> findAll(Example<S1> example, Sort sort) {
-        return null;
+        List<Document> list = this.documentService.findAll(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())), sort);
+        return (List<S1>) list.stream().map(
+                d ->
+                {
+                    return this.documentWrapperConverter.convertToEntityAttribute(d);
+                }
+        ).collect(Collectors.toList());
     }
 
     @Override
     public Page<DocumentWrapper> findAll(Pageable pageable) {
-        return null;
+        return new PageImpl<>(this.documentService.findAll(pageable).stream().map(
+                d ->
+                {
+                    return this.documentWrapperConverter.convertToEntityAttribute(d);
+                }
+        ).collect(Collectors.toList()));
     }
 
 
     @Override
     public <S extends DocumentWrapper> Optional<S> findOne(Example<S> example) {
-        return Optional.empty();
+        return (Optional<S>) Optional.of(this.documentWrapperConverter.convertToEntityAttribute(this.documentService.findOne(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe()))).get()));
     }
 
     @Override
     public <S extends DocumentWrapper> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return null;
+        return (Page<S>) new PageImpl<DocumentWrapper>(this.documentService.findAll(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())), pageable).stream().map(
+                d ->
+                {
+                    return this.documentWrapperConverter.convertToEntityAttribute(d);
+                }
+        ).collect(Collectors.toList()));
     }
 
     @Override
     public <S extends DocumentWrapper> long count(Example<S> example) {
-        return 0;
+        return this.documentService.count(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
     }
 
     @Override
     public <S extends DocumentWrapper> boolean exists(Example<S> example) {
-        return false;
+        return this.documentService.exists(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
     }
 }
