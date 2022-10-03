@@ -37,6 +37,28 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
 
     @Override
+    public DocumentWrapper addDocumentToExperiment(DocumentWrapper document, UUID experiment_uuid) {
+        return this.documentWrapperConverter.convertToEntityAttribute(this.documentService.addDocumentToExperiment(this.documentWrapperConverter.convertToDatabaseColumn(document), experiment_uuid));
+    }
+
+    @Override
+    public Set<DocumentWrapper> getDocumentsFromExperiment(UUID experiment_uuid) {
+        return this.documentService.getDocumentsFromExperiment(experiment_uuid).stream().map(
+                document ->
+                {
+                    return this.documentWrapperConverter.convertToEntityAttribute(document);
+                }
+        ).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Resource getDocumentData(UUID document_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        return this.documentService.getDocumentData(document_uuid);
+    }
+
+    // Delegated methods to Document Service, which in turns delegates to JPA repository
+
+    @Override
     public List<DocumentWrapper> findAll() {
         return this.documentService.findAll().stream().map(
                 this.documentWrapperConverter::convertToEntityAttribute
@@ -238,4 +260,5 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
     public <S extends DocumentWrapper> boolean exists(Example<S> example) {
         return this.documentService.exists(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
     }
+
 }

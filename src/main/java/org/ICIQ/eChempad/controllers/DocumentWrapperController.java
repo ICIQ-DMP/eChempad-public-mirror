@@ -17,11 +17,11 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-public interface DocumentWrapperController<T extends JPAEntityImpl, S extends Serializable> extends GenericController<Document, UUID> {
+public interface DocumentWrapperController<T extends JPAEntityImpl, S extends Serializable> extends GenericController<DocumentWrapper, UUID> {
 
     public ResponseEntity<Resource> getDocumentData(@PathVariable(value = "id") UUID uuid, HttpServletRequest request) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
-    public UploadFileResponse addDocumentToExperiment(@ModelAttribute("Document") DocumentWrapper document, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    public UploadFileResponse addDocumentToExperiment(@ModelAttribute("DocumentWrapper") DocumentWrapper document, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
-    public Set<Document> getDocumentsFromExperiment(@PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    public Set<DocumentWrapper> getDocumentsFromExperiment(@PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 }

@@ -7,7 +7,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
+import org.ICIQ.eChempad.services.DocumentWrapperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<DocumentWrapper, UUID> implements DocumentWrapperController<DocumentWrapper, UUID> {
 
     @Autowired
-    public DocumentWrapperControllerImpl(DocumentService<Document, UUID> documentService) {
-        super(documentService);
+    public DocumentWrapperControllerImpl(DocumentWrapperService<DocumentWrapper, UUID> documentWrapperService) {
+        super(documentWrapperService);
     }
 
     @DeleteMapping(
@@ -42,8 +42,8 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Document' , 'DELETE')")
     @ResponseStatus(HttpStatus.OK)
     @Override
-    public Document remove(@PathVariable UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        Optional<Document> entity = this.genericService.findById(id);
+    public DocumentWrapper remove(@PathVariable UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        Optional<DocumentWrapper> entity = this.genericService.findById(id);
         if (entity.isPresent()) {
             this.genericService.deleteById(id);
             return entity.get();
@@ -57,7 +57,7 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Document' , 'READ')")
     public ResponseEntity<Resource> getDocumentData(@PathVariable UUID id, HttpServletRequest request) throws ResourceNotExistsException, NotEnoughAuthorityException{
         // Load file as Resource
-        Resource resource = ((DocumentService<T, S>)this.genericService).getDocumentData(id);
+        Resource resource = ((DocumentWrapperService<T, S>)this.genericService).getById(id).getFile().getResource();
 
         // Try to determine file's content type
         String contentType = null;
@@ -86,7 +86,7 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @PreAuthorize("hasPermission(#experiment_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Experiment' , 'WRITE')")
     public UploadFileResponse addDocumentToExperiment(@ModelAttribute("Document") DocumentWrapper document, @PathVariable UUID experiment_id) throws ResourceNotExistsException, NotEnoughAuthorityException {
 
-        Document document1 = ((DocumentService<T, S>)this.genericService).addDocumentToExperiment(document, experiment_id);
+        DocumentWrapper document1 = ((DocumentWrapperService<T, S>)this.genericService).addDocumentToExperiment(document, experiment_id);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/document/")
@@ -101,7 +101,7 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @Override
     @GetMapping("/{experiment_id}/experiment")
     @PreAuthorize("hasPermission(#experiment_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Experiment' , 'READ')")
-    public Set<Document> getDocumentsFromExperiment(@PathVariable UUID experiment_id) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        return ((DocumentService<T, S>)this.genericService).getDocumentsFromExperiment(experiment_id);
+    public Set<DocumentWrapper> getDocumentsFromExperiment(@PathVariable UUID experiment_id) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        return ((DocumentWrapperService<T, S>)this.genericService).getDocumentsFromExperiment(experiment_id);
     }
 }

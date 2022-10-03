@@ -8,43 +8,32 @@ import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.DocumentRepository;
 import org.ICIQ.eChempad.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class DocumentServiceImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
 
-    final FileService fileService;
-
     @Autowired
-    public DocumentServiceImpl(DocumentRepository<T, S> documentRepository, AclServiceCustomImpl aclRepository, FileService fileService) {
+    public DocumentServiceImpl(DocumentRepository<T, S> documentRepository, AclServiceCustomImpl aclRepository) {
         super(documentRepository, aclRepository);
-        this.fileService = fileService;
     }
     
     @Override
-    public Document addDocumentToExperiment(DocumentWrapper documentWrapper, UUID experiment_uuid) {
+    public Document addDocumentToExperiment(Document document, UUID experiment_uuid) {
         // Obtain lazily loaded journal. DB will be accessed if accessing any other field than id
         Experiment experiment = super.entityManager.getReference(Experiment.class, experiment_uuid);
 
-        // Create Document instance from the Document wrapper
-        Document document = new Document();
-        document.setDescription(documentWrapper.getDescription());
-        document.setName(documentWrapper.getName());
-        document.setOriginalFilename(documentWrapper.getOriginalFilename());
-        document.setFileSize(documentWrapper.getSize());
-        document.setContentType(documentWrapper.getContentType());
-        document.setExperiment(experiment);
-
         // Set the journal of this experiment and sav experiment. Save is cascaded
         Document documentDB = this.genericRepository.save(document);
-
-        // Store file
-        this.fileService.storeFile(documentWrapper.getFile(), (UUID) document.getId());
 
         // Add all permissions to document for the current user, and set also inheriting entries for parent experiment
         this.aclRepository.addAllPermissionToLoggedUserInEntity(documentDB, true, experiment, Document.class);
@@ -60,7 +49,14 @@ public class DocumentServiceImpl<T extends JPAEntityImpl, S extends Serializable
 
     @Override
     public Resource getDocumentData(UUID document_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        return this.fileService.loadFileAsResource(document_uuid);
+
+        Resource inputStreamResource = null;
+        try {
+            inputStreamResource = new InputStreamResource(this.genericRepository.getById(document_uuid).getBlob().getBinaryStream());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return inputStreamResource;
     }
 
 }

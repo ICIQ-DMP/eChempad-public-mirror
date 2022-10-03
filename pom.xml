@@ -135,6 +135,12 @@
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
 
+		<!-- To use the MockMultipartFile -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+
 
 
 
@@ -175,7 +181,8 @@
 			<artifactId>ehcache</artifactId>
 			<version>2.10.5</version>
 		</dependency>
-		<!-- DEPENDENCIES WITH DEBATABLE UTILITY -->
+
+        <!-- DEPENDENCIES WITH DEBATABLE UTILITY -->
 
 
 

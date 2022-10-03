@@ -21,7 +21,7 @@ public interface DocumentService<T extends JPAEntityImpl, S extends Serializable
      * @param experiment_uuid UUID of the experiment that we want to edit by adding this document.
      * @return Managed instance of the created document.
      */
-    Document addDocumentToExperiment(DocumentWrapper document, UUID experiment_uuid);
+    Document addDocumentToExperiment(Document document, UUID experiment_uuid);
 
     /**
      * Get all documents that belong to a certain experiment designated by its UUID.
