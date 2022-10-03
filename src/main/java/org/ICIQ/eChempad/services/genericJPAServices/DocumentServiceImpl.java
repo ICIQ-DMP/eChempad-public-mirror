@@ -47,16 +47,4 @@ public class DocumentServiceImpl<T extends JPAEntityImpl, S extends Serializable
         return super.entityManager.find(Experiment.class, experiment_uuid).getDocuments();
     }
 
-    @Override
-    public Resource getDocumentData(UUID document_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
-
-        Resource inputStreamResource = null;
-        try {
-            inputStreamResource = new InputStreamResource(this.genericRepository.getById(document_uuid).getBlob().getBinaryStream());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return inputStreamResource;
-    }
-
 }

@@ -58,10 +58,25 @@ public class Document extends JPAEntityImpl{
     @JsonIgnore
     protected Experiment experiment;
 
+    @Column
     @Lob
     protected Blob blob;
 
     public Document() {}
+
+    @Override
+    public String toString() {
+        return "Document{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", originalFilename='" + originalFilename + '\'' +
+                ", contentType=" + contentType +
+                ", fileSize=" + fileSize +
+                ", experiment=" + experiment +
+                ", blob=" + blob +
+                '}';
+    }
 
     /**
      * Exposes and returns the UUID of an entity.

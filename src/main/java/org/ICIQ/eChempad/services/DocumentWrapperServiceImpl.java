@@ -10,11 +10,14 @@ import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,7 +56,16 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public Resource getDocumentData(UUID document_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        return this.documentService.getDocumentData(document_uuid);
+
+        DocumentWrapper d = this.documentWrapperConverter.convertToEntityAttribute(this.documentService.getById(document_uuid));
+
+        Resource inputStreamResource = null;
+        try {
+            inputStreamResource = new InputStreamResource(d.getFile().getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return inputStreamResource;
     }
 
     // Delegated methods to Document Service, which in turns delegates to JPA repository

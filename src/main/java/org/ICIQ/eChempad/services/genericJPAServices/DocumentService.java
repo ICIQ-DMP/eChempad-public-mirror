@@ -8,6 +8,7 @@ import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.springframework.core.io.Resource;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,14 +30,5 @@ public interface DocumentService<T extends JPAEntityImpl, S extends Serializable
      * @return Set of documents of this experiment. It could be empty.
      */
     Set<Document> getDocumentsFromExperiment(UUID experiment_uuid);
-
-    /**
-     * Obtains the file stream associated with a document if there is enough permissions to read it.
-     * @param document_uuid Used to uniquely identify the document in the file DB.
-     * @return ByteArray response (binary response).
-     * @throws ResourceNotExistsException Thrown if the UUID does not exist for any document.
-     * @throws NotEnoughAuthorityException Thrown if we do not have read permissions against the document.
-     */
-    Resource getDocumentData(UUID document_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
 }
