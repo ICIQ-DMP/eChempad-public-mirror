@@ -1,7 +1,14 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.configurations.database.HibernateUtil;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.engine.jdbc.LobCreationContext;
+import org.hibernate.engine.jdbc.env.spi.LobCreatorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.lob.LobCreator;
+import org.springframework.jdbc.support.lob.LobHandler;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.postgresql.util.PSQLException;
 
@@ -21,22 +28,27 @@ public class LobServiceImpl implements LobService {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private HibernateUtil hibernateUtil;
+
     @Transactional
     @Override
     public Blob createBlob(InputStream content, long size) {
-        return this.sessionFactory.getCurrentSession().getLobHelper().createBlob(content, size);
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+
+        Blob blob = session.getLobHelper().createBlob(content, size);
+
+        session.getTransaction().commit();
+        session.close();
+        return blob;
     }
 
     @Transactional
     @Override
     public InputStream readBlob(Blob blob) {
-        Connection connection = null;
-        try {
-            connection = this.dataSource.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
 
         InputStream is = null;
         try {
@@ -45,12 +57,8 @@ public class LobServiceImpl implements LobService {
             e.printStackTrace();
         }
 
-        try {
-            assert connection != null;
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        session.getTransaction().commit();
+        session.close();
 
         return is;
     }

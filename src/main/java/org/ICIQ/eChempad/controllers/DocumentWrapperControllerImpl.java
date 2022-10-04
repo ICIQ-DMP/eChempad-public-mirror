@@ -14,13 +14,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -28,11 +32,58 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/document")
-public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<DocumentWrapper, UUID> implements DocumentWrapperController<DocumentWrapper, UUID> {
+public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Serializable> implements DocumentWrapperController<DocumentWrapper, UUID> {
 
     @Autowired
-    public DocumentWrapperControllerImpl(DocumentWrapperService<DocumentWrapper, UUID> documentWrapperService) {
-        super(documentWrapperService);
+    DocumentWrapperService<DocumentWrapper, UUID> documentWrapperService;
+
+
+    /**
+     * return the entity class of this generic repository.
+     * Note: Default methods are a special Java 8 feature in where interfaces can define implementations for methods.
+     *
+     * @return Internal class type of this generic repository, set at the creation of the repository.
+     */
+    @Override
+    public Class<DocumentWrapper> getEntityClass() {
+        return this.documentWrapperService.getEntityClass();
+    }
+
+    @GetMapping(
+            value = "",
+            produces = "application/json"
+    )
+    @PostFilter("hasPermission(filterObject.id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Document', 'READ')")
+    @ResponseStatus(HttpStatus.OK)
+    @Override
+    public Set<DocumentWrapper> getAll() {
+        return new HashSet<>(this.documentWrapperService.findAll());
+    }
+
+
+
+    @GetMapping(
+            value = "/{id}",
+            produces = "application/json"
+    )
+    @PostAuthorize("hasPermission(returnObject.id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Document', 'READ')")
+    @ResponseStatus(HttpStatus.OK)
+    @Override
+    public DocumentWrapper get(@PathVariable UUID id) throws ResourceNotExistsException {
+        Optional<DocumentWrapper> opt = this.documentWrapperService.findById(id);
+        return opt.orElse(null);
+    }
+
+
+    @PostMapping(
+            value = "",
+            produces = "application/json",
+            consumes = "multipart/form-data"
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    @Override
+    public DocumentWrapper add(@Validated @RequestBody @ModelAttribute DocumentWrapper documentWrapper) {
+        return this.documentWrapperService.save(documentWrapper);
     }
 
     @DeleteMapping(
@@ -43,13 +94,26 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @ResponseStatus(HttpStatus.OK)
     @Override
     public DocumentWrapper remove(@PathVariable UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        Optional<DocumentWrapper> entity = this.genericService.findById(id);
+        Optional<DocumentWrapper> entity = this.documentWrapperService.findById(id);
         if (entity.isPresent()) {
-            this.genericService.deleteById(id);
+            this.documentWrapperService.deleteById(id);
             return entity.get();
         }
         else
             throw new ResourceNotExistsException();
+    }
+
+    @PutMapping(
+            value = "/{id}",
+            produces = "application/json",
+            consumes = "application/json"
+    )
+    @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Document', 'WRITE')")
+    @ResponseStatus(HttpStatus.OK)
+    @Override
+    public DocumentWrapper put(@Validated @RequestBody DocumentWrapper documentWrapper, @PathVariable(value = "id") UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        documentWrapper.setId(id);
+        return this.documentWrapperService.save(documentWrapper);
     }
 
     @Override
@@ -57,15 +121,15 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Document' , 'READ')")
     public ResponseEntity<Resource> getDocumentData(@PathVariable UUID id, HttpServletRequest request) throws ResourceNotExistsException, NotEnoughAuthorityException{
         // Load file as Resource
-        Resource resource = ((DocumentWrapperService<T, S>)this.genericService).getById(id).getFile().getResource();
+        Optional<DocumentWrapper> documentWrapperOptional = this.documentWrapperService.findById(id);
+        if (! documentWrapperOptional.isPresent())
+        {
+            return null;  // TODO map to exception
+        }
 
         // Try to determine file's content type
         String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            Logger.getGlobal().info("Could not determine file type.");
-        }
+        contentType = request.getServletContext().getMimeType(documentWrapperOptional.get().getFile().getContentType());
 
         // Fallback to the default content type if type could not be determined
         if(contentType == null) {
@@ -74,8 +138,8 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + documentWrapperOptional.get().getFile().getOriginalFilename() + "\"")
+                .body(documentWrapperOptional.get().getFile().getResource());
     }
 
     @Override
@@ -86,7 +150,7 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @PreAuthorize("hasPermission(#experiment_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Experiment' , 'WRITE')")
     public UploadFileResponse addDocumentToExperiment(@ModelAttribute("Document") DocumentWrapper document, @PathVariable UUID experiment_id) throws ResourceNotExistsException, NotEnoughAuthorityException {
 
-        DocumentWrapper document1 = ((DocumentWrapperService<T, S>)this.genericService).addDocumentToExperiment(document, experiment_id);
+        DocumentWrapper document1 = this.documentWrapperService.addDocumentToExperiment(document, experiment_id);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/document/")
@@ -102,6 +166,6 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @GetMapping("/{experiment_id}/experiment")
     @PreAuthorize("hasPermission(#experiment_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Experiment' , 'READ')")
     public Set<DocumentWrapper> getDocumentsFromExperiment(@PathVariable UUID experiment_id) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        return ((DocumentWrapperService<T, S>)this.genericService).getDocumentsFromExperiment(experiment_id);
+        return this.documentWrapperService.getDocumentsFromExperiment(experiment_id);
     }
 }

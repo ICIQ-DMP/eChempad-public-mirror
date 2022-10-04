@@ -67,8 +67,46 @@ createdb eChempad
 psql -d eChempad -h localhost -p 5432 -U amarine
 ```
 
+## ACL SQL schema & JPA entities SQL schema
+The application combines two different strategies to initialize the SQL schema for our database, which will use
+postgresql. The first strategy is using a `schema.sql` file, which by activating some properties in
+`application.properties` it can be executed every time our application goes up. We can add sql conditionals to
+initialize the schema if and only if the schema is not present. The schema is mainly used to initialize the SQL tables
+for the ACL initialization.
+
+The other strategy is using the automatic schema initialization that comes with JPA data repositories / entities.
+By modifying the corresponding property in `application.properties` we can choose to initialize the schema when our app
+goes up, validate it, or do nothing.
+
+The problem and the reason why I am documenting this is that there is an ACL table that also has an associated JPA
+repository, and as such, the table can be initialized in both ways, which is wrong, since we need to use the ACL SQL
+schema for the schema and the JPA repository to modify the tables programmatically.
+
+#### Steps to reproduce a clean initialization
+1- To ensure the proper initialization of the schema first begin by dropping all tables.
+2- Deactivate the initialization of JPA schema by setting the DB policy to *none*.
+3- Run application. The ACL SQL schema will be read from the `schema.sql` script and the app will fail because the
+schema for the JPA entities will not be present. The app should file with an error like this:
+`(...) Caused by: org.postgresql.util.PSQLException: ERROR: relation "researcher" does not exist
+`. The *acl_sid* table will be created using the schema provided via a JPA entity class.
+4- Reactivate the JPA initializations by setting the DB policy to *update*.
+5- Rerun the application, which now should be working (even though because of admin initialization it can have an error 
+of duplicated primary key, but if your rerun one more time everything should be working). The ACL tables from the schema,
+and the JPA tables
+(except the *acl_sid* table, which comes from IdSecurity JPAEntity JPA initialization) from the Entities are now fully 
+initialized.
+6- We can encounter one more error while initializing the app, it goes like: 
+`org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "acl_sid_pkey"` This happens
+because we manipulate the acl_sid table "from behind" (not programmatically, we attack the raw SQL tables). And as such, 
+the first petitions to create an ACL can cause a collision. 
+7- After that error we may find another Exception! it goes like this: 
+`java.lang.IllegalArgumentException: Transaction must be running`, but only happens twice the first time that a valid
+ACL is requested.
+In the next petitions, the ACL service will answer correctly.
+
+
 ## Creating the file structures
-The eChempad application stores files in the file system under the folder /eChempad/file_db. It also stores the 
+**(DEPRECATED)** The eChempad application stores files in the file system under the folder /eChempad/file_db. It also stores the 
 credentials of the APIKeys under /eChempad/APIKeys. Now, for debug purposes we store in this path a file called "key" 
 which contains a dummy APIKey inside a file. To create this file structure use
 
@@ -85,7 +123,7 @@ You can also use another user if the eChempad is executed from another user.
 
 Also remember that the API key can be generated from [here](https://iciq.signalsnotebook.perkinelmercloud.eu/snconfig/settings/apikey)
 
-## Ceertificates of the JVM
+## Certificates of the JVM
 The certificates of java are stored in the `cacerts` file, which can be located in different places of the system. We 
 have our own cacerts file uploaded to the git repository, which is located in ./eChempad/src/main/resources/CA_certificates/cacerts
 and is the one that we are using. 
@@ -308,30 +346,6 @@ permissions against something. So the default with this code is the following:
 - 4 means "Create"
 - 8 means "Delete" 
 - 16 means "Administer"
-
-## ACL SQL schema & JPA entities SQL schema
-The application combines two different strategies to initialize the SQL schema for our database, which will use 
-postgresql. The first strategy is using a `schema.sql` file, which by activating some properties in 
-`application.properties` it can be executed every time our application goes up. We can add sql conditionals to 
-initialize the schema if and only if the schema is not present. The schema is mainly used to initialize the SQL tables 
-for the ACL initialization. 
-
-The other strategy is using the automatic schema initialization that comes with JPA data repositories / entities.
-By modifying the corresponding property in `application.properties` we can choose to initialize the schema when our app
-goes up, validate it, or do nothing.
-
-The problem and the reason why I am documenting this is that there is an ACL table that also has an associated JPA 
-repository, and as such, the table can be initialized in both ways, which is wrong, since we need to use the ACL SQL 
-schema for the schema and the JPA repository to modify the tables programmatically.
-
-#### Steps to reproduce a clean initialization
-1- To ensure the proper initialization of the schema first begin by dropping all tables. 
-2- Deactivate the initialization of JPA schema by setting the DB policy to *none*.
-3- Run application. The ACL SQL schema will be read from the `schema.sql` script and the app will fail because the 
-schema for the JPA entities will not be present. The *acl_sid* table will be created using the schema. 
-4- Reactivate the JPA initializations by setting the DB policy to *update*.
-5- Rerun the application, which now will be working. The ACL tables from the schema, and the JPA tables 
-(except the *acl_sid* table, which comes from IdSecurity JPAEntity JPA initialization) from the Entities.
 
 ## Reference Documentation
 For further reference, please consider the following sections:

@@ -84,6 +84,16 @@ public class Journal extends JPAEntityImpl {
     }
 
     /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends JPAEntity> Class<T> getType() {
+        return (Class<T>) Journal.class;
+    }
+
+    /**
      * Obtains the typeName, used by jackson to deserialize generics.
      *
      * @return Name of the class as string.

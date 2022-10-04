@@ -42,7 +42,8 @@ public class DatabaseAccessConfiguration {
     @Value("${eChempad.db.naming_strategy}")
     private String namingStrategy;
 
-
+    @Value("${eChempad.db.sessionContext}")
+    private String sessionContext;
 
     public DatabaseAccessConfiguration() {}
 
@@ -127,6 +128,15 @@ public class DatabaseAccessConfiguration {
     @Value("${eChempad.db.naming_strategy}")
     public void setNamingStrategy(String namingStrategy) {
         this.namingStrategy = namingStrategy;
+    }
+
+    public String getSessionContext() {
+        return sessionContext;
+    }
+
+    @Value("${eChempad.db.sessionContext}")
+    public void setSessionContext(String sessionContext) {
+        this.sessionContext = sessionContext;
     }
 
     @Override

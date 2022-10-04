@@ -59,10 +59,7 @@ public interface JPAEntity {
      * @return Class of the object implementing this interface.
      */
     @JsonIgnore
-    default <T extends JPAEntity> Class<T> getType()
-    {
-        return (Class<T>) getClass().getGenericSuperclass();
-    }
+    <T extends JPAEntity> Class<T> getType();
 
     /**
      * Obtains the typeName, used by jackson to deserialize generics.

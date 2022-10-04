@@ -95,6 +95,16 @@ public class Experiment extends JPAEntityImpl {
         this.id = (UUID) id;
     }
 
+    /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends JPAEntity> Class<T> getType() {
+        return (Class<T>) Experiment.class;
+    }
+
     public String getName() {
         return this.name;
     }

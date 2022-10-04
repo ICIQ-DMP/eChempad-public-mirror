@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.ICIQ.eChempad.configurations.converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.data.repository.cdi.Eager;
 import org.springframework.http.MediaType;
 
 import javax.persistence.*;
@@ -60,6 +62,8 @@ public class Document extends JPAEntityImpl{
 
     @Column
     @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Lazy
     protected Blob blob;
 
     public Document() {}
@@ -102,6 +106,16 @@ public class Document extends JPAEntityImpl{
     @Override
     public void setId(Serializable id) {
         this.id = (UUID) id;
+    }
+
+    /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends JPAEntity> Class<T> getType() {
+        return (Class<T>) Document.class;
     }
 
     // GETTERS / SETTERS

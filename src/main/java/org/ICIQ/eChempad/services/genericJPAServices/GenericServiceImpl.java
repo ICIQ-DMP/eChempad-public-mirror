@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Contains all the main methods implemented by the generic repository to manipulate the database. All the methods
@@ -142,8 +143,12 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
         genericRepository.deleteAllInBatch();
     }
 
-    //Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
+    /**
+     * Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
+     */
     public T getById(S s) {
+        Logger.getGlobal().warning("WARNING! You are using getById which can cause a Lazy Initialization Exception " +
+                "if used out of session, use getById to avoid this and load the full entity.");
         return this.genericRepository.getById(s);
     }
 

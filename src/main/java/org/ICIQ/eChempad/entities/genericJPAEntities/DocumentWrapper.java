@@ -117,4 +117,14 @@ public class DocumentWrapper extends JPAEntityImpl {
     public void setId(Serializable id) {
         this.id = (UUID) id;
     }
+
+    /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends JPAEntity> Class<T> getType() {
+        return (Class<T>) DocumentWrapper.class;
+    }
 }

@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.*;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -124,7 +126,16 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public <S1 extends DocumentWrapper> S1 save(S1 entity) {
-        return (S1) this.documentWrapperConverter.convertToEntityAttribute(this.documentService.save(this.documentWrapperConverter.convertToDatabaseColumn(entity)));
+        Document document = this.documentWrapperConverter.convertToDatabaseColumn(entity);
+
+        // Internally the BLOB is consumed, so if we use the same instance to return an exception will be thrown
+        // java.sql.SQLException: could not reset reader
+        Document documentDatabase = this.documentService.save(document);
+
+        // This seems silly, but is necessary to update the Blob and its InputStream
+        Optional<Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
+
+        return documentDatabaseOptional.map(value -> (S1) this.documentWrapperConverter.convertToEntityAttribute(value)).orElse(null);
     }
 
     @Override
