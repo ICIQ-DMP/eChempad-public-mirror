@@ -42,8 +42,17 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
 
     @Override
-    public DocumentWrapper addDocumentToExperiment(DocumentWrapper document, UUID experiment_uuid) {
-        return this.documentWrapperConverter.convertToEntityAttribute(this.documentService.addDocumentToExperiment(this.documentWrapperConverter.convertToDatabaseColumn(document), experiment_uuid));
+    public DocumentWrapper addDocumentToExperiment(DocumentWrapper documentWrapper, UUID experiment_uuid) {
+        // Transform to DB entity
+        Document document = this.documentWrapperConverter.convertToDatabaseColumn(documentWrapper);
+
+        // Save DB entity and retrieve instance. Warning! The Blob has already been read. If you try to read the Blob
+        // again you will get a java.sql.SQLException: could not reset reader
+        Document documentDatabase = this.documentService.addDocumentToExperiment(document, experiment_uuid);
+
+        // Reconvert to Transport entity and return it
+        documentWrapper = this.documentWrapperConverter.convertToEntityAttribute(documentDatabase);
+        return documentWrapper;
     }
 
     @Override
@@ -70,7 +79,7 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
         return inputStreamResource;
     }
 
-    // Delegated methods to Document Service, which in turns delegates to JPA repository
+    // Delegated methods to Document Service, which in turns delegates to JPA repository.
 
     @Override
     public List<DocumentWrapper> findAll() {
