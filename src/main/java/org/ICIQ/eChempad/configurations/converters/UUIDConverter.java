@@ -28,9 +28,9 @@ import java.util.UUID;
 public class UUIDConverter implements AttributeConverter<UUID, String>, Serializable {
 
     /**
-     * Provides the {@code String} representation of a UUID object.
-     * @param uuid
-     * @return
+     * Provides the {@code String} representation of a {@code UUID} object by calling its {@code toString()} method.
+     * @param uuid Instance of type {@code UUID} to be represented into a {@code String}
+     * @return {@code String} representation 
      */
     @Override
     public String convertToDatabaseColumn(UUID uuid) {

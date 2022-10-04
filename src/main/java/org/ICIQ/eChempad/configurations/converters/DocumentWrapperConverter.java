@@ -99,6 +99,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
 
     /**
      * Creates a {@code Document} detached instance from the data of the supplied {@code DocumentWrapper}
+     *
      * @param documentWrapper Entity presumably coming from outside our application, which contains the data to bulk
      * into the return {@code Document}.
      * @return {@code Document} containing all data of the supplied {@code DocumentWrapper}
