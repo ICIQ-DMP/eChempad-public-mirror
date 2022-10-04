@@ -67,8 +67,46 @@ createdb eChempad
 psql -d eChempad -h localhost -p 5432 -U amarine
 ```
 
+## ACL SQL schema & JPA entities SQL schema
+The application combines two different strategies to initialize the SQL schema for our database, which will use
+postgresql. The first strategy is using a `schema.sql` file, which by activating some properties in
+`application.properties` it can be executed every time our application goes up. We can add sql conditionals to
+initialize the schema if and only if the schema is not present. The schema is mainly used to initialize the SQL tables
+for the ACL initialization.
+
+The other strategy is using the automatic schema initialization that comes with JPA data repositories / entities.
+By modifying the corresponding property in `application.properties` we can choose to initialize the schema when our app
+goes up, validate it, or do nothing.
+
+The problem and the reason why I am documenting this is that there is an ACL table that also has an associated JPA
+repository, and as such, the table can be initialized in both ways, which is wrong, since we need to use the ACL SQL
+schema for the schema and the JPA repository to modify the tables programmatically.
+
+#### Steps to reproduce a clean initialization
+1- To ensure the proper initialization of the schema first begin by dropping all tables.
+2- Deactivate the initialization of JPA schema by setting the DB policy to *none*.
+3- Run application. The ACL SQL schema will be read from the `schema.sql` script and the app will fail because the
+schema for the JPA entities will not be present. The app should file with an error like this:
+`(...) Caused by: org.postgresql.util.PSQLException: ERROR: relation "researcher" does not exist
+`. The *acl_sid* table will be created using the schema provided via a JPA entity class.
+4- Reactivate the JPA initializations by setting the DB policy to *update*.
+5- Rerun the application, which now should be working (even though because of admin initialization it can have an error 
+of duplicated primary key, but if your rerun one more time everything should be working). The ACL tables from the schema,
+and the JPA tables
+(except the *acl_sid* table, which comes from IdSecurity JPAEntity JPA initialization) from the Entities are now fully 
+initialized.
+6- We can encounter one more error while initializing the app, it goes like: 
+`org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "acl_sid_pkey"` This happens
+because we manipulate the acl_sid table "from behind" (not programmatically, we attack the raw SQL tables). And as such, 
+the first petitions to create an ACL can cause a collision. 
+7- After that error we may find another Exception! it goes like this: 
+`java.lang.IllegalArgumentException: Transaction must be running`, but only happens twice the first time that a valid
+ACL is requested.
+In the next petitions, the ACL service will answer correctly.
+
+
 ## Creating the file structures
-The eChempad application stores files in the file system under the folder /eChempad/file_db. It also stores the 
+**(DEPRECATED)** The eChempad application stores files in the file system under the folder /eChempad/file_db. It also stores the 
 credentials of the APIKeys under /eChempad/APIKeys. Now, for debug purposes we store in this path a file called "key" 
 which contains a dummy APIKey inside a file. To create this file structure use
 
@@ -85,7 +123,7 @@ You can also use another user if the eChempad is executed from another user.
 
 Also remember that the API key can be generated from [here](https://iciq.signalsnotebook.perkinelmercloud.eu/snconfig/settings/apikey)
 
-## Ceertificates of the JVM
+## Certificates of the JVM
 The certificates of java are stored in the `cacerts` file, which can be located in different places of the system. We 
 have our own cacerts file uploaded to the git repository, which is located in ./eChempad/src/main/resources/CA_certificates/cacerts
 and is the one that we are using. 
@@ -186,7 +224,9 @@ run task and add a new external tool before launch by setting the script eChempa
 ###### Using the autoconfiguration of the IDE
 Go to the class `EChempadApplication` and in the line where we declare the class:
 ```java
-public class EChempadApplication {...}
+public class EChempadApplication {
+    // ...
+}
 ```
 
 You can click right click and run the application.
@@ -309,29 +349,61 @@ permissions against something. So the default with this code is the following:
 - 8 means "Delete" 
 - 16 means "Administer"
 
-## ACL SQL schema & JPA entities SQL schema
-The application combines two different strategies to initialize the SQL schema for our database, which will use 
-postgresql. The first strategy is using a `schema.sql` file, which by activating some properties in 
-`application.properties` it can be executed every time our application goes up. We can add sql conditionals to 
-initialize the schema if and only if the schema is not present. The schema is mainly used to initialize the SQL tables 
-for the ACL initialization. 
+## Spring Boot general concepts
 
-The other strategy is using the automatic schema initialization that comes with JPA data repositories / entities.
-By modifying the corresponding property in `application.properties` we can choose to initialize the schema when our app
-goes up, validate it, or do nothing.
+#### Inversion of control
+Spring-boot particularly is focused on using a pattern design called inversion of control, in which the programming is less
+imperative and explicit, and becomes declarative and aspect-oriented.
 
-The problem and the reason why I am documenting this is that there is an ACL table that also has an associated JPA 
-repository, and as such, the table can be initialized in both ways, which is wrong, since we need to use the ACL SQL 
-schema for the schema and the JPA repository to modify the tables programmatically.
+Basically one of the most used features is the automatic dependency injection. When annotating a class with `@Component`
+we are telling Spring-Boot that a class can be auto-injected in places where the `@Autowired` annotation is present.
 
-#### Steps to reproduce a clean initialization
-1- To ensure the proper initialization of the schema first begin by dropping all tables. 
-2- Deactivate the initialization of JPA schema by setting the DB policy to *none*.
-3- Run application. The ACL SQL schema will be read from the `schema.sql` script and the app will fail because the 
-schema for the JPA entities will not be present. The *acl_sid* table will be created using the schema. 
-4- Reactivate the JPA initializations by setting the DB policy to *update*.
-5- Rerun the application, which now will be working. The ACL tables from the schema, and the JPA tables 
-(except the *acl_sid* table, which comes from IdSecurity JPAEntity JPA initialization) from the Entities.
+This is useful because we do not need to initialize or instantiate the classes of our program.
+
+### Annotations
+
+#### `@Converter`
+A converter is a class that defines two methods to interchange the format between two classes A and B. It is
+particularly used transparently when in need to convert a memory object to a serializable type when introducing it into
+the DB and vice-versa.
+
+The `@Converter` annotation can receive a parameter `autoApply = bool` so it performs automatic translation between
+types implicitly, there is no need to call directly the methods. Spring will call it for you when needed.
+
+In the following example the converter is used to convert Paths to String (Serializable) and vice-versa:
+
+```
+@Converter(autoApply = true)  
+public class PathConverter implements AttributeConverter<Path, String>, Serializable {
+
+    @Override
+    public String convertToDatabaseColumn(Path path) {
+        return path == null ? null : path.toString();
+    }
+
+    @Override
+    public Path convertToEntityAttribute(String s) {
+        return s == null ? null : Paths.get(s);
+    }
+} 
+```
+
+
+#### `@Component` and its specialized `@Service`, `@Controller`, `@RestController`, `@Repository`
+All classes marked with these annotations are converted automatically into components that Spring Boot is able to inject
+in runtime. The specializations provide some useful effects if we are actually using a specialized component annotation:
+- `@Repository`: Marks all method as transactional and handles the session automatically inside them. Repository is used in
+  classes that are responsible for communicating with a DB.
+- `@Service`: The class provides a service inside the application.
+- `@Controller`: Handles the serialization and deserialization of data coming in and out of the methods of the class.
+  Controller provides endpoints that our clients are connected to, and as such they are the first and last piece of code
+  executed when handling a request.
+- `@RestController`: The same as a controller, but provides support for the typical CRUD operations.
+
+#### `@Autowired`
+This annotation is used to annotate a property of a class, setter of a property or constructor. This tells Spring Boot
+that a field needs to be automatically injected. Then, we do not need to initialize or call the constructor of that
+class.
 
 ## Reference Documentation
 For further reference, please consider the following sections:
@@ -347,3 +419,7 @@ For further reference, please consider the following sections:
 * [UUID keys 3](https://stackoverflow.com/questions/43056220/store-uuid-v4-in-mysql)
 * [Disable CSRF depending on application.properties](https://www.yawintutor.com/how-to-enable-and-disable-csrf/)
 * [PostGreSQL + ACL with UUID SQL schema](https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/appendix-schema.html)
+* [Cascade entity removal](https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working)
+* [How to use JavaDoc](https://www.dummies.com/article/technology/programming-web-design/java/how-to-use-javadoc-to-document-your-classes-153265/)
+* [hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path](https://stackoverflow.com/questions/53199558/hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path)
+* [Field injection is not recommended and injection types in Spring Boot](https://blog.marcnuri.com/field-injection-is-not-recommended)

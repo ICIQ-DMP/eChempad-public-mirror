@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Repository
+@Transactional
 public class AclServiceCustomImpl implements AclService{
 
     @Autowired
@@ -38,6 +39,7 @@ public class AclServiceCustomImpl implements AclService{
     @Transactional
     public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission, String userName)
     {
+        Logger.getGlobal().info("ACL class ENTITY TYPE: " + JPAEntity.getTypeName());
         // Obtain the identity of the object by using its class and its id
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
 

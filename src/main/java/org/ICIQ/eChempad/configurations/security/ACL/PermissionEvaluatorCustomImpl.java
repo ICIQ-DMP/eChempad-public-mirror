@@ -30,13 +30,11 @@ class PermissionEvaluatorCustomImpl implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        Logger.getGlobal().info("\nauth " + authentication + "\n targetObj " + targetDomainObject + "\npermission " + permission);
         return this.permissionEvaluator.hasPermission(authentication, targetDomainObject, permission);
     }
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        Logger.getGlobal().info("\nauth " + authentication + "\ntargetId " + targetId + "\ntargettype " + targetType + "\npermission " + permission);
         return this.permissionEvaluator.hasPermission(authentication, targetId, targetType, permission);
     }
 }

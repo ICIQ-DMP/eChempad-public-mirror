@@ -23,29 +23,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.util.*;
+import java.util.logging.Logger;
 
-/**
- * Contains all the main methods implemented by the generic repository to manipulate the database. All the methods
- * provided by this interface are agnostic of the security or other special cases in concrete services. As thus, they
- * work as a wrap for the tables in the database in the logic layer. Other classes as SecurityService will be the ones
- * who manipulate this services and embed certain logic around it.
- *
- * Services throw custom exceptions when they catch a spring exception or a custom exception. In a certain manner they
- * translate spring exceptions to a common preset of custom exceptions and forward these exceptions to the controller.
- * Services will have try-catch in the methods, especially to capture built-in exceptions and throw instead a custom
- * exception. Custom exceptions will be attended in the controller if needed, or not attended and implicitly forwarded
- * to the ExceptionHandlerGlobal class, which will have handlers for these custom exceptions.
- *
- * Services will also have the logic to know if someone can access a certain resource, they will have the business logic
- * of the permissions, so the most probable is that we will have many service classes not related exactly to the entity,
- * instead, they will have the different repositories to be able to manipulate the necessary data in the application.
 
- * @param <T> Actual type, such as Experiment, Journal, etc.
- * @param <S> Serializable type used to identify the T type inside the database, usually a UUID
- *
- * Contains all methods delegated to the genericRepository class and a genericRepository. This class can be extended 
- * bounding an entity to an inheriting class in order to add the necessary business logic in the application.
- */
 @Service
 public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericService<T, S>{
 
@@ -142,8 +122,12 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
         genericRepository.deleteAllInBatch();
     }
 
-    //Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
+    /**
+     * Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
+     */
     public T getById(S s) {
+        Logger.getGlobal().warning("WARNING! You are using getById which can cause a Lazy Initialization Exception " +
+                "if used out of session, use getById to avoid this and load the full entity.");
         return this.genericRepository.getById(s);
     }
 

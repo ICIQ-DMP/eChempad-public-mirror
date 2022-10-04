@@ -27,7 +27,7 @@ import java.util.UUID;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Authority.class)
-public class Authority extends JPAEntityImpl implements JPAEntity, GrantedAuthority{
+public class Authority extends JPAEntityImpl implements GrantedAuthority{
     @Id
     @Convert(converter = UUIDConverter.class)
     @GeneratedValue(generator = "UUID")
@@ -69,6 +69,16 @@ public class Authority extends JPAEntityImpl implements JPAEntity, GrantedAuthor
     @Override
     public void setId(Serializable id) {
         this.id = (UUID)id;
+    }
+
+    /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends JPAEntity> Class<T> getType() {
+        return (Class<T>) Authority.class;
     }
 
     /**

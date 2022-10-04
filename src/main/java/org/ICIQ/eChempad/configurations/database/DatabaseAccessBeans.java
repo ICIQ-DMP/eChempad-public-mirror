@@ -104,6 +104,18 @@ public class DatabaseAccessBeans {
         //new database objects and schema elements
         hibernateProperties.put("hibernate.ejb.naming_strategy", this.dbAccessConfigurationInstance.getNamingStrategy());
 
+        // URL to the DB
+        hibernateProperties.put("hibernate.connection.url", this.dbAccessConfigurationInstance.getUrl());
+
+        // Username to the db
+        hibernateProperties.put("hibernate.connection.username", this.dbAccessConfigurationInstance.getUsername());
+
+        // Password to DB
+        hibernateProperties.put("hibernate.connection.password", this.dbAccessConfigurationInstance.getPassword());
+
+        // current session scope configuration
+        hibernateProperties.put("hibernate.current_session_context_class", this.dbAccessConfigurationInstance.getSessionContext());
+
         return hibernateProperties;
     }
 

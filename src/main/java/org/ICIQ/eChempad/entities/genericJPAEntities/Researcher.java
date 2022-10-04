@@ -33,7 +33,7 @@ import java.util.*;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Researcher.class)
-public class Researcher extends JPAEntityImpl implements JPAEntity {
+public class Researcher extends JPAEntityImpl {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
@@ -120,6 +120,16 @@ public class Researcher extends JPAEntityImpl implements JPAEntity {
 
     public void setId(Serializable s) {
         this.id = (UUID) s;
+    }
+
+    /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends JPAEntity> Class<T> getType() {
+        return (Class<T>) Researcher.class;
     }
 
     /**

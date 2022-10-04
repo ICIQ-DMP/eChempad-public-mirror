@@ -27,7 +27,7 @@ import java.util.*;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Experiment.class)
-public class Experiment extends JPAEntityImpl implements JPAEntity {
+public class Experiment extends JPAEntityImpl {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
@@ -43,15 +43,13 @@ public class Experiment extends JPAEntityImpl implements JPAEntity {
     @Column(length = 1000, nullable = false)
     private String description;
 
-    /*
     @OneToMany(
             targetEntity = Document.class,
             mappedBy = "experiment",
             fetch = FetchType.EAGER,
-            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
+            orphanRemoval = true  // cascade = CascadeType.ALL
     )
     private Set<Document> documents;
-    */
 
     @JsonIgnore
     @ManyToOne(
@@ -97,6 +95,16 @@ public class Experiment extends JPAEntityImpl implements JPAEntity {
         this.id = (UUID) id;
     }
 
+    /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends JPAEntity> Class<T> getType() {
+        return (Class<T>) Experiment.class;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -119,6 +127,14 @@ public class Experiment extends JPAEntityImpl implements JPAEntity {
 
     public void setJournal(Journal journal) {
         this.journal = journal;
+    }
+
+    public Set<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<Document> documents) {
+        this.documents = documents;
     }
 
     /**

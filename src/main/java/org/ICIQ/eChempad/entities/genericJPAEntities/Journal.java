@@ -28,7 +28,7 @@ import java.util.UUID;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Journal.class)
-public class Journal extends JPAEntityImpl implements JPAEntity {
+public class Journal extends JPAEntityImpl {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
      * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
@@ -81,6 +81,16 @@ public class Journal extends JPAEntityImpl implements JPAEntity {
     @Override
     public void setId(Serializable s) {
         this.id = (UUID) s;
+    }
+
+    /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends JPAEntity> Class<T> getType() {
+        return (Class<T>) Journal.class;
     }
 
     /**
