@@ -1,7 +1,13 @@
+--
+-- |===================================================================================|
+-- | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
+-- |                                                                                   |
+-- | This software is the property of ICIQ.                                            |
+-- |===================================================================================|
+--
 
 
-
-
+/*
 insert into acl_sid(id, principal, sid)  values
     (0, false, 'ROLE_ADMIN'),
     (1, true, 'eChempad@iciq.es')
@@ -9,7 +15,7 @@ ON CONFLICT DO NOTHING;
 
 
 INSERT INTO acl_class (id, class, class_id_type) VALUES
-    (0, 'org.ICIQ.eChempad.entities.Journal', 'java.util.UUID')
+    (0, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal', 'java.util.UUID')
 ON CONFLICT DO NOTHING;
 
 
@@ -23,3 +29,4 @@ INSERT INTO acl_entry (id, acl_object_identity, ace_order, sid, mask, granting, 
     (0, 0, 0, 1, 1, true, true, true)
 ON CONFLICT DO NOTHING;
 
+*/

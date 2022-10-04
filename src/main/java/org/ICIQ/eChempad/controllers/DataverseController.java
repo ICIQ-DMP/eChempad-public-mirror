@@ -1,8 +1,15 @@
+/*
+ * |===================================================================================|
+ * | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
+ * |                                                                                   |
+ * | This software is the property of ICIQ.                                            |
+ * |===================================================================================|
+ */
 package org.ICIQ.eChempad.controllers;
 
-import org.ICIQ.eChempad.configurations.Helpers.AclRepositoryImpl;
-import org.ICIQ.eChempad.services.JournalService;
-import org.ICIQ.eChempad.services.ResearcherService;
+import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
+import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
@@ -16,9 +23,9 @@ public class DataverseController {
     private JournalService journalService;
 
     @Autowired
-    private AclRepositoryImpl aclRepository;
+    private AclServiceCustomImpl aclRepository;
 
-    public DataverseController(ResearcherService researcherService, JournalService journalService, AclRepositoryImpl aclRepository) {
+    public DataverseController(ResearcherService researcherService, JournalService journalService, AclServiceCustomImpl aclRepository) {
         this.researcherService = researcherService;
         this.journalService = journalService;
         this.aclRepository = aclRepository;
@@ -42,11 +49,11 @@ public class DataverseController {
         this.journalService = journalService;
     }
 
-    public AclRepositoryImpl getAclRepository() {
+    public AclServiceCustomImpl getAclRepository() {
         return aclRepository;
     }
 
-    public void setAclRepository(AclRepositoryImpl aclRepository) {
+    public void setAclRepository(AclServiceCustomImpl aclRepository) {
         this.aclRepository = aclRepository;
     }
 

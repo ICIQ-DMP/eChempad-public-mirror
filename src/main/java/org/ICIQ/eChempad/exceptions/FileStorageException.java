@@ -5,7 +5,6 @@
  * | This software is the property of ICIQ.                                            |
  * |===================================================================================|
  */
-
 package org.ICIQ.eChempad.exceptions;
 
 public class FileStorageException extends RuntimeException {
