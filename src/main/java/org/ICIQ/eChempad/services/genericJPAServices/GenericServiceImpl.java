@@ -9,8 +9,10 @@ package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.configurations.utilities.PermissionBuilder;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.GenericRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -186,5 +188,10 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
     public <S extends T> boolean exists(Example<S> example) {
         return genericRepository.exists(example);
     }
-    
+
+    @Override
+    @Deprecated
+    public @NotNull T getOne(@NotNull S s) {
+        return null;
+    }
 }

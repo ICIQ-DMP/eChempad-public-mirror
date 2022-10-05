@@ -9,6 +9,7 @@ import org.ICIQ.eChempad.repositories.genericJPARepositories.ExperimentRepositor
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericServiceImpl;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -57,12 +58,10 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public Set<DocumentWrapper> getDocumentsFromExperiment(UUID experiment_uuid) {
-        return this.documentService.getDocumentsFromExperiment(experiment_uuid).stream().map(
-                document ->
-                {
-                    return this.documentWrapperConverter.convertToEntityAttribute(document);
-                }
-        ).collect(Collectors.toSet());
+        return this.documentService.getDocumentsFromExperiment(experiment_uuid)
+                .stream()
+                .map(this.documentWrapperConverter::convertToEntityAttribute)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -293,4 +292,8 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
         return this.documentService.exists(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
     }
 
+    @Override
+    public @NotNull DocumentWrapper getOne(@NotNull UUID uuid) {
+        return null;
+    }
 }

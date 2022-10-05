@@ -22,15 +22,6 @@ import java.sql.SQLException;
 @Service
 public class LobServiceImpl implements LobService {
 
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private HibernateUtil hibernateUtil;
-
     @Transactional
     @Override
     public Blob createBlob(InputStream content, long size) {

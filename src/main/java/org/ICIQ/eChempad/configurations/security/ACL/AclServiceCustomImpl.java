@@ -77,34 +77,6 @@ public class AclServiceCustomImpl implements AclService{
     }
 
     @Transactional
-    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity)
-    {
-        // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
-
-        // Obtain the identity of the user
-        UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Sid sid = new PrincipalSid(u.getUsername());
-
-        // Create or update the relevant ACL
-        MutableAcl acl;
-        try {
-            acl = (MutableAcl) this.aclService.readAclById(objectIdentity);
-        } catch (NotFoundException nfe) {
-            acl = this.aclService.createAcl(objectIdentity);
-        }
-
-        // Now grant some permissions via an access control entry (ACE)
-        Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
-        while (it.hasNext())
-        {
-            acl.insertAce(acl.getEntries().size(), it.next(), sid, true);
-        }
-
-        this.aclService.updateAcl(acl);
-    }
-
-    @Transactional
     public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> theClass)
     {
         // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
@@ -166,31 +138,6 @@ public class AclServiceCustomImpl implements AclService{
     public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission)
     {
         this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-    }
-
-    /**
-     * We assume that the security context is full
-     */
-    public void addGenericAclPermissions(Class<?> theType, Permission permission)
-    {
-        // ACL code
-        // Prepare the information we'd like in our access control entry (ACE)
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(theType, (Serializable) UUID.randomUUID());
-
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Sid sid = new PrincipalSid(userDetails.getUsername());
-
-        // Create or update the relevant ACL
-        MutableAcl acl;
-        try {
-            acl = (MutableAcl) aclService.readAclById(objectIdentity);
-        } catch (NotFoundException nfe) {
-            acl = aclService.createAcl(objectIdentity);
-        }
-
-        // Now grant some permissions via an access control entry (ACE)
-        acl.insertAce(acl.getEntries().size(), permission, sid, true);
-        aclService.updateAcl(acl);
     }
 
 
@@ -267,11 +214,7 @@ public class AclServiceCustomImpl implements AclService{
      * {@link ObjectIdentity}
      */
     public Acl readAclById(ObjectIdentity object, List<Sid> sids) throws NotFoundException {
-        MutableAcl acl = (MutableAcl) aclService.readAclById(object, sids);
-
-
-        System.out.println(acl.getEntries());
-        return acl;
+        return aclService.readAclById(object, sids);
     }
 
     /**
