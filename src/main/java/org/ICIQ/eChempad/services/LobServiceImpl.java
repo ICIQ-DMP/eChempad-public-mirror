@@ -22,7 +22,6 @@ import java.sql.SQLException;
 @Service
 public class LobServiceImpl implements LobService {
 
-    @Transactional
     @Override
     public Blob createBlob(InputStream content, long size) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -35,7 +34,6 @@ public class LobServiceImpl implements LobService {
         return blob;
     }
 
-    @Transactional
     @Override
     public InputStream readBlob(Blob blob) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();

@@ -79,7 +79,6 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
     }
 
     // Delegated methods to Document Service, which in turns delegates to JPA repository.
-
     @Override
     public List<DocumentWrapper> findAll() {
         return this.documentService.findAll().stream().map(
@@ -94,6 +93,26 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
                 this.documentWrapperConverter::convertToEntityAttribute
 
         ).collect(Collectors.toList());
+    }
+
+    @Override
+    public <S1 extends DocumentWrapper> S1 save(S1 entity) {
+        Document document = this.documentWrapperConverter.convertToDatabaseColumn(entity);
+
+        // Internally the BLOB is consumed, so if we use the same instance to return an exception will be thrown
+        // java.sql.SQLException: could not reset reader
+        Document documentDatabase = this.documentService.save(document);
+
+        // This seems silly, but is necessary to update the Blob and its InputStream
+        //Optional<Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
+
+        //return documentDatabaseOptional.map(value -> (S1) this.documentWrapperConverter.convertToEntityAttribute(value)).orElse(null);
+        return (S1) this.documentWrapperConverter.convertToEntityAttribute(documentDatabase);
+    }
+
+    @Override
+    public Optional<DocumentWrapper> findById(UUID uuid) {
+        return Optional.of(this.documentWrapperConverter.convertToEntityAttribute(this.documentService.findById(uuid).get()));
     }
 
     @Override
@@ -130,25 +149,6 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
     @Override
     public DocumentWrapper getById(UUID uuid) {
         return this.documentWrapperConverter.convertToEntityAttribute(this.documentService.getById(uuid));
-    }
-
-    @Override
-    public <S1 extends DocumentWrapper> S1 save(S1 entity) {
-        Document document = this.documentWrapperConverter.convertToDatabaseColumn(entity);
-
-        // Internally the BLOB is consumed, so if we use the same instance to return an exception will be thrown
-        // java.sql.SQLException: could not reset reader
-        Document documentDatabase = this.documentService.save(document);
-
-        // This seems silly, but is necessary to update the Blob and its InputStream
-        Optional<Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
-
-        return documentDatabaseOptional.map(value -> (S1) this.documentWrapperConverter.convertToEntityAttribute(value)).orElse(null);
-    }
-
-    @Override
-    public Optional<DocumentWrapper> findById(UUID uuid) {
-        return Optional.of(this.documentWrapperConverter.convertToEntityAttribute(this.documentService.findById(uuid).get()));
     }
 
     @Override

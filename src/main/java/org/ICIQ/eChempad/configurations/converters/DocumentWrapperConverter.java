@@ -7,6 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,8 +42,7 @@ import java.sql.Blob;
  * Also, the class is annotated with {@code @Converter} to make the warning about an {@code AttributeConverter}
  * not being annotated with {@code Converter} disappear.
  */
-@Repository
-@Transactional
+@Component
 @Converter
 public class DocumentWrapperConverter implements AttributeConverter<DocumentWrapper, Document>, Serializable {
 
@@ -73,13 +73,12 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
      * {@code DocumentWrapper}.
      * @return {@code DocumentWrapper} containing all data of the supplied {@code Document}
      */
-    @Override
     @Transactional
+    @Override
     public DocumentWrapper convertToEntityAttribute(Document document) {
 
         DocumentWrapper documentWrapper = new DocumentWrapper();
-        String name = document.getName();
-        documentWrapper.setName(name);
+        documentWrapper.setName(document.getName());
         documentWrapper.setDescription(document.getDescription());
         documentWrapper.setId(document.getId());
 
@@ -103,8 +102,8 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
      * into the return {@code Document}.
      * @return {@code Document} containing all data of the supplied {@code DocumentWrapper}
      */
-    @Override
     @Transactional
+    @Override
     public Document convertToDatabaseColumn(DocumentWrapper documentWrapper) {
         Document document = new Document();
 
@@ -123,9 +122,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
             e.printStackTrace();
         }
 
-
         document.setBlob(blob);
-
 
         return document;
     }

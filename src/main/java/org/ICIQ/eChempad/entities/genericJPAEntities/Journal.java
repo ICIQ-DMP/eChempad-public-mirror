@@ -13,6 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -56,7 +57,7 @@ public class Journal extends JPAEntityImpl {
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL
     )
-    private Set<Experiment> experiments;
+    private Set<Experiment> experiments = new HashSet<>();
 
     public Journal() {}
 
