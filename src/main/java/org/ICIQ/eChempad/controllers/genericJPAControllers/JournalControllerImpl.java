@@ -15,6 +15,7 @@ import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
@@ -42,7 +43,7 @@ public class JournalControllerImpl<T extends JPAEntityImpl, S extends Serializab
             value = "/{id}",
             produces = "application/json"
     )
-    @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.Journal' , 'DELETE')")
+    @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal', 'DELETE')")
     @ResponseStatus(HttpStatus.OK)
     @Override
     public Journal remove(@PathVariable UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {

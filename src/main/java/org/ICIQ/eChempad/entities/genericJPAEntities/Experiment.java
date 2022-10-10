@@ -49,9 +49,8 @@ public class Experiment extends JPAEntityImpl {
             fetch = FetchType.EAGER,
             orphanRemoval = true  // cascade = CascadeType.ALL
     )
-    private Set<Document> documents;
+    private Set<Document> documents = new HashSet<>();;
 
-    @JsonIgnore
     @ManyToOne(
             fetch = FetchType.EAGER,
             optional = true
@@ -61,6 +60,7 @@ public class Experiment extends JPAEntityImpl {
             referencedColumnName = "id",
             nullable = true
     )
+    @JsonIgnore
     private Journal journal;
 
     public Experiment() {}

@@ -9,6 +9,7 @@ import org.ICIQ.eChempad.repositories.genericJPARepositories.ExperimentRepositor
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericServiceImpl;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -57,12 +58,10 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public Set<DocumentWrapper> getDocumentsFromExperiment(UUID experiment_uuid) {
-        return this.documentService.getDocumentsFromExperiment(experiment_uuid).stream().map(
-                document ->
-                {
-                    return this.documentWrapperConverter.convertToEntityAttribute(document);
-                }
-        ).collect(Collectors.toSet());
+        return this.documentService.getDocumentsFromExperiment(experiment_uuid)
+                .stream()
+                .map(this.documentWrapperConverter::convertToEntityAttribute)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -80,7 +79,6 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
     }
 
     // Delegated methods to Document Service, which in turns delegates to JPA repository.
-
     @Override
     public List<DocumentWrapper> findAll() {
         return this.documentService.findAll().stream().map(
@@ -95,6 +93,37 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
                 this.documentWrapperConverter::convertToEntityAttribute
 
         ).collect(Collectors.toList());
+    }
+
+    @Override
+    public <S1 extends DocumentWrapper> S1 save(S1 entity) {
+        Document document = this.documentWrapperConverter.convertToDatabaseColumn(entity);
+
+        // Internally the BLOB is consumed, so if we use the same instance to return an exception will be thrown
+        // java.sql.SQLException: could not reset reader
+        Document documentDatabase = this.documentService.save(document);
+
+        // This seems silly, but is necessary to update the Blob and its InputStream
+        Optional<Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
+
+        return documentDatabaseOptional.map(value -> (S1) this.documentWrapperConverter.convertToEntityAttribute(value)).orElse(null);
+    }
+
+    @Override
+    public Optional<DocumentWrapper> findById(UUID uuid) {
+
+        Optional<Document> opt = this.documentService.findById(uuid);
+        Document document;
+        if (opt.isPresent())
+        {
+            document = opt.get();
+        }
+        else
+        {
+            return Optional.empty();  // TODO throw except
+        }
+
+        return Optional.of(this.documentWrapperConverter.convertToEntityAttribute(document));
     }
 
     @Override
@@ -131,25 +160,6 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
     @Override
     public DocumentWrapper getById(UUID uuid) {
         return this.documentWrapperConverter.convertToEntityAttribute(this.documentService.getById(uuid));
-    }
-
-    @Override
-    public <S1 extends DocumentWrapper> S1 save(S1 entity) {
-        Document document = this.documentWrapperConverter.convertToDatabaseColumn(entity);
-
-        // Internally the BLOB is consumed, so if we use the same instance to return an exception will be thrown
-        // java.sql.SQLException: could not reset reader
-        Document documentDatabase = this.documentService.save(document);
-
-        // This seems silly, but is necessary to update the Blob and its InputStream
-        Optional<Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
-
-        return documentDatabaseOptional.map(value -> (S1) this.documentWrapperConverter.convertToEntityAttribute(value)).orElse(null);
-    }
-
-    @Override
-    public Optional<DocumentWrapper> findById(UUID uuid) {
-        return Optional.of(this.documentWrapperConverter.convertToEntityAttribute(this.documentService.findById(uuid).get()));
     }
 
     @Override
@@ -293,4 +303,8 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
         return this.documentService.exists(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
     }
 
+    @Override
+    public @NotNull DocumentWrapper getOne(@NotNull UUID uuid) {
+        return null;
+    }
 }

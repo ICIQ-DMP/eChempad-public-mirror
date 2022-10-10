@@ -60,10 +60,10 @@ public class Document extends JPAEntityImpl{
     @JsonIgnore
     protected Experiment experiment;
 
+    @JsonIgnore
     @Column
     @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Lazy
+    @Basic(fetch = FetchType.EAGER)
     protected Blob blob;
 
     public Document() {}

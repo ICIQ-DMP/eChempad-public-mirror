@@ -13,6 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ import java.util.UUID;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Journal.class)
+
 public class Journal extends JPAEntityImpl {
     /*
      * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
@@ -53,9 +55,9 @@ public class Journal extends JPAEntityImpl {
             targetEntity = Experiment.class,
             mappedBy = "journal",
             fetch = FetchType.EAGER,
-            orphanRemoval = true  // cascade = CascadeType.ALL  https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working
+            orphanRemoval = true  // cascade = CascadeType.ALL
     )
-    private Set<Experiment> experiments;
+    private Set<Experiment> experiments = new HashSet<>();
 
     public Journal() {}
 
@@ -133,7 +135,7 @@ public class Journal extends JPAEntityImpl {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", experiments=" + experiments +
                 '}';
     }
-
 }

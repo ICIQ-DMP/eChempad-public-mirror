@@ -5,7 +5,7 @@
  * | This software is the property of ICIQ.                                            |
  * |===================================================================================|
  */
-package org.ICIQ.eChempad.configurations.utilities;
+package org.ICIQ.eChempad.configurations.security.ACL;
 
 import org.springframework.security.acls.model.Permission;
 

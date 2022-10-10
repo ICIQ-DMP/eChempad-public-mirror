@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.entities.genericJPAEntities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.springframework.http.MediaType;
@@ -29,6 +30,7 @@ public class DocumentWrapper extends JPAEntityImpl {
 
     private String description;
 
+    @JsonIgnore
     private MultipartFile file;
 
     public DocumentWrapper() {

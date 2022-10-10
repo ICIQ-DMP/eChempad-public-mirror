@@ -49,7 +49,7 @@ public class ResearcherControllerImpl<T extends JPAEntityImpl, S extends Seriali
             value = "/{id}",
             produces = "application/json"
     )
-    @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.Researcher' , 'DELETE')")
+    @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Researcher' , 'DELETE')")
     @ResponseStatus(HttpStatus.OK)
     @Override
     public Researcher remove(@PathVariable UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {

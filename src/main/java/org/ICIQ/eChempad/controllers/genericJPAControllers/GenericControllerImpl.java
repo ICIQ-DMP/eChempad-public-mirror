@@ -64,7 +64,16 @@ public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends S
     public T get(@PathVariable S id) throws ResourceNotExistsException {
         Optional<T> opt = this.genericService.findById(id);
 
-        return opt.orElse(null);
+        Logger.getGlobal().warning(opt.get().toString());  // TODO
+
+        if (opt.isPresent())
+        {
+            return opt.get();
+        }
+        else
+        {
+            throw new ResourceNotExistsException();
+        }
     }
 
     @PostMapping(
@@ -86,11 +95,14 @@ public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends S
             produces = "application/json",
             consumes = "application/json"
     )
-    @PreAuthorize("hasPermission(#t.getType().getCanonicalName(), 'WRITE')")
+    @PreAuthorize("hasPermission(#id, #t.getType().getCanonicalName(), 'WRITE')")
     @ResponseStatus(HttpStatus.OK)
     @Override
     public T put(@Validated @RequestBody T t, @PathVariable(value = "id") S id) throws ResourceNotExistsException, NotEnoughAuthorityException {
         t.setId(id);
+
+        Logger.getGlobal().warning("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ" + t.toString());
+
         return this.genericService.save(t);
     }
 

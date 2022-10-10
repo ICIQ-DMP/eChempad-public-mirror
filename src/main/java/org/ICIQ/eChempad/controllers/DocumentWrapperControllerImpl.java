@@ -71,7 +71,15 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     @Override
     public DocumentWrapper get(@PathVariable UUID id) throws ResourceNotExistsException {
         Optional<DocumentWrapper> opt = this.documentWrapperService.findById(id);
-        return opt.orElse(null);
+
+        if (opt.isPresent())
+        {
+            return opt.get();
+        }
+        else
+        {
+            throw new ResourceNotExistsException();
+        }
     }
 
 
