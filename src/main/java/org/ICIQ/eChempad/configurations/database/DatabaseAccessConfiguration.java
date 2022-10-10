@@ -15,6 +15,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class DatabaseAccessConfiguration {
+    /**
+     * Contains the 
+     */
     @Value("${eChempad.db.driver}")
     private String driver;
 
@@ -46,8 +49,6 @@ public class DatabaseAccessConfiguration {
     private String sessionContext;
 
     public DatabaseAccessConfiguration() {}
-
-
 
     public String getDriver() {
         return driver;
