@@ -33,13 +33,15 @@ public class DocumentServiceImpl<T extends JPAEntityImpl, S extends Serializable
         Experiment experiment = super.entityManager.getReference(Experiment.class, experiment_uuid);
 
         // Set the journal of this experiment and sav experiment. Save is cascaded
+        document.setExperiment(experiment);
         Document documentDB = this.genericRepository.save(document);
 
         // Add all permissions to document for the current user, and set also inheriting entries for parent experiment
-        this.aclRepository.addAllPermissionToLoggedUserInEntity(documentDB, true, experiment, Document.class);
+        this.aclRepository.addAllPermissionToLoggedUserInEntity(documentDB, true, experiment, Experiment.class);
 
         return documentDB;
     }
+
 
     @Override
     public Set<Document> getDocumentsFromExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {

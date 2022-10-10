@@ -104,15 +104,26 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
         Document documentDatabase = this.documentService.save(document);
 
         // This seems silly, but is necessary to update the Blob and its InputStream
-        //Optional<Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
+        Optional<Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
 
-        //return documentDatabaseOptional.map(value -> (S1) this.documentWrapperConverter.convertToEntityAttribute(value)).orElse(null);
-        return (S1) this.documentWrapperConverter.convertToEntityAttribute(documentDatabase);
+        return documentDatabaseOptional.map(value -> (S1) this.documentWrapperConverter.convertToEntityAttribute(value)).orElse(null);
     }
 
     @Override
     public Optional<DocumentWrapper> findById(UUID uuid) {
-        return Optional.of(this.documentWrapperConverter.convertToEntityAttribute(this.documentService.findById(uuid).get()));
+
+        Optional<Document> opt = this.documentService.findById(uuid);
+        Document document;
+        if (opt.isPresent())
+        {
+            document = opt.get();
+        }
+        else
+        {
+            return Optional.empty();  // TODO throw except
+        }
+
+        return Optional.of(this.documentWrapperConverter.convertToEntityAttribute(document));
     }
 
     @Override

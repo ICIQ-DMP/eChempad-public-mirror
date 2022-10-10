@@ -64,7 +64,16 @@ public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends S
     public T get(@PathVariable S id) throws ResourceNotExistsException {
         Optional<T> opt = this.genericService.findById(id);
 
-        return opt.orElse(null);
+        Logger.getGlobal().warning(opt.get().toString());  // TODO
+
+        if (opt.isPresent())
+        {
+            return opt.get();
+        }
+        else
+        {
+            throw new ResourceNotExistsException();
+        }
     }
 
     @PostMapping(

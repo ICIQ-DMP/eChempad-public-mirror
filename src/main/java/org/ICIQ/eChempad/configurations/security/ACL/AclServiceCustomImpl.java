@@ -7,9 +7,9 @@
  */
 package org.ICIQ.eChempad.configurations.security.ACL;
 
-import org.ICIQ.eChempad.configurations.utilities.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
@@ -19,11 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @Repository
@@ -32,6 +30,9 @@ public class AclServiceCustomImpl implements AclService{
 
     @Autowired
     private MutableAclService aclService;
+
+    @Autowired
+    private PermissionEvaluator permissionEvaluator;
 
     /**
      * We assume that the security context is full

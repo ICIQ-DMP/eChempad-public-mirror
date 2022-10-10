@@ -78,6 +78,8 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     public DocumentWrapper convertToEntityAttribute(Document document) {
 
         DocumentWrapper documentWrapper = new DocumentWrapper();
+
+        documentWrapper.setId(document.getId());
         documentWrapper.setName(document.getName());
         documentWrapper.setDescription(document.getDescription());
         documentWrapper.setId(document.getId());
@@ -107,6 +109,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     public Document convertToDatabaseColumn(DocumentWrapper documentWrapper) {
         Document document = new Document();
 
+        document.setId(documentWrapper.getId());
         document.setName(documentWrapper.getName());
         document.setDescription(documentWrapper.getDescription());
         document.setId(documentWrapper.getId());
