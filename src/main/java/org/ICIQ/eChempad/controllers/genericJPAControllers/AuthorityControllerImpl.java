@@ -42,7 +42,7 @@ public class AuthorityControllerImpl<T extends JPAEntityImpl, S extends Serializ
             value = "/{id}",
             produces = "application/json"
     )
-    @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.Authority' , 'DELETE')")
+    @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Authority' , 'DELETE')")
     @ResponseStatus(HttpStatus.OK)
     @Override
     public Authority remove(@PathVariable UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {

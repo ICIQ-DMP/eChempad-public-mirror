@@ -7,9 +7,9 @@
  */
 package org.ICIQ.eChempad.configurations.security.ACL;
 
-import org.ICIQ.eChempad.configurations.utilities.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
@@ -19,11 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @Repository
@@ -32,6 +30,9 @@ public class AclServiceCustomImpl implements AclService{
 
     @Autowired
     private MutableAclService aclService;
+
+    @Autowired
+    private PermissionEvaluator permissionEvaluator;
 
     /**
      * We assume that the security context is full
@@ -74,34 +75,6 @@ public class AclServiceCustomImpl implements AclService{
         // Now grant some permissions via an access control entry (ACE)
         acl.insertAce(acl.getEntries().size(), setPermission, sid, true);
         aclService.updateAcl(acl);
-    }
-
-    @Transactional
-    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity)
-    {
-        // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
-
-        // Obtain the identity of the user
-        UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Sid sid = new PrincipalSid(u.getUsername());
-
-        // Create or update the relevant ACL
-        MutableAcl acl;
-        try {
-            acl = (MutableAcl) this.aclService.readAclById(objectIdentity);
-        } catch (NotFoundException nfe) {
-            acl = this.aclService.createAcl(objectIdentity);
-        }
-
-        // Now grant some permissions via an access control entry (ACE)
-        Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
-        while (it.hasNext())
-        {
-            acl.insertAce(acl.getEntries().size(), it.next(), sid, true);
-        }
-
-        this.aclService.updateAcl(acl);
     }
 
     @Transactional
@@ -166,31 +139,6 @@ public class AclServiceCustomImpl implements AclService{
     public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission)
     {
         this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-    }
-
-    /**
-     * We assume that the security context is full
-     */
-    public void addGenericAclPermissions(Class<?> theType, Permission permission)
-    {
-        // ACL code
-        // Prepare the information we'd like in our access control entry (ACE)
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(theType, (Serializable) UUID.randomUUID());
-
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Sid sid = new PrincipalSid(userDetails.getUsername());
-
-        // Create or update the relevant ACL
-        MutableAcl acl;
-        try {
-            acl = (MutableAcl) aclService.readAclById(objectIdentity);
-        } catch (NotFoundException nfe) {
-            acl = aclService.createAcl(objectIdentity);
-        }
-
-        // Now grant some permissions via an access control entry (ACE)
-        acl.insertAce(acl.getEntries().size(), permission, sid, true);
-        aclService.updateAcl(acl);
     }
 
 
@@ -267,11 +215,7 @@ public class AclServiceCustomImpl implements AclService{
      * {@link ObjectIdentity}
      */
     public Acl readAclById(ObjectIdentity object, List<Sid> sids) throws NotFoundException {
-        MutableAcl acl = (MutableAcl) aclService.readAclById(object, sids);
-
-
-        System.out.println(acl.getEntries());
-        return acl;
+        return aclService.readAclById(object, sids);
     }
 
     /**

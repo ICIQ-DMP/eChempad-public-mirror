@@ -7,7 +7,7 @@
  */
 package org.ICIQ.eChempad.configurations.database;
 
-import org.ICIQ.eChempad.configurations.utilities.PermissionBuilder;
+import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
