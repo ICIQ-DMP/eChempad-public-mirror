@@ -25,6 +25,13 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
+ * @author Institut Català d'Investigació Química (iciq.cat)
+ * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
+ * @author Carles Bo Jané (cbo@iciq.es)
+ * @author Moisés Álvarez (malvarez@iciq.es)
+ * @version 1.0
+ * @since 10/10/2022
+ *
  * This class defines the beans used to configure the access to the database taking in count the ACL implementation.
  * The data that the beans use is autowired from the class {@code DatabaseAccessConfiguration}, which reads all data
  * from {@code application.properties} file.

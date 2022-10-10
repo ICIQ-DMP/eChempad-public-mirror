@@ -28,7 +28,7 @@ import java.sql.Blob;
  * @author Carles Bo Jané (cbo@iciq.es)
  * @author Moisés Álvarez (malvarez@iciq.es)
  * @version 1.0
- * @since 04/10/2022
+ * @since 10/10/2022
  *
  * This class provides two methods to bidirectionally transform instances of {@code Document} and
  * {@code DocumentWrapper} entity types.
