@@ -16,7 +16,7 @@
 <link rel="alternate" type="application/rdf+xml" href="rdf" />
 <script type="text/javascript">
 function setCookie(name, value, expires, path, domain, secure) {
-    document.cookie= name + "=" + escape(value) +
+    documentWrapper.cookie= name + "=" + escape(value) +
         ((expires) ? "; expires=" + expires.toGMTString() : "") +
         ((path) ? "; path=" + path : "") +
         ((domain) ? "; domain=" + domain : "") +
@@ -34,7 +34,7 @@ setCookie('lang','%s', expiry, '/');
 <script src="https://www.googleoptimize.com/optimize.js?id=OPT-K7PLVT5"></script>
 
 
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-5F5HKGX');</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,documentWrapper,'script','dataLayer','GTM-5F5HKGX');</script>
 
 </head>
 <body typeof="cc:License" about="http://creativecommons.org/publicdomain/zero/1.0/" class="license ltr ">
@@ -615,7 +615,7 @@ PO Box 1866, Mountain View, CA 94042
   </script>
 <script type="text/javascript">
     //<![CDATA[
-    $(document).ready(function () {
+    $(documentWrapper).ready(function () {
       $('#deed-donate-slide').addClass('slider');
       $('#deed-donate-slide').show();
       // Set banner to reveal after X seconds
@@ -636,7 +636,7 @@ PO Box 1866, Mountain View, CA 94042
       });
 
       /* Close slider on pressing ESC */
-      $(document).keyup(function (e) {
+      $(documentWrapper).keyup(function (e) {
         if (e.keyCode === 27) {
           $('#deed-donate-slide').remove();
         }
@@ -656,15 +656,15 @@ PO Box 1866, Mountain View, CA 94042
     _gaq.push(['_trackPageview']);
 
     (function () {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      var ga = documentWrapper.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == documentWrapper.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = documentWrapper.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
 //]]>
   </script>
 <script type="text/javascript">
     //<![CDATA[
-    $(document).ready(function () {
+    $(documentWrapper).ready(function () {
       $('#deed .helpLink').each(function (index, helpLinkElem) {
         var helpId = $(helpLinkElem).attr('id');
         var popupId = helpId ? 'help_' + helpId : undefined;

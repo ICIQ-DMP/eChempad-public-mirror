@@ -65,12 +65,12 @@ dt:hover > .headerlink, p:hover > .headerlink, td:hover > .headerlink, h1:hover 
                   <script>
                     (function() {
                     var cx = '005703438322411770421:5mgshgrgx2u';
-                    var gcse = document.createElement('script');
+                    var gcse = documentWrapper.createElement('script');
                     gcse.type = 'text/javascript';
                     gcse.async = true;
-                    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+                    gcse.src = (documentWrapper.location.protocol == 'https:' ? 'https:' : 'http:') +
                     '//cse.google.com/cse.js?cx=' + cx;
-                    var s = document.getElementsByTagName('script')[0];
+                    var s = documentWrapper.getElementsByTagName('script')[0];
                     s.parentNode.insertBefore(gcse, s);
                     })();
                   </script>
@@ -495,7 +495,7 @@ Agreements</a> page.</p>
   <script src="/js/slideshow.js"></script>
   <script>
     (function($){
-    $(document).ready(function(){
+    $(documentWrapper).ready(function(){
     $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
     event.preventDefault();
     event.stopPropagation();

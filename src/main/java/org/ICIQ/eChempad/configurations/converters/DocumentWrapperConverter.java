@@ -1,14 +1,9 @@
 package org.ICIQ.eChempad.configurations.converters;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.services.LobService;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.mock.web.MockMultipartFile;
@@ -44,7 +39,7 @@ import java.sql.Blob;
  */
 @Component
 @Converter
-public class DocumentWrapperConverter implements AttributeConverter<DocumentWrapper, Document>, Serializable {
+public class DocumentWrapperConverter implements AttributeConverter<DocumentWrapper, org.ICIQ.eChempad.entities.genericJPAEntities.Document>, Serializable {
 
     /**
      * Service used to manipulate LOBs from the database. It allows creation and reading of LOBs.
@@ -75,7 +70,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
      */
     @Transactional
     @Override
-    public DocumentWrapper convertToEntityAttribute(Document document) {
+    public DocumentWrapper convertToEntityAttribute(org.ICIQ.eChempad.entities.genericJPAEntities.Document document) {
 
         DocumentWrapper documentWrapper = new DocumentWrapper();
 
@@ -107,8 +102,8 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
      */
     @Transactional
     @Override
-    public Document convertToDatabaseColumn(DocumentWrapper documentWrapper) {
-        Document document = new Document();
+    public org.ICIQ.eChempad.entities.genericJPAEntities.Document convertToDatabaseColumn(DocumentWrapper documentWrapper) {
+        org.ICIQ.eChempad.entities.genericJPAEntities.Document document = new org.ICIQ.eChempad.entities.genericJPAEntities.Document();
 
         document.setId(documentWrapper.getId());
         document.setName(documentWrapper.getName());

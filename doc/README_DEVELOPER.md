@@ -420,6 +420,7 @@ For further reference, please consider the following sections:
 * [Disable CSRF depending on application.properties](https://www.yawintutor.com/how-to-enable-and-disable-csrf/)
 * [PostGreSQL + ACL with UUID SQL schema](https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/appendix-schema.html)
 * [Cascade entity removal](https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working)
-* [How to use JavaDoc](https://www.dummies.com/article/technology/programming-web-design/java/how-to-use-javadoc-to-document-your-classes-153265/)
+* [How to use JavaDoc](https://www.dummies.com/article/technology/programming-web-design/java/how-to-use-javadoc-to-documentWrapper-your-classes-153265/)
 * [hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path](https://stackoverflow.com/questions/53199558/hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path)
 * [Field injection is not recommended and injection types in Spring Boot](https://blog.marcnuri.com/field-injection-is-not-recommended)
+* [How to ignore Null fields in Jackson](https://stackoverflow.com/questions/11757487/how-to-tell-jackson-to-ignore-a-field-during-serialization-if-its-value-is-null)

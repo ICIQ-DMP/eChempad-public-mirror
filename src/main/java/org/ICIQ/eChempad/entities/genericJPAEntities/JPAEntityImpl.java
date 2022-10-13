@@ -10,6 +10,7 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
 
 // To deserialize generics
 @JsonTypeInfo(

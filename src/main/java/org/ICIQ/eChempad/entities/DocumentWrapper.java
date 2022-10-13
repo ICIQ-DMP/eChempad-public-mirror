@@ -1,8 +1,9 @@
-package org.ICIQ.eChempad.entities.genericJPAEntities;
+package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,6 +81,7 @@ public class DocumentWrapper extends JPAEntityImpl {
     {
         return MediaType.parseMediaType(Objects.requireNonNull(this.file.getContentType()));
     }
+
 
     @Override
     public String toString() {

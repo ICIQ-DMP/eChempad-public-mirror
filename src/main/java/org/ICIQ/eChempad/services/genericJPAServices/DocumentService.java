@@ -1,14 +1,9 @@
 package org.ICIQ.eChempad.services.genericJPAServices;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
-import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
-import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.springframework.core.io.Resource;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Set;
 import java.util.UUID;
 

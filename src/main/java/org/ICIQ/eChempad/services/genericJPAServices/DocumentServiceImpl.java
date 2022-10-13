@@ -1,21 +1,14 @@
 package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.DocumentRepository;
-import org.ICIQ.eChempad.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.Set;
 import java.util.UUID;
 

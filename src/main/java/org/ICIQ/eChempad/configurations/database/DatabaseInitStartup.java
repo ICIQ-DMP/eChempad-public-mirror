@@ -115,12 +115,12 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         // If the user is not in the DB create it
         if (this.researcherService.loadUserByUsername(researcher.getUsername()) == null)
         {
-            // Save of the authority is cascaded
-            researcher = this.researcherService.save(researcher);
-
             // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
-            Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), null, researcher.getAuthorities());
+            Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
+
+            // Save of the authority is cascaded
+            this.researcherService.save(researcher);
 
             // Insert role ROLE_ADMIN and ROLE_USER in the db, in acl_sid
             this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));

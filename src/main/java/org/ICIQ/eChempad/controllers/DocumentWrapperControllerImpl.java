@@ -1,9 +1,7 @@
 package org.ICIQ.eChempad.controllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.configurations.wrappers.UploadFileResponse;
-import org.ICIQ.eChempad.controllers.genericJPAControllers.GenericControllerImpl;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -22,13 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/document")
@@ -36,7 +32,6 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
 
     @Autowired
     DocumentWrapperService<DocumentWrapper, UUID> documentWrapperService;
-
 
     /**
      * return the entity class of this generic repository.
@@ -59,8 +54,6 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
     public Set<DocumentWrapper> getAll() {
         return new HashSet<>(this.documentWrapperService.findAll());
     }
-
-
 
     @GetMapping(
             value = "/{id}",
@@ -156,18 +149,18 @@ public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Se
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     @PreAuthorize("hasPermission(#experiment_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Experiment' , 'WRITE')")
-    public UploadFileResponse addDocumentToExperiment(@ModelAttribute("Document") DocumentWrapper document, @PathVariable UUID experiment_id) throws ResourceNotExistsException, NotEnoughAuthorityException {
+    public UploadFileResponse addDocumentToExperiment(@ModelAttribute("Document") DocumentWrapper documentWrapper, @PathVariable UUID experiment_id) throws ResourceNotExistsException, NotEnoughAuthorityException {
 
-        DocumentWrapper document1 = this.documentWrapperService.addDocumentToExperiment(document, experiment_id);
+        DocumentWrapper documentWrapper1 = this.documentWrapperService.addDocumentToExperiment(documentWrapper, experiment_id);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/document/")
-                .path(document1.getId().toString())
+                .path(documentWrapper1.getId().toString())
                 .path("/data")
                 .toUriString();
 
-        return new UploadFileResponse(document.getName(), fileDownloadUri,
-                document.getFile().getContentType(), document.getFile().getSize());
+        return new UploadFileResponse(documentWrapper.getName(), fileDownloadUri,
+                documentWrapper.getFile().getContentType(), documentWrapper.getFile().getSize());
     }
 
     @Override
