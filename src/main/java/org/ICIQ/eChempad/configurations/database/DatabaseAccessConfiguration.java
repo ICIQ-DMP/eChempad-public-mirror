@@ -11,43 +11,84 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * @author Institut Català d'Investigació Química (iciq.cat)
+ * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
+ * @author Carles Bo Jané (cbo@iciq.es)
+ * @author Moisés Álvarez (malvarez@iciq.es)
+ * @version 1.0
+ * @since 10/10/2022
+ *
  * Contains (and collects) all data coming from application.properties regarding database config.
  */
 @Configuration
 public class DatabaseAccessConfiguration {
+    /**
+     * Contains the {@code String} that identifies a database driver that is used for the database.
+     */
     @Value("${eChempad.db.driver}")
     private String driver;
 
+    /**
+     * Contains the {@code String} that identifies an SQL dialect that is used for the database.
+     */
     @Value("${eChempad.db.dialect}")
     private String dialect;
 
+    /**
+     * Contains the URL used to connect to the database.
+     */
     @Value("${eChempad.db.url}")
     private String url;
 
+    /**
+     * Contains the username used for the database connection.
+     */
     @Value("${eChempad.db.username}")
     private String username;
 
+    /**
+     * Contains the password used for the database connection.
+     */
     @Value("${eChempad.db.password}")
     private String password;
 
+    /**
+     * Determines the policy regarding database tables every time the application is started. This configuration is used
+     * to choose if we need to upgrade our schema if there are changes, drop it, do nothing...
+     * It can be set to create-drop, create, update or none. This option exists as a developer utility, so it should not
+     * be used in production.
+     */
     @Value("${eChempad.db.policy}")
     private String policy;
 
+    /**
+     * Determines if SQL is logged into the console. Should be set to false in production.
+     */
     @Value("${eChempad.db.show-sql}")
     private boolean showSQL;
 
+    /**
+     * Determines if the SQL is formatted into the console.
+     */
     @Value("${eChempad.db.format_sql}")
     private boolean formatSQL;
 
+    /**
+     * Contains an {@code String} that determines the strategy to use when naming columns and tables in the database
+     * side regarding the names of the corresponding variables in the code. This is because JPA provides an abstraction
+     * over entities in the database, and so it needs a way to name the table that is created for a JPA entity.
+     */
     @Value("${eChempad.db.naming_strategy}")
     private String namingStrategy;
 
+    /**
+     * Determines at what level the Session should be bounded to the code. You can have a {@code Session} for each
+     * process, for each thread or for each request.
+     */
     @Value("${eChempad.db.sessionContext}")
     private String sessionContext;
 
     public DatabaseAccessConfiguration() {}
-
-
 
     public String getDriver() {
         return driver;

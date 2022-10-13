@@ -63,9 +63,6 @@ public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends S
     @Override
     public T get(@PathVariable S id) throws ResourceNotExistsException {
         Optional<T> opt = this.genericService.findById(id);
-
-        Logger.getGlobal().warning(opt.get().toString());  // TODO
-
         if (opt.isPresent())
         {
             return opt.get();
@@ -106,12 +103,7 @@ public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends S
         return this.genericService.save(t);
     }
 
-    /*
-     * Delete has to be hardcoded on each class because we do not have the information of the erasure. We actually do,
-     * this information is in the URL mapping in runtime, but I do not know how to reference that information from the
-     * Spring Security expression that controls the authorization.
-     */
-/*
+
     @DeleteMapping(
             value = "/{id}",
             produces = "application/json"
@@ -128,5 +120,4 @@ public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends S
         else
             throw new ResourceNotExistsException();
     }
-    */
 }

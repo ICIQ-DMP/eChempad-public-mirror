@@ -27,7 +27,6 @@ public class ResearcherServiceImpl<T extends JPAEntityImpl, S extends Serializab
 
     @Override
     public Researcher loadUserByUsername(String email) {
-        // @TODO retrieve user from DB but retrieve authorities from the ACL
         return ((ResearcherRepository<Researcher, UUID>) (super.genericRepository)).findByUsername(email);
     }
 

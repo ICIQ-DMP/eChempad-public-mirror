@@ -28,7 +28,7 @@ import java.sql.Blob;
  * @author Carles Bo Jané (cbo@iciq.es)
  * @author Moisés Álvarez (malvarez@iciq.es)
  * @version 1.0
- * @since 04/10/2022
+ * @since 10/10/2022
  *
  * This class provides two methods to bidirectionally transform instances of {@code Document} and
  * {@code DocumentWrapper} entity types.
@@ -63,7 +63,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     /**
      * Creates a {@code DocumentWrapper} detached instance from the data of the supplied {@code Document}
      *
-     * If in this method we get a {@code java.sql.SQLException: coulnot reset reader} it is caused by the implementation
+     * If in this method we get a {@code java.sql.SQLException: could not reset reader} it is caused by the implementation
      * of LOB types by Hibernate. In our case the implementation only allows to read the {@code InputStream} from
      * the LOB once. If the read is tried again this {@code Exception} will show up. To solve it, provide a "fresh" instance
      * of {@code Document} before calling any of the two methods in this class. You can do it by calling the
@@ -100,6 +100,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
 
     /**
      * Creates a {@code Document} detached instance from the data of the supplied {@code DocumentWrapper}
+     *
      * @param documentWrapper Entity presumably coming from outside our application, which contains the data to bulk
      * into the return {@code Document}.
      * @return {@code Document} containing all data of the supplied {@code DocumentWrapper}
