@@ -23,9 +23,7 @@ import java.util.*;
  * Used to store information about the researcher that is using the application. It includes all relevant data
  * associated with the logged user, such as password, email, keys associated with its account, etc.
  *
- * This class is a database entity, but it is also used as mould for serializing and deserializing. A relevant
- * annotation regarding this matter is the annotation {@code @JsonInclude(JsonInclude.Include.NON_NULL)}, which makes
- * Jackson ignore null fields when deserializing into a memory entity.
+ * This class is a database entity, but it is also used as mould for serializing and deserializing.
  */
 @Entity
 @Table(
@@ -37,7 +35,6 @@ import java.util.*;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Researcher.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Researcher extends JPAEntityImpl {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(

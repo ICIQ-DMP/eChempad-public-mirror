@@ -2,7 +2,7 @@ package org.ICIQ.eChempad.services;
 
 import java.io.IOException;
 
-public class SignalsExportServiceImpl implements SignalsExportService{
+public class DataverseExportServiceImpl implements DataverseExportService {
     @Override
     public String bulkExport(String APIKey) throws IOException {
         return null;

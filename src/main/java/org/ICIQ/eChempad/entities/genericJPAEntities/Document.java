@@ -44,6 +44,7 @@ public class Document extends JPAEntityImpl{
     protected String originalFilename;
 
     @Column(length = 1000, nullable = false)
+    // TODO declare converter, if not the fields in the DB are binary !!
     protected MediaType contentType;
 
     @Column
