@@ -29,6 +29,15 @@ public interface GenericController <T extends JPAEntityImpl, S extends Serializa
 
     T add(T t);
 
+    /**
+     * Delete has to be hardcoded on each class because we do not have the information of the erasure. We actually do,
+     * this information is in the URL mapping in runtime, but I do not know how to reference that information from the
+     * Spring Security expression that controls the authorization.
+     * @param id Id of the entity that we want to remove
+     * @return The removed entity
+     * @throws ResourceNotExistsException Thrown if the resource does not exist.
+     * @throws NotEnoughAuthorityException Thrown if there is not enough authority to perform the action.
+     */
     T remove(S id) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
     T put(T t, S id) throws ResourceNotExistsException, NotEnoughAuthorityException;

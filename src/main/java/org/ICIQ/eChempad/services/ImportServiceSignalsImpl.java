@@ -53,8 +53,8 @@ public class ImportServiceSignalsImpl implements ImportServiceSignals {
     public void bulkImport() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("IMPORTED RESOURCES FROM SIGNALS NOTEBOOK: \n");
-        //this.getJournals(APIKey, stringBuilder);
-        //return stringBuilder.toString();
+        this.getJournals(APIKey, stringBuilder);
+        return stringBuilder.toString();
     }
     
     static void printJSON(ObjectNode objectNode)
