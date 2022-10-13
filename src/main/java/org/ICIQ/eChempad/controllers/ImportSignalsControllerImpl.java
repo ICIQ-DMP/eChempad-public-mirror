@@ -1,6 +1,6 @@
 package org.ICIQ.eChempad.controllers;
 
-import org.ICIQ.eChempad.services.ImportSignalsService;
+import org.ICIQ.eChempad.services.SignalsImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +14,13 @@ import java.io.IOException;
 public class ImportSignalsControllerImpl implements ImportSignalsController{
 
     @Autowired
-    private ImportSignalsService importSignalsService;
+    private SignalsImportService signalsImportService;
 
     @Override
     @GetMapping(value = "/bulk")
     public ResponseEntity<String> bulkImportSignals() {
         try {
-            return ResponseEntity.ok().body(this.importSignalsService.bulkImport());
+            return ResponseEntity.ok().body(this.signalsImportService.bulkImport());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,7 +31,7 @@ public class ImportSignalsControllerImpl implements ImportSignalsController{
     @GetMapping(value = "/bulkWithKey")
     public ResponseEntity<String> bulkImportSignals(String APIKey) {
         try {
-            return ResponseEntity.ok().body(this.importSignalsService.bulkImport(APIKey));
+            return ResponseEntity.ok().body(this.signalsImportService.bulkImport(APIKey));
         } catch (IOException e) {
             e.printStackTrace();
         }

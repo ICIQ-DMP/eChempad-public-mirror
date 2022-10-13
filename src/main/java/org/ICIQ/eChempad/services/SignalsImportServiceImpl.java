@@ -14,7 +14,6 @@ import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +33,7 @@ import java.util.logging.Logger;
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
 @Service
 @ConfigurationProperties(prefix = "signals")
-public class ImportSignalsServiceImpl implements ImportSignalsService {
+public class SignalsImportServiceImpl implements SignalsImportService {
 
     /**
      * The base URL of the Signals API.
@@ -154,7 +153,7 @@ public class ImportSignalsServiceImpl implements ImportSignalsService {
     public ObjectNode getJournal(String APIKey, int pageOffset)
     {
         return this.webClient.get()
-                .uri(ImportSignalsServiceImpl.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=owner&includeOptions=mine")
+                .uri(SignalsImportServiceImpl.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=owner&includeOptions=mine")
                 .header("x-api-key", APIKey)
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
@@ -214,7 +213,7 @@ public class ImportSignalsServiceImpl implements ImportSignalsService {
     public ObjectNode getExperimentFromJournal(String APIKey, int pageOffset, String journal_eid)
     {
         return this.webClient.get()
-                .uri(ImportSignalsServiceImpl.baseURL + "/entities/" + journal_eid + "/children?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&include=children%2C%20owner")
+                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + journal_eid + "/children?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&include=children%2C%20owner")
                 .header("x-api-key", APIKey)
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
@@ -297,7 +296,7 @@ public class ImportSignalsServiceImpl implements ImportSignalsService {
     public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
     {
         return this.webClient.get()
-                .uri(ImportSignalsServiceImpl.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + ((Integer) pageOffset) + "&page[limit]=1&include=children%2C%20owner")
+                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + ((Integer) pageOffset) + "&page[limit]=1&include=children%2C%20owner")
                 .header("x-api-key", APIKey)
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
@@ -306,7 +305,7 @@ public class ImportSignalsServiceImpl implements ImportSignalsService {
 
     public ByteArrayResource exportDocument(String APIKey, String document_eid, HttpHeaders receivedHeaders) throws IOException {
 
-        String url = ImportSignalsServiceImpl.baseURL + "/entities/" + document_eid + "/export";
+        String url = SignalsImportServiceImpl.baseURL + "/entities/" + document_eid + "/export";
 
         ResponseEntity<ByteArrayResource> responseEntity = this.webClient.get()
                 .uri(url)
