@@ -28,14 +28,14 @@ import javax.sql.DataSource;
 import java.util.Objects;
 
 /**
+ * This class contains the beans used in the manipulation of the ACL tables.
+ *
  * @author Institut Català d'Investigació Química (iciq.cat)
  * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
  * @author Carles Bo Jané (cbo@iciq.es)
  * @author Moisés Álvarez (malvarez@iciq.es)
  * @version 1.0
  * @since 04/10/2022
- *
- * This class contains the beans used in the manipulation of the ACL tables.
  */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -61,6 +61,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
      * Tuned ACL service to use UUID as object identity by invoking the {@code setClassIdentityQuery},
      * {@code setAclClassIdSupported} and {@code setSidIdentityQuery} methods of the {@code AclService}. This is used in
      * order to use UUIDs in the ACL classes.
+     *
      * @see <a href="https://github.com/spring-projects/spring-security/issues/7978">...</a>
      * @param dataSource Autowired default Datasource (postgreSQL)
      * @return A JdbcMutableService which implements the mutability of the ACL objects
@@ -80,6 +81,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     /**
      * Authorization strategy to authorize changes in the ACL tables.
+     *
      * @return Object that performs authorizations.
      */
     @Bean
@@ -89,6 +91,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     /**
      * To provide a {@code PermissionGrantingStrategy}, which is a component needed by the ACL infrastructure.
+     *
      * @return Object that performs permission granting.
      */
     @Bean
@@ -99,6 +102,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     /**
      * Cache implementation, which is needed by the ACL infrastructure in order to retrieve ACL entries in an efficient
      * way. In our case we provide an implementation with {@code EhCacheBasedAclCache} which is deprecated.
+     *
      * @return An object to manipulate a cache of ACLs.
      */
     @Bean
@@ -113,6 +117,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
 
     /**
      * Bean to provide a factory to create {@code EhCacheBasedAclCache}.
+     *
      * @return Object that provides a method to retrieve an {@code AclCache}.
      */
     @Bean
@@ -126,6 +131,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     /**
      * Bean to provide an {@code EhCacheManagerFactoryBean}, which is basically a factory class to create
      * {@code AclCache}.
+     *
      * @return Object to ease the creation of {@code AclCache}.
      */
     @Bean
@@ -137,8 +143,10 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
      * Bean to provide an optimized way to retrieve ACLs, using the ACL cache.
      * This class also has a little tuning for using UUID as identity of objects. This occurs when calling the
      * {@code setAclClassIdSupported} in the {@code LookupStrategy} object that we return.
+     *
      * @param dataSource Object abstracting the database.
      * @return Object that provides an optimized way to retrieve ACL entries.
+     * @see <a href="https://github.com/spring-projects/spring-security/issues/7978">...</a>
      */
     @Bean
     public LookupStrategy lookupStrategy(DataSource dataSource) {
@@ -148,7 +156,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
                 this.aclAuthorizationStrategy(),
                 new ConsoleAuditLogger()
         );
-        // To use UUIDs in the ACL classes, specified in https://github.com/spring-projects/spring-security/issues/7978
+
         lookupStrategy.setAclClassIdSupported(true);
         return lookupStrategy;
     }

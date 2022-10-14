@@ -18,24 +18,24 @@ import java.sql.Blob;
 
 
 /**
+ * This class provides two methods to bidirectionally transform instances of {@code Document} and
+ * {@code DocumentWrapper} entity types.
+ * <p>
+ * {@code Document} is the entity type used to store documents in the database, while {@code DocumentWrapper} is the
+ * entity used to transmit documents over the Internet.
+ * <p>
+ * This class implements the {@code AttributeConverter} interface for these two types. This models the functionality
+ * of our class and gives us the adequate contract to fulfill.
+ * <p>
+ * Also, the class is annotated with {@code @Converter} to make the warning about an {@code AttributeConverter}
+ * not being annotated with {@code Converter} disappear.
+ *
  * @author Institut Català d'Investigació Química (iciq.cat)
  * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
  * @author Carles Bo Jané (cbo@iciq.es)
  * @author Moisés Álvarez (malvarez@iciq.es)
  * @version 1.0
- * @since 10/10/2022
- *
- * This class provides two methods to bidirectionally transform instances of {@code Document} and
- * {@code DocumentWrapper} entity types.
- *
- * {@code Document} is the entity type used to store documents in the database, while {@code DocumentWrapper} is the
- * entity used to transmit documents over the Internet.
- *
- * This class implements the {@code AttributeConverter} interface for these two types. This models the functionality
- * of our class and gives us the adequate contract to fulfill.
- *
- * Also, the class is annotated with {@code @Converter} to make the warning about an {@code AttributeConverter}
- * not being annotated with {@code Converter} disappear.
+ * @since 1.0
  */
 @Component
 @Converter
@@ -48,6 +48,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
 
     /**
      * Autowired constructor.
+     *
      * @param lobService Service to manipulate LOBs.
      */
     @Autowired
@@ -56,8 +57,8 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     }
 
     /**
-     * Creates a {@code DocumentWrapper} detached instance from the data of the supplied {@code Document}
-     *
+     * Creates a {@code DocumentWrapper} detached instance from the data of the supplied {@code Document}.
+     * <p>
      * If in this method we get a {@code java.sql.SQLException: could not reset reader} it is caused by the implementation
      * of LOB types by Hibernate. In our case the implementation only allows to read the {@code InputStream} from
      * the LOB once. If the read is tried again this {@code Exception} will show up. To solve it, provide a "fresh" instance
@@ -94,7 +95,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     }
 
     /**
-     * Creates a {@code Document} detached instance from the data of the supplied {@code DocumentWrapper}
+     * Creates a {@code Document} detached instance from the data of the supplied {@code DocumentWrapper}.
      *
      * @param documentWrapper Entity presumably coming from outside our application, which contains the data to bulk
      * into the return {@code Document}.

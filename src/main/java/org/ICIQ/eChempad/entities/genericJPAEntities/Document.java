@@ -2,6 +2,7 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.ICIQ.eChempad.configurations.converters.MediaTypeConverter;
 import org.ICIQ.eChempad.configurations.converters.UUIDConverter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
@@ -13,6 +14,18 @@ import java.io.Serializable;
 import java.sql.Blob;
 import java.util.UUID;
 
+/**
+ * Class that contains the "leaves" of our tree-like structure. In the leaves we can find the {@code Document}s, a data
+ * class that contains a file and relative metadata for that particular file.
+ *
+ * Notice that {@code Document} is an entity that is only used to model the storage in the database. Other entities are
+ * used to model the storage but also model the serialization and deserialization of the entity. This is due to the fact
+ * that the {@code Document} class contains a binary data as a BLOB, which is not easy to serialize. So, instead, we use
+ * the class {@code DocumentWrapper} as a serializable equivalent type to the type {@code Document}, that is used in the
+ * transmission of data over the Internet.
+ * @see "DocumentWrapper"
+ * @see "DocumentWrapperConverter"
+ */
 @Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
@@ -24,6 +37,9 @@ import java.util.UUID;
         defaultImpl = Document.class)
 public class Document extends JPAEntityImpl{
 
+    /**
+     * Identity of the instance when is stored in database.
+     */
     @Id
     @Convert(converter = UUIDConverter.class)
     @GeneratedValue(generator = "UUID")
@@ -34,33 +50,72 @@ public class Document extends JPAEntityImpl{
     @Column(nullable = false, unique = true)
     protected UUID id;
 
+    /**
+     * Name of this {@code Document}.
+     */
     @Column(length = 1000, nullable = false)
     protected String name;
 
+    /**
+     * Description of this {@code Document}.
+     */
     @Column(length = 1000, nullable = false)
     protected String description;
 
-    @Column(length = 1000, nullable = true)
+    /**
+     * Name of the file that is stored as a BLOB in this class. It can be the original name from the file that was
+     * submitted with the {@code DocumentWrapper} in an "add" petition or manually set when using directly the service.
+     */
+    @Column(length = 1000)
     protected String originalFilename;
 
+    /**
+     * Media type of the file that is stored as a BLOB in this class. It can come from the original file that was
+     * submitted with the {@code DocumentWrapper} in an "add" petition or manually set when using directly the service.
+     */
+    @Convert(converter = MediaTypeConverter.class)
     @Column(length = 1000, nullable = false)
-    // TODO declare converter, if not the fields in the DB are binary !!
     protected MediaType contentType;
 
+    /**
+     * Size of the file that is stored as a BLOB in this class. It could be transient, but we do not mark as is, since
+     * we need to avoid possible extra connections with the database. Transient means that is a derived property from
+     * another field, in this case from the file.
+     */
     @Column
     protected long fileSize;
 
+    /**
+     * Reference to the {@code Experiment} that this {@code Document} is in. It could be null, that would mean that
+     * this {@code Document} is not in any {@code Experiment}.
+     */
     @ManyToOne(
-            fetch = FetchType.EAGER,
-            optional = true
+            fetch = FetchType.EAGER
     )
     @JoinColumn(
             name = "experiment",
-            referencedColumnName = "id",
-            nullable = true)
+            referencedColumnName = "id"
+    )
     @JsonIgnore
     protected Experiment experiment;
 
+    /**
+     * BLOB field. The class {@code Blob} wraps an {@code InputStream] that points to the database. Notice that you need
+     * to manipulate the stream in order to read it, which means that in streaming-using operations the file will not be
+     * loaded entirely in memory. If we would use the approach of using an array of {@code byte}s, the files that are
+     * supplied or sent in each request would be entirely loaded in memory.
+     *
+     * Notice also that in order to read the BLOB a session to the database must be present, so remember to explicitly
+     * open or join one session to the database or use {@code @Transactional} to define the boundaries of your database
+     * session in the methods.
+     *
+     * Another thing to mention is that the {@code InputStream} of the {@code Blob} class is one-time read, so if you
+     * consume it, you need to reload the instance from the database if you want to consume it again or an exception
+     * will show up about rewinding the input stream.
+     *
+     * @see DocumentWrapper
+     * @see DocumentWrapperConverter
+     */
     @JsonIgnore
     @Column
     @Lob
@@ -85,7 +140,6 @@ public class Document extends JPAEntityImpl{
 
     /**
      * Exposes and returns the UUID of an entity.
-     *
      * @return UUID of the entity.
      */
     @Override
@@ -102,7 +156,7 @@ public class Document extends JPAEntityImpl{
      * designed to perform updates of existing entities of the database when an ID is not supplied with the received
      * data object.
      *
-     * @param id ID that will be set. Only usable on dettached spring boot instances
+     * @param id ID that will be set. Only usable on detached spring boot instances
      */
     @Override
     public void setId(Serializable id) {

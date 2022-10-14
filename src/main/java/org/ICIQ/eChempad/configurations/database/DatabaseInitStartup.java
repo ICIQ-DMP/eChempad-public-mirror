@@ -7,22 +7,17 @@
  */
 package org.ICIQ.eChempad.configurations.database;
 
-import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
-import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.entities.SecurityId;
 import org.ICIQ.eChempad.repositories.SecurityIdRepository;
-import org.ICIQ.eChempad.repositories.genericJPARepositories.AuthorityRepository;
-import org.ICIQ.eChempad.repositories.genericJPARepositories.ResearcherRepository;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,8 +64,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      */
     @Autowired
     private SecurityIdRepository securityIdRepository;
-
-    public DatabaseInitStartup() {}
 
     /**
      * This code run after the application is completely ready but just before it starts serving requests.
@@ -144,4 +137,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         this.journalService.save(journal);
     }
 
+    // Constructors
+
+    public DatabaseInitStartup() {}
 }

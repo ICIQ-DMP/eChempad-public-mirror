@@ -25,13 +25,6 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
- * @author Institut Català d'Investigació Química (iciq.cat)
- * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
- * @author Carles Bo Jané (cbo@iciq.es)
- * @author Moisés Álvarez (malvarez@iciq.es)
- * @version 1.0
- * @since 10/10/2022
- *
  * This class defines the beans used to configure the access to the database taking in count the ACL implementation.
  * The data that the beans use is autowired from the class {@code DatabaseAccessConfiguration}, which reads all data
  * from {@code application.properties} file.
@@ -39,6 +32,13 @@ import java.util.logging.Logger;
  * This has been done like this because there was a circularity in the dependency of the beans when declaring
  * data + beans in the same class. It also shows how properties are actually used in an explicit way, instead of relying
  * upon Spring Boot magic to configure things off-stage.
+ *
+ * @author Institut Català d'Investigació Química (iciq.cat)
+ * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
+ * @author Carles Bo Jané (cbo@iciq.es)
+ * @author Moisés Álvarez (malvarez@iciq.es)
+ * @version 1.0
+ * @since 10/10/2022
  */
 @Component
 @Configuration
@@ -52,6 +52,7 @@ public class DatabaseAccessBeans {
 
     /**
      * Obtains a {@code DataSource} instance, which is an abstraction upon a Database.
+     *
      * @return {@code DataSource} object.
      */
     @Bean
@@ -68,6 +69,7 @@ public class DatabaseAccessBeans {
     /**
      * Returns an {@code EntityManagerFactory}, which is an abstraction over entity data and the Database to retrieve
      * and save entities from a {@code DataSource}.
+     *
      * @param dataSource Abstraction over the Database, which contains relevant data to use the database.
      * @param jpaProperties {@code Property} type that contains all relevant information for Hibernate.
      * @return An instance of a class that can easily be used to obtain a {@code EntityManager}.
@@ -89,6 +91,7 @@ public class DatabaseAccessBeans {
     /**
      * Returns a {@code LocalSessionFactoryBean}, which is basically an instance of a class that produces Database
      * Sessions.
+     *
      * @param dataSource Abstraction over the database, which contains relevant data to use the database.
      * @param hibernateProperties {@code Property} type that contains all relevant information for Hibernate.
      * @return An instance of a class that can easily be used to obtain a {@code Session}.
@@ -109,6 +112,7 @@ public class DatabaseAccessBeans {
      * Retrieves the information needed from the dbAccessConfigurationInstance to build a wrapper instance of type
      * {@code Property} for all the relevant data for Hibernate. This instance is primarily used in the ACL
      * configuration and the BLOB service.
+     *
      * @return {@code Property} object, which contains all the relevant data for configuring Hibernate.
      */
     @Bean
@@ -149,6 +153,7 @@ public class DatabaseAccessBeans {
     /**
      * Returns a {@code JpaTransactionManager}, which is the class that on the background produces all the query calls
      * involving JPA entities.
+     *
      * @param entityManagerFactory The transaction manager needs an {@code EntityManagerFactory} to operate.
      * @return Instance of {@code JpaTransactionManager}.
      */
