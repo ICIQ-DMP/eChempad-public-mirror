@@ -11,7 +11,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/import/signals")
-public class ImportSignalsControllerImpl implements ImportSignalsController{
+public class SignalsImporterControllerImpl implements SignalsImporterController {
 
     @Autowired
     private SignalsImportService signalsImportService;

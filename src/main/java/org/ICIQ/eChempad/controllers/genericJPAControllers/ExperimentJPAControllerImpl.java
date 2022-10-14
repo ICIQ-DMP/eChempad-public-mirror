@@ -7,12 +7,10 @@
  */
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.services.genericJPAServices.AuthorityService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,10 +25,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/experiment")
-public class ExperimentControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<Experiment, UUID> implements ExperimentController<Experiment, UUID> {
+public class ExperimentJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Experiment, UUID> implements ExperimentJPAController<Experiment, UUID> {
 
     @Autowired
-    public ExperimentControllerImpl(ExperimentService<Experiment, UUID> experimentService) {
+    public ExperimentJPAControllerImpl(ExperimentService<Experiment, UUID> experimentService) {
         super(experimentService);
     }
 

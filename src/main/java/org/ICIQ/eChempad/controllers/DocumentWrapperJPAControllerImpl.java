@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/document")
-public class DocumentWrapperControllerImpl<T extends JPAEntityImpl, S extends Serializable> implements DocumentWrapperController<DocumentWrapper, UUID> {
+public class DocumentWrapperJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> implements DocumentWrapperJPAController<DocumentWrapper, UUID> {
 
     @Autowired
     DocumentWrapperService<DocumentWrapper, UUID> documentWrapperService;

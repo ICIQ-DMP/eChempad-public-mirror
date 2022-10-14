@@ -28,15 +28,15 @@ import java.util.logging.Logger;
 
 @Component
 @Configuration
-public abstract class GenericControllerImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericController<T, S> {
+public abstract class GenericJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericJPAController<T, S> {
 
     protected GenericService<T, S> genericService;
 
-    public GenericControllerImpl(GenericService<T, S> genericService) {
+    public GenericJPAControllerImpl(GenericService<T, S> genericService) {
         this.genericService = genericService;
     }
 
-    public GenericControllerImpl() { }
+    public GenericJPAControllerImpl() { }
 
     @Override
     public Class<T> getEntityClass() {

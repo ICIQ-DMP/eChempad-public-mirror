@@ -23,10 +23,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/authority")
-public class AuthorityControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<Authority, UUID> implements AuthorityController<Authority, UUID> {
+public class AuthorityJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Authority, UUID> implements AuthorityJPAController<Authority, UUID> {
 
     @Autowired
-    public AuthorityControllerImpl(AuthorityService<Authority, UUID> authorityService) {
+    public AuthorityJPAControllerImpl(AuthorityService<Authority, UUID> authorityService) {
         super(authorityService);
     }
 
