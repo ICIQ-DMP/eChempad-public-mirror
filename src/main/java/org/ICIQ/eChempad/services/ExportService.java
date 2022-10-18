@@ -1,7 +1,13 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+
 import java.io.IOException;
 
+/**
+ * Defines the contract that a class that implements this interface has to fulfill in order to be an
+ * {@code ExportService}.
+ */
 public interface ExportService {
 
     /**
@@ -16,5 +22,7 @@ public interface ExportService {
      * a third-party service, depending on the implementation of the class.
      * @throws IOException Thrown due to any type of connection problem.
      */
-    String bulkImport() throws IOException;
+    String bulkExport() throws IOException;
+
+
 }

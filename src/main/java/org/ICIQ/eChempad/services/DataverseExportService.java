@@ -1,7 +1,7 @@
 package org.ICIQ.eChempad.services;
 
 /**
- * This class models the logic to export Journal entities into Dataverses in RDR. To do so, it will use a
+ * This class models the logic to export Journal entities into Data-verses in RDR.
  */
 public interface DataverseExportService extends ExportService{
 }

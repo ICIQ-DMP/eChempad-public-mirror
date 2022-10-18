@@ -1,5 +1,7 @@
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+
 import java.io.IOException;
 
 /**
@@ -22,6 +24,12 @@ public interface ImportService {
      */
     String bulkImport() throws IOException;
 
+    /**
+     * By using the available API keys from the currently logged user if available, import all available material from
+     * a third-party service, depending on the implementation of the class.
+     * @param journal
+     */
+    void exportJournal(Journal journal);
 
 
 }

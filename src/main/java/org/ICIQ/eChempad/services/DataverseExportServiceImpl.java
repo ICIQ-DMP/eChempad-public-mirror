@@ -9,7 +9,7 @@ public class DataverseExportServiceImpl implements DataverseExportService {
     }
 
     @Override
-    public String bulkImport() throws IOException {
+    public String bulkExport() throws IOException {
         return null;
     }
 }
