@@ -26,6 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -40,6 +41,10 @@ public class SignalsImportServiceImpl implements SignalsImportService {
      */
     static final String baseURL = "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0";
 
+    /**
+     * If true determines that it should ignore all the resources from which the current user is not an owner. If false
+     * import all accessible resources.
+     */
     static final boolean getOnlyOwnedResources = false;
 
     @Autowired
@@ -52,21 +57,18 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     private DocumentService<Document, UUID> documentService;
     
     @Autowired
-    private AclService aclService;
-    
-    @Autowired
     private WebClient webClient;
 
     @Autowired
     private DocumentWrapperConverter documentWrapperConverter;
 
-    public String bulkImport(String APIKey) throws IOException {
+    public String importWorkspace(String APIKey) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
 
-    public String bulkImport() throws IOException {
+    public String importWorkspace() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
 
         String APIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
@@ -74,7 +76,17 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
-    
+
+    @Override
+    public String importJournal(String APIKey, Serializable id) {
+        return null;
+    }
+
+    @Override
+    public String importJournal(Serializable id) {
+        return null;
+    }
+
     static void printJSON(ObjectNode objectNode)
     {
         final ObjectMapper objectMapper = new ObjectMapper();

@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.controllers;
+package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
 import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.configurations.wrappers.UploadFileResponse;
