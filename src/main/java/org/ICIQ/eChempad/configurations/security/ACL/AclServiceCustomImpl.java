@@ -15,6 +15,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -152,9 +153,24 @@ public class AclServiceCustomImpl implements AclService{
     /**
      * We assume that the security context is full
      */
-    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission)
-    {
-        this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission) {
+        // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
+        // using this function manually
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof String)
+        {
+            this.addPermissionToUserInEntity(JPAEntity, permission, (String) principal);
+        }
+        else if (principal instanceof UserDetails)
+        {
+            this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) principal);
+        }
+        else
+        {
+            // TODO throw exception
+            Logger.getGlobal().warning("In func addPermissionToUserInEntity the security context is: " + principal.toString());
+        }
     }
 
 

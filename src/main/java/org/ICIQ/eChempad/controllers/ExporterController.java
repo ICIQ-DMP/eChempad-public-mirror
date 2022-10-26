@@ -29,7 +29,7 @@ public interface ExporterController {
      * @param journal_id UUID of the journal that it has to export.
      * @return String containing a summary of the imported entities, wrapped around a {@code ResponseEntity}.
      */
-    ResponseEntity<String> exportJournal(Serializable journal_id);
+    ResponseEntity<String> exportJournal(UUID journal_id);
 
     /**
      * Exports all journals from the logged user workspace into another system. This method uses an API key stored in
@@ -47,7 +47,7 @@ public interface ExporterController {
      * @param APIKey APIkey used to log into the service that will receive the data in order to use its API.
      * @return String containing a summary of the exported entities, wrapped around a {@code ResponseEntity}
      */
-    ResponseEntity<String> exportJournal(String APIKey, Serializable journal_id);
+    ResponseEntity<String> exportJournalWithKey(UUID journal_id, String APIKey);
 
     /**
      * Exports all journals from the logged user workspace into another system. This method uses an API key supplied

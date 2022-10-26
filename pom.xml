@@ -47,13 +47,13 @@
 	</licenses>
 
 	<!-- This is needed to be able to import directly a github repository, which we need to import the Dataverse Java
-	API Wrapper -->
+	API Wrapper
 	<repositories>
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-	</repositories>
+	</repositories> -->
 
 
 	<dependencies>
@@ -192,12 +192,12 @@
 
 		<!-- To obtain the Java Dataverse API wrapper
 		@see https://jitpack.io/
-		@see https://github.com/IQSS/dataverse-client-java  -->
+		@see https://github.com/IQSS/dataverse-client-java
 		<dependency>
 			<groupId>com.github.IQSS</groupId>
 			<artifactId>dataverse-client-java</artifactId>
 			<version>master-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 
 
 	</dependencies>

@@ -5,6 +5,7 @@ import org.ICIQ.eChempad.services.SignalsImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +33,12 @@ public class DataverseExporterControllerImpl implements DataverseExporterControl
     private DataverseExportService dataverseExportService;
 
     @GetMapping(
-            value = "exportJournal/{journal_id}",
+            value = "/exportJournal/{journal_id}",
             produces = "application/json"
     )
     @PreAuthorize("hasPermission(#journal_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal' , 'READ')")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> exportJournal(@PathVariable Serializable journal_id) {
+    public ResponseEntity<String> exportJournal(@PathVariable UUID journal_id) {
         try
         {
             return ResponseEntity.ok(this.dataverseExportService.exportJournal(journal_id));
@@ -50,13 +51,14 @@ public class DataverseExporterControllerImpl implements DataverseExporterControl
     }
 
     @GetMapping(
-            value = "exportJournalWithKey/{journal_id}",
+            value = "/exportJournalWithKey/{journal_id}",
             produces = "application/json"
     )
+    //@PostAuthorize("hasPermission(returnObject, 'READ')")
     @PreAuthorize("hasPermission(#journal_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal' , 'READ')")
     @ResponseStatus(HttpStatus.OK)
     @Override
-    public ResponseEntity<String> exportJournal(@RequestHeader(name = "x-api-key") String APIKey, @PathVariable Serializable journal_id) {
+    public ResponseEntity<String> exportJournalWithKey(@PathVariable UUID journal_id, @RequestHeader(name = "x-api-key") String APIKey) {
         try
         {
             return ResponseEntity.ok(this.dataverseExportService.exportJournal(APIKey, journal_id));
