@@ -3,10 +3,11 @@ package org.ICIQ.eChempad.controllers;
 import org.ICIQ.eChempad.services.DataverseExportService;
 import org.ICIQ.eChempad.services.SignalsImportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -27,16 +28,19 @@ import java.util.UUID;
 @RequestMapping("/api/dataverse")
 public class DataverseExporterControllerImpl implements DataverseExporterController{
 
-
     @Autowired
     private DataverseExportService dataverseExportService;
 
-
-    @Override
-    public ResponseEntity<String> exportJournal(Serializable journal_id) {
+    @GetMapping(
+            value = "exportJournal/{journal_id}",
+            produces = "application/json"
+    )
+    @PreAuthorize("hasPermission(#journal_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal' , 'READ')")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> exportJournal(@PathVariable Serializable journal_id) {
         try
         {
-            return ResponseEntity.ok(this.dataverseExportService.exportJournal((Serializable) journal_id));
+            return ResponseEntity.ok(this.dataverseExportService.exportJournal(journal_id));
         }
         catch (IOException e)
         {
@@ -45,6 +49,26 @@ public class DataverseExporterControllerImpl implements DataverseExporterControl
         return ResponseEntity.ok().body("Data from this Signals account could not have been exported.");
     }
 
+    @GetMapping(
+            value = "exportJournalWithKey/{journal_id}",
+            produces = "application/json"
+    )
+    @PreAuthorize("hasPermission(#journal_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal' , 'READ')")
+    @ResponseStatus(HttpStatus.OK)
+    @Override
+    public ResponseEntity<String> exportJournal(@RequestHeader(name = "x-api-key") String APIKey, @PathVariable Serializable journal_id) {
+        try
+        {
+            return ResponseEntity.ok(this.dataverseExportService.exportJournal(APIKey, journal_id));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body("Data from this Signals account could not have been exported.");
+    }
+
+    // TODO
     @Override
     public ResponseEntity<String> exportWorkspace() {
         try
@@ -58,19 +82,7 @@ public class DataverseExporterControllerImpl implements DataverseExporterControl
         return ResponseEntity.ok().body("Data from this Signals account could not have been exported.");
     }
 
-    @Override
-    public ResponseEntity<String> exportJournal(String APIKey, Serializable journal_id) {
-        try
-        {
-            return ResponseEntity.ok(this.dataverseExportService.exportJournal(APIKey, journal_id));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return ResponseEntity.ok().body("Data from this Signals account could not have been exported.");
-    }
-
+    // TODO
     @Override
     public ResponseEntity<String> exportWorkspace(String APIKey) {
         try
