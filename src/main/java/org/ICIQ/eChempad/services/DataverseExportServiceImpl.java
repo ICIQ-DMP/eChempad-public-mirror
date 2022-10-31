@@ -1,27 +1,24 @@
 package org.ICIQ.eChempad.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
+import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
+import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Implementation of class to export data to a running Dataverse instance.
@@ -69,48 +66,49 @@ public class DataverseExportServiceImpl implements DataverseExportService {
             journal = exportJournal.get();
         }
 
-        JSONArray fields = new JSONArray();
+        Researcher author = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher();
 
-        ObjectNode mutableTemplate = (ObjectNode) this.getDatasetJsonTemplate();
+        DataverseDatasetMetadata dataverseDatasetMetadata = new DataverseDatasetMetadataImpl();
 
-        // Title
-        ObjectNode objectNodeTitle = (ObjectNode) mutableTemplate.get("datasetVersion").get("metadataBlocks").get("citation").get("fields").get(0);
-        objectNodeTitle.put("value", journal.getName());
-        fields.put(objectNodeTitle);
+        dataverseDatasetMetadata.setTitle(journal.getName());
+        dataverseDatasetMetadata.setAuthorAffiliation("ICIQ");
+        dataverseDatasetMetadata.setAuthorName(author.getUsername());
+        dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
+        dataverseDatasetMetadata.setDescription(journal.getDescription());
+        dataverseDatasetMetadata.setContactEmail(author.getUsername());
+
+        List<String> subjects = new ArrayList<>();
+        subjects.add("Medicine");
+        subjects.add("computing");
+        dataverseDatasetMetadata.setSubjects(subjects);
+
+
+        ResponseEntity<Void> objectNode = this.webClient
+                .post()
+                .uri(DataverseExportServiceImpl.baseURL + "/dataverses/IQIC/datasets")
+                .body(BodyInserters.fromValue(dataverseDatasetMetadata))
+                .header("X-Dataverse-key", APIKey)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
 
 
 
-        System.out.println(mutableTemplate.at("/datasetVersion/metadataBlocks/citation/fields").toString());
 
 
 
-        Logger.getGlobal().warning("MUTABLE TEMPLATE: " + mutableTemplate);
-        return null;
+
+        Logger.getGlobal().warning("MUTABLE TEMPLATE after: " + dataverseDatasetMetadata);
+        return objectNode.toString();
     }
 
-    public JsonNode getDatasetJsonTemplate() {
-        Stream<String> lines = null;
-        try{
-            Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("static/dataset-finch1.json")).toURI());
-            lines = Files.lines(path);
-            String data = lines.collect(Collectors.joining("\n"));
-
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readTree(data);
-        }
-        catch(IOException | URISyntaxException e)
-        {
-            e.printStackTrace();
-        } finally {
-            assert lines != null;
-            lines.close();
-        }
-        return null;
-    }
 
     @Override
     public String exportJournal(Serializable id) throws IOException {
-        return null;
+
+        // ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getDataverseAPIKey();
+        exportJournal("" , id);
+        return "yes";
     }
 
     @Override
