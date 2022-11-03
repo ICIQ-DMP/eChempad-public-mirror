@@ -8,12 +8,14 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -83,20 +85,20 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         dataverseDatasetMetadata.setSubjects(subjects);
 
 
-        ResponseEntity<Void> objectNode = this.webClient
+        ObjectNode objectNode = this.webClient
                 .post()
-                .uri(DataverseExportServiceImpl.baseURL + "/dataverses/IQIC/datasets")
+                .uri(DataverseExportServiceImpl.baseURL + "/dataverses/ICIQ/datasets")
                 .body(BodyInserters.fromValue(dataverseDatasetMetadata))
                 .header("X-Dataverse-key", APIKey)
                 .retrieve()
-                .toBodilessEntity()
+                .onStatus(
+                        HttpStatus::isError, response -> response.bodyToMono(String.class) // error body as String or other class
+                        .flatMap(
+                                error -> Mono.error(new RuntimeException(error))   // throw a functional exception
+                        )
+                )
+                .bodyToMono(ObjectNode.class)
                 .block();
-
-
-
-
-
-
 
         Logger.getGlobal().warning("MUTABLE TEMPLATE after: " + dataverseDatasetMetadata);
         return objectNode.toString();
