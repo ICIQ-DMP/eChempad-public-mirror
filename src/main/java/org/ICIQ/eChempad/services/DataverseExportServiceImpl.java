@@ -83,8 +83,8 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         dataverseDatasetMetadata.setContactEmail(author.getUsername());
 
         List<String> subjects = new ArrayList<>();
-        subjects.add("Medicine");
-        subjects.add("computing");
+        subjects.add("Arts and Humanities");
+        subjects.add("Medicine, Health and Life Sciences");
         dataverseDatasetMetadata.setSubjects(subjects);
 
         DataverseAPI api = new DataverseAPIImpl();
