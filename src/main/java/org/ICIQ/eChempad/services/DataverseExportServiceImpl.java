@@ -1,6 +1,9 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.researchspace.dataverse.api.v1.DataverseAPI;
+import com.researchspace.dataverse.api.v1.DataverseConfig;
+import com.researchspace.dataverse.http.DataverseAPIImpl;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
@@ -9,8 +12,6 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -19,6 +20,8 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -36,7 +39,7 @@ import java.util.logging.Logger;
 @Service
 public class DataverseExportServiceImpl implements DataverseExportService {
 
-    private static final String baseURL = "https://dataverse.csuc.cat/api";
+    private static final String baseURL = "https://dataverse.csuc.cat";
 
     @Autowired
     JournalService<Journal, UUID> journalService;
@@ -84,23 +87,32 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         subjects.add("computing");
         dataverseDatasetMetadata.setSubjects(subjects);
 
+        DataverseAPI api = new DataverseAPIImpl();
+        URL url = null;
+        try {
+            url = new URL(DataverseExportServiceImpl.baseURL);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        DataverseConfig config = new DataverseConfig(url, APIKey, "ICIQ");
+        api.configure(config);
+        // now you can call
+        api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
 
         ObjectNode objectNode = this.webClient
                 .post()
-                .uri(DataverseExportServiceImpl.baseURL + "/dataverses/ICIQ/datasets")
+                .uri(DataverseExportServiceImpl.baseURL + "/api/dataverses/ICIQ/datasets")
                 .body(BodyInserters.fromValue(dataverseDatasetMetadata))
-                .header("X-Dataverse-key", APIKey)
+                .headers(httpHeaders -> {
+                    httpHeaders.add("X-Dataverse-key", APIKey);
+                    httpHeaders.add("Content-Type", "application/json");
+                })
                 .retrieve()
-                .onStatus(
-                        HttpStatus::isError, response -> response.bodyToMono(String.class) // error body as String or other class
-                        .flatMap(
-                                error -> Mono.error(new RuntimeException(error))   // throw a functional exception
-                        )
-                )
                 .bodyToMono(ObjectNode.class)
                 .block();
 
         Logger.getGlobal().warning("MUTABLE TEMPLATE after: " + dataverseDatasetMetadata);
+        assert objectNode != null;
         return objectNode.toString();
     }
 
