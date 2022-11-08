@@ -337,6 +337,25 @@ Here is a list of the folders and files contained inside the root of this projec
 - `README.md`: Contains a description of the project and a wide review of its important elements and goals.
 - `README_DEVEL.md`: Contains a more technical description of the project in order to obtain a valid deployment of the application.
 
+## JavaDoc
+* All methods, fields and classes must have its corresponding `javadoc`. Some exceptions in the methods apply:
+  * Getter / setter methods. 
+  * Trivial constructor, specially no-args constructor.
+  * Trivial toString method.
+  * Trivial hashCode method.
+  * The methods that override other methods must inherit the `javadoc` from the overridden methods.
+
+There are certain convention that must be followed in order to produce good `javadoc` documentations:
+* Each line above is indented to align with the code below the comment.
+* The first line contains the begin-comment delimiter ( /**).
+* Starting with Javadoc 1.4, the leading asterisks are optional.
+* Write the first sentence as a short summary of the method, as Javadoc automatically places it in the method summary table (and index).
+* Notice the inline tag {@link URL}, which converts to an HTML hyperlink pointing to the documentation for the URL class. This inline tag can be used anywhere that a comment can be written, such as in the text following block tags.
+* If you have more than one paragraph in the doc comment, separate the paragraphs with a \<p> paragraph tag, as shown.
+* Insert a blank comment line between the description and the list of tags, as shown.
+* The first line that begins with an "@" character ends the description. There is only one description block per doc comment; you cannot continue the description following block tags.
+* The last line contains the end-comment delimiter ( */) Note that unlike the begin-comment delimiter, the end-comment contains only a single asterisk.
+
 ## Conventions
 The names of the columns in the DB will be the same as the name of the corresponding variables in the Java code. 
 
@@ -420,6 +439,7 @@ For further reference, please consider the following sections:
 * [Disable CSRF depending on application.properties](https://www.yawintutor.com/how-to-enable-and-disable-csrf/)
 * [PostGreSQL + ACL with UUID SQL schema](https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/appendix-schema.html)
 * [Cascade entity removal](https://stackoverflow.com/questions/16898085/jpa-hibernate-remove-entity-sometimes-not-working)
-* [How to use JavaDoc](https://www.dummies.com/article/technology/programming-web-design/java/how-to-use-javadoc-to-document-your-classes-153265/)
+* [How to use JavaDoc](https://www.dummies.com/article/technology/programming-web-design/java/how-to-use-javadoc-to-documentWrapper-your-classes-153265/)
 * [hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path](https://stackoverflow.com/questions/53199558/hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path)
 * [Field injection is not recommended and injection types in Spring Boot](https://blog.marcnuri.com/field-injection-is-not-recommended)
+* [How to ignore Null fields in Jackson](https://stackoverflow.com/questions/11757487/how-to-tell-jackson-to-ignore-a-field-during-serialization-if-its-value-is-null)

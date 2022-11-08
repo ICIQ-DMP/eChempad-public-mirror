@@ -11,17 +11,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Contains (and collects) all data coming from application.properties regarding database config.
+ *
  * @author Institut Català d'Investigació Química (iciq.cat)
  * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
  * @author Carles Bo Jané (cbo@iciq.es)
  * @author Moisés Álvarez (malvarez@iciq.es)
  * @version 1.0
  * @since 10/10/2022
- *
- * Contains (and collects) all data coming from application.properties regarding database config.
  */
 @Configuration
 public class DatabaseAccessConfiguration {
+
     /**
      * Contains the {@code String} that identifies a database driver that is used for the database.
      */
@@ -54,9 +55,9 @@ public class DatabaseAccessConfiguration {
 
     /**
      * Determines the policy regarding database tables every time the application is started. This configuration is used
-     * to choose if we need to upgrade our schema if there are changes, drop it, do nothing...
-     * It can be set to create-drop, create, update or none. This option exists as a developer utility, so it should not
-     * be used in production.
+     * to choose if we need to upgrade our schema if there are changes, drop it, do nothing... It can be set to
+     * create-drop, create, update or none. This option exists as a developer utility, so it should not be used in
+     * production.
      */
     @Value("${eChempad.db.policy}")
     private String policy;
@@ -88,7 +89,28 @@ public class DatabaseAccessConfiguration {
     @Value("${eChempad.db.sessionContext}")
     private String sessionContext;
 
+    // Constructors
+
     public DatabaseAccessConfiguration() {}
+
+    // toString
+
+    @Override
+    public String toString() {
+        return "DBAccessConfiguration{" +
+                "driver='" + driver + '\'' +
+                ", dialect='" + dialect + '\'' +
+                ", url='" + url + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", policy='" + policy + '\'' +
+                ", showSQL=" + showSQL +
+                ", formatSQL=" + formatSQL +
+                ", namingStrategy='" + namingStrategy + '\'' +
+                '}';
+    }
+
+    // Getters and Setters
 
     public String getDriver() {
         return driver;
@@ -178,20 +200,5 @@ public class DatabaseAccessConfiguration {
     @Value("${eChempad.db.sessionContext}")
     public void setSessionContext(String sessionContext) {
         this.sessionContext = sessionContext;
-    }
-
-    @Override
-    public String toString() {
-        return "DBAccessConfiguration{" +
-                "driver='" + driver + '\'' +
-                ", dialect='" + dialect + '\'' +
-                ", url='" + url + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", policy='" + policy + '\'' +
-                ", showSQL=" + showSQL +
-                ", formatSQL=" + formatSQL +
-                ", namingStrategy='" + namingStrategy + '\'' +
-                '}';
     }
 }

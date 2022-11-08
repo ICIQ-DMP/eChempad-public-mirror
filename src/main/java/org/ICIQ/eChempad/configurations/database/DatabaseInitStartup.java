@@ -7,22 +7,17 @@
  */
 package org.ICIQ.eChempad.configurations.database;
 
-import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
-import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.entities.SecurityId;
 import org.ICIQ.eChempad.repositories.SecurityIdRepository;
-import org.ICIQ.eChempad.repositories.genericJPARepositories.AuthorityRepository;
-import org.ICIQ.eChempad.repositories.genericJPARepositories.ResearcherRepository;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -70,8 +65,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     @Autowired
     private SecurityIdRepository securityIdRepository;
 
-    public DatabaseInitStartup() {}
-
     /**
      * This code run after the application is completely ready but just before it starts serving requests.
      * @param event Data associated with the event of the application being ready.
@@ -115,12 +108,12 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         // If the user is not in the DB create it
         if (this.researcherService.loadUserByUsername(researcher.getUsername()) == null)
         {
-            // Save of the authority is cascaded
-            researcher = this.researcherService.save(researcher);
-
             // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
-            Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), null, researcher.getAuthorities());
+            Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
+
+            // Save of the authority is cascaded
+            this.researcherService.save(researcher);
 
             // Insert role ROLE_ADMIN and ROLE_USER in the db, in acl_sid
             this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));
@@ -144,4 +137,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         this.journalService.save(journal);
     }
 
+    // Constructors
+
+    public DatabaseInitStartup() {}
 }

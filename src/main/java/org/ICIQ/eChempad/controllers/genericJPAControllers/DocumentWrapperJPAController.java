@@ -1,9 +1,8 @@
-package org.ICIQ.eChempad.controllers;
+package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.configurations.wrappers.UploadFileResponse;
-import org.ICIQ.eChempad.controllers.genericJPAControllers.GenericController;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.ICIQ.eChempad.controllers.genericJPAControllers.GenericJPAController;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -17,11 +16,11 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-public interface DocumentWrapperController<T extends JPAEntityImpl, S extends Serializable> extends GenericController<DocumentWrapper, UUID> {
+public interface DocumentWrapperJPAController<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAController<DocumentWrapper, UUID> {
 
     ResponseEntity<Resource> getDocumentData(@PathVariable(value = "id") UUID uuid, HttpServletRequest request) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
-    UploadFileResponse addDocumentToExperiment(@ModelAttribute("DocumentWrapper") DocumentWrapper document, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
+    UploadFileResponse addDocumentToExperiment(@ModelAttribute("DocumentWrapper") DocumentWrapper documentWrapper, @PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 
     Set<DocumentWrapper> getDocumentsFromExperiment(@PathVariable UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException;
 }

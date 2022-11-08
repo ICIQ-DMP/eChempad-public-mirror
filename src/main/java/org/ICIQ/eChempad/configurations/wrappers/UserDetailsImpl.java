@@ -55,4 +55,8 @@ public class UserDetailsImpl implements UserDetails{
     public boolean isEnabled() {
         return this.researcher.isEnabled();
     }
+
+    public Researcher getResearcher() {
+        return researcher;
+    }
 }

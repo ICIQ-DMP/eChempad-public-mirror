@@ -1,26 +1,20 @@
 package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
-import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.repositories.genericJPARepositories.ExperimentRepository;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
-import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
-import org.ICIQ.eChempad.services.genericJPAServices.GenericServiceImpl;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.*;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,11 +39,11 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
     @Override
     public DocumentWrapper addDocumentToExperiment(DocumentWrapper documentWrapper, UUID experiment_uuid) {
         // Transform to DB entity
-        Document document = this.documentWrapperConverter.convertToDatabaseColumn(documentWrapper);
+        org.ICIQ.eChempad.entities.genericJPAEntities.Document document = this.documentWrapperConverter.convertToDatabaseColumn(documentWrapper);
 
         // Save DB entity and retrieve instance. Warning! The Blob has already been read. If you try to read the Blob
         // again you will get a java.sql.SQLException: could not reset reader
-        Document documentDatabase = this.documentService.addDocumentToExperiment(document, experiment_uuid);
+        org.ICIQ.eChempad.entities.genericJPAEntities.Document documentDatabase = this.documentService.addDocumentToExperiment(document, experiment_uuid);
 
         // Reconvert to Transport entity and return it
         documentWrapper = this.documentWrapperConverter.convertToEntityAttribute(documentDatabase);
@@ -97,14 +91,14 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public <S1 extends DocumentWrapper> S1 save(S1 entity) {
-        Document document = this.documentWrapperConverter.convertToDatabaseColumn(entity);
+        org.ICIQ.eChempad.entities.genericJPAEntities.Document document = this.documentWrapperConverter.convertToDatabaseColumn(entity);
 
         // Internally the BLOB is consumed, so if we use the same instance to return an exception will be thrown
         // java.sql.SQLException: could not reset reader
-        Document documentDatabase = this.documentService.save(document);
+        org.ICIQ.eChempad.entities.genericJPAEntities.Document documentDatabase = this.documentService.save(document);
 
         // This seems silly, but is necessary to update the Blob and its InputStream
-        Optional<Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
+        Optional<org.ICIQ.eChempad.entities.genericJPAEntities.Document> documentDatabaseOptional = this.documentService.findById((UUID) documentDatabase.getId());
 
         return documentDatabaseOptional.map(value -> (S1) this.documentWrapperConverter.convertToEntityAttribute(value)).orElse(null);
     }
@@ -112,8 +106,8 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
     @Override
     public Optional<DocumentWrapper> findById(UUID uuid) {
 
-        Optional<Document> opt = this.documentService.findById(uuid);
-        Document document;
+        Optional<org.ICIQ.eChempad.entities.genericJPAEntities.Document> opt = this.documentService.findById(uuid);
+        org.ICIQ.eChempad.entities.genericJPAEntities.Document document;
         if (opt.isPresent())
         {
             document = opt.get();
@@ -136,7 +130,7 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public <S1 extends DocumentWrapper> List<S1> saveAll(Iterable<S1> entities) {
-        List<Document> documentList = new LinkedList<>();
+        List<org.ICIQ.eChempad.entities.genericJPAEntities.Document> documentList = new LinkedList<>();
         for (S1 entity : entities) {
             documentList.add(this.documentWrapperConverter.convertToDatabaseColumn(entity));
         }
@@ -189,7 +183,7 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public void deleteAll(Iterable<? extends DocumentWrapper> entities) {
-        List<Document> documentList = new LinkedList<>();
+        List<org.ICIQ.eChempad.entities.genericJPAEntities.Document> documentList = new LinkedList<>();
         for (DocumentWrapper entity : entities) {
             documentList.add(this.documentWrapperConverter.convertToDatabaseColumn(entity));
         }
@@ -210,7 +204,7 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public <S1 extends DocumentWrapper> List<S1> saveAllAndFlush(Iterable<S1> entities) {
-        List<Document> documentList = new LinkedList<>();
+        List<org.ICIQ.eChempad.entities.genericJPAEntities.Document> documentList = new LinkedList<>();
         for (S1 entity : entities) {
             documentList.add(this.documentWrapperConverter.convertToDatabaseColumn(entity));
         }
@@ -227,7 +221,7 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public void deleteAllInBatch(Iterable<DocumentWrapper> entities) {
-        List<Document> documentList = new LinkedList<>();
+        List<org.ICIQ.eChempad.entities.genericJPAEntities.Document> documentList = new LinkedList<>();
         for (DocumentWrapper entity : entities) {
             documentList.add(this.documentWrapperConverter.convertToDatabaseColumn(entity));
         }
@@ -247,7 +241,7 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public <S1 extends DocumentWrapper> List<S1> findAll(Example<S1> example) {
-        List<Document> list = this.documentService.findAll(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
+        List<org.ICIQ.eChempad.entities.genericJPAEntities.Document> list = this.documentService.findAll(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
         return (List<S1>) list.stream().map(
                 d ->
                 {
@@ -258,7 +252,7 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
 
     @Override
     public <S1 extends DocumentWrapper> List<S1> findAll(Example<S1> example, Sort sort) {
-        List<Document> list = this.documentService.findAll(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())), sort);
+        List<org.ICIQ.eChempad.entities.genericJPAEntities.Document> list = this.documentService.findAll(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())), sort);
         return (List<S1>) list.stream().map(
                 d ->
                 {

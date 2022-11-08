@@ -1,8 +1,6 @@
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -19,12 +17,12 @@ public interface DocumentWrapperService<T extends JPAEntityImpl, S extends Seria
     /**
      * Adds a document to a certain experiment using the data in the document helper class and returns the new Document
      * instance.
-     * @param document Data of a detached document instance inside a helper class that should have all the equivalent
+     * @param documentWrapper Data of a detached document instance inside a helper class that should have all the equivalent
      *                 fields.
      * @param experiment_uuid UUID of the experiment that we want to edit by adding this document.
      * @return Managed instance of the created document.
      */
-    DocumentWrapper addDocumentToExperiment(DocumentWrapper document, UUID experiment_uuid);
+    DocumentWrapper addDocumentToExperiment(DocumentWrapper documentWrapper, UUID experiment_uuid);
 
     /**
      * Get all documents that belong to a certain experiment designated by its UUID.

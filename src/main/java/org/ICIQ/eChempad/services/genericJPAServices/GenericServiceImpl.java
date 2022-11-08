@@ -56,6 +56,7 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
      * @return entity that has been saved
      */
     public <S1 extends T> S1 save(S1 entity) {
+        Logger.getGlobal().warning("DAVED ELEMENTS:    " + entity.toString());
         S1 t = genericRepository.save(entity);
 
         // Save all possible permission against the saved entity with the current logged user

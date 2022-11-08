@@ -7,19 +7,16 @@
  */
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
-import org.springframework.http.ResponseEntity;
 
 import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-public interface ExperimentController<T extends JPAEntityImpl, S extends Serializable> extends GenericController<Experiment, UUID> {
+public interface ExperimentJPAController<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAController<Experiment, UUID> {
 
     /**
      * Adds an experiment to a certain journal if we have enough permissions.

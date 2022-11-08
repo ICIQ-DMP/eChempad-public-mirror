@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.entities.genericJPAEntities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.ICIQ.eChempad.configurations.converters.UUIDConverter;
@@ -19,9 +20,10 @@ import java.util.*;
 
 
 /**
- * Used to store information about the User and its workspace.
+ * Used to store information about the researcher that is using the application. It includes all relevant data
+ * associated with the logged user, such as password, email, keys associated with its account, etc.
  *
- * It has a list containing the different Journal that conform the workspace.
+ * This class is a database entity, but it is also used as mould for serializing and deserializing.
  */
 @Entity
 @Table(

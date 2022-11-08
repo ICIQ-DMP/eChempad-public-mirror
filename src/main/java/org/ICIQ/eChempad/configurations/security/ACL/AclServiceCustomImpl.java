@@ -15,6 +15,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,19 +25,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * @author Institut Català d'Investigació Química (iciq.cat)
+ * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
+ * @author Carles Bo Jané (cbo@iciq.es)
+ * @author Moisés Álvarez (malvarez@iciq.es)
+ * @version 1.0
+ * @since 14/10/2022
+ *
+ * Wraps the {@code AclService} provided by Spring, and adds some decoration calls in order to ease the use of the ACL
+ * infrastructure. This class forwards all the calls to it to an instance of {@code MutableAclService} contained in the
+ * instance.
+ */
 @Repository
 @Transactional
 public class AclServiceCustomImpl implements AclService{
 
-    @Autowired
-    private MutableAclService aclService;
-
-    @Autowired
-    private PermissionEvaluator permissionEvaluator;
-
     /**
-     * We assume that the security context is full
+     * Spring provided {@code MutableAclService} that can perform all the calls that this class receives.
      */
+    private final MutableAclService aclService;
+
+    private final PermissionEvaluator permissionEvaluator;
+
+    public AclServiceCustomImpl(MutableAclService aclService, PermissionEvaluator permissionEvaluator) {
+        this.aclService = aclService;
+        this.permissionEvaluator = permissionEvaluator;
+    }
+
+    // TODO refactor methods, so only one big private method is exposed and the rest are just decorators to that method.
     @Transactional
     public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission, String userName)
     {
@@ -136,9 +153,24 @@ public class AclServiceCustomImpl implements AclService{
     /**
      * We assume that the security context is full
      */
-    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission)
-    {
-        this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission) {
+        // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
+        // using this function manually
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof String)
+        {
+            this.addPermissionToUserInEntity(JPAEntity, permission, (String) principal);
+        }
+        else if (principal instanceof UserDetails)
+        {
+            this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) principal);
+        }
+        else
+        {
+            // TODO throw exception
+            Logger.getGlobal().warning("In func addPermissionToUserInEntity the security context is: " + principal.toString());
+        }
     }
 
 
@@ -147,6 +179,7 @@ public class AclServiceCustomImpl implements AclService{
     /**
      * Creates an empty <code>Acl</code> object in the database. It will have no entries.
      * The returned object will then be used to add entries.
+     *
      * @param objectIdentity the object identity to create
      * @return an ACL object with its ID set
      * @throws AlreadyExistsException if the passed object identity already has a record
@@ -157,8 +190,9 @@ public class AclServiceCustomImpl implements AclService{
 
     /**
      * Removes the specified entry from the database.
-     * @param objectIdentity the object identity to remove
-     * @param deleteChildren whether to cascade the delete to children
+     *
+     * @param objectIdentity the object identity to remove.
+     * @param deleteChildren Whether to cascade delete to children.
      * @throws ChildrenExistException if the deleteChildren argument was
      * <code>false</code> but children exist
      */
@@ -168,6 +202,7 @@ public class AclServiceCustomImpl implements AclService{
 
     /**
      * Changes an existing <code>Acl</code> in the database.
+     *
      * @param acl to modify
      * @throws NotFoundException if the relevant record could not be found (did you
      * remember to use {@link #createAcl(ObjectIdentity)} to create the object, rather
@@ -180,6 +215,7 @@ public class AclServiceCustomImpl implements AclService{
     /**
      * Locates all object identities that use the specified parent. This is useful for
      * administration tools.
+     *
      * @param parentIdentity to locate children of
      * @return the children (or <tt>null</tt> if none were found)
      */
@@ -206,6 +242,7 @@ public class AclServiceCustomImpl implements AclService{
 
     /**
      * Same as {@link #readAclsById(List, List)} except it returns only a single Acl.
+     *
      * @param object to locate an {@link Acl} for
      * @param sids the security identities for which {@link Acl} information is required
      * (may be <tt>null</tt> to denote all entries)
@@ -223,7 +260,7 @@ public class AclServiceCustomImpl implements AclService{
      * <p>
      * The returned map is keyed on the passed objects, with the values being the
      * <tt>Acl</tt> instances. Any unknown objects will not have a map key.
-     * </p>
+     *
      * @param objects the objects to find {@link Acl} information for
      * @return a map with exactly one element for each {@link ObjectIdentity} passed as an
      * argument (never <tt>null</tt>)
@@ -243,12 +280,11 @@ public class AclServiceCustomImpl implements AclService{
      * within implementations. Callers should therefore use this method in preference to
      * the alternative overloaded version which does not have performance optimisation
      * opportunities.
-     * </p>
      * <p>
      * The returned map is keyed on the passed objects, with the values being the
      * <tt>Acl</tt> instances. Any unknown objects (or objects for which the interested
      * <tt>Sid</tt>s do not have entries) will not have a map key.
-     * </p>
+     *
      * @param objects the objects to find {@link Acl} information for
      * @param sids the security identities for which {@link Acl} information is required
      * (may be <tt>null</tt> to denote all entries)

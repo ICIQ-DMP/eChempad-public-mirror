@@ -14,7 +14,6 @@ import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,17 +23,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/researcher")
-public class ResearcherControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<Researcher, UUID> implements ResearcherController<Researcher, UUID>  {
+public class ResearcherJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Researcher, UUID> implements ResearcherJPAController<Researcher, UUID> {
 
     @Autowired
-    public ResearcherControllerImpl(ResearcherService<Researcher, UUID> researcherService) {
+    public ResearcherJPAControllerImpl(ResearcherService<Researcher, UUID> researcherService) {
         super(researcherService);
-    }
-
-    @Override
-    @GetMapping(value = "/api/researcher/signals")
-    public ResponseEntity<String> bulkImportSignals() {
-        return ResponseEntity.ok().body("Data from this Signals account could not have been imported.");
     }
 
     /**

@@ -1,14 +1,9 @@
 package org.ICIQ.eChempad.configurations.converters;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.services.LobService;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.mock.web.MockMultipartFile;
@@ -23,28 +18,28 @@ import java.sql.Blob;
 
 
 /**
+ * This class provides two methods to bidirectionally transform instances of {@code Document} and
+ * {@code DocumentWrapper} entity types.
+ * <p>
+ * {@code Document} is the entity type used to store documents in the database, while {@code DocumentWrapper} is the
+ * entity used to transmit documents over the Internet.
+ * <p>
+ * This class implements the {@code AttributeConverter} interface for these two types. This models the functionality
+ * of our class and gives us the adequate contract to fulfill.
+ * <p>
+ * Also, the class is annotated with {@code @Converter} to make the warning about an {@code AttributeConverter}
+ * not being annotated with {@code Converter} disappear.
+ *
  * @author Institut Català d'Investigació Química (iciq.cat)
  * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
  * @author Carles Bo Jané (cbo@iciq.es)
  * @author Moisés Álvarez (malvarez@iciq.es)
  * @version 1.0
- * @since 10/10/2022
- *
- * This class provides two methods to bidirectionally transform instances of {@code Document} and
- * {@code DocumentWrapper} entity types.
- *
- * {@code Document} is the entity type used to store documents in the database, while {@code DocumentWrapper} is the
- * entity used to transmit documents over the Internet.
- *
- * This class implements the {@code AttributeConverter} interface for these two types. This models the functionality
- * of our class and gives us the adequate contract to fulfill.
- *
- * Also, the class is annotated with {@code @Converter} to make the warning about an {@code AttributeConverter}
- * not being annotated with {@code Converter} disappear.
+ * @since 1.0
  */
 @Component
 @Converter
-public class DocumentWrapperConverter implements AttributeConverter<DocumentWrapper, Document>, Serializable {
+public class DocumentWrapperConverter implements AttributeConverter<DocumentWrapper, org.ICIQ.eChempad.entities.genericJPAEntities.Document>, Serializable {
 
     /**
      * Service used to manipulate LOBs from the database. It allows creation and reading of LOBs.
@@ -53,6 +48,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
 
     /**
      * Autowired constructor.
+     *
      * @param lobService Service to manipulate LOBs.
      */
     @Autowired
@@ -61,8 +57,8 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     }
 
     /**
-     * Creates a {@code DocumentWrapper} detached instance from the data of the supplied {@code Document}
-     *
+     * Creates a {@code DocumentWrapper} detached instance from the data of the supplied {@code Document}.
+     * <p>
      * If in this method we get a {@code java.sql.SQLException: could not reset reader} it is caused by the implementation
      * of LOB types by Hibernate. In our case the implementation only allows to read the {@code InputStream} from
      * the LOB once. If the read is tried again this {@code Exception} will show up. To solve it, provide a "fresh" instance
@@ -75,7 +71,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
      */
     @Transactional
     @Override
-    public DocumentWrapper convertToEntityAttribute(Document document) {
+    public DocumentWrapper convertToEntityAttribute(org.ICIQ.eChempad.entities.genericJPAEntities.Document document) {
 
         DocumentWrapper documentWrapper = new DocumentWrapper();
 
@@ -99,7 +95,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     }
 
     /**
-     * Creates a {@code Document} detached instance from the data of the supplied {@code DocumentWrapper}
+     * Creates a {@code Document} detached instance from the data of the supplied {@code DocumentWrapper}.
      *
      * @param documentWrapper Entity presumably coming from outside our application, which contains the data to bulk
      * into the return {@code Document}.
@@ -107,8 +103,8 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
      */
     @Transactional
     @Override
-    public Document convertToDatabaseColumn(DocumentWrapper documentWrapper) {
-        Document document = new Document();
+    public org.ICIQ.eChempad.entities.genericJPAEntities.Document convertToDatabaseColumn(DocumentWrapper documentWrapper) {
+        org.ICIQ.eChempad.entities.genericJPAEntities.Document document = new org.ICIQ.eChempad.entities.genericJPAEntities.Document();
 
         document.setId(documentWrapper.getId());
         document.setName(documentWrapper.getName());

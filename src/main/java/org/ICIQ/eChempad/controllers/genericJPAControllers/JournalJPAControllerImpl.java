@@ -15,7 +15,6 @@ import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
@@ -24,10 +23,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/journal")
-public class JournalControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericControllerImpl<Journal, UUID> implements JournalController<Journal, UUID> {
+public class JournalJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Journal, UUID> implements JournalJPAController<Journal, UUID> {
 
     @Autowired
-    public JournalControllerImpl(JournalService<Journal, UUID> journalService) {
+    public JournalJPAControllerImpl(JournalService<Journal, UUID> journalService) {
         super(journalService);
     }
 
