@@ -1,9 +1,6 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.researchspace.dataverse.api.v1.DataverseAPI;
-import com.researchspace.dataverse.api.v1.DataverseConfig;
-import com.researchspace.dataverse.http.DataverseAPIImpl;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
@@ -86,18 +83,6 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         subjects.add("Arts and Humanities");
         subjects.add("Medicine, Health and Life Sciences");
         dataverseDatasetMetadata.setSubjects(subjects);
-
-        DataverseAPI api = new DataverseAPIImpl();
-        URL url = null;
-        try {
-            url = new URL(DataverseExportServiceImpl.baseURL);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        DataverseConfig config = new DataverseConfig(url, APIKey, "ICIQ");
-        api.configure(config);
-        // now you can call
-        api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
 
         ObjectNode objectNode = this.webClient
                 .post()

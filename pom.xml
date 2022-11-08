@@ -30,6 +30,7 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<spring.version>5.3.22</spring.version>
 		<spring-security.version>5.7.3</spring-security.version>
+		<zkspringboot.version>2.5.12</zkspringboot.version>
 
 		<!--Used by the licenses plugin-->
 		<license.licenseName>apache_v2</license.licenseName>
@@ -49,11 +50,14 @@
 	<!-- This is needed to be able to import directly a github repository, which we need to import the Dataverse Java
 	API Wrapper  -->
 	<repositories>
+
 		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
+			<id>ZK CE</id>
+			<name>ZK CE Repository</name>
+			<url>https://mavensync.zkoss.org/maven2</url>
 		</repository>
 	</repositories>
+
 
 
 	<dependencies>
@@ -190,15 +194,13 @@
 			<version>2.10.5</version>
 		</dependency>
 
-		<!-- To obtain the Java Dataverse API wrapper
-		@see https://jitpack.io/
-		@see https://github.com/IQSS/dataverse-client-java  -->
+		<!-- To use zkoss in our application -->
 		<dependency>
-			<groupId>com.github.IQSS</groupId>
-			<artifactId>dataverse-client-java</artifactId>
-			<version>master-SNAPSHOT</version>
+			<groupId>org.zkoss.zkspringboot</groupId>
+			<artifactId>zkspringboot-starter</artifactId>
+			<type>pom</type>
+			<version>${zkspringboot.version}</version>
 		</dependency>
-
 
 	</dependencies>
 
