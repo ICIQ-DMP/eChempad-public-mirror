@@ -41,7 +41,7 @@
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 			<comments>A business-friendly OSS license</comments>
 		</license>
@@ -160,21 +160,21 @@
 		<dependency>
 			<groupId>org.threeten</groupId>
 			<artifactId>threetenbp</artifactId>
-			<version>1.6.0</version>
+			<version>1.6.4</version>
 		</dependency>
 
 		<!-- To use postgresql dialect in spring -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.3.6</version>
+			<version>42.5.0</version>
 		</dependency>
 
 		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>22.0.0</version>
+			<version>23.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -183,7 +183,7 @@
 		<dependency>
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>3.10.1</version>
+			<version>3.10.2</version>
 		</dependency>
 
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
@@ -191,7 +191,6 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>2.10.5</version>
 		</dependency>
 
 		<!-- To use zkoss in our application -->
@@ -255,7 +254,16 @@
 									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms|apache license, version 2.0 - license-2.0|apache license 2.0 - license-2.0</licenseMerge>
+										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version
+											2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software
+											License, Version 2.0|The Apache License, Version 2.0|Apache License Version
+											2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software
+											License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License
+											V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache
+											2.0|Apache Software License,
+											Version2.0|https://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT
+											Terms|apache license, version 2.0 - license-2.0|apache license 2.0 -
+											license-2.0</licenseMerge>
 										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
 										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
 										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
@@ -307,7 +315,16 @@
 									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms|apache license, version 2.0 - license-2.0|apache license 2.0 - license-2.0</licenseMerge>
+										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version
+											2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software
+											License, Version 2.0|The Apache License, Version 2.0|Apache License Version
+											2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software
+											License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License
+											V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache
+											2.0|Apache Software License,
+											Version2.0|https://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT
+											Terms|apache license, version 2.0 - license-2.0|apache license 2.0 -
+											license-2.0</licenseMerge>
 										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
 										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
 										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
