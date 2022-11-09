@@ -3,6 +3,7 @@ package org.ICIQ.eChempad.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.researchspace.dataverse.api.v1.DataverseAPI;
 import com.researchspace.dataverse.api.v1.DataverseConfig;
+import com.researchspace.dataverse.entities.Identifier;
 import com.researchspace.dataverse.http.DataverseAPIImpl;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
@@ -12,6 +13,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -97,24 +99,14 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         DataverseConfig config = new DataverseConfig(url, APIKey, "ICIQ");
         api.configure(config);
         // now you can call
-        api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
+        Identifier identifier = api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
 
-        ObjectNode objectNode = this.webClient
-                .post()
-                .uri(DataverseExportServiceImpl.baseURL + "/api/dataverses/ICIQ/datasets")
-                .body(BodyInserters.fromValue(dataverseDatasetMetadata))
-                .headers(httpHeaders -> {
-                    httpHeaders.add("X-Dataverse-key", APIKey);
-                    httpHeaders.add("Content-Type", "application/json");
-                })
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
+
 
         Logger.getGlobal().warning("MUTABLE TEMPLATE after: " + dataverseDatasetMetadata);
-        assert objectNode != null;
-        return objectNode.toString();
+        return identifier.toString();
     }
+
 
 
     @Override
