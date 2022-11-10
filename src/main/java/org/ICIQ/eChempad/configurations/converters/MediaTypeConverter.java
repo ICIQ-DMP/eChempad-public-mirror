@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.logging.Logger;
 
 /**
  * Provides automatic transparent conversion between a {@code MediaType} and its {@code String} representation. This is
@@ -29,7 +30,7 @@ public class MediaTypeConverter implements AttributeConverter<MediaType, String>
      */
     @Override
     public String convertToDatabaseColumn(MediaType attribute) {
-        return attribute.getType();
+        return attribute.toString();
     }
 
     /**
