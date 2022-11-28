@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Class used to receive the data of the addDocument request because it contains metadata at the same time as a

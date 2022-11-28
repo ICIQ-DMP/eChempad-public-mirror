@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.researchspace.dataverse.api.v1.DataverseAPI;
 import com.researchspace.dataverse.api.v1.DataverseConfig;
 import com.researchspace.dataverse.entities.Dataset;
+import com.researchspace.dataverse.entities.DatasetFileList;
 import com.researchspace.dataverse.entities.Identifier;
 import com.researchspace.dataverse.http.DataverseAPIImpl;
+import com.researchspace.dataverse.http.FileUploadMetadata;
 import com.researchspace.dataverse.sword.FileUploader;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
@@ -19,8 +21,6 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
-import org.apache.abdera.i18n.iri.IRI;
-import org.apache.abdera.model.IRIElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +29,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.swordapp.client.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -57,20 +57,39 @@ import static com.researchspace.dataverse.entities.facade.PublicationIDType.doi;
 @Service
 public class DataverseExportServiceImpl implements DataverseExportService {
 
+    /**
+     * The base URL used in this class to attack an instance of Dataverse. This is hard-coded for the CSUC Dataverse.
+     * Could be parametrized for other Dataverse instances.
+     */
     private static final String baseURL = "https://dataverse.csuc.cat";
 
+    /**
+     * Encapsulates {@code Journal} manipulation business logic.
+     */
     @Autowired
     JournalService<Journal, UUID> journalService;
 
+    /**
+     * Encapsulates {@code Experiment} manipulation business logic.
+     */
     @Autowired
     ExperimentService<Experiment, UUID> experimentService;
 
+    /**
+     * Encapsulates {@code Document} manipulation business logic.
+     */
     @Autowired
     DocumentService<Document, UUID> documentService;
 
+    /**
+     * Provides methods to transform {@code Document} to {@code DocumentWrapper} and vice versa.
+     */
     @Autowired
     DocumentWrapperConverter documentWrapperConverter;
 
+    /**
+     * Class that performs HTTP requests simulating a Browser.
+     */
     @Autowired
     private WebClient webClient;
 
@@ -86,6 +105,7 @@ public class DataverseExportServiceImpl implements DataverseExportService {
      */
     @Override
     public String exportJournal(String APIKey, Serializable id) {
+
         // Search journal to export in the current database
         Optional<Journal> exportJournal = this.journalService.findById((UUID) id);
         if (! exportJournal.isPresent())
@@ -95,23 +115,10 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         }
         Journal journalToExport = exportJournal.get();
 
-        // Get researcher currently logged in to retrieve user data.
+        // Get researcher currently logged in to retrieve user data to fill metadata
         Researcher author = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher();
 
-        // Create and configure dataverse API library
-        DataverseDatasetMetadata dataverseDatasetMetadata = new DataverseDatasetMetadataImpl();
-        dataverseDatasetMetadata.setTitle(journalToExport.getName());
-        dataverseDatasetMetadata.setAuthorAffiliation("ICIQ");
-        dataverseDatasetMetadata.setAuthorName(author.getUsername());
-        dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
-        dataverseDatasetMetadata.setDescription(journalToExport.getDescription());
-        dataverseDatasetMetadata.setContactEmail(author.getUsername());
-        List<String> subjects = new ArrayList<>();
-        subjects.add("Arts and Humanities");
-        subjects.add("Medicine, Health and Life Sciences");
-        dataverseDatasetMetadata.setSubjects(subjects);
-
-        // Initialize API client
+        // Initialize API client with the URL that we are going to attack and the API key to access it
         DataverseAPI api = new DataverseAPIImpl();
         URL url = null;
         try {
@@ -122,9 +129,23 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         DataverseConfig config = new DataverseConfig(url, APIKey, "ICIQ");
         api.configure(config);
 
-        // Call Dataverse API client to create dataset into the ICIQ dataverse
-        Identifier identifier = api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
-        Logger.getGlobal().warning("A dataset with identifier " + identifier.getId() + "has been created into the ICIQ dataverse.");
+        // Create and configure Dataverse API library
+        // Basic metadata
+        DataverseDatasetMetadata dataverseDatasetMetadata = new DataverseDatasetMetadataImpl();
+        dataverseDatasetMetadata.setTitle(journalToExport.getName());
+        dataverseDatasetMetadata.setAuthorAffiliation("ICIQ");
+        dataverseDatasetMetadata.setAuthorName(author.getUsername());
+        dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
+        dataverseDatasetMetadata.setDescription(journalToExport.getDescription());
+        dataverseDatasetMetadata.setContactEmail(author.getUsername());
+        // Subject metadata
+        List<String> subjects = new ArrayList<>();
+        subjects.add("Arts and Humanities");
+        subjects.add("Medicine, Health and Life Sciences");
+        dataverseDatasetMetadata.setSubjects(subjects);
+
+        // Call Dataverse API client to create dataset into the ICIQ Dataverse
+        Identifier datasetDatabaseIdentifier = api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
 
         // Upload files of each experiment into the created dataset
         // Get all experiments from selected journal
@@ -134,55 +155,29 @@ public class DataverseExportServiceImpl implements DataverseExportService {
             for (Document document: this.documentService.getDocumentsFromExperiment(((UUID) experiment.getId())))
             {
                 try {
-                    /*
-                     * Obtain DocumentWrapper from the currently selected Document in order to obtain a MultipartFile.
-                     * This will be transformed into a File in order to fulfill the parameters of the uploadFile method.
-                     * TODO When the PR of the repository is finished, we will be able to use a InputStream to upload a
-                     *  File, so we do not have to transform it into DocumentWrapper or having to bulk the data into the
-                     *  disk before uploading it.
-                     */
-                    DocumentWrapper documentWrapper = this.documentWrapperConverter.convertToEntityAttribute(document);
-                    File file = DataverseExportServiceImpl.multipartToFile(documentWrapper.getFile(), documentWrapper.getId().toString());
+                    // Create File metadata for the upload
+                    FileUploadMetadata fileUploadMetadata = FileUploadMetadata.builder()
+                            .description(document.getDescription())
+                            .directoryLabel(experiment.getName())
+                            .build();
 
-                    // Obtain the dataset what we just created in order to obtain its DOI.
-                    Dataset dataset = api.getDatasetOperations().getDataset(identifier);
+                    // Upload file
+                    DatasetFileList datasetFileList = api.getDatasetOperations().uploadNativeFile(
+                            document.getBlob().getBinaryStream(),
+                            document.getFileSize(),
+                            fileUploadMetadata,
+                            datasetDatabaseIdentifier,
+                            document.getName()
+                    );
 
-                    // If we have a valid dataset, then we can
-                    if (! dataset.getDoiId().isPresent())
-                    {
-                        // TODO throw exception
-                        throw new RuntimeException();
-                    }
-                    else
-                    {
-                        // This line could do the job but the library is quite unuseful until my PR are merged back into the base repository.
-                        // api.getDatasetOperations().uploadFile(dataset.getDoiId().get(), file);
-                        // Instead, we unwrap the function and get the return info.
-                        DepositReceipt depositReceipt = this.uploadFile(APIKey, dataset.getDoiId().get(), file);
-
-                        // This code retrieves the identifier from SWORD library, which is actually a full URL to the
-                        // uploaded file, which includes its DOI.
-                        // With this code we trim the DOI from the link, which actually hurts me as software developer
-                        // and user of this quite unuseful library.
-                        String[] result = depositReceipt.getEntry().getId().toString().split("/");
-                        String fileDOI = result[result.length - 2] + "/" + result[result.length - 1];
-
-                        Logger.getGlobal().warning("iriDB is " + fileDOI);
-
-                        // Obtain autogenerated file metadata in order to update it with metadata from the instances in
-                        // echempad
-                        ObjectNode objectNode = this.getFileMetadata(APIKey, fileDOI);
-                        Logger.getGlobal().warning("metadata from object node is " + objectNode.toPrettyString());
-
-                    }
-                } catch (IOException e) {
+                } catch (SQLException e) {
                     // TODO throw exception
                     e.printStackTrace();
                 }
             }
         }
 
-        return identifier.toString();
+        return datasetDatabaseIdentifier.toString();
     }
 
     public static File multipartToFile(MultipartFile multipart, String fileNameWithoutCollisions) throws IllegalStateException, IOException {
@@ -206,22 +201,6 @@ public class DataverseExportServiceImpl implements DataverseExportService {
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
                 .block();
-    }
-
-    public DepositReceipt uploadFile(String APIKey, String dataset_DOI, File file)
-    {
-        FileUploader uploader = new FileUploader();
-        try {
-            return uploader.deposit(file, APIKey, new URI(DataverseExportServiceImpl.baseURL), dataset_DOI);
-        } catch (IOException | SWORDClientException  | ProtocolViolationException | URISyntaxException e)
-        {
-            Logger.getGlobal().severe("Couldn't upload file " + file.getName() + " with doi " + doi.toString() + ": " + e.getMessage());
-            throw new RestClientException(e.getMessage());
-        } catch (SWORDError error)
-        {
-            Logger.getGlobal().severe("SwordError: " + error.getErrorBody());
-            throw new RestClientException(error.getErrorBody());
-        }
     }
 
     @Override
