@@ -46,11 +46,31 @@ public class AclServiceCustomImpl implements AclService{
      */
     private final MutableAclService aclService;
 
-    private final PermissionEvaluator permissionEvaluator;
-
-    public AclServiceCustomImpl(MutableAclService aclService, PermissionEvaluator permissionEvaluator) {
+    public AclServiceCustomImpl(MutableAclService aclService) {
         this.aclService = aclService;
-        this.permissionEvaluator = permissionEvaluator;
+    }
+
+    /**
+     * We assume that the security context is full
+     */
+    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission) {
+        // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
+        // using this function manually
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof String)
+        {
+            this.addPermissionToUserInEntity(JPAEntity, permission, (String) principal);
+        }
+        else if (principal instanceof UserDetails)
+        {
+            this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) principal);
+        }
+        else
+        {
+            // TODO throw exception
+            Logger.getGlobal().warning("In func addPermissionToUserInEntity the security context is: " + principal.toString());
+        }
     }
 
     // TODO refactor methods, so only one big private method is exposed and the rest are just decorators to that method.
@@ -95,10 +115,11 @@ public class AclServiceCustomImpl implements AclService{
     }
 
     @Transactional
-    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> theClass)
+    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> parentClass)
     {
         // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
         // initialization will be triggered in order to retrieve the full object from DB, and the method will fail
+        // because we are outside transactional boundaries
 
         // Obtain the identity of the object by using its class and its id
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
@@ -127,7 +148,56 @@ public class AclServiceCustomImpl implements AclService{
             acl.setEntriesInheriting(true);
 
             // Construct identity of parent object
-            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(theClass, parentEntity.getId());
+            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(parentClass, parentEntity.getId());
+
+            // Retrieve ACL of parent object
+            MutableAcl acl_parent;
+            try {
+                acl_parent = (MutableAcl) this.aclService.readAclById(objectIdentity_parent);
+            } catch (NotFoundException nfe) {
+                acl_parent = this.aclService.createAcl(objectIdentity_parent);
+            }
+            acl.setParent(acl_parent);
+        }
+
+        this.aclService.updateAcl(acl);
+    }
+
+    @Transactional
+    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> parentClass)
+    {
+        // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
+        // initialization will be triggered in order to retrieve the full object from DB, and the method will fail
+        // because we are outside transactional boundaries
+
+        // Obtain the identity of the object by using its class and its id
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
+
+        // Obtain the identity of the user
+        UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Sid sid = new PrincipalSid(u.getUsername());
+
+        // Create or update the relevant ACL
+        MutableAcl acl;
+        try {
+            acl = (MutableAcl) this.aclService.readAclById(objectIdentity);
+        } catch (NotFoundException nfe) {
+            acl = this.aclService.createAcl(objectIdentity);
+        }
+
+        // Now grant all permissions via an access control entry (ACE)
+        Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
+        while (it.hasNext())
+        {
+            acl.insertAce(acl.getEntries().size(), it.next(), sid, true);
+        }
+
+        if (inheriting)
+        {
+            acl.setEntriesInheriting(true);
+
+            // Construct identity of parent object
+            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(parentClass, parentEntity.getId());
 
             // Retrieve ACL of parent object
             MutableAcl acl_parent;
@@ -150,31 +220,10 @@ public class AclServiceCustomImpl implements AclService{
         this.addPermissionToUserInEntity(JPAEntity, permission, userDetails.getUsername());
     }
 
-    /**
-     * We assume that the security context is full
+
+    /*
+     * DELEGATED METHODS
      */
-    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission) {
-        // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
-        // using this function manually
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof String)
-        {
-            this.addPermissionToUserInEntity(JPAEntity, permission, (String) principal);
-        }
-        else if (principal instanceof UserDetails)
-        {
-            this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) principal);
-        }
-        else
-        {
-            // TODO throw exception
-            Logger.getGlobal().warning("In func addPermissionToUserInEntity the security context is: " + principal.toString());
-        }
-    }
-
-
-    // Delegated methods
 
     /**
      * Creates an empty <code>Acl</code> object in the database. It will have no entries.
