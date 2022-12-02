@@ -2,12 +2,12 @@ package org.ICIQ.eChempad.controllers;
 
 import org.ICIQ.eChempad.services.SignalsImportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Exposes method calls in the CRUD API in order to import contents from third-party services. As a class it basically
@@ -51,16 +51,14 @@ public class SignalsImporterControllerImpl implements SignalsImporterController 
     }
 
     @Override
-    // TODO
-    public ResponseEntity<String> importJournal() {
-        return null;
+    @GetMapping(value = "/importJournal/{id}")
+    public ResponseEntity<String> importJournal(@PathVariable(value = "id") Serializable eid) {
+        return ResponseEntity.ok(this.signalsImportService.importJournal(eid));
     }
 
     @Override
-    // TODO
-    public ResponseEntity<String> importJournal(String APIKey) {
-        return null;
+    @GetMapping(value = "/importJournalWithKey/{id}")
+    public ResponseEntity<String> importJournal(@RequestHeader("x-api-key") String APIKey, @PathVariable(value = "id") Serializable eid) {
+        return ResponseEntity.ok(this.signalsImportService.importJournal(APIKey, eid));
     }
-
-
 }

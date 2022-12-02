@@ -15,6 +15,7 @@ import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.ExperimentRepository;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.JournalRepository;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,13 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class ExperimentServiceImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericServiceImpl<Experiment, UUID> implements ExperimentService<Experiment, UUID> {
+
+    @Autowired
+    private JournalService<Journal, UUID> journalService;
 
     @Autowired
     public ExperimentServiceImpl(ExperimentRepository<T, S> experimentRepository, AclServiceCustomImpl aclRepository) {
@@ -44,8 +49,10 @@ public class ExperimentServiceImpl<T extends JPAEntityImpl, S extends Serializab
     @Override
     public Experiment addExperimentToJournal(Experiment experiment, UUID journal_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
 
-        // Obtain lazily loaded journal. DB will be accessed if accessing any other field than id
-        Journal journal = super.entityManager.getReference(Journal.class, journal_uuid);
+        Logger.getGlobal().warning("Adding experiment " + experiment.getName());
+        // Sometimes I get this error "illegally attempted to associate a proxy with two open Sessions". We can
+        // solve it by using the actual repository, but having less performance since we do a DB connection
+        Journal journal = this.journalService.getById(journal_uuid);
 
         // Set the journal of this experiment and sav experiment. Save is cascaded
         experiment.setJournal(journal);

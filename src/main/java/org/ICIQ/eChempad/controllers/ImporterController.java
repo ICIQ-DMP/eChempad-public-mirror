@@ -2,6 +2,8 @@ package org.ICIQ.eChempad.controllers;
 
 import org.springframework.http.ResponseEntity;
 
+import java.io.Serializable;
+
 /**
  * Models the contract that a class must fulfill to be an {@code ImporterController}. It exposes basic methods to import
  * resources from a repository using its API into the workspace of the logged user.
@@ -25,7 +27,9 @@ public interface ImporterController {
     /**
      * Import a journal from the origin repository into the workspace of the currently logged user. It uses the
      * credentials stored in the {@code Researcher} instance associated with the logged user.
+     *
+     * @param eid Unique identifier of the journal to import.
      * @return Formatted response to include a summary of all the imported content.
      */
-    ResponseEntity<String> importJournal();
+    ResponseEntity<String> importJournal(Serializable eid);
 }

@@ -115,7 +115,7 @@ public class AclServiceCustomImpl implements AclService{
     }
 
     @Transactional
-    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> parentClass)
+    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> theClass)
     {
         // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
         // initialization will be triggered in order to retrieve the full object from DB, and the method will fail
@@ -148,56 +148,7 @@ public class AclServiceCustomImpl implements AclService{
             acl.setEntriesInheriting(true);
 
             // Construct identity of parent object
-            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(parentClass, parentEntity.getId());
-
-            // Retrieve ACL of parent object
-            MutableAcl acl_parent;
-            try {
-                acl_parent = (MutableAcl) this.aclService.readAclById(objectIdentity_parent);
-            } catch (NotFoundException nfe) {
-                acl_parent = this.aclService.createAcl(objectIdentity_parent);
-            }
-            acl.setParent(acl_parent);
-        }
-
-        this.aclService.updateAcl(acl);
-    }
-
-    @Transactional
-    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> parentClass)
-    {
-        // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
-        // initialization will be triggered in order to retrieve the full object from DB, and the method will fail
-        // because we are outside transactional boundaries
-
-        // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
-
-        // Obtain the identity of the user
-        UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Sid sid = new PrincipalSid(u.getUsername());
-
-        // Create or update the relevant ACL
-        MutableAcl acl;
-        try {
-            acl = (MutableAcl) this.aclService.readAclById(objectIdentity);
-        } catch (NotFoundException nfe) {
-            acl = this.aclService.createAcl(objectIdentity);
-        }
-
-        // Now grant all permissions via an access control entry (ACE)
-        Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
-        while (it.hasNext())
-        {
-            acl.insertAce(acl.getEntries().size(), it.next(), sid, true);
-        }
-
-        if (inheriting)
-        {
-            acl.setEntriesInheriting(true);
-
-            // Construct identity of parent object
-            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(parentClass, parentEntity.getId());
+            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(theClass, parentEntity.getId());
 
             // Retrieve ACL of parent object
             MutableAcl acl_parent;
