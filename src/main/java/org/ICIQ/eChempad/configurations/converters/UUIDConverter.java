@@ -8,6 +8,8 @@
 package org.ICIQ.eChempad.configurations.converters;
 
 
+import org.springframework.stereotype.Component;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.io.Serializable;
@@ -25,6 +27,7 @@ import java.util.UUID;
  * @version 1.0
  * @since 04/10/2022
  */
+@Component
 @Converter(autoApply = true)
 public class UUIDConverter implements AttributeConverter<UUID, String>, Serializable {
 
