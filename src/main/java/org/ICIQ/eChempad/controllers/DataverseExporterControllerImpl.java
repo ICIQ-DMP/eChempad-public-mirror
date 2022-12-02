@@ -54,7 +54,6 @@ public class DataverseExporterControllerImpl implements DataverseExporterControl
             value = "/exportJournalWithKey/{journal_id}",
             produces = "application/json"
     )
-    //@PostAuthorize("hasPermission(returnObject, 'READ')")
     @PreAuthorize("hasPermission(#journal_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal' , 'READ')")
     @ResponseStatus(HttpStatus.OK)
     @Override

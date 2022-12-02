@@ -63,6 +63,9 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
     public String importWorkspace(String APIKey) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
+
+        Logger.getGlobal().warning("Using token for signals " + APIKey);
+
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
@@ -72,7 +75,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
         String APIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
 
-        Logger.getGlobal().info("Using token for signals " + APIKey);
+        Logger.getGlobal().warning("Using token for signals " + APIKey);
 
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();

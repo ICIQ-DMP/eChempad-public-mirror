@@ -41,7 +41,7 @@ public class SignalsImporterControllerImpl implements SignalsImporterController 
 
     @Override
     @GetMapping(value = "/importWithKey")
-    public ResponseEntity<String> importWorkspace(String APIKey) {
+    public ResponseEntity<String> importWorkspace(@RequestHeader("x-api-key") String APIKey) {
         try {
             return ResponseEntity.ok().body(this.signalsImportService.importWorkspace(APIKey));
         } catch (IOException e) {
