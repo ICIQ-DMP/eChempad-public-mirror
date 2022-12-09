@@ -94,7 +94,8 @@ public class DataverseExporterControllerImpl implements DataverseExporterControl
         {
             e.printStackTrace();
         }
-        return ResponseEntity.ok().body("Data from this Signals account could not have been exported.");    }
+        return ResponseEntity.ok().body("Data from this Signals account could not have been exported.");
+    }
 
 
 }
