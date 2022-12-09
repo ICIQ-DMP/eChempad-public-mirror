@@ -97,9 +97,6 @@ public abstract class GenericJPAControllerImpl<T extends JPAEntityImpl, S extend
     @Override
     public T put(@Validated @RequestBody T t, @PathVariable(value = "id") S id) throws ResourceNotExistsException, NotEnoughAuthorityException {
         t.setId(id);
-
-        Logger.getGlobal().warning("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ" + t.toString());
-
         return this.genericService.save(t);
     }
 

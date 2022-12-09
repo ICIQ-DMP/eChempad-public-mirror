@@ -54,7 +54,6 @@ public class DataverseExporterControllerImpl implements DataverseExporterControl
             value = "/exportJournalWithKey/{journal_id}",
             produces = "application/json"
     )
-    //@PostAuthorize("hasPermission(returnObject, 'READ')")
     @PreAuthorize("hasPermission(#journal_id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal' , 'READ')")
     @ResponseStatus(HttpStatus.OK)
     @Override
@@ -95,7 +94,8 @@ public class DataverseExporterControllerImpl implements DataverseExporterControl
         {
             e.printStackTrace();
         }
-        return ResponseEntity.ok().body("Data from this Signals account could not have been exported.");    }
+        return ResponseEntity.ok().body("Data from this Signals account could not have been exported.");
+    }
 
 
 }

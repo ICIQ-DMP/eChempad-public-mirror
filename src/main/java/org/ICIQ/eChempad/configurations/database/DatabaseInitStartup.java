@@ -27,17 +27,17 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
+ * This class contains the method
+ * {@code public void onApplicationEvent(final @NotNull ApplicationReadyEvent event)}
+ * which is executed after the application is "ready". That happens after all the initializations, but before
+ * accepting traffic. In here we can implement ways to load data to the database at the start of the application.
+ *
  * @author Institut Català d'Investigació Química (iciq.cat)
  * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
  * @author Carles Bo Jané (cbo@iciq.es)
  * @author Moisés Álvarez (malvarez@iciq.es)
  * @version 1.0
  * @since 10/10/2022
- *
- * This class contains the method
- * {@code public void onApplicationEvent(final @NotNull ApplicationReadyEvent event)}
- * which is executed after the application is "ready". That happens after all the initializations, but before
- * accepting traffic. In here we can implement ways to load data to the database at the start of the application.
  */
 @Component
 public class DatabaseInitStartup implements ApplicationListener<ApplicationReadyEvent> {

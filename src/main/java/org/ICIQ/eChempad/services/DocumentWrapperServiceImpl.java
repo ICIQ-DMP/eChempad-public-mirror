@@ -46,6 +46,7 @@ public class DocumentWrapperServiceImpl<T extends JPAEntityImpl, S extends Seria
         org.ICIQ.eChempad.entities.genericJPAEntities.Document documentDatabase = this.documentService.addDocumentToExperiment(document, experiment_uuid);
 
         // Reconvert to Transport entity and return it
+        //TODO Change return of this method, so we do not need to reconvert, since a silent error is thrown on server side because it cannot reread the stream of the BLOB
         documentWrapper = this.documentWrapperConverter.convertToEntityAttribute(documentDatabase);
         return documentWrapper;
     }
