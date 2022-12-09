@@ -1,8 +1,7 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-<<<<<<< HEAD
-=======
+
 import com.researchspace.dataverse.api.v1.DataverseAPI;
 import com.researchspace.dataverse.api.v1.DataverseConfig;
 import com.researchspace.dataverse.entities.Dataset;
@@ -12,7 +11,6 @@ import com.researchspace.dataverse.http.DataverseAPIImpl;
 import com.researchspace.dataverse.http.FileUploadMetadata;
 import com.researchspace.dataverse.sword.FileUploader;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
->>>>>>> ca6bb3529bf5345fd3f095946f814cefbed49f8c
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;

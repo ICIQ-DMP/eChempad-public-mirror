@@ -51,6 +51,7 @@
 	API Wrapper  -->
 	<repositories>
 
+		<!-- ZKoss dependency -->
 		<repository>
 			<id>ZK CE</id>
 			<name>ZK CE Repository</name>
