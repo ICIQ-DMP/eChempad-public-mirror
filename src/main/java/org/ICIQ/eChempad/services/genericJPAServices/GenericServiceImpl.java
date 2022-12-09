@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Logger;
@@ -29,10 +30,22 @@ import java.util.logging.Logger;
 @Service
 public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericService<T, S>{
 
-    @PersistenceContext
+    /**
+     * Persistence context of the class. This provides extended programmatic capabilities to access the database data.
+     * We use {@code type= PersistenceContextType.EXTENDED} because it has been reported as a valid mechanism to keep
+     * LOB descriptors without staling.
+     */
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
     protected EntityManager entityManager;
 
+    /**
+     * The repository that performs all the database manipulation.
+     */
     protected GenericRepository<T, S> genericRepository;
+
+    /**
+     * The repository that performs the database manipulation regarding security and ACL state.
+     */
     protected AclServiceCustomImpl aclRepository;
 
     public GenericServiceImpl() {}
@@ -56,7 +69,6 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
      * @return entity that has been saved
      */
     public <S1 extends T> S1 save(S1 entity) {
-        Logger.getGlobal().warning("DAVED ELEMENTS:    " + entity.toString());
         S1 t = genericRepository.save(entity);
 
         // Save all possible permission against the saved entity with the current logged user
@@ -64,7 +76,6 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
         while (iterator.hasNext()) {
             this.aclRepository.addPermissionToUserInEntity(t, iterator.next());
         }
-
         return t;
     }
 

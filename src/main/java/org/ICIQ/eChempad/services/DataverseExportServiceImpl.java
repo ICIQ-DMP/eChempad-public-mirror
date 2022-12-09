@@ -3,27 +3,45 @@ package org.ICIQ.eChempad.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.researchspace.dataverse.api.v1.DataverseAPI;
 import com.researchspace.dataverse.api.v1.DataverseConfig;
+import com.researchspace.dataverse.entities.Dataset;
+import com.researchspace.dataverse.entities.DatasetFileList;
+import com.researchspace.dataverse.entities.Identifier;
 import com.researchspace.dataverse.http.DataverseAPIImpl;
+import com.researchspace.dataverse.http.FileUploadMetadata;
+import com.researchspace.dataverse.sword.FileUploader;
+import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
+import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
+import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Logger;
+
+import static com.researchspace.dataverse.entities.facade.PublicationIDType.doi;
 
 /**
  * Implementation of class to export data to a running Dataverse instance.
@@ -39,11 +57,39 @@ import java.util.logging.Logger;
 @Service
 public class DataverseExportServiceImpl implements DataverseExportService {
 
+    /**
+     * The base URL used in this class to attack an instance of Dataverse. This is hard-coded for the CSUC Dataverse.
+     * Could be parametrized for other Dataverse instances.
+     */
     private static final String baseURL = "https://dataverse.csuc.cat";
 
+    /**
+     * Encapsulates {@code Journal} manipulation business logic.
+     */
     @Autowired
     JournalService<Journal, UUID> journalService;
 
+    /**
+     * Encapsulates {@code Experiment} manipulation business logic.
+     */
+    @Autowired
+    ExperimentService<Experiment, UUID> experimentService;
+
+    /**
+     * Encapsulates {@code Document} manipulation business logic.
+     */
+    @Autowired
+    DocumentService<Document, UUID> documentService;
+
+    /**
+     * Provides methods to transform {@code Document} to {@code DocumentWrapper} and vice versa.
+     */
+    @Autowired
+    DocumentWrapperConverter documentWrapperConverter;
+
+    /**
+     * Class that performs HTTP requests simulating a Browser.
+     */
     @Autowired
     private WebClient webClient;
 
@@ -59,34 +105,20 @@ public class DataverseExportServiceImpl implements DataverseExportService {
      */
     @Override
     public String exportJournal(String APIKey, Serializable id) {
-        Optional<Journal> exportJournal = this.journalService.findById((UUID) id);
-        Journal journal;
 
+        // Search journal to export in the current database
+        Optional<Journal> exportJournal = this.journalService.findById((UUID) id);
         if (! exportJournal.isPresent())
         {
+            // TODO throw exception
             return "Could not export the journal " + id + ". It could not be found for the current user.";
         }
-        else
-        {
-            journal = exportJournal.get();
-        }
+        Journal journalToExport = exportJournal.get();
 
+        // Get researcher currently logged in to retrieve user data to fill metadata
         Researcher author = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher();
 
-        DataverseDatasetMetadata dataverseDatasetMetadata = new DataverseDatasetMetadataImpl();
-
-        dataverseDatasetMetadata.setTitle(journal.getName());
-        dataverseDatasetMetadata.setAuthorAffiliation("ICIQ");
-        dataverseDatasetMetadata.setAuthorName(author.getUsername());
-        dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
-        dataverseDatasetMetadata.setDescription(journal.getDescription());
-        dataverseDatasetMetadata.setContactEmail(author.getUsername());
-
-        List<String> subjects = new ArrayList<>();
-        subjects.add("Arts and Humanities");
-        subjects.add("Medicine, Health and Life Sciences");
-        dataverseDatasetMetadata.setSubjects(subjects);
-
+        // Initialize API client with the URL that we are going to attack and the API key to access it
         DataverseAPI api = new DataverseAPIImpl();
         URL url = null;
         try {
@@ -96,33 +128,79 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         }
         DataverseConfig config = new DataverseConfig(url, APIKey, "ICIQ");
         api.configure(config);
-        // now you can call
-        api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
 
-        ObjectNode objectNode = this.webClient
-                .post()
-                .uri(DataverseExportServiceImpl.baseURL + "/api/dataverses/ICIQ/datasets")
-                .body(BodyInserters.fromValue(dataverseDatasetMetadata))
-                .headers(httpHeaders -> {
-                    httpHeaders.add("X-Dataverse-key", APIKey);
-                    httpHeaders.add("Content-Type", "application/json");
-                })
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
+        // Create and configure Dataverse API library
+        // Basic metadata
+        DataverseDatasetMetadata dataverseDatasetMetadata = new DataverseDatasetMetadataImpl();
+        dataverseDatasetMetadata.setTitle(journalToExport.getName());
+        dataverseDatasetMetadata.setAuthorAffiliation("ICIQ");
+        dataverseDatasetMetadata.setAuthorName(author.getUsername());
+        dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
+        dataverseDatasetMetadata.setDescription(journalToExport.getDescription());
+        dataverseDatasetMetadata.setContactEmail(author.getUsername());
+        // Subject metadata
+        List<String> subjects = new ArrayList<>();
+        subjects.add("Arts and Humanities");
+        subjects.add("Medicine, Health and Life Sciences");
+        dataverseDatasetMetadata.setSubjects(subjects);
 
-        Logger.getGlobal().warning("MUTABLE TEMPLATE after: " + dataverseDatasetMetadata);
-        assert objectNode != null;
-        return objectNode.toString();
+        // Call Dataverse API client to create dataset into the ICIQ Dataverse
+        Identifier datasetDatabaseIdentifier = api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
+
+        // Upload files of each experiment into the created dataset
+        // Get all experiments from selected journal
+        for (Experiment experiment: this.experimentService.getExperimentsFromJournal((UUID) id))
+        {
+            // Get all documents for each experiment
+            for (Document document: this.documentService.getDocumentsFromExperiment(((UUID) experiment.getId())))
+            {
+                try {
+                    // Create File metadata for the upload
+                    FileUploadMetadata fileUploadMetadata = FileUploadMetadata.builder()
+                            .description(document.getDescription())
+                            .directoryLabel(experiment.getName())
+                            .build();
+
+                    // Upload file
+                    DatasetFileList datasetFileList = api.getDatasetOperations().uploadNativeFile(
+                            document.getBlob().getBinaryStream(),
+                            document.getFileSize(),
+                            fileUploadMetadata,
+                            datasetDatabaseIdentifier,
+                            document.getName()
+                    );
+
+                } catch (SQLException e) {
+                    // TODO throw exception
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return datasetDatabaseIdentifier.toString();
     }
 
+    public static File multipartToFile(MultipartFile multipart, String fileNameWithoutCollisions) throws IllegalStateException, IOException {
+        File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + fileNameWithoutCollisions);
+        multipart.transferTo(convFile);
+        return convFile;
+    }
 
     @Override
     public String exportJournal(Serializable id) throws IOException {
+        return exportJournal( ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getDataverseAPIKey(), id);
+    }
 
-        // ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getDataverseAPIKey();
-        exportJournal("" , id);
-        return "yes";
+    public ObjectNode getFileMetadata(String APIKey, String fileDOI) throws IOException
+    {
+        return this.webClient
+                .get()
+                .uri(DataverseExportServiceImpl.baseURL + "/api/files/:persistentId/metadata?persistentId=" + fileDOI)
+                .header("X-Dataverse-key", APIKey)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
     }
 
     @Override

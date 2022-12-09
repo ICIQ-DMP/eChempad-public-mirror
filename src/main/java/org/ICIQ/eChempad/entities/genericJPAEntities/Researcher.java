@@ -69,6 +69,10 @@ public class Researcher extends JPAEntityImpl {
     @Column(length = 73, nullable = true)
     private String signalsAPIKey;
 
+    // Exactly 37 characters
+    @Column(length = 37, nullable = true)
+    private String dataverseAPIKey;
+
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "researcher",
@@ -250,5 +254,13 @@ public class Researcher extends JPAEntityImpl {
 
     public void setAuthorities(Set<Authority> permissions) {
         this.authorities = permissions;
+    }
+
+    public String getDataverseAPIKey() {
+        return dataverseAPIKey;
+    }
+
+    public void setDataverseAPIKey(String dataverseAPIKey) {
+        this.dataverseAPIKey = dataverseAPIKey;
     }
 }

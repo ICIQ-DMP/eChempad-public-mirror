@@ -107,7 +107,7 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
      */
     @Bean
     public AclCache aclCache() {
-
+        // TODO EhCacheBasedAclCache is deprecated
         return new EhCacheBasedAclCache(
                 aclEhCacheFactoryBean().getObject(),
                 permissionGrantingStrategy(),

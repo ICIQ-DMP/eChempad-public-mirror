@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.ICIQ.eChempad.entities.DocumentWrapper;
 
 /**
@@ -39,7 +40,9 @@ import org.ICIQ.eChempad.entities.DocumentWrapper;
         @JsonSubTypes.Type(value = Experiment.class, name = "Experiment"),
         @JsonSubTypes.Type(value = DocumentWrapper.class, name = "Document")
 })
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class JPAEntityImpl implements JPAEntity {
 

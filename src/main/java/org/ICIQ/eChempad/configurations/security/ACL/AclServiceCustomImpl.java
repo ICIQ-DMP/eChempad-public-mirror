@@ -46,11 +46,31 @@ public class AclServiceCustomImpl implements AclService{
      */
     private final MutableAclService aclService;
 
-    private final PermissionEvaluator permissionEvaluator;
-
-    public AclServiceCustomImpl(MutableAclService aclService, PermissionEvaluator permissionEvaluator) {
+    public AclServiceCustomImpl(MutableAclService aclService) {
         this.aclService = aclService;
-        this.permissionEvaluator = permissionEvaluator;
+    }
+
+    /**
+     * We assume that the security context is full
+     */
+    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission) {
+        // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
+        // using this function manually
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof String)
+        {
+            this.addPermissionToUserInEntity(JPAEntity, permission, (String) principal);
+        }
+        else if (principal instanceof UserDetails)
+        {
+            this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) principal);
+        }
+        else
+        {
+            // TODO throw exception
+            Logger.getGlobal().warning("In func addPermissionToUserInEntity the security context is: " + principal.toString());
+        }
     }
 
     // TODO refactor methods, so only one big private method is exposed and the rest are just decorators to that method.
@@ -99,6 +119,7 @@ public class AclServiceCustomImpl implements AclService{
     {
         // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
         // initialization will be triggered in order to retrieve the full object from DB, and the method will fail
+        // because we are outside transactional boundaries
 
         // Obtain the identity of the object by using its class and its id
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
@@ -150,31 +171,10 @@ public class AclServiceCustomImpl implements AclService{
         this.addPermissionToUserInEntity(JPAEntity, permission, userDetails.getUsername());
     }
 
-    /**
-     * We assume that the security context is full
+
+    /*
+     * DELEGATED METHODS
      */
-    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission) {
-        // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
-        // using this function manually
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof String)
-        {
-            this.addPermissionToUserInEntity(JPAEntity, permission, (String) principal);
-        }
-        else if (principal instanceof UserDetails)
-        {
-            this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) principal);
-        }
-        else
-        {
-            // TODO throw exception
-            Logger.getGlobal().warning("In func addPermissionToUserInEntity the security context is: " + principal.toString());
-        }
-    }
-
-
-    // Delegated methods
 
     /**
      * Creates an empty <code>Acl</code> object in the database. It will have no entries.

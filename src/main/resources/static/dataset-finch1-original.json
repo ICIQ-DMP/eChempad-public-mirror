@@ -84,42 +84,6 @@
             "typeClass": "controlledVocabulary",
             "multiple": true,
             "typeName": "subject"
-          },
-          {
-            "typeName": "keyword",
-            "multiple": true,
-            "typeClass": "compound",
-            "value":
-            [
-              {
-                "keywordValue": {
-                  "typeName": "keywordValue",
-                  "multiple": false,
-                  "typeClass": "primitive",
-                  "value": "Crystallography"
-                },
-                "keywordVocabulary": {
-                  "typeName": "keywordVocabulary",
-                  "multiple": false,
-                  "typeClass": "primitive",
-                  "value": "MeSH"
-                },
-                "keywordVocabularyURI": {
-                  "typeName": "keywordVocabularyURI",
-                  "multiple": false,
-                  "typeClass": "primitive",
-                  "value": "https://www.ncbi.nlm.nih.gov/mesh/"
-                }
-              }
-            ]
-          },
-          {
-            "typeName": "kindOfData",
-            "multiple": true,
-            "typeClass": "controlledVocabulary",
-            "value": [
-              "Other"
-            ]
           }
         ],
         "displayName": "Citation Metadata"

@@ -80,7 +80,6 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
         documentWrapper.setDescription(document.getDescription());
         documentWrapper.setId(document.getId());
 
-
         MultipartFile multipartFile = null;
         try {
             InputStream is = this.lobService.readBlob(document.getBlob());

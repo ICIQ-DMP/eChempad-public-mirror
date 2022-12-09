@@ -18,7 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.acls.model.AclService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,6 +63,9 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
     public String importWorkspace(String APIKey) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
+
+        Logger.getGlobal().warning("Using token for signals " + APIKey);
+
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
@@ -73,29 +75,89 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
         String APIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
 
+        Logger.getGlobal().warning("Using token for signals " + APIKey);
+
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
 
-    @Override
-    public String importJournal(String APIKey, Serializable id) {
-        return null;
-    }
 
-    @Override
-    public String importJournal(Serializable id) {
-        return null;
-    }
-
-    static void printJSON(ObjectNode objectNode)
+    public ObjectNode getJournalWithEUID(String APIKey, String journalEUID)
     {
-        final ObjectMapper objectMapper = new ObjectMapper();
+        return this.webClient.get()
+                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + journalEUID + "?include=owner")
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
+    }
 
-        try {
-            System.out.println("JOURNAL JSON" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectNode));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+    public ObjectNode getUserData(String APIKey, int userNumber)
+    {
+        return this.webClient.get()
+                .uri(SignalsImportServiceImpl.baseURL + "/users/" + userNumber)
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
+    }
+
+    public String importJournal(Serializable id) {
+        return this.importJournal(((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey(), id);
+    }
+
+        @Override
+    public String importJournal(String APIKey, Serializable id) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        ObjectNode journalJSON;
+
+        journalJSON = this.getJournalWithEUID(APIKey, id.toString());
+
+        // Check if the journal owner email coincides with the email of the logged user, if not discard journal
+
+        Logger.getGlobal().warning(journalJSON.toPrettyString() + "");
+        JsonNode includedData = journalJSON.get("included");
+        Logger.getGlobal().warning(includedData.toPrettyString() + "");
+        JsonNode includedOwner = includedData.get(0);
+        JsonNode ownerAttributes = includedOwner.get("attributes");
+        JsonNode ownerName = ownerAttributes.get("userName");
+        String ownerNameTrimmed = ownerName.toString().replace("\"", "");
+
+        if (getOnlyOwnedResources && ! ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getUsername().equals(ownerNameTrimmed))
+        {
+            return "Owner name does not coincide with currently logged user in eChempad application side" + ownerName + " with attributes "+ ownerAttributes.toString();
         }
+
+        // Remove quotes and obtain the EID of this entity.
+        String journal_eid = journalJSON.get("data").get("attributes").get("eid").toString().replace("\"", "");
+
+        // Create unmanaged journal to save the metadata
+        Journal signalsJournal = new Journal();
+
+        // Parse and log journal name
+        String signalsJournalName = journalJSON.get("data").get("attributes").get("name").toString().replace("\"", "");
+        if (signalsJournalName.equals(""))
+        {
+            signalsJournalName = "(No name provided)";
+        }
+        signalsJournal.setName(signalsJournalName);
+        stringBuilder.append(" * Journal ").append(0).append(" with EID ").append(journal_eid).append(": ").append(signalsJournalName).append("\n");
+
+        // Parse journal description
+        String signalsJournalDescription = journalJSON.get("data").get("attributes").get("description").toString().replace("\"", "");
+        signalsJournal.setDescription(signalsJournalDescription);
+
+        // metadata parsing (...)
+
+        this.journalService.save(signalsJournal);
+
+        // Now call getExperimentsFromJournal using the created journal in order to import their children, recursively
+        // This function will fill the passed journal with the new retrieved experiments from Signals. It will also
+        // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
+        this.getExperimentsFromJournal(APIKey, journal_eid, (UUID) signalsJournal.getId(), stringBuilder);
+        Logger.getGlobal().info("JOURNAL NUMBER " + id + " FINISHED IMPORT");
+        return stringBuilder.toString();
     }
 
 
@@ -103,7 +165,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     {
         ObjectNode journalJSON;
         int i = 0;
-        while ((journalJSON = this.getJournal(APIKey, i)) != null)
+        while ((journalJSON = this.getJournalWithOffset(APIKey, i)) != null)
         {
             // Iterate until the data of the entity is empty
             if (journalJSON.get("data").isEmpty())
@@ -162,7 +224,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         }
     }
 
-    public ObjectNode getJournal(String APIKey, int pageOffset)
+    public ObjectNode getJournalWithOffset(String APIKey, int pageOffset)
     {
         return this.webClient.get()
                 .uri(SignalsImportServiceImpl.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=owner&includeOptions=mine")
@@ -189,7 +251,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 // Here we will call getDocuments, we will append each document into a list inside of
                 // journal{data}[0]{relationships}{children} = []
                 String experiment_eid = experimentJSON.get("data").get(0).get("id").toString().replace("\"", "");
-                System.out.println("EXPERIMENT EID IS: " + experiment_eid);
 
                 // Create unmanaged journal to save the metadata
                 Experiment signalsExperiment = new Experiment();
@@ -205,6 +266,8 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
                 // Parse experiment description
                 signalsExperiment.setDescription(experimentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
+
+                Logger.getGlobal().info("EXPERIMENT EID IS: " + experiment_eid + " with name " + signalsExperimentName);
 
                 // metadata parsing (...)
 
@@ -276,6 +339,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 // the previous example has the value "MZ7-085-DC_10%5B1%5D.zip"
                 // We also need to obtain the header Content-type which indicates the mimetype of the file we are
                 // retrieving. That will allow to know the type of file inorder to process it further.
+                Logger.getGlobal().warning("Document data is " +  documentHelperName + " with description " + documentHelperDescription);
                 HttpHeaders receivedHeaders = null;
                 try {
                     receivedHeaders = new HttpHeaders();
@@ -289,7 +353,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 }
 
 
-                // File length is not needed to be parsed since it is conserved inside of the bytestream
+                // File length is not needed to be parsed since it is conserved inside the bytestream
 
                 // Debug printing
                 stringBuilder.append("     # Document ").append(i).append(" with EID ").append(document_eid).append(": ").append(documentHelperName).append("\n");
@@ -307,6 +371,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
     public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
     {
+        Logger.getGlobal().warning("Getting document " + pageOffset + " from experiment " + experiment_eid);
         return this.webClient.get()
                 .uri(SignalsImportServiceImpl.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + ((Integer) pageOffset) + "&page[limit]=1&include=children%2C%20owner")
                 .header("x-api-key", APIKey)
@@ -318,6 +383,8 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     public ByteArrayResource exportDocument(String APIKey, String document_eid, HttpHeaders receivedHeaders) throws IOException {
 
         String url = SignalsImportServiceImpl.baseURL + "/entities/" + document_eid + "/export";
+
+        Logger.getGlobal().info("\n\n" + document_eid);
 
         ResponseEntity<ByteArrayResource> responseEntity = this.webClient.get()
                 .uri(url)
