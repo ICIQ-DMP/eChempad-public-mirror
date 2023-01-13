@@ -57,6 +57,12 @@
 			<name>ZK CE Repository</name>
 			<url>https://mavensync.zkoss.org/maven2</url>
 		</repository>
+
+		<!-- To use the dataverse API client for java -->
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 
 
@@ -155,7 +161,12 @@
 		</dependency>
 
 
-
+		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
+		<dependency>
+			<groupId>com.github.IQSS</groupId>
+			<artifactId>dataverse-client-java</artifactId>
+			<version>master-SNAPSHOT</version>
+		</dependency>
 
 		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
 		<dependency>

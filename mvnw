@@ -333,7 +333,7 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
 # "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts"
 trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts")
-trustStore="${trustStores[2]}"
+trustStore="${trustStores[1]}"
 
 if [ ! -f "${trustStore}" ]; then
   echo "ERROR: The trust store ${trustStore} is not a valid or existent file"

@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.researchspace.dataverse.api.v1.DataverseAPI;
 import com.researchspace.dataverse.api.v1.DataverseConfig;
-import com.researchspace.dataverse.entities.Dataset;
 import com.researchspace.dataverse.entities.DatasetFileList;
 import com.researchspace.dataverse.entities.Identifier;
 import com.researchspace.dataverse.http.DataverseAPIImpl;
 import com.researchspace.dataverse.http.FileUploadMetadata;
-import com.researchspace.dataverse.sword.FileUploader;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
-import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
@@ -26,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -35,14 +30,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Logger;
-
-import static com.researchspace.dataverse.entities.facade.PublicationIDType.doi;
 
 /**
  * Implementation of class to export data to a running Dataverse instance.
