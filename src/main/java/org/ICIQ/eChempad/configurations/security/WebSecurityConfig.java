@@ -81,7 +81,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated*/
                 .and()
-                    .httpBasic();
+                    .httpBasic()
+                .and()
+                    // For the GUI
+                    .authorizeRequests()
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/index").permitAll();
+
 
     }
 

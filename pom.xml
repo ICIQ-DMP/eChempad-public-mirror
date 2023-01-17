@@ -31,6 +31,7 @@
 		<spring.version>5.3.22</spring.version>
 		<spring-security.version>5.7.3</spring-security.version>
 		<zkspringboot.version>2.5.12</zkspringboot.version>
+		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
 
 		<!--Used by the licenses plugin-->
 		<license.licenseName>apache_v2</license.licenseName>
@@ -210,9 +211,8 @@
 			<groupId>org.zkoss.zkspringboot</groupId>
 			<artifactId>zkspringboot-starter</artifactId>
 			<type>pom</type>
-			<version>${zkspringboot.version}</version>
+			<version>${zkspringboot-starter.version}</version>
 		</dependency>
-
 	</dependencies>
 
 

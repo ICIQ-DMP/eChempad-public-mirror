@@ -1,0 +1,32 @@
+<?link rel="stylesheet" type="text/css" href="~./style.css"?>
+<zk>
+    <custom-attributes org.zkoss.zul.image.preload="true"/>
+    <borderlayout hflex="1" vflex="1">
+        <north height="100px" border="none" >
+            <label style="font-size:50px">North for header</label>
+        </north>
+        <west width="260px" border="none" collapsible="true"
+              splittable="true" minsize="300">
+            <label style="font-size:50px">West for sidebar</label>
+        </west>
+        <center id="mainContent" autoscroll="true">
+            <label style="font-size:50px">Center for content</label>
+        </center>
+        <south height="50px" border="none">
+            <label style="font-size:50px">South for footer</label>
+        </south>
+
+        <!-- <north vflex="min" border="none">
+            <apply templateURI="~./zul/banner"/>
+        </north>
+        <west width="260px" border="none" collapsible="true" splittable="true" minsize="300">
+            <apply templateURI="~./zul/sidebar.zul"/>
+        </west>
+        <center id="mainContent" autoscroll="true">
+            <apply templateURI="~./zul/main.zul"/>
+        </center>
+        <south border="none">
+            <apply templateURI="~./zul/footer.zul"/>
+        </south> -->
+    </borderlayout>
+</zk>
