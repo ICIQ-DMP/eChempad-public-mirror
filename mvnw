@@ -344,11 +344,12 @@ if [ ! -r "${trustStore}" ]; then
   exit 1
 fi
 
-
+# Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
 if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]; then
   echo Executed command:
   echo exec "${JAVACMD}" ${JAVA_FLAGS} \
          -Djavax.net.ssl.trustStore="${trustStore}" \
+         -Dspring.profiles.active=dev \
          ${MAVEN_OPTS} \
          -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
          "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
@@ -359,9 +360,9 @@ if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]
 
 fi
 
-# If there is any application listening to port 8080 (which is the one used to deploy the app) kill it.
+# If there is any application listening to port 8081 (which is the one used to deploy the app) kill it.
 if lsof -ti tcp:8081 &> /dev/null; then
-  # if there is someone running in port 8080
+  # if there is someone running in port 8081
   lsof -ti tcp:8081 | xargs kill
 fi
 

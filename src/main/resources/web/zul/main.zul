@@ -1,5 +1,336 @@
-<vbox vflex="1" hflex="1" align="center"
-      pack="center" spacing="20px" >
-    <image src="~./imgs/zklogo2.png" />
-    <label value="Chapter 3" sclass="head1"/>
-</vbox>
+<!--
+
+    Create module - Create module inside the ioChem-BD software.
+    Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<!-- <?init class="cat.iciq.tcg.labbook.zk.ui.LoginInitiator"?> -->
+<?meta name="viewport" content="width=device-width, initial-scale=1"?>
+<?link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico"?>
+<?link rel="icon" type="image/x-icon" href="../images/favicon.ico"?>
+
+<?link rel="stylesheet" type="text/css" href="../html/xslt/css/font-awesome.min.css" ?>
+<?link rel="stylesheet" type="text/css" href="../html/css/bootstrap-create.css"?>
+<?link rel="stylesheet" type="text/css" href="../html/xslt/css/bootstrap.min.css"?>
+
+
+<window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.Main" style="height: 100%; width:100%">
+
+    <script src="../html/xslt/js/popper.min.js"></script>
+    <script src="../html/xslt/js/jquery-3.3.1.min.js"></script>
+    <script src="../html/xslt/js/bootstrap.min.js"></script>
+    <script src="../html/xslt/jsmol/JSmol.min.nojq.js"></script>
+    <script src="../html/xslt/js/jsmol.js"></script>
+
+    <script type="text/javascript">
+        <![CDATA[
+
+	var oldAlert = jq.alert;
+	jq.alert = function (msg, opts) {
+		if (!msg.indexOf('The request was rejected because the file size')|| !msg.indexOf('the request was rejected because its size')){
+			fireEventFromClient('onSizeLimitExceeded');
+		} else {
+			oldAlert(msg, opts);
+		}
+	}
+
+	function fireEventFromClient(eventName) {
+		zAu.send(new zk.Event(zk.Widget.$('$mainWindow'), eventName, null, {toServer:true}));
+	}
+
+	function addBootstrapClasses(type) {
+		type = type || 0;
+		jq('.z-tabs-content').addClass('nav nav-tabs');
+		jq('.nav-item-content').addClass('nav-link');
+		jq('.z-tab-content').addClass('nav-link');
+		if(type == 0 ||type == 'large'){
+			//Code specific large nav tabs classes
+		}else if(type == 'small') {
+			jq('.z-tabs-content').addClass('nav-tabs-small');
+			jq('.nav-item-content').addClass('nav-link-small');
+			jq('.z-tab-content').addClass('nav-link-small');
+		}
+	}
+
+	function clearMainTabsSelection() {
+	 jq('.mainTabs ul li.nav-item-selected').removeClass('nav-item-selected');
+	 jq('.mainTabs ul li.z-tab-selected').removeClass('z-tab-selected');
+	}
+
+ 	function setNavButtonsVisible(visible) {
+ 		if(visible) {
+ 			jq('.main-small-navigation').show();
+ 			jq('.main-small-inner-div').css('overflow-x', 'auto');		//Allow to side scroll to actions and properties section
+ 		} else {
+ 			jq('.main-small-navigation').hide()
+ 			jq('.main-small-inner-div').css('overflow-x', 'hidden');	//Block side scroll
+ 		}
+ 	}
+  	//Scroll animation functions
+	currentStep  = 0;
+	totalSteps = 3;
+	firstRun = true;
+
+	function moveLeft() {
+		if(currentStep == 0)
+	    	return;
+		currentStep--;
+	 	slide();
+		toggleSlideButtons();
+	}
+
+	function moveRight() {
+		if(currentStep >= totalSteps - 1)
+	    	return;
+		currentStep++;
+		slide();
+		toggleSlideButtons();
+	}
+
+	function toggleSlideButtons() {
+		if(currentStep == 0)
+			$('.main-small-navigation-previous').addClass('main-small-navigation-disabled');
+		else
+			$('.main-small-navigation-previous').removeClass('main-small-navigation-disabled');
+
+		if(currentStep >= totalSteps - 1)
+			$('.main-small-navigation-next').addClass('main-small-navigation-disabled');
+		else
+			$('.main-small-navigation-next').removeClass('main-small-navigation-disabled');
+	}
+
+	function slide() {
+	  	value = $('.main-small-div').scrollLeft();
+	  	obj=$($('.main-small-inner-div').children()[currentStep]);
+	  	var childPos = obj.offset();
+	  	var parentPos = obj.parent().offset();
+	  	var childOffset = {
+	    	top: childPos.top - parentPos.top,
+	    	left: childPos.left - parentPos.left
+	  	}
+
+	  	$('.main-small-div').animate(
+	  		{ scrollLeft : childOffset.left },
+	  		150,
+	  		'swing');
+
+	}
+
+	//Jmol global settings
+	delete Jmol._tracker;
+	Jmol._local = true;
+	Jmol.setDocument = false;
+
+	//Setup ajax calls to retrieve requested url
+	$.ajaxSetup({
+	    beforeSend: function(jqXHR, settings) {
+	        jqXHR.url = settings.url;
+	    }
+	});
+
+	//The three jsmol applets used in this desktop
+	var jmolApplet = null;
+	var jmolMoldenApplet = null;
+	var jmolOrbitalApplet = null;
+
+	]]>
+    </script>
+
+    <script>
+        zk.afterMount(function() {
+        jq('.z-tabs-content').addClass('nav nav-tabs');
+        jq('.nav-item-content').addClass('nav-link');
+        })
+    </script>
+
+
+    <!-- <include src="main/elementPublish.zul" mode="defer" /> -->
+
+    <n:nav class="navbar navbar-expand navbar-light bg-light" style="height:60px">
+        <n:button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </n:button>
+        <n:div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <n:ul class="navbar-nav mr-auto">
+            </n:ul>
+            <n:ul class="navbar-nav">
+                <n:li class="nav-item dropdown" style="padding-right: 10px;">
+                    <n:a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Options
+                    </n:a>
+                    <n:div class="dropdown-menu  dropdown-menu-right text-right" aria-labelledby="navbarDropdown" style="right:0; left:auto;">
+                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onDownloadShell')" id="shellBtn">Download shell client</n:a>
+                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onEditProfileClick')">Edit profile</n:a>
+                        <div class="dropdown-divider"></div>
+                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onHelpClick')">Help</n:a>
+                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onFeedbackClick')">Report bug</n:a>
+                        <n:div class="dropdown-divider"></n:div>
+                        <n:a class="dropdown-item text-left d-sm-block d-md-none" href="#" onClick="fireEventFromClient('onBrowseClick')">Browse</n:a>
+                        <n:div class="dropdown-divider d-sm-block d-md-none"></n:div>
+                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onLogoutClick')">Logout <n:i class="fa fa-sign-out-alt" style="margin-left: 80px"></n:i></n:a>
+                    </n:div>
+                </n:li>
+                <n:li class="nav-item d-none d-md-block" style="border-left: 2px solid white;">
+                    <n:a class="nav-link" href="#" onClick="fireEventFromClient('onBrowseClick')"><n:image src="../images/browse-small.png" class="navbar-brand" href="#"></n:image></n:a>
+                </n:li>
+            </n:ul>
+        </n:div>
+    </n:nav>
+
+    <!-- Small layout -->
+    <div id="mainSmall" sclass="main-small-div" style="flex:1; display:flex; overflow:hidden">
+        <div id="mainSmallInner" sclass="main-small-inner-div" style="display:flex;  width: -moz-min-content; width: -webkit-min-content">
+            <div id="smallTreeLayout">
+
+            </div>
+            <div id="smallProperties">
+
+            </div>
+            <div id="smallItemDetails">
+
+
+            </div>
+        </div>
+
+
+        <div id="mainSmallNavigation" sclass="main-small-navigation mr-3 mb-1 d-md-none">
+            <div sclass="main-small-navigation-container d-flex flex-row">
+                <div id="mainSmallNavigationPrevious" sclass="main-small-navigation-previous main-small-navigation-disabled">
+
+                </div>
+                <div id="mainSmallNavigationNext" sclass="main-small-navigation-next">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Large layout -->
+    <borderlayout id="mainLarge" vflex="1">
+        <center id="treeLayout">
+            <div id="treeDiv" height="100%">
+                <tabbox id="mainTab" height="100%">
+                    <tabs sclass="mainTabs nav nav-tabs">
+                        <tab id="treeTab" label="Navigation/Edition" tooltiptext="Double click to maximize view" zclass="nav-item" />
+                        <tab id="searchTab" label="Search"  zclass="nav-item"  />
+                        <tab id="reportsTab" label="Reports"  zclass="nav-item"/>
+                    </tabs>
+                    <tabpanels id="mainTabTabpanels">
+                        <tabpanel style="overflow-x: hidden; overflow-y: auto;">
+                            <include src="~./zul/treenavigation.zul"/>
+                        </tabpanel>
+                        <tabpanel style="overflow:auto">
+                            <include src="~./zul/search.zul"/>
+                        </tabpanel>
+                        <!-- <tabpanel style="overflow:auto">
+                            <include src="~./zul/reportManager.zul"/>
+                        </tabpanel> -->
+                    </tabpanels>
+                </tabbox>
+            </div>
+        </center>
+        <east id="propertiesEast" splittable="true" collapsible="false" size="50%" >
+            <borderlayout id="propertiesLayout">
+                <north id="propertiesNorth"  splittable="true" collapsible="false" size="50%" >
+                    <div id="properties" hflex="1" vflex="1">
+                        <div id="welcome" height="100%" visible="true" sclass="z-tabbox" >
+                            <groupbox id="groupWelcome" closable="false"  hflex="1" vflex="1" >
+                                <div hflex="1" vflex="1">
+                                    <iframe id="newsFrame" hflex="1" vflex="1" src="../html/news.html"/>
+                                </div>
+                            </groupbox>
+                        </div>
+                        <div id="dcm" height="100%" visible="false" >
+                            <div id="dcmPanelChildren" height="100%">
+                            </div>
+                        </div>
+                        <div id="calcUpload" height="100%" visible="false">
+                            <tabbox height="100%">
+                                <tabs sclass="nav nav-tabs">
+                                    <tab label="Calculation upload" zclass="nav-item" />
+                                </tabs>
+                                <tabpanels>
+                                    <tabpanel style="overflow-y: auto;">
+                                        <div zclass="row mt-2 mr-3 mb-1 item-details-row">
+                                            <n:label class="col-md-2">Name:</n:label>
+                                            <textbox id="calcName" sclass="form-control col-md-10" />
+                                        </div>
+                                        <div sclass="row mb-1 mr-3 item-details-row">
+                                            <n:label class="col-md-2">Description:</n:label>
+                                            <textbox id="calcDescription" sclass="form-control col-md-10" readonly="false" tooltiptext="Description of the calculation"/>
+                                        </div>
+                                        <div sclass="row mb-1 mr-3 item-details-row">
+                                            <n:label class="col-md-2">Type:</n:label>
+                                            <radiogroup id="calcType" sclass="col-md-10 pl-0"></radiogroup>
+                                        </div>
+
+                                        <div sclass="row mb-1 mr-3 item-details-row">
+                                            <div sclass="col-md-2 d-flex flex-column">
+                                                <n:label>Files:</n:label>
+
+                                            </div>
+                                            <div sclass="col-md-10 pl-0 mb-4">
+                                                <groupbox id="calcFiles" visible="true"  mold="3d" sclass="" contentStyle="border:0">
+                                                    <vbox id="calcFile" pack="start" sclass="calc-file-vbox" align="start" sizedByContent="true" />
+                                                </groupbox>
+                                            </div>
+                                        </div>
+
+                                        <div sclass="row mb-1 mr-3 item-details-row">
+                                            <n:label class="col-md-2"></n:label>
+                                            <div sclass="col-md-10 pl-0">
+                                                <button id="uploadCalcBtn" sclass="btn btn-primary" label="Load Calculation"  />
+                                                <button id="resetUploadCalcBtn" sclass="btn btn-secondary" label="Reset" />
+                                            </div>
+                                        </div>
+                                    </tabpanel>
+                                </tabpanels>
+                            </tabbox>
+                        </div>
+                    </div>
+
+
+
+                </north>
+                <center id="itemDetails">
+                    <include src="~./zul/itemdetails.zul"/>
+                </center>
+            </borderlayout>
+        </east>
+    </borderlayout>
+
+    <!-- Notification toast -->
+    <script type="text/javascript">
+        <![CDATA[
+	    function setupToast(message) {
+	         $('.toast-body').html(message);
+	         $('.toast').toast('show');
+	    }
+	]]>
+    </script>
+
+    <n:div class="position-absolute" style="z-index: 50000; right: 0; bottom: 0;">
+        <n:div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000">
+            <n:div class="toast-body">
+
+            </n:div>
+        </n:div>
+    </n:div>
+
+    <include src="~./zul/uploadToolbar.zul"/>
+</window>

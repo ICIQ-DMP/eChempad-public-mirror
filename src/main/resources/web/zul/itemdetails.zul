@@ -1,0 +1,95 @@
+<!--
+
+    Create module - Create module inside the ioChem-BD software.
+    Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<?page title="Item details" contentType="text/html;charset=UTF-8"?>
+<window xmlns:n="native" border="none" apply="org.ICIQ.eChempad.web.ui.ItemDetails"  height="100%">
+	<tabbox height="100%">
+	    <tabs sclass="nav nav-tabs">
+	        <tab label="Properties" tooltiptext="Double click to maximize view" zclass="nav-item" />	        		        			      
+	    </tabs>
+	    <tabpanels>		    
+	    	<tabpanel style="padding-left: 1em; padding-right: 1em;  overflow-y: auto;">
+	    		<div sclass="mt-2" id="itemDetailsDiv" style="overflow-x: hidden; overflow-y: auto;">		
+					<div sclass="row mb-1 item-details-row">
+						<label id="hiddenID" value="" visible="false" />
+						<textbox id="path" value="" width="300px" readonly="false" visible="false" tooltiptext="Absolute path of the selected resource. If 'create project' is pressed, the project is created under the specified path." />
+						
+						<n:label class="col-md-2 ">Path</n:label>
+						<label id="currentSelectionTitle" sclass="col-md-10" style="font-weight:bold;"/>
+					</div>
+					
+					<div sclass="row mb-1 item-details-row">		
+						<n:label class="col-md-2 ">Name</n:label>
+			   			<textbox id="name" value="" sclass="form-control col-md-6" readonly="false" tooltiptext="Name of the selected resource. If 'create project' is pressed is the name of the new created project."/>
+			   			
+			   			<n:label class="col-md-2 ">Type</n:label>
+			   			<label id="type" value="" sclass="col-md-2 " />	                     			
+					</div>
+					<div sclass="row mb-1 item-details-row">   			
+			 		    <n:label class="col-md-2 ">Description</n:label>
+				    	<textbox id="description" value="" sclass="form-control col-md-6" rows="2" readonly="false" tooltiptext="Description of the selected resource. If 'create project' is pressed, it's the description of the new project." />
+						
+						<div sclass="col-md-4 col-sm-12 item-details-row nopadding">							
+							<n:label class="col-md-6">State</n:label>
+							<textbox id="state" value="" sclass="form-control col-md-6 col-xs-10 mb-1" readonly="true" tooltiptext="State of the resource. Cannot be modified."/>	
+						
+							<n:label value="Concept Group" class="col-md-6">Concept Group</n:label>			               
+							<textbox id="conceptGroup" value="" sclass="form-control col-md-6" readonly="false" tooltiptext="Concept group of a project. Used as a free text field for tagging projects."/>																						         
+						</div>				    		   					   	
+					</div>
+					<div sclass="row mb-1 item-details-row">					
+						<n:label class="col-md-2 ">Owner</n:label>
+						<listbox id="owner" rows="1" sclass="custom-select col-md-2" mold="select"  disabled="true" tooltiptext="When a resource is selected it shows the owner. Not used as a value in the project creation." />
+											                                  
+			            <n:label class="col-md-2 ">Group</n:label>
+			            <listbox id="group" rows="1" sclass="custom-select col-md-2" mold="select" tooltiptext="When a resource is selected it shows the group. Not used as a value in the project creation." />
+			               
+			            <n:label class="col-md-2 ">Permissions</n:label>            			               
+						<listbox id="permissions" rows="1" mold="select" sclass="custom-select col-md-2" tooltiptext="When a resource is selected it shows its access permissions of it. Not used as a value in the project creation. When 'modify' is pressed, it's used as a value to changed.">								
+			                <listitem label="rw----" value="rw----"/>
+			                <listitem label="rwr---" value="rwr---" selected="true"/>
+			                <listitem label="rwrw--" value="rwrw--" />
+			                <listitem label="rwrwr-" value="rwrwr-" />
+			                <listitem label="rwrwrw" value="rwrwrw" />
+			            </listbox>
+					</div>					
+					<div sclass="row mb-4 item-details-row">
+						<n:label class="col-md-2 ">Creation date</n:label>
+			            <textbox id="cDate" value="" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Creation date of the resource. Cannot be set to any value." tabbable="false"/>
+			            
+			            <n:label class="col-md-2 ">Mod. date</n:label>
+			            <textbox id="mDate" value="" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Modification date of the resource. Cannot be set to any value." tabbable="false"/>
+			            
+			            <n:label class="col-md-2 ">Pub. date</n:label>
+			            <textbox id="pDate" value="" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Publication date of the resource. Cannot be set to any value." tabbable="false"/>
+					</div>
+								
+					<div id="operationButtonsLayout" sclass="row item-details-row">
+						<div sclass="col-md-2 col-sm-12 d-none d-md-block"></div>
+						<div sclass="col-md-10 offset-md-2 col-sm-12 ml-0 pl-0">							
+							<button id="createProjectBtn" label="Create Project" sclass="btn btn-primary" tooltiptext="Creates a project with the data specified in the above form."/>
+							<button id="modifyBtn" label="Modify" sclass="btn btn-secondary ml-1" tooltiptext="Modifies a project or calculation according to the values of the form."/>
+							<button id="removeBtn" sclass="btn btn-danger delete-btn ml-2" tooltiptext="Removes the selected project or calculation."/>
+						</div>
+					</div>							
+				</div>  
+	    	</tabpanel>	    
+	    </tabpanels>
+	</tabbox>
+</window>

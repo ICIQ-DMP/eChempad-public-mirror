@@ -1,0 +1,37 @@
+<!--
+
+    Create module - Create module inside the ioChem-BD software.
+    Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<?link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet"?>
+<?link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"?>
+<window id="uploadToolbar" border="normal" apply="org.ICIQ.eChempad.web.ui.UploadToolbar" xmlns:ca="client/attribute" style="height:30px" sclass="upload-toolbar-window">
+	<box width="100%" height="30px" pack="center" align="end">
+		<hlayout sclass="z-valign-middle">
+	  		<progressmeter id="uploadProgressMeter" value="0" width="100px" popup="uploadProgressMeterPopup, position=before_end" visible="false"  ca:data-animationspeed="0"/>
+	  		<label id="uploadProgressMeterLabel" value="0/0" visible="false"/>
+	  	</hlayout>
+	  	
+	   	<popup id="uploadProgressMeterPopup" style="z-index:10000" >				   						
+	   		<vlayout height="500px" width="300px"  id="uploadingCalculationVlayout" style="overflow:auto" sclass="uploading-calculation-vlayout p-3">
+	   			
+	   			   			
+	   		</vlayout>	   		
+	   		<a id="clearFinishedUploads" href="" style="align:right" sclass="p-3">Clear finished uploads</a>			            		
+	   	</popup>
+	</box>		
+</window>

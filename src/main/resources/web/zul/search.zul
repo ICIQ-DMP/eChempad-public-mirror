@@ -1,0 +1,131 @@
+<!--
+
+    Create module - Create module inside the ioChem-BD software.
+    Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<?page title="Search form" contentType="text/html; charset=UTF-8"?>
+<window id="searchWindow" xmlns:n="native" border="none" sclass="d-flex flex-column search-window" style="height:100%" apply="org.ICIQ.eChempad.web.ui.Search">
+	<div id="searchDiv" sclass="pl-sm-3 pr-sm-4" visible="true" style="white-space:nowrap">
+		<div sclass="row mb-1 mt-3 form-inline pb-sm-2">
+			<label value="Name" sclass="overflow-ellipsis col-md-2 col-sm-12"/>
+            <textbox id="name" sclass="form-control col-md-8 col-sm-12" readonly="false" tooltiptext="Name or POSIX regular expression of a project or calculation."/>
+			<listbox id="nameCond" rows="1" mold="select" sclass="col-md-2 col-sm-12 custom-select">
+				<listitem label="AND"  selected="true"/>
+				<listitem label="OR"  selected="false"/>
+		    </listbox>
+		</div>
+		<div sclass="row mb-1 form-inline pb-sm-2">
+			<label  value="Description" sclass="overflow-ellipsis col-md-2 col-sm-12" />
+       	    <textbox id="description" value="" sclass="col-md-8 col-sm-12 form-control" readonly="false" tooltiptext="Description or POSIX regular expression of a project or calculation."/>
+           	<listbox id="descriptionCond" rows="1" mold="select" sclass="col-md-2 col-sm-12 custom-select">
+			    <listitem label="AND"  selected="true"/>
+				<listitem label="OR"  selected="false"/>
+		    </listbox>	            			
+		</div>
+		<div sclass="row mb-1 form-inline pb-sm-2">
+			<label value="Type" sclass="overflow-ellipsis col-md-2 col-sm-12" />
+			<listbox id="type" rows="1" mold="select" sclass="col-md-3 col-sm-12 custom-select" tooltiptext="Type of resource to perform the search.">										   
+		    </listbox>
+			<listbox id="typeCond" rows="1" mold="select" sclass="offset-md-5 col-md-2 col-sm-12 custom-select">					   
+			    <listitem label="AND"  selected="true"/>
+			    <listitem label="OR"  selected="false"/>
+		    </listbox>
+		</div>		
+		<div sclass="row mb-1 form-inline pb-sm-2">
+			<label value="Path" sclass="overflow-ellipsis col-md-2 col-sm-12" />
+           	<textbox id="path" value="" sclass="col-md-8 col-sm-12 form-control" readonly="false" tooltiptext="Path or regular expression to filter the paths when performing the search."/>
+			<listbox id="pathCond" rows="1" mold="select" sclass="col-md-2 col-sm-12 custom-select">
+			    <listitem label="AND"  selected="true"/>
+				<listitem label="OR"  selected="false"/>
+		    </listbox>
+		</div>
+		<div sclass="row mb-1 form-inline pb-sm-2">
+        	<label value="Owner" sclass="overflow-ellipsis col-md-2 col-sm-12" />
+            <div sclass="col-md-8 col-sm-10 d-flex flex-row align-items-center nopadding">
+            	<button id="ownerBtn" sclass="btn btn-secondary mr-1 mr-sm-0" label="Select"/>
+            	<groupbox id="owner" visible="false"/>	                	
+            </div>		            	          	
+			<listbox id="ownerCond" rows="1" mold="select" sclass="col-md-2 col-sm-12 custom-select">
+		    	<listitem label="AND"  selected="true"/>
+				<listitem label="OR"  selected="false"/>
+		    </listbox>
+		</div>
+		
+		<div sclass="row mb-1 form-inline pb-sm-2">
+			<label value="Group" sclass="overflow-ellipsis col-md-2 col-sm-12" />
+            <div sclass="col-md-8 col-sm-10 d-flex flex-row align-items-center nopadding">            	
+            	<button id="groupBtn" label="Select" sclass="btn btn-secondary mr-1" />
+             	<groupbox id="group" visible="false"/>	                	                
+            </div>
+             
+ 			<listbox id="groupCond" rows="1" mold="select" sclass="col-md-2 col-sm-12 custom-select">					  
+	    		<listitem label="AND"  selected="true"/>
+	    		<listitem label="OR"  selected="false"/>
+		    </listbox>
+		</div>
+		
+		<div sclass="row mb-1 form-inline pb-sm-2">
+			<label value="Creation dates" sclass="overflow-ellipsis col-md-2 col-sm-12" />
+           	<div sclass="col-md-8 col-sm-12 d-flex flex-md-row flex-sm-column flex-wrap align-items-center nopadding">
+           	
+       		   <datebox id="creationDate" placeholder=" Start" sclass="flex-sm-fill" style="max-width: 250px" format="yyyy/MM/dd hh:mm" tooltiptext="Initial creation date of a resource. If this field is set and the next not, it will look for resources with a creation date newer than the specified one. If both are set it will look for resources between both dates." />
+       		   <div sclass="ml-2"/>
+	           <datebox id="creationDateEnd" placeholder=" End"  sclass="flex-sm-fill" style="max-width: 250px" format="yyyy/MM/dd hh:mm" tooltiptext="Final creation date of a resource. If this field is set and the previous one not, it will look for resources with a creation date earlier than the specified one. If both are set it will look for resources between both dates." />
+           	</div>	               
+			<listbox id="creationDateCond" rows="1" mold="select" sclass="col-md-2 col-sm-12 custom-select">
+			    <listitem label="AND"  selected="true"/>
+				<listitem label="OR"  selected="false"/>
+		    </listbox>		
+		</div>
+	
+		<div sclass="row mb-1 form-inline pb-sm-2">
+			<label value="Concept group" sclass="overflow-ellipsis col-md-2 col-sm-12" />
+	      	<textbox id="conceptGroup" value="" sclass="col-md-8 col-sm-12 form-control" readonly="false" tooltiptext="Specific concept group or a POSIX regular expression to filter the results."/>
+			<listbox id="conceptGroupCond" rows="1" mold="select" sclass="col-md-2 col-sm-12 custom-select">
+			    <listitem label="AND"  selected="true"/>
+				<listitem label="OR"  selected="false"/>
+		    </listbox>		
+		</div>
+		
+		<div sclass="row mb-1 mt-4 mb-4">
+			<div class="col-md-2 col-sm-12"></div>
+			<div class="col-md-8 nopadding">
+				<button id="searchBtn" sclass="btn btn-primary btn-block z-icon-search" label=" Search" tooltiptext="Performs the search in the repository applying the defined filters" />
+			</div>			
+		</div>		
+	</div>
+  	<div id="resultsDiv" visible="false">
+	    <tree id="searchTree" mold="paging" checkmark="false" width="100%">
+	    	<custom-attributes org.zkoss.zul.tree.autoSort="false"/>
+			<custom-attributes org.zkoss.zul.tree.rightSelect="false"/>
+			<treecols sizable="true">
+				<treecol hflex="15" id="pathTreeCol" sort="none">					
+	            	<button id="resetSearchBtn" sclass="btn btn-block bnt-primary z-icon-refresh" tooltiptext="New search" label=" New search"/>
+	            </treecol>
+	            <treecol hflex="1" label="Id" id="idTreecol" sort="none" visible="false"/>            					           
+	        </treecols>
+	        <treechildren id="searchTreeChildren">
+	        </treechildren>			    
+	    </tree>
+	    <popup id="thumbnailPopup">		
+			<html></html>
+		</popup>
+		<popup id="thumbnailNoPopup">		
+			<html></html>
+		</popup>
+ 	</div>
+</window>
