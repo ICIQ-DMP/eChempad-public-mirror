@@ -548,7 +548,7 @@ public class Main extends SelectorComposer<Window> {
 			propertiesLayout.setVisible(true);
 			propertiesEast.setSize("50%");
 		}
-		// setBootstrapClasses();
+		//setBootstrapClasses();
     }
     
     private void resetHome(){

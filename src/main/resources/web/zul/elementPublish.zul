@@ -1,0 +1,197 @@
+<!--
+
+    Create module - Create module inside the ioChem-BD software.
+    Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<?page title="Publish selected elements" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style>
+	.h-inline-block {
+		display: inline-block;
+		_display: inline;
+	}	
+	.cell-bottom-space {
+		padding-bottom:1em;
+	}
+	.next-button{
+		font-size:1em;
+	}
+	.publish-button{
+		font-weight:bold;	
+	}	
+</style>
+
+<window id="elementPublish" title="Publish selected elements" width="100%" height="100%"  xmlns:n="native" mode="highlighted" border="normal" closable="true" apply="cat.iciq.tcg.labbook.zk.composers.main.ElementPublish" visible="false">
+  <zscript>
+	<![CDATA[
+		import cat.iciq.tcg.labbook.zk.components.publishtree.ElementComparator;		
+		Comparator orderComparatorAsc = new ElementComparator(true);
+		Comparator orderComparatorDsc = new ElementComparator(false);	
+	]]>
+	</zscript>  
+
+	<borderlayout>
+		<center sclass="publish-tree-center" autoscroll="true">			
+				<tree id="publishTree" class="publishtree" hflex="1">
+ 					<custom-attributes org.zkoss.zul.tree.autoSort="false"/> 
+					<treecols>
+						<treecol label="Name" hflex="5" style="padding-left:10px" sort="none"/>
+						<treecol label="Publ." hflex="1" style="padding-left:10px" sort="none"/>
+						<treecol label="Handle" hflex="2" style="padding-left:10px" sort="none"/>
+						<treecol label="Order" hflex="1" sortAscending="${orderComparatorAsc}" sortDescending="${orderComparatorDsc}" sortDirection="ascending" sort="auto" visible="false"/>
+					</treecols>			
+				</tree>					
+		</center>
+		<east id="publishEast" size="35%">		
+			<tabbox id="publishTbox" mold="accordion" hflex="1" vflex="1" maximalHeight="true">
+			    <tabs>
+			        <tab id="namingFieldsTab" label="Titles and Description" class="publish-tab"/>
+			        <tab id="publicationTab" label="Publication details" class="publish-tab"/>
+			        <tab id="datasetTypeTab" label="Dataset type" class="publish-tab"/>
+			        <tab id="additionalFieldsTab" label="Additional fields" class="publish-tab"/>
+			    </tabs>
+			    <tabpanels sclass="publish-tabpanels">
+			        <tabpanel>			        				        	
+						<vlayout hflex="1" vflex="1">
+							<n:label class="nopadding">Naming convention:</n:label>
+							<radiogroup id="namingConventionRdg">
+								<vlayout>
+									<radio id="fullPathRd" value="fullpath" label="Use full path (sufix projects name)" sclass="publish-element-radio ml-3" selected="true"/>			
+									<radio id="nameRd" value="nameonly" label="Use only item name" sclass="publish-element-radio ml-3" selected="false"/>
+								</vlayout>
+							</radiogroup>
+							<n:label class="nopadding">Description field:</n:label>
+							<checkbox id="appendDescriptionChk" sclass="publish-element-checkbox ml-3" checked="true" label="Use item description in published element"/>
+							
+							<hbox align="end" pack="end" hflex="1" vflex="1">
+								<button id="namingConventionStepNextBtn" sclass="btn btn-secondary">Next</button>																		 
+							</hbox>					
+						</vlayout>						
+					</tabpanel>
+					<tabpanel>
+						<vlayout hflex="1" vflex="1">
+							<hlayout>
+								<checkbox id="generateDoiChk" label="Generate DOI for top project/s"/>
+								<a id="generateDoiRealA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="../../images/question-sign.png" tooltip="generateDoiChkRealPopup, position=after_start" width="20px" /></a>
+								<a id="generateDoiTestA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="../../images/exclamation-sign.png" tooltip="generateDoiChkTestPopup, position=after_start" width="20px" /></a>
+								<a id="generateDoiDisabledA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="../../images/remove-sign.png" tooltip="generateDoiChkDisabledPopup, position=after_start" width="20px" /></a>											
+								<popup id="generateDoiChkRealPopup" width="300px" sclass="p-2">
+									<vlayout>
+										<label>Will generate a valid DOI for this published dataset.</label>
+										<label>You will be later notified with the assigned DOI.</label>									
+									</vlayout>
+								</popup>
+								<popup id="generateDoiChkTestPopup" width="300px" sclass="p-2">
+									<vlayout>
+										<label>Will simulate the DOI request for this dataset, no DOI will really be generated.</label>									
+										<label>If you need to generate valid DOIs, please contact your ioChem-BD administrator to enable such functionality.</label>
+									</vlayout>
+								</popup>
+								<popup id="generateDoiChkDisabledPopup" width="300px" sclass="p-2">
+									<vlayout>
+										<label>DOI generation is currently disabled.</label>
+										<label>If you need to generate valid DOIs, please contact your ioChem-BD administrator to enable such functionality.</label>
+									</vlayout>
+								</popup>
+							</hlayout>
+												
+							<checkbox id="embargoChk" label="Embargo published elements"/>							
+							<hbox align="end" pack="end" hflex="1" vflex="1">
+								<button id="publicationStepPreviousBtn" sclass="btn btn-secondary">Previous</button>						
+								<button id="publicationStepNextBtn" sclass="btn btn-secondary">Next</button>					
+							</hbox>																								
+						</vlayout>
+					</tabpanel>
+					<tabpanel id="manuscriptInfoTabpanel" sclass="publish-last-step-tabpanel">											
+						<vlayout hflex="1" vflex="1">
+							<vlayout hflex="1" vflex="1">							
+								<radiogroup id="datasetTypeGrp">								
+									<div sclass="mb-1 item-details-row">
+										<vlayout>
+											<radio id="independentTypeRb" label="Independent dataset" checked="true" sclass="overflow-visible"/>
+											<radio id="supportingTypeRb" label="Dataset associated with a manuscript" sclass="overflow-visible"/>
+											
+											<div id="paperInformationDiv" visible="false" sclass="mt-3">
+												<n:h6>Manuscript information</n:h6>
+												<vlayout sclass="ml-3">
+													<checkbox id="notPublishedChk" label="Not yet published, will provide it later"/>
+													<grid>
+														<columns>
+															<column hflex="1"></column>
+															<column hflex="4"></column>
+														</columns>
+														<rows>
+															<row><cell><label value="Journal:"/></cell><cell><combobox id="journalCbo" width="100%" sclass="journal-combobox" autodrop="true" placeholder="Type journal name"/></cell></row>
+															<row><cell><label value="DOI:"/></cell><cell><textbox id="paperDoiTxt" sclass="form-control form-control-sm" placeholder="XX.XXXX/YYYYYY"></textbox></cell></row>
+															<row><cell><label value="Title:"/></cell><cell><textbox id="paperTitleTxt" sclass="form-control form-control-sm" multiline="true" rows="2" placeholder="Type paper article"></textbox></cell></row>
+														</rows>
+													</grid>
+												</vlayout>
+											</div>									
+										</vlayout>
+									</div>										
+								</radiogroup>
+							</vlayout>
+							<hbox align="end" pack="end" hflex="1">
+								<button id="datasetStepPreviousBtn" sclass="btn btn-secondary">Previous</button>
+								<button id="datasetStepNextBtn" sclass="btn btn-secondary">Next</button>
+							</hbox>																						
+						</vlayout>													
+					</tabpanel>
+					<tabpanel sclass="publish-last-step-tabpanel">						
+						<vlayout hflex="1" vflex="1" style="overflow-y: auto;">				
+							<label value="Author(s)"></label>
+							<grid id="authorsGrid" zclass="none author-grid">
+								<columns>
+									<column hflex="1"/>
+									<column hflex="1"/>
+								</columns>
+								<rows>
+									<row zclass="none"><cell><textbox width="99%" placeholder="Surname" sclass="form-control"  readonly="true"></textbox></cell><cell><textbox width="99%" placeholder="Name" sclass="form-control"  readonly="true"></textbox></cell></row>
+									<row zclass="none"><cell><textbox width="99%" placeholder="Surname" sclass="form-control" ></textbox></cell><cell><textbox width="99%" placeholder="Name" sclass="form-control" ></textbox></cell></row>
+									<row zclass="none"><cell><textbox width="99%" placeholder="Surname" sclass="form-control" ></textbox></cell><cell><textbox width="99%" placeholder="Name" sclass="form-control" ></textbox></cell></row>
+									<row zclass="none"><cell><textbox width="99%" placeholder="Surname" sclass="form-control" ></textbox></cell><cell><textbox width="99%" placeholder="Name" sclass="form-control" ></textbox></cell></row>
+									<row zclass="none"><cell><textbox width="99%" placeholder="Surname" sclass="form-control" ></textbox></cell><cell><textbox width="99%" placeholder="Name" sclass="form-control" ></textbox></cell></row>
+									<row zclass="none"><cell><textbox width="99%" placeholder="Surname" sclass="form-control" ></textbox></cell><cell><textbox width="99%" placeholder="Name" sclass="form-control" ></textbox></cell></row>
+								</rows>
+							</grid>
+							<label value="Institution(s), one per line"/>
+							<textbox id="institutionTxt" multiline="true" rows="2" hflex="1" sclass="form-control" />
+							<hlayout sclass="keywords-section" style="overflow:auto; min-height: 40px">
+								<label value="Keywords"/>								
+								<combobox id="keywordsCbo" class="keywordsCbo" autodrop="true" hflex="4" placeholder="Type to search or press enter twice to add a new one" autocomplete="false"></combobox>
+							</hlayout>
+							<vbox hflex="1">
+								<div style="overflow-y: auto; height:70px;">
+									<groupbox id="keywordsGbx"></groupbox>									
+								</div>								
+							</vbox>							
+							<hbox align="end" pack="end" hflex="1" vflex="1">						
+								<button id="additionalFieldsPreviousBtn" sclass="btn btn-secondary">Previous</button>									
+								<button id="publishBtn"  sclass="btn btn-primary">Publish</button>															
+							</hbox>
+							
+							<!-- Timer used to avoid session timeouts during publication process -->
+							<timer id="timerKeepAliveSession" repeats="true" running="false" delay="120000" xmlns:w="client" w:onTimer="event.opts.toServer=true; event.opts.forceAjax=true;" />
+						</vlayout>
+					</tabpanel>					
+				</tabpanels>
+			</tabbox>		
+		</east>		
+	</borderlayout>	
+</window>
+</zk>
