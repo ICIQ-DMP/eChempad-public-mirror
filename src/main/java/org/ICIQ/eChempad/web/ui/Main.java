@@ -17,8 +17,8 @@
  */
 package org.ICIQ.eChempad.web.ui;
 
-import org.ICIQ.eChempad.web.definitions.CustomProperties;
 import org.ICIQ.eChempad.web.definitions.Constants;
+import org.ICIQ.eChempad.web.definitions.CustomProperties;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,7 +50,7 @@ public class Main extends SelectorComposer<Window> {
     
     private String userHome = null;
     private String userLogin = null;
-    // private ActionManager cm = null;
+     // ActionManager cm = null;
     private boolean isTreeFullSize = false;
     private boolean isSearchFullSize = true;
 
@@ -59,7 +59,7 @@ public class Main extends SelectorComposer<Window> {
 	private EventQueue<Event> reportManagementQueue = null;
 	private EventQueue<Event> displayQueue = null;
 		
-	// private UploadType uploadType;
+	private Constants.UploadType uploadType;
 	private Long maxSystemFileSize;
 
 	@Wire
@@ -245,11 +245,8 @@ public class Main extends SelectorComposer<Window> {
 	}
 	
 	private void openHelpPage() {
-		/*
     	String knowledgebaseUrl	= CustomProperties.getProperty("knowledgebase.url");
 		Executions.getCurrent().sendRedirect(knowledgebaseUrl, "_blank");
-		*/
-
 	}
 	
 	private void openFeedbackPage() {
@@ -268,7 +265,7 @@ public class Main extends SelectorComposer<Window> {
 	}
 
 	private void displayLimits() {
-		/*
+
 	    Long maxOutput = byteToMegabyte(getMaxFileSize(true, uploadType, maxSystemFileSize)); 
 	    Long maxFile = byteToMegabyte(getMaxFileSize(false, uploadType, maxSystemFileSize));
 	    
@@ -294,7 +291,7 @@ public class Main extends SelectorComposer<Window> {
         if(message != null && !message.isEmpty())
             errorDialog.setSolution(new Html(message));
         window.doModal();
-        */
+
 	}
 	
 	public static String getBaseUrl() {
@@ -347,40 +344,40 @@ public class Main extends SelectorComposer<Window> {
     
 	private void initUploadRestrictions() {
 		String[] hardUsers = (String[])WebApps.getCurrent().getAttribute("uploadRestrictionUsersHard");
-		// uploadType = Arrays.asList(hardUsers).contains(userLogin)? UploadType.hard : UploadType.soft;
+		uploadType = Arrays.asList(hardUsers).contains(userLogin)? Constants.UploadType.hard : Constants.UploadType.soft;
 		maxSystemFileSize = (Long)WebApps.getCurrent().getAttribute("uploadMaxFileSize");
 	}
 
 	private void setupLayoutListener(Window window) {
-		/*
+
 		//Currently we only support large (Desktop) and small (mobile) display
 		window.addEventListener(Events.ON_AFTER_SIZE, new EventListener<AfterSizeEvent>() {
 			public void onEvent(AfterSizeEvent event) throws Exception {				
 				if(event.getWidth()>=1200)
-					handleLargeLayout(ScreenSize.X_LARGE);
+					handleLargeLayout(Constants.ScreenSize.X_LARGE);
 				else if(event.getWidth()<1200 &&  event.getWidth()>=992)
-					handleLargeLayout(ScreenSize.LARGE);
+					handleLargeLayout(Constants.ScreenSize.LARGE);
 				else if(event.getWidth()<992 &&  event.getWidth()>=768)
-					handleLargeLayout(ScreenSize.MEDIUM);
+					handleLargeLayout(Constants.ScreenSize.MEDIUM);
 				else if(event.getWidth()<768 &&  event.getWidth()>=570)
-					handleSmallLayout(event, ScreenSize.SMALL);
+					handleSmallLayout(event, Constants.ScreenSize.SMALL);
 				else if(event.getWidth()<570)			
-					handleSmallLayout(event, ScreenSize.X_SMALL);
+					handleSmallLayout(event, Constants.ScreenSize.X_SMALL);
 				}
 		});
-		enableNavigationButtons(false); */
+		enableNavigationButtons(false);
 	}
 
 	private void handleLargeLayout(Constants.ScreenSize newSize) {
 		layout = newSize;		
 		mainSmall.setVisible(false);
-		//mainSmall.setSclass("none");
+		mainSmall.setSclass("none");
 		swapChild(smallTreeLayout, treeLayout);
 		swapChild(smallProperties, propertiesNorth);
 		swapChild(smallItemDetails, itemDetails);			
 		mainLarge.setVisible(true);			
-		// setBootstrapClasses();
-		// notifyDisplayHasChanged(layout);
+		setBootstrapClasses();
+		notifyDisplayHasChanged(layout);
 	}
 		
 	private void handleSmallLayout(AfterSizeEvent event, Constants.ScreenSize newSize) {
@@ -391,8 +388,8 @@ public class Main extends SelectorComposer<Window> {
 		swapChild(propertiesNorth, smallProperties);
 		swapChild(itemDetails, smallItemDetails);						
 		setSectionsHeight(event);		//Need to define fixed heights and widths, not working with hflex/vflex here 
-		// setBootstrapClasses();
-		// notifyDisplayHasChanged(layout);
+		setBootstrapClasses();
+		notifyDisplayHasChanged(layout);
 	}
 	
 	private void setSectionsHeight(AfterSizeEvent event) {
@@ -408,7 +405,8 @@ public class Main extends SelectorComposer<Window> {
 	}
 
 	private void notifyDisplayHasChanged(Constants.ScreenSize layout) {
-		displayQueue.publish(new Event("sizeChanged", null, layout));	
+		// displayQueue is noullpointer
+		// displayQueue.publish(new Event("sizeChanged", null, layout));
 	}
 
 	private void swapChild(Component source, Component destination) {
@@ -419,8 +417,8 @@ public class Main extends SelectorComposer<Window> {
 		destination.appendChild(child);				
 	}
 
-	
-    /* private void initUserVars() throws BrowseCredentialsException{
+	/*
+    private void initUserVars() throws BrowseCredentialsException{
     	userLogin = ShiroManager.getCurrent().getUserName();									
 		userHome = getUserPath();
 		Executions.getCurrent().getSession().setAttribute("username", userLogin);
@@ -479,7 +477,7 @@ public class Main extends SelectorComposer<Window> {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if(event.getName().equals("addBootstrapClasses")) {
-					//setBootstrapClasses();
+					setBootstrapClasses();
 				}else if(event.getName().equals("hideNavigationButtons")) {
 					enableNavigationButtons(false);
 				}else if(event.getName().equals("showNavigationButtons")) {
@@ -533,7 +531,7 @@ public class Main extends SelectorComposer<Window> {
 				propertiesEast.setSize("50%");
 				propertiesNorth.setSize("65%");
 			}
-			// setBootstrapClasses();
+			setBootstrapClasses();
 		}catch(Exception e){
 			logger.error(e.getMessage());				// TODO: More than one desktop opened bug, we try to maximize a different Desktop element
 		}
@@ -548,7 +546,7 @@ public class Main extends SelectorComposer<Window> {
 			propertiesLayout.setVisible(true);
 			propertiesEast.setSize("50%");
 		}
-		//setBootstrapClasses();
+		setBootstrapClasses();
     }
     
     private void resetHome(){
@@ -641,13 +639,15 @@ public class Main extends SelectorComposer<Window> {
     	//propertiesEast.invalidate();    	
     }
 
+
+     */
     private void setBootstrapClasses() {
     	Executions.getCurrent().getDesktop().setAttribute("display", layout);
-    	if(layout == ScreenSize.X_LARGE || layout == ScreenSize.LARGE || layout == ScreenSize.MEDIUM)
+    	if(layout == Constants.ScreenSize.X_LARGE || layout == Constants.ScreenSize.LARGE || layout == Constants.ScreenSize.MEDIUM)
     		Clients.evalJavaScript("addBootstrapClasses('large');");
     	else
     		Clients.evalJavaScript("addBootstrapClasses('small');");    	
-    } */
+    }
     
 	// for loading calculation.
     private String tmpDir = null;
@@ -746,7 +746,7 @@ public class Main extends SelectorComposer<Window> {
      }
       
     public void clearMetsFileOnContentManager(){
-     	//this.cm.clear();
+     	// this.cm.clear();
      }
 
 	//////////////////////////////////////////// Form validation functions and utilities ////////////////////////////////////////////////////////////
@@ -872,26 +872,26 @@ public class Main extends SelectorComposer<Window> {
 	}
 	
 
-	/*
-		 * Function that returns the configured maximum file size depending on its type and the user assigned quota.
+	/** Function that returns the configured maximum file size depending on its type and the user assigned quota.
 	 * @param isOutput Selects the type of file is going to be determining its size
 	 * @param uploadType Selects the type of quota assigned to the user: soft or hard.
 	 * @return Max upload file size in kB, -1 if unlimited
-	private Long getMaxFileSize(boolean isOutput, UploadType uploadType, Long fallbackValue) {
+	 */
+	private Long getMaxFileSize(boolean isOutput, Constants.UploadType uploadType, Long fallbackValue) {
 	    Long size = -1L;
 	    if(isOutput) {
-	        if(uploadType == UploadType.soft)
+	        if(uploadType == Constants.UploadType.soft)
 	            size = (Long)WebApps.getCurrent().getAttribute("uploadMaxOutputFileSizeSoft");  
 	        else
 	            size = (Long)WebApps.getCurrent().getAttribute("uploadMaxOutputFileSizeHard");
 	    } else {
-	        if(uploadType == UploadType.soft)
+	        if(uploadType == Constants.UploadType.soft)
 	            size = (Long)WebApps.getCurrent().getAttribute("uploadMaxFileSizeSoft");
 	        else
 	            size = (Long)WebApps.getCurrent().getAttribute("uploadMaxFileSizeHard");	        
 	    }
 	    return size == -1L? fallbackValue: size;
-	} */
+	}
 
 
 	private Long byteToMegabyte(Long bytes) {

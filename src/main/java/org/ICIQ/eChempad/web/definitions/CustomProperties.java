@@ -17,11 +17,12 @@
  */
 package org.ICIQ.eChempad.web.definitions;
 
-import java.io.FileInputStream;
-import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.FileInputStream;
+import java.nio.file.Paths;
+import java.util.Properties;
 
 public class CustomProperties {
 
@@ -36,7 +37,7 @@ public class CustomProperties {
 	public static void reloadProperties() {
 	       String propertiesFilePath = null;
 		try {
-			propertiesFilePath = ""; // TODO FileService.getCreatePath(File.separatorChar + Constants.CREATE_PROPERTIES_FILE);
+			propertiesFilePath = Paths.get("/" + Constants.CREATE_PROPERTIES_FILE).toString();
 			props = new Properties();
 			props.load(new FileInputStream(propertiesFilePath));
 		} catch (Exception e) {

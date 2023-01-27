@@ -18,7 +18,7 @@
 
 -->
 <?link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet"?>
-<?link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css"?>
+<?link rel="stylesheet" type="text/css" href="~./web/css/bootstrap.min.css"?>
 <window id="uploadToolbar" border="normal" apply="org.ICIQ.eChempad.web.ui.UploadToolbar" xmlns:ca="client/attribute" style="height:30px" sclass="upload-toolbar-window">
 	<box width="100%" height="30px" pack="center" align="end">
 		<hlayout sclass="z-valign-middle">

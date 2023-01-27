@@ -1,4 +1,4 @@
-/**
+/*
  * Create module - Create module inside the ioChem-BD software.
  * Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
  *
@@ -17,20 +17,14 @@
  */
 package org.ICIQ.eChempad.web.ui;
 
-import cat.iciq.tcg.labbook.datatype.Entity;
-import cat.iciq.tcg.labbook.shell.exceptions.BrowseCredentialsException;
-import cat.iciq.tcg.labbook.shell.utils.ShiroManager;
-import cat.iciq.tcg.labbook.web.definitions.Constants;
-import cat.iciq.tcg.labbook.web.definitions.Constants.ScreenSize;
-import cat.iciq.tcg.labbook.web.utils.CustomProperties;
-import cat.iciq.tcg.labbook.web.utils.Rest50ApiManager;
-import cat.iciq.tcg.labbook.web.utils.RestDoiDaemonManager;
-import cat.iciq.tcg.labbook.web.utils.RestManager;
-import cat.iciq.tcg.labbook.zk.components.publishtree.*;
-import cat.iciq.tcg.labbook.zk.components.publishtree.Element.ElementType;
+import org.ICIQ.eChempad.web.definitions.Constants;
+import org.ICIQ.eChempad.web.definitions.Constants.ScreenSize;
+import org.ICIQ.eChempad.web.definitions.CustomProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.zkoss.zk.ui.*;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WebApps;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -39,15 +33,12 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zul.Timer;
 import org.zkoss.zul.*;
 
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
-import java.security.cert.X509Certificate;
 import java.util.Calendar;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class ElementPublish extends SelectorComposer<Window> {
@@ -68,13 +59,13 @@ public class ElementPublish extends SelectorComposer<Window> {
 	private EventQueue<Event> elementPublishQueue = null;
 	private EventQueue<Event> displayQueue = null;
 
-	private Set<Entity> selectedElements = null;
-	private PublishTreeModel elementTreeModel;
-	private Rest50ApiManager restManager = null;
+	// private Set<Entity> selectedElements = null;
+	// private PublishTreeModel elementTreeModel;
+	// private Rest50ApiManager restManager = null;
 
-	private RestDoiDaemonManager doiManager = null;
+	// private RestDoiDaemonManager doiManager = null;
 	private int publicationStatus = Constants.INSTITUTION_STATUS_DISABLED;
-	private ElementPublishOperation operation;
+	// private ElementPublishOperation operation;
 
 	@WireVariable("desktopScope")
 	private Map<String, Object> _desktopScope;
@@ -230,14 +221,14 @@ public class ElementPublish extends SelectorComposer<Window> {
 	@Listen("onCheck=#namingConventionRdg")
 	public void setElementsName() {
 		String selectedNamingConvention = (String) namingConventionRdg.getSelectedItem().getValue();
-		setElementsName(elementTreeModel.getRoot(), selectedNamingConvention, "");
+		//setElementsName(elementTreeModel.getRoot(), selectedNamingConvention, "");
 		refreshTree();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Listen("onClick=#publishBtn")
 	public void publishBtnClick() {
-		int unpublishedTopCollections = getNotPublishedTopCollectionCount();
+		int unpublishedTopCollections = 0; // = getNotPublishedTopCollectionCount();
 		try {
 			// Check that user agrees to publish more than one top collection in the same
 			// process
@@ -272,7 +263,7 @@ public class ElementPublish extends SelectorComposer<Window> {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				if (event.getName().equals("show")) {
-					selectedElements = (Set<Entity>) _desktopScope.get("selectedElements");
+					/* selectedElements = (Set<Entity>) _desktopScope.get("selectedElements");
 					if (selectedElements.size() == 0) {
 						Messagebox.show("There is no element selected to publish.", "Resources error.", Messagebox.OK,
 								Messagebox.ERROR);
@@ -280,7 +271,7 @@ public class ElementPublish extends SelectorComposer<Window> {
 					} else {
 						doiManager = new RestDoiDaemonManager();
 						display();
-					}
+					} */
 				}
 			}
 		});
@@ -295,8 +286,8 @@ public class ElementPublish extends SelectorComposer<Window> {
 	private void display() {
 		try {
 			disableForm(false);
-			buildPublishTree();
-			clearPublishForm();
+			//buildPublishTree();
+			//clearPublishForm();
 			setupLayout();
 			elementPublish.setVisible(true);
 		} catch (Exception e) {
@@ -309,12 +300,14 @@ public class ElementPublish extends SelectorComposer<Window> {
 
 	private String getUsername() {
 		try {
-			return ShiroManager.getCurrent().getUserName();
+			return "";
+			// return ShiroManager.getCurrent().getUserName();
 		} catch (Exception e) {
 			return UUID.randomUUID().toString();
 		}
 	}
 
+	/*
 	private void clearPublishForm() throws WrongValueException, BrowseCredentialsException {
 		publishTbox.setSelectedTab(namingFieldsTab);
 		namingConventionRdg.setSelectedItem(fullPathRd);
@@ -356,7 +349,10 @@ public class ElementPublish extends SelectorComposer<Window> {
 		// Set default calculation names
 		setElementsName();
 	}
+	*/
 
+
+	/*
 	private int getNotPublishedTopCollectionCount() {
 		int unpublishedTopCollections = 0;
 		List<TreeNode<Element>> communities = elementTreeModel.getRoot().getChildren();
@@ -366,17 +362,20 @@ public class ElementPublish extends SelectorComposer<Window> {
 					unpublishedTopCollections++;
 		return unpublishedTopCollections;
 	}
+	*/
 
+
+	/*
 	private boolean existsNotPublishedTopCollection() {
 		return getNotPublishedTopCollectionCount() > 0;
-	}
+	} */
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void doAfterCompose(Window comp) throws Exception {
 		super.doAfterCompose(comp);
 		setDoiStatus();
-		initComboboxes();
+		//initComboboxes();
 		elementPublish.addEventListener("onClose", new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -392,7 +391,7 @@ public class ElementPublish extends SelectorComposer<Window> {
 
 	private void setDoiStatus() {
 		try {
-			doiManager = new RestDoiDaemonManager();
+			//doiManager = new RestDoiDaemonManager();
 			publicationStatus = (int) WebApps.getCurrent().getAttribute("doiDaemonStatus");
 			switch (publicationStatus) {
 			case Constants.INSTITUTION_STATUS_TEST_MANUAL:
@@ -413,6 +412,7 @@ public class ElementPublish extends SelectorComposer<Window> {
 		}
 	}
 
+	/*
 	private void initComboboxes() {
 		FuzzySearchListModel journallist = new FuzzySearchListModel(
 				Sessions.getCurrent().getWebApp().getRealPath("/WEB-INF/keyword-journals.txt"), 20,
@@ -437,6 +437,8 @@ public class ElementPublish extends SelectorComposer<Window> {
 			}
 		});
 	}
+	*/
+
 
 	private void setupLayout() {
 		displayQueue.publish(new Event("hideNavigationButtons", null, null));
@@ -471,19 +473,21 @@ public class ElementPublish extends SelectorComposer<Window> {
 		keywordsCbo.setValue("");
 	}
 
+	/*
 	private void buildPublishTree() throws Exception {
 		elementTreeModel = new PublishTreeModel(new ElementListBuilder(selectedElements).getRoot());
 		elementTreeModel.sort(new ElementComparator(true), true);
 		publishTree.setItemRenderer(new ElementTreeRenderer(elementPublish, elementTreeModel));
 		publishTree.setModel(elementTreeModel);		
 	}
+	*/
+
 
 	private void publish() throws Exception {
-		if (!isFormValid())
-			return;
+		// if (!isFormValid()) return;
 		disableForm(true);
 		sortTreeElements(false);
-		startPublishOperation();
+		// startPublishOperation();
 	}
 
 	private void disableForm(boolean disable) {
@@ -496,19 +500,20 @@ public class ElementPublish extends SelectorComposer<Window> {
 	}
 
 	private void sendEvents() {
-		initRestManager();
-		sendCreateRequests();
-		sendUpdateRequests();
-		sendDoiRequests();
+		// initRestManager();
+		// sendCreateRequests();
+		// sendUpdateRequests();
+		// sendDoiRequests();
 	}
 
 	private void endPublish() {
-		displayResume();
-		refreshNavigationTree();
+		// displayResume();
+		// refreshNavigationTree();
 		sortTreeElements(true);
 		refreshTree();
 	}
 
+	/*
 	private void initRestManager() {
 		try {
 			restManager = new Rest50ApiManager();
@@ -517,11 +522,13 @@ public class ElementPublish extends SelectorComposer<Window> {
 			log.error(e.getMessage());
 		}
 	}
+	 */
 
 	private void sortTreeElements(boolean ascending) {
-		elementTreeModel.sort(new ElementComparator(ascending), ascending);
+		// elementTreeModel.sort(new ElementComparator(ascending), ascending);
 	}
 
+	/*
 	private void startPublishOperation() throws Exception {
 		// Create long process operation and provide it with the appropriate parameters
 		operation = new ElementPublishOperation(elementTreeModel) {
@@ -743,6 +750,8 @@ public class ElementPublish extends SelectorComposer<Window> {
 		    return parentPath + "/" + element.getName();
 	}
 
+	 */
+
 	private HashMap<String, String> buildAdditionalMetadata() {
 		HashMap<String, String> additionalMetadata = new HashMap<String, String>();
 		// Add only first author
@@ -767,7 +776,7 @@ public class ElementPublish extends SelectorComposer<Window> {
 		additionalMetadata.put("metadata" + additionalMetadata.size() + "#dcterms:accessRights",
 				"info:eu-repo/semantics/" + (embargoChk.isChecked() ? "embargoedAccess" : "openAccess"));
 
-		String coverageSpatial = getLocationFromHttpsCertificate();
+		String coverageSpatial = ""; // getLocationFromHttpsCertificate();
 		if (!coverageSpatial.equals(""))
 			additionalMetadata.put("metadata" + additionalMetadata.size() + "#dcterms:spatial", coverageSpatial);
 

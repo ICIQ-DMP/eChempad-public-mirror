@@ -1,0 +1,60 @@
+<!--
+
+    Create module - Create module inside the ioChem-BD software.
+    Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<?page title="Report Manager" contentType="text/html;charset=UTF-8"?>
+<window id="reportManager" apply="org.ICIQ.eChempad.web.ui.ReportManager" border="none" hflex="1" vflex="1" closable="false">
+	<borderlayout hflex="1" vflex="1">
+		<north border="none" hflex="1" style="padding:10px">			
+			<div class="d-flex flex-row flex-nowrap justify-content-between">
+				<button id="repNewBtn" popup="newReportPopup" sclass="btn btn-primary" label="New report"/>									
+				<div class="d-flex flex-row flex-nowrap justify-content-between">
+					<textbox id="searchTxt" sclass="form-control ml-2" style="max-width: 200px" placeholder="Type to filter..."/>
+					<button id="repClearBtn" sclass="btn btn-secondary clear-btn" tooltiptext="Clear search"/> 			  
+				</div>
+			</div>
+		</north>
+		<center border="none">
+			<tree id="reportTree" hflex="1" vflex="10" multiple="true">
+				<custom-attributes org.zkoss.zul.tree.rightSelect="true"/>
+			 	<treecols>				 				     				   
+			      <treecol id="idTreecol" hflex="2" label="Id" sort="none" align="right"/>
+			      <treecol id="nameTreecol" hflex="4" label="Name" align="left" sort="auto"/>
+			      <treecol id="descriptionTreecol" hflex="10" label="Description" align="left" sort="auto"/>
+			      <treecol id="typeTreecol" hflex="6" label="Type" sort="auto"/>
+			      <treecol id="creationDateTreecol" hflex="3" label="Creation Date" sort="auto"/>	
+			      <treecol id="publishedTreecol"  hflex="3"  label="Published?" sort="none" visible="false"/>
+			    </treecols>
+			    <treechildren id="reportTreeChildren">
+			    		  
+			    </treechildren>				
+			</tree>
+		</center>
+		<south>
+			<label value="*right click shows report options" sclass="p-3" style="valign:'bottom"/>			
+		</south>				
+	</borderlayout>
+	  	    				  			   			 										 
+	<menupopup id="editReportPopup" sclass="custom-dropdown-menu">
+        <menuitem id="editReportOpenItem" label="Open" />
+        <menuseparator sclass="dropdown-divider" />
+        <menuitem id="editReportRemoveItem" label="Remove" />
+    </menupopup>
+    <menupopup id="newReportPopup" sclass="custom-dropdown-menu">    
+    </menupopup>
+</window>

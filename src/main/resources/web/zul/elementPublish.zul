@@ -35,13 +35,15 @@
 	}	
 </style>
 
-<window id="elementPublish" title="Publish selected elements" width="100%" height="100%"  xmlns:n="native" mode="highlighted" border="normal" closable="true" apply="cat.iciq.tcg.labbook.zk.composers.main.ElementPublish" visible="false">
+<window id="elementPublish" title="Publish selected elements" width="100%" height="100%"  xmlns:n="native" mode="highlighted" border="normal" closable="true" apply="org.ICIQ.eChempad.web.ui.ElementPublish" visible="false">
   <zscript>
+	  <!--
 	<![CDATA[
-		import cat.iciq.tcg.labbook.zk.components.publishtree.ElementComparator;		
+		import cat.iciq.tcg.labbook.zk.components.publishtree.ElementComparator;
 		Comparator orderComparatorAsc = new ElementComparator(true);
-		Comparator orderComparatorDsc = new ElementComparator(false);	
+		Comparator orderComparatorDsc = new ElementComparator(false);
 	]]>
+	-->
 	</zscript>  
 
 	<borderlayout>
@@ -86,9 +88,9 @@
 						<vlayout hflex="1" vflex="1">
 							<hlayout>
 								<checkbox id="generateDoiChk" label="Generate DOI for top project/s"/>
-								<a id="generateDoiRealA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="../../images/question-sign.png" tooltip="generateDoiChkRealPopup, position=after_start" width="20px" /></a>
-								<a id="generateDoiTestA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="../../images/exclamation-sign.png" tooltip="generateDoiChkTestPopup, position=after_start" width="20px" /></a>
-								<a id="generateDoiDisabledA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="../../images/remove-sign.png" tooltip="generateDoiChkDisabledPopup, position=after_start" width="20px" /></a>											
+								<a id="generateDoiRealA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="~./web/img/question-sign.png" tooltip="generateDoiChkRealPopup, position=after_start" width="20px" /></a>
+								<a id="generateDoiTestA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="~./web/img/exclamation-sign.png" tooltip="generateDoiChkTestPopup, position=after_start" width="20px" /></a>
+								<a id="generateDoiDisabledA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="~./web/img/remove-sign.png" tooltip="generateDoiChkDisabledPopup, position=after_start" width="20px" /></a>											
 								<popup id="generateDoiChkRealPopup" width="300px" sclass="p-2">
 									<vlayout>
 										<label>Will generate a valid DOI for this published dataset.</label>

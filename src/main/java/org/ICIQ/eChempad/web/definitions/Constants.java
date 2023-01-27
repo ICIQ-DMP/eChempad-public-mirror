@@ -63,7 +63,7 @@ public class Constants {
 	
 	public static final String IOCHEMBD_DIR_SYS_VAR = "IOCHEMBD_DIR";
 	public static final String WEBAPPS_DIR = "webapps";
-	public static final String CREATE_DIR = "create";	
+	public static final String CREATE_DIR = "";	 // Removed!
 	public static final String CREATE_ASSETSTORE_DIR = "assetstore";
 	public static final String CREATE_PROPERTIES_FILE = "resources.properties";
 	
