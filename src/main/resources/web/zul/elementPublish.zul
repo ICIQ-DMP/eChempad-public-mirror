@@ -88,9 +88,9 @@
 						<vlayout hflex="1" vflex="1">
 							<hlayout>
 								<checkbox id="generateDoiChk" label="Generate DOI for top project/s"/>
-								<a id="generateDoiRealA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="~./web/img/question-sign.png" tooltip="generateDoiChkRealPopup, position=after_start" width="20px" /></a>
-								<a id="generateDoiTestA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="~./web/img/exclamation-sign.png" tooltip="generateDoiChkTestPopup, position=after_start" width="20px" /></a>
-								<a id="generateDoiDisabledA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="~./web/img/remove-sign.png" tooltip="generateDoiChkDisabledPopup, position=after_start" width="20px" /></a>											
+								<a id="generateDoiRealA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="/img/question-sign.png" tooltip="generateDoiChkRealPopup, position=after_start" width="20px" /></a>
+								<a id="generateDoiTestA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="/img/exclamation-sign.png" tooltip="generateDoiChkTestPopup, position=after_start" width="20px" /></a>
+								<a id="generateDoiDisabledA" href="https://docs.iochem-bd.org/en/latest/guides/usage/publishing-calculations/publish-process.html#publishing-calculations-into-browse" target="_blank" visible="false"><image src="/img/remove-sign.png" tooltip="generateDoiChkDisabledPopup, position=after_start" width="20px" /></a>
 								<popup id="generateDoiChkRealPopup" width="300px" sclass="p-2">
 									<vlayout>
 										<label>Will generate a valid DOI for this published dataset.</label>

@@ -27,13 +27,27 @@
 <?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
 <?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
 
-<?script type="text/javascript" src="/js/bootstrap.min.js"?>
-<?script type="text/javascript" src="/js/popper.min.js"?>
-<?script type="text/javascript" src="/js/jquery-3.3.1.min.js"?>
-
+<?script type="text/javascript" src="/js/require.js" ?>
 
 
 <window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.Main" style="height: 100%; width:100%">
+    <script>
+        window.jQuery = window.$ = require(['jquery']);
+    </script>
+
+
+
+
+    <!-- <script type="text/javascript" src="/js/jquery-ui.min.js"> </script> -->
+    <!-- <script type="text/javascript" src="/js/jquery.blockUI.js"> </script> -->
+
+
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
+    <script type="text/javascript" src="/js/bootstrap.min.js"> </script>
+    <script type="text/javascript" src="/js/popper.min.js"> </script>
+
+
+
 
     <!-- Part of the CML transformations, we do not need it -->
     <!--  <script src="./web/js/popper.min.js"></script>
@@ -265,7 +279,7 @@
                         <div id="welcome" height="100%" visible="true" sclass="z-tabbox" >
                             <groupbox id="groupWelcome" closable="false"  hflex="1" vflex="1" >
                                 <div hflex="1" vflex="1">
-                                    <iframe id="newsFrame" hflex="1" vflex="1" src="~./web/html/news.html"/>
+                                    <iframe id="newsFrame" hflex="1" vflex="1" src="/html/news.html"/>
                                 </div>
                             </groupbox>
                         </div>

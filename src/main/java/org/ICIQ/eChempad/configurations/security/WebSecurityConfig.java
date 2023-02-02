@@ -44,9 +44,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     /**
-     * https://stackoverflow.com/questions/2952196/ant-path-style-patterns
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
      * Allow only authenticated users to access the API.
+     * <a href="https://stackoverflow.com/questions/2952196/ant-path-style-patterns">...</a>
+     * <a href="https://javabydeveloper.com/refused-to-display-in-a-frame-because-it-set-x-frame-options-to-deny-in-spring/">...</a>
      * @param http HTTP security class. Can be used to configure a lot of different parameters regarding HTTP security.
      * @throws Exception Any type of exception that occurs during the HTTP configuration
      */
@@ -69,6 +70,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
 
                 .and()
+
+                .headers().frameOptions().sameOrigin() // X-Frame-Options = SAMEORIGIN
+
+                .and()
+
                 .authorizeRequests()
                     .antMatchers("/api/authority").authenticated()
                     .antMatchers("/api/researcher").authenticated()
