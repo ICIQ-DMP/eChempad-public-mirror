@@ -18,7 +18,7 @@ body{
 
 
 .navbar {
-	background-image: url("/web/img/create-small-white.png");
+	background-image: url("/img/create-small-white.png");
 	background-repeat: no-repeat;
 	background-position-x: 10px;
 	background-position-y: 5px;
@@ -147,7 +147,7 @@ body{
 }
 
 .series-tabpanels > :first-child {
-	background-image: url("/web/img/reports-add-serie.png");
+	background-image: url("/img/reports-add-serie.png");
 	background-repeat: no-repeat;
 }
 
@@ -1848,9 +1848,8 @@ img ~ .z-menu-text, img ~ .z-menuitem-text {
 .z-window-header.z-window-header-move {
 	background-color: #197ae1cc;
 	color: #fff;	
-	background-image: url('/web/img/basuraaaaa/invent_create-atom-dark.png');
-/* 	background-image: url("/web/img/create-atom-white.png");  */
-  	background-position: left center; 
+	background-image: url("/img/create-atom-dark.png");
+  	background-position: left center;
   	background-repeat: no-repeat;   	
 }
 
@@ -2213,7 +2212,7 @@ img ~ .z-menu-text, img ~ .z-menuitem-text {
     width: 72px;
     height: 72px;
     background: transparent no-repeat center;
-    background-image: url(/web/img/progress-72.gif);
+    background-image: url("/img/progress-72.gif");
     display: block;
     vertical-align: top;
     position: relative;
@@ -2274,7 +2273,7 @@ img ~ .z-menu-text, img ~ .z-menuitem-text {
     border-radius: 4px;
     background: #fff 0 0 repeat-x;
         background-image: none;
-    background-image: url(/web/img/prgmeter-anim.gif);
+    background-image: url("/img/prgmeter-anim.gif");
     text-align: left;
     overflow: hidden;
 }

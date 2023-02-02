@@ -19,20 +19,26 @@
 -->
 <!-- <?init class="cat.iciq.tcg.labbook.zk.ui.LoginInitiator"?> -->
 <?meta name="viewport" content="width=device-width, initial-scale=1"?>
-<?link rel="shortcut icon" type="image/x-icon" href="~./img/favicon.ico"?>
-<?link rel="icon" type="image/x-icon" href="~./img/favicon.ico"?>
 
-<?link rel="stylesheet" type="text/css" href="~./css/font-awesome.min.css" ?>
-<?link rel="stylesheet" type="text/css" href="~./css/bootstrap-create.css"?>
-<?link rel="stylesheet" type="text/css" href="~./css/bootstrap.min.css"?>
+<?link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico"?>
+<?link rel="icon" type="image/x-icon" href="/img/favicon.ico"?>
+
+<?link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
+<?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
+
+<?script type="text/javascript" src="/js/bootstrap.min.js"?>
+<?script type="text/javascript" src="/js/popper.min.js"?>
+<?script type="text/javascript" src="/js/jquery-3.3.1.min.js"?>
+
 
 
 <window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.Main" style="height: 100%; width:100%">
 
     <!-- Part of the CML transformations, we do not need it -->
-    <script src="~./web/js/popper.min.js"></script>
-    <script src="~./web/js/jquery-3.3.1.min.js"></script>
-    <script src="~./web/js/bootstrap.min.js"></script>
+    <!--  <script src="./web/js/popper.min.js"></script>
+    <script src="./web/js/jquery-3.3.1.min.js"></script>
+    <script src="./web/js/bootstrap.min.js"></script> -->
     <!-- JS mol <script src="../html/xslt/jsmol/JSmol.min.nojq.js"></script>
     <script src="~./web/js/jsmol.js"></script> -->
 
@@ -131,9 +137,9 @@
 	}
 
 	//Jmol global settings
-	delete Jmol._tracker;
-	Jmol._local = true;
-	Jmol.setDocument = false;
+	// delete Jmol._tracker;  // Jmol not found
+	// Jmol._local = true;  // Jmol not found
+	// Jmol.setDocument = false;  // Jmol not found
 
 	//Setup ajax calls to retrieve requested url
 	$.ajaxSetup({
@@ -143,9 +149,9 @@
 	});
 
 	//The three jsmol applets used in this desktop
-	var jmolApplet = null;
-	var jmolMoldenApplet = null;
-	var jmolOrbitalApplet = null;
+	// var jmolApplet = null;  // Jmol not found
+	// var jmolMoldenApplet = null;  // Jmol not found
+	// var jmolOrbitalApplet = null;  // Jmol not found
 
 	]]>
     </script>
