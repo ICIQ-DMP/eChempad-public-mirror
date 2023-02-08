@@ -331,8 +331,8 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  /etc/default/cacerts
 # *  "${JAVA_HOME}/jre/lib/security/cacerts"
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
-# "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts"
-trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts")
+# "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts" <-- The static one that we have stored in the repo
+trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/tools/CA_certificates/cacerts")
 trustStore="${trustStores[1]}"
 
 if [ ! -f "${trustStore}" ]; then
