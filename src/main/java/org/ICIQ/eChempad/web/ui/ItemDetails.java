@@ -99,6 +99,7 @@ public class ItemDetails extends SelectorComposer<Window> {
 	}
 	@Listen("onClick=#removeBtn")
 	public void removeClick() throws InterruptedException{
+		System.out.println("sfdsdf");
 		// deleteSelectedElement();
 	}
 

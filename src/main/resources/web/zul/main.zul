@@ -27,13 +27,13 @@
 <?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
 <?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
 
-<?script type="text/javascript" src="/js/require.js" ?>
+<!-- <?script type="text/javascript" src="/js/require.js" ?> -->
 
 
 <window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.Main" style="height: 100%; width:100%">
-    <script>
+    <!-- <script>
         window.jQuery = window.$ = require(['jquery']);
-    </script>
+    </script> -->
 
 
 
@@ -188,25 +188,27 @@
             <n:ul class="navbar-nav mr-auto">
             </n:ul>
             <n:ul class="navbar-nav">
+
+                <!-- Top tab options dropdown -->
                 <n:li class="nav-item dropdown" style="padding-right: 10px;">
                     <n:a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Options
                     </n:a>
                     <n:div class="dropdown-menu  dropdown-menu-right text-right" aria-labelledby="navbarDropdown" style="right:0; left:auto;">
-                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onDownloadShell')" id="shellBtn">Download shell client</n:a>
                         <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onEditProfileClick')">Edit profile</n:a>
-                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-divider"/>
                         <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onHelpClick')">Help</n:a>
                         <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onFeedbackClick')">Report bug</n:a>
-                        <n:div class="dropdown-divider"></n:div>
+                        <n:div class="dropdown-divider"/>
                         <n:a class="dropdown-item text-left d-sm-block d-md-none" href="#" onClick="fireEventFromClient('onBrowseClick')">Browse</n:a>
-                        <n:div class="dropdown-divider d-sm-block d-md-none"></n:div>
-                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onLogoutClick')">Logout <n:i class="fa fa-sign-out-alt" style="margin-left: 80px"></n:i></n:a>
+                        <n:div class="dropdown-divider d-sm-block d-md-none"/>
+                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onLogoutClick')">Logout
+                            <n:i class="fa fa-sign-out-alt" style="margin-left: 80px"/></n:a>
                     </n:div>
                 </n:li>
                 <n:li class="nav-item d-none d-md-block" style="border-left: 2px solid white;">
                     <n:a class="nav-link" href="#" onClick="fireEventFromClient('onBrowseClick')">
-                        <n:image src="img/browse-small.png" class="navbar-brand" href="#"></n:image>
+                        <n:image src="img/browse-small.png" class="navbar-brand" href="#"/>
                     </n:a>
                 </n:li>
             </n:ul>
@@ -304,7 +306,7 @@
                                         </div>
                                         <div sclass="row mb-1 mr-3 item-details-row">
                                             <n:label class="col-md-2">Type:</n:label>
-                                            <radiogroup id="calcType" sclass="col-md-10 pl-0"></radiogroup>
+                                            <radiogroup id="calcType" sclass="col-md-10 pl-0"/>
                                         </div>
 
                                         <div sclass="row mb-1 mr-3 item-details-row">
@@ -320,7 +322,7 @@
                                         </div>
 
                                         <div sclass="row mb-1 mr-3 item-details-row">
-                                            <n:label class="col-md-2"></n:label>
+                                            <n:label class="col-md-2"/>
                                             <div sclass="col-md-10 pl-0">
                                                 <button id="uploadCalcBtn" sclass="btn btn-primary" label="Load Calculation"  />
                                                 <button id="resetUploadCalcBtn" sclass="btn btn-secondary" label="Reset" />
@@ -331,10 +333,9 @@
                             </tabbox>
                         </div>
                     </div>
-
-
-
                 </north>
+
+
                 <center id="itemDetails">
                     <include src="~./zul/itemdetails.zul"/>
                 </center>

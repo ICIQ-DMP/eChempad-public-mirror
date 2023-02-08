@@ -22,6 +22,7 @@ import org.ICIQ.eChempad.web.definitions.CustomProperties;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
@@ -153,11 +154,6 @@ public class Main extends SelectorComposer<Window> {
     	redirectToBrowse();
     }
 
-    @Listen("onDownloadShell=#mainWindow")
-    public void onDownloadShell() {
-    	downloadShellClient();      
-    }
-
     @Listen("onHelpClick=#mainWindow")
     public void helpBtnClick(){
     	openHelpPage();
@@ -235,7 +231,9 @@ public class Main extends SelectorComposer<Window> {
 		Clients.evalJavaScript("moveRight()");
 	}
 
+
 	//////////////////////////////////////////// Top toolbar actions //////////////////////////////////////////////////////////////////
+
 	private void redirectToBrowseEditProfile() {
 		Executions.sendRedirect(getBrowseEditProfileUrl());
 	}
@@ -252,16 +250,6 @@ public class Main extends SelectorComposer<Window> {
 	private void openFeedbackPage() {
     	String knowledgebaseUrl	= CustomProperties.getProperty("feedback.url");
 		Executions.getCurrent().sendRedirect(knowledgebaseUrl, "_blank");		
-	}
-
-	private void downloadShellClient() {
-		/*
-		try {
-			ShellApplicationDownload shellDownload = new ShellApplicationDownload();
-			shellDownload.downloadShellApp();
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		} */
 	}
 
 	private void displayLimits() {
@@ -330,7 +318,7 @@ public class Main extends SelectorComposer<Window> {
 			setupLayoutListener(window);
 	     	openReportTabs = new HashMap<Integer,Tab>();
 	     	openReportTabpanels = new HashMap<Integer,Tabpanel>();
-	//		initUserVars();
+	 		initUserVars();
 			initUploadRestrictions();
 	    	initActionQueues();
 			fillCalculationTypes();
@@ -406,7 +394,7 @@ public class Main extends SelectorComposer<Window> {
 
 	private void notifyDisplayHasChanged(Constants.ScreenSize layout) {
 		// displayQueue is noullpointer
-		// displayQueue.publish(new Event("sizeChanged", null, layout));
+		displayQueue.publish(new Event("sizeChanged", null, layout));
 	}
 
 	private void swapChild(Component source, Component destination) {
@@ -417,12 +405,12 @@ public class Main extends SelectorComposer<Window> {
 		destination.appendChild(child);				
 	}
 
-	/*
-    private void initUserVars() throws BrowseCredentialsException{
-    	userLogin = ShiroManager.getCurrent().getUserName();									
-		userHome = getUserPath();
-		Executions.getCurrent().getSession().setAttribute("username", userLogin);
-    } */
+
+    private void initUserVars() {  // throws BrowseCredentialsException
+    	this.userLogin = SecurityContextHolder.getContext().getAuthentication().getName();  // ShiroManager.getCurrent().getUserName();
+		this.userHome = getUserPath();
+		Executions.getCurrent().getSession().setAttribute("username", this.userLogin);
+    }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initActionQueues(){
@@ -507,18 +495,17 @@ public class Main extends SelectorComposer<Window> {
     }
 	
 	public static String getUserPath() {
-		/*
+
 		try{
 			StringBuilder userPath = new StringBuilder();
 			userPath.append(Constants.BASE_PATH);
 			userPath.append(Constants.PATH_DELIMITER);
-			userPath.append(ShiroManager.getCurrent().getUserName());    	 
+			userPath.append(SecurityContextHolder.getContext().getAuthentication().getName());
 			return userPath.toString();    	     		
 		}catch(Exception e){
 			logger.error(e.getMessage());	
 			return null;
-		} */
-		return "";
+		}
 	}
   
     ////////////////////////////////// Navigation queue actions ///////////////////////////////////////////////////////    
@@ -809,7 +796,7 @@ public class Main extends SelectorComposer<Window> {
    
     @SuppressWarnings("unchecked")
 	private void createReportTab(int reportId, boolean appendSessionElements) {
-		/*
+
     	 Tab newReportTab = new Tab();					//Add new report tab 
 		 newReportTab.setSelected(true);
 		 newReportTab.addEventListener("onClose", new EventListener(){
@@ -856,7 +843,7 @@ public class Main extends SelectorComposer<Window> {
 		 openReportTabs.put(reportId, newReportTab);
 		 openReportTabpanels.put(reportId, newReportTabpane);
 		 enableNavigationButtons(false);
-		 */
+
      }
     
 	private void enableNavigationButtons(boolean enableNavigation) {
