@@ -17,12 +17,16 @@
  */
 package org.ICIQ.eChempad.web.ui;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.ICIQ.eChempad.web.definitions.Constants;
 import org.ICIQ.eChempad.web.definitions.CustomProperties;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
@@ -40,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@Service
 public class Main extends SelectorComposer<Window> {
 	
 	private Constants.ScreenSize layout = Constants.ScreenSize.X_LARGE;
@@ -62,6 +67,10 @@ public class Main extends SelectorComposer<Window> {
 		
 	private Constants.UploadType uploadType;
 	private Long maxSystemFileSize;
+
+	// Backend
+	@Autowired
+	private JournalService<Journal, UUID> journalService;
 
 	@Wire
 	Window mainWindow;
@@ -821,7 +830,7 @@ public class Main extends SelectorComposer<Window> {
 		 });
 		 //Display new tab and tabpanel		 		 
 		 try{
-			 String name = ReportService.getReport(reportId).getName();	 
+			 String name = this.journalService.getById(UUID.fromString(String.valueOf(reportId))).getName();  // ReportService.getReport(reportId).getName();
 			 newReportTab.setLabel(name.equals("")?String.valueOf(reportId):name);
 		 }catch(Exception e){
 			newReportTab.setLabel(String.valueOf(reportId));
