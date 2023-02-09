@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk>
+    <listener>
+        <listener-class>cat.iciq.tcg.labbook.zk.ui.WebAppInitiator</listener-class>
+    </listener>
+    <listener>
+        <listener-class>cat.iciq.tcg.labbook.zk.ui.SessionCleaner</listener-class>
+    </listener>
+    <listener>
+        <listener-class>cat.iciq.tcg.labbook.zk.ui.SessionInitiator</listener-class>
+    </listener>
+    <listener>
+        <listener-class>cat.iciq.tcg.labbook.zk.ui.DesktopInitiator</listener-class>
+    </listener>
+    <listener>
+        <listener-class>cat.iciq.tcg.labbook.zk.ui.WebAppCleaner</listener-class>
+    </listener>
+</zk>

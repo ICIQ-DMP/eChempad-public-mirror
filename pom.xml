@@ -28,17 +28,14 @@
 		<java.version>1.8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<spring.version>5.3.22</spring.version>
 		<spring-security.version>5.7.3</spring-security.version>
-
-		<zkspringboot.version>1.0.4</zkspringboot.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
-		<!-- Depends on the version of ZK that comes with zkspringboot-starter -->
-		<zk.version>8.6.0.1-Eval</zk.version>
+		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
 
+		<reflections.version>0.9.10</reflections.version>
 		<!--Used by the licenses plugin-->
 		<license.licenseName>apache_v2</license.licenseName>
-		<current.year>2022</current.year>
+		<current.year>2023</current.year>
 	</properties>
 
 	<!--Licenses -->
@@ -217,6 +214,14 @@
 			<version>${zkspringboot-starter.version}</version>
 		</dependency>
 
+		<!-- To use the reflections' library, which is used in the code of iochem-bd
+		https://mvnrepository.com/artifact/org.reflections/reflections -->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${reflections.version}</version>
+
+		</dependency>
 	</dependencies>
 
 
