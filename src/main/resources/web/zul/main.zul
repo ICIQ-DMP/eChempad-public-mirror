@@ -216,7 +216,7 @@
     </n:nav>
 
     <!-- Small layout -->
-    <div id="mainSmall" sclass="main-small-div" style="flex:1; display:flex; overflow:hidden">
+    <!-- <div id="mainSmall" sclass="main-small-div" style="flex:1; display:flex; overflow:hidden">
         <div id="mainSmallInner" sclass="main-small-inner-div" style="display:flex;  width: -moz-min-content; width: -webkit-min-content">
             <div id="smallTreeLayout">
 
@@ -241,7 +241,7 @@
             </div>
         </div>
     </div>
-
+    -->
 
 
     <!-- Large layout -->

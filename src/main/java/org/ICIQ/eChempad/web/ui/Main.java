@@ -403,7 +403,7 @@ public class Main extends SelectorComposer<Window> {
 
 	private void notifyDisplayHasChanged(Constants.ScreenSize layout) {
 		// displayQueue is noullpointer
-		displayQueue.publish(new Event("sizeChanged", null, layout));
+		// displayQueue.publish(new Event("sizeChanged", null, layout));
 	}
 
 	private void swapChild(Component source, Component destination) {
