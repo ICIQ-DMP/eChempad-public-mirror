@@ -170,7 +170,9 @@ public class TreeNavigation extends SelectorComposer<Window> {
 		}		
 	}
 	
-	
+
+
+	 */
 	@Override
 	public void doAfterCompose(Window comp) throws Exception {		
 		super.doAfterCompose(comp);
@@ -178,6 +180,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 		initTree();
 		loadReportTypes();
 	}
+
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initActionQueues(){
@@ -264,6 +267,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
         });
 	}
 
+	/*
 	protected void moveOverCalculation(Calculation source, Calculation destination) {
     	try {
     		CalculationService.moveOverCalculation(source, destination);
@@ -338,7 +342,9 @@ public class TreeNavigation extends SelectorComposer<Window> {
 			return UUID.randomUUID().toString();
 		}						
 	}
-	
+
+
+	 */
 	private void initTree(){	
 		if(isMobileDevice()){	//Hide the rest of 
 			Iterable<Component> childrenTreecols = tree.queryAll("treecol");
@@ -348,7 +354,8 @@ public class TreeNavigation extends SelectorComposer<Window> {
 			}			
 		}		
 	}
-	
+
+	/*
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void loadReportTypes(){
 		List<ReportType> reportTypes = ReportTypeService.getActiveReportTypes();
@@ -628,7 +635,9 @@ public class TreeNavigation extends SelectorComposer<Window> {
 			return true;
 		return false;
 	}
-	
+
+
+	 */
 	private boolean isMobileDevice(){		
 		String displayDevice = (String) Executions.getCurrent().getSession().getAttribute("displayDevice");		
 		if(displayDevice == null)
@@ -637,7 +646,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 			return true;
 		return false;
 	}
-	
+	/*
 	@SuppressWarnings("rawtypes")
 	private class OnMoveListener implements EventListener{
 		private Set<Object> selectedElements;

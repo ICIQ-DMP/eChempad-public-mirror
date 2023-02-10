@@ -105,11 +105,6 @@
 
 	}
 
-	//Jmol global settings
-	// delete Jmol._tracker;  // Jmol not found
-	// Jmol._local = true;  // Jmol not found
-	// Jmol.setDocument = false;  // Jmol not found
-
 	//Setup ajax calls to retrieve requested url
 	$.ajaxSetup({
 	    beforeSend: function(jqXHR, settings) {
@@ -117,18 +112,14 @@
 	    }
 	});
 
-	//The three jsmol applets used in this desktop
-	// var jmolApplet = null;  // Jmol not found
-	// var jmolMoldenApplet = null;  // Jmol not found
-	// var jmolOrbitalApplet = null;  // Jmol not found
-
 	]]>
     </script>
 
     <script>
-        zk.afterMount(function() {
-        jq('.z-tabs-content').addClass('nav nav-tabs');
-        jq('.nav-item-content').addClass('nav-link');
+        zk.afterMount(function()
+        {
+            jq('.z-tabs-content').addClass('nav nav-tabs');
+            jq('.nav-item-content').addClass('nav-link');
         })
     </script>
 

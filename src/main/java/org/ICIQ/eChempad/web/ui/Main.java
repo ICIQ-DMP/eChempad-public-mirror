@@ -296,57 +296,48 @@ public class Main extends SelectorComposer<Window> {
      	//Load action queues
     	navigationQueue = EventQueues.lookup("navigation", EventQueues.DESKTOP, true);
 		EventQueue<Event> actionsQueue = EventQueues.lookup("dcmactions", EventQueues.DESKTOP, true);
-     	reportManagementQueue = EventQueues.lookup("reportmanagement", EventQueues.DESKTOP, true);
-     	displayQueue = EventQueues.lookup("display", EventQueues.DESKTOP, true);
+     	this.reportManagementQueue = EventQueues.lookup("reportmanagement", EventQueues.DESKTOP, true);
+     	this.displayQueue = EventQueues.lookup("display", EventQueues.DESKTOP, true);
      	     	
-     	navigationQueue.subscribe(new EventListener(){
-     		@Override
-     		public void onEvent(Event event) throws Exception {     			
-     			if(event.getName().equals("resetHome"))
-     				resetHome();     				
-     			else if(event.getName().equals("showCalcUpload"))
-     				showCalcUpload();
-     			else if(event.getName().equals("displayNavigationElement")){
-     				displayNavigationElement();
-     			}
-     			else if(event.getName().equals("displaySearchElement")){
-     				displaySearchElement();     			
-     			}
-     		}
-     	});
-     	actionsQueue.subscribe(new EventListener(){
-     		@Override 
-     		public void onEvent(Event event) throws Exception {
-     			if(event.getName().equals("dcmActionsMaximize")){
-     				boolean maximize = (Boolean)event.getData();
-     				dcmActionsMaximize(maximize);		     			
-     			}
-     		}
-     	});     	 
-     	reportManagementQueue.subscribe(new EventListener(){
-			@Override
-			public void onEvent(Event event) throws Exception {
-				if(event.getName().equals("openReport")){
-					HashMap<String, Object> parameters = (HashMap<String, Object>)event.getData();
-					int reportId = (Integer)parameters.get("reportId");
-					boolean appendSessionElements = parameters.containsKey("appendSessionElements")? (boolean)parameters.get("appendSessionElements"):false;					
-				}else if(event.getName().equals("closeReport")){
-					int reportId = (Integer)event.getData();							
-				}else if(event.getName().equals("deleteReport")){
-					int reportId = (Integer)event.getData();
-				}
-			}		     				     	
-     	});
-     	displayQueue.subscribe(new EventListener() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				if(event.getName().equals("addBootstrapClasses")) {
-					setBootstrapClasses();
-				}else if(event.getName().equals("hideNavigationButtons")) {
-				}else if(event.getName().equals("showNavigationButtons")) {
-				}
-			}     		     		
-     	});        	
+     	this.navigationQueue.subscribe((EventListener) event -> {
+			 if(event.getName().equals("resetHome"))
+				 resetHome();
+			 else if(event.getName().equals("showCalcUpload"))
+				 showCalcUpload();
+			 else if(event.getName().equals("displayNavigationElement")){
+				 displayNavigationElement();
+			 }
+			 else if(event.getName().equals("displaySearchElement")){
+				 displaySearchElement();
+			 }
+		 });
+
+     	actionsQueue.subscribe((EventListener) event -> {
+			 if(event.getName().equals("dcmActionsMaximize")){
+				 boolean maximize = (Boolean)event.getData();
+				 dcmActionsMaximize(maximize);
+			 }
+		 });
+
+     	this.reportManagementQueue.subscribe((EventListener) event -> {
+			 if(event.getName().equals("openReport")){
+				 HashMap<String, Object> parameters = (HashMap<String, Object>)event.getData();
+				 int reportId = (Integer)parameters.get("reportId");
+				 boolean appendSessionElements = parameters.containsKey("appendSessionElements")? (boolean)parameters.get("appendSessionElements"):false;
+			 }else if(event.getName().equals("closeReport")){
+				 int reportId = (Integer)event.getData();
+			 }else if(event.getName().equals("deleteReport")){
+				 int reportId = (Integer)event.getData();
+			 }
+		 });
+
+     	this.displayQueue.subscribe((EventListener) event -> {
+			 if(event.getName().equals("addBootstrapClasses")) {
+				 setBootstrapClasses();
+			 }else if(event.getName().equals("hideNavigationButtons")) {
+			 }else if(event.getName().equals("showNavigationButtons")) {
+			 }
+		 });
     }
     
     @SuppressWarnings("unchecked")
