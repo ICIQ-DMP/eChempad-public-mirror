@@ -33,7 +33,7 @@ public class FileUploadedListener implements EventListener {
         this.main = main;
         this.parameter = parameter;
         this.filenameLabel = filenameLabel;
-        this.tmpFolderPath = main.getTmpDir();
+        this.tmpFolderPath = "";  // TODO spaghetti code
         this.isRepeatable = isRepeatable;
     }
 
@@ -51,7 +51,6 @@ public class FileUploadedListener implements EventListener {
             String fileNamePath =  tmpFolderPath + File.separatorChar + fileName;
             copyFile(m,fileNamePath, m.isBinary());
             setLabelText(fileName);
-            main.addParameterFile(this.parameter, fileName, isRepeatable);
         }else{
             filenameLabel.setValue("");
             Messagebox.show("File type not correct. Must be a text file.", "Error", Messagebox.OK, Messagebox.ERROR);

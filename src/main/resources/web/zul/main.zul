@@ -27,46 +27,17 @@
 <?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
 <?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
 
-<!-- <?script type="text/javascript" src="/js/require.js" ?> -->
-
-
 <window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.Main" style="height: 100%; width:100%">
     <!-- <script>
         window.jQuery = window.$ = require(['jquery']);
     </script> -->
 
-
-
-
-    <!-- <script type="text/javascript" src="/js/jquery-ui.min.js"> </script> -->
-    <!-- <script type="text/javascript" src="/js/jquery.blockUI.js"> </script> -->
-
-
     <script type="text/javascript" src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
     <script type="text/javascript" src="/js/bootstrap.min.js"> </script>
     <script type="text/javascript" src="/js/popper.min.js"> </script>
 
-
-
-
-    <!-- Part of the CML transformations, we do not need it -->
-    <!--  <script src="./web/js/popper.min.js"></script>
-    <script src="./web/js/jquery-3.3.1.min.js"></script>
-    <script src="./web/js/bootstrap.min.js"></script> -->
-    <!-- JS mol <script src="../html/xslt/jsmol/JSmol.min.nojq.js"></script>
-    <script src="~./web/js/jsmol.js"></script> -->
-
     <script type="text/javascript">
         <![CDATA[
-
-	var oldAlert = jq.alert;
-	jq.alert = function (msg, opts) {
-		if (!msg.indexOf('The request was rejected because the file size')|| !msg.indexOf('the request was rejected because its size')){
-			fireEventFromClient('onSizeLimitExceeded');
-		} else {
-			oldAlert(msg, opts);
-		}
-	}
 
 	function fireEventFromClient(eventName) {
 		zAu.send(new zk.Event(zk.Widget.$('$mainWindow'), eventName, null, {toServer:true}));
@@ -104,22 +75,6 @@
 	currentStep  = 0;
 	totalSteps = 3;
 	firstRun = true;
-
-	function moveLeft() {
-		if(currentStep == 0)
-	    	return;
-		currentStep--;
-	 	slide();
-		toggleSlideButtons();
-	}
-
-	function moveRight() {
-		if(currentStep >= totalSteps - 1)
-	    	return;
-		currentStep++;
-		slide();
-		toggleSlideButtons();
-	}
 
 	function toggleSlideButtons() {
 		if(currentStep == 0)
@@ -214,34 +169,6 @@
             </n:ul>
         </n:div>
     </n:nav>
-
-    <!-- Small layout -->
-    <!-- <div id="mainSmall" sclass="main-small-div" style="flex:1; display:flex; overflow:hidden">
-        <div id="mainSmallInner" sclass="main-small-inner-div" style="display:flex;  width: -moz-min-content; width: -webkit-min-content">
-            <div id="smallTreeLayout">
-
-            </div>
-            <div id="smallProperties">
-
-            </div>
-            <div id="smallItemDetails">
-
-            </div>
-        </div>
-
-
-        <div id="mainSmallNavigation" sclass="main-small-navigation mr-3 mb-1 d-md-none">
-            <div sclass="main-small-navigation-container d-flex flex-row">
-                <div id="mainSmallNavigationPrevious" sclass="main-small-navigation-previous main-small-navigation-disabled">
-
-                </div>
-                <div id="mainSmallNavigationNext" sclass="main-small-navigation-next">
-
-                </div>
-            </div>
-        </div>
-    </div>
-    -->
 
 
     <!-- Large layout -->
