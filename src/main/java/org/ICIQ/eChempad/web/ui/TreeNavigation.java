@@ -79,7 +79,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 	@Wire Popup thumbnailPopup;	
 	@Wire Button refreshBtn;
 
-	/*
+
 	@Listen("onClick=#treeDivPublishElements")
 	public void onTreeDivPublishElementsClick() {
 		publishElements();
@@ -344,7 +344,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 	}
 
 
-	 */
+
 	private void initTree(){	
 		if(isMobileDevice()){	//Hide the rest of 
 			Iterable<Component> childrenTreecols = tree.queryAll("treecol");
@@ -355,7 +355,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 		}		
 	}
 
-	/*
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void loadReportTypes(){
 		List<ReportType> reportTypes = ReportTypeService.getActiveReportTypes();
@@ -646,7 +646,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 			return true;
 		return false;
 	}
-	/*
+
 	@SuppressWarnings("rawtypes")
 	private class OnMoveListener implements EventListener{
 		private Set<Object> selectedElements;
@@ -733,7 +733,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 	/*
 	 * This event listener captures project dropping at root level. 
 	 * We must first check all dropped elements are projects, calculations aren't allowed at this level.
-	 /
+	 */
 	private class TreeDropEventListener implements EventListener<Event>{
 		@Override
 		public void onEvent(Event event) throws Exception {
@@ -770,6 +770,6 @@ public class TreeNavigation extends SelectorComposer<Window> {
 		project.setName(Paths.getTail(Main.getUserPath()));		
 		return project;
 	}
-	*/
+
 
 }

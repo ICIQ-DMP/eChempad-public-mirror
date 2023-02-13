@@ -5,7 +5,7 @@
 
     <session-config>
         <device-type>ajax</device-type>
-        <timeout-uri>/timeout.zul</timeout-uri>
+        <timeout-uri>/zul/timeout.zul</timeout-uri>
         <timer-keep-alive>true</timer-keep-alive>
     </session-config>
 </zk>

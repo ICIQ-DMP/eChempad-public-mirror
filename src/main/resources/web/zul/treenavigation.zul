@@ -34,8 +34,7 @@
             <treecol hflex="15" id="nameTreecol" sclass="pr-sm-2" sort="none">
             	<button id="refreshBtn" sclass="btn btn-block btn-secondary z-icon-refresh" tooltiptext="Refresh navigation" label=" Refresh" />
             </treecol>
-<!-- 			<treecol hflex="15" label="Name" id="nameTreecol" sort="none" >            	 -->
-<!--             </treecol> -->
+ 			<treecol hflex="15" label="Name" id="nameTreecol" sort="none" />
             <treecol hflex="3" label="Type" id="typeTreecol" sort="none"/>
             <treecol hflex="12" label="Description" id="descriptionTreecol" sort="none"/>
             <treecol hflex="6" label="Owner" id="ownerTreecol" sort="none" visible="false"/>
@@ -74,7 +73,7 @@
   	</menupopup>
   	<menupopup id="emptyTreePopup"/>
   	<popup id="thumbnailPopup" sclass="custom-popup">
-  		<html></html>
+		<html/>
     </popup>	  						 	
   	   	    	
 	<zscript>
