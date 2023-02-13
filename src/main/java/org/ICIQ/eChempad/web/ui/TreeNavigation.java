@@ -172,7 +172,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 	
 
 
-	 */
+
 	@Override
 	public void doAfterCompose(Window comp) throws Exception {		
 		super.doAfterCompose(comp);
@@ -267,7 +267,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
         });
 	}
 
-	/*
+
 	protected void moveOverCalculation(Calculation source, Calculation destination) {
     	try {
     		CalculationService.moveOverCalculation(source, destination);

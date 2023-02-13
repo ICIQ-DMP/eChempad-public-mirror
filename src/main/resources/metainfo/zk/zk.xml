@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <zk>
+    <config-name>eChempad-dev</config-name>
+
     <session-config>
         <device-type>ajax</device-type>
         <timeout-uri>/timeout.zul</timeout-uri>

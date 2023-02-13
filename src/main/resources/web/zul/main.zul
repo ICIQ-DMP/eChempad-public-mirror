@@ -261,7 +261,7 @@
         </east>
     </borderlayout>
 
-    <!-- Notification toast -->
+    <!-- Notification toast
     <script type="text/javascript">
         <![CDATA[
 	    function setupToast(message) {
@@ -277,7 +277,7 @@
 
             </n:div>
         </n:div>
-    </n:div>
+    </n:div>  -->
 
-    <include src="~./zul/uploadToolbar.zul"/>
+    <!-- <include src="~./zul/uploadToolbar.zul"/>  -->
 </window>
