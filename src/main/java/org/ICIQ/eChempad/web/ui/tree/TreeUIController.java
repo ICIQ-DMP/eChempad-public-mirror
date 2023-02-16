@@ -15,84 +15,154 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.web.ui;
+package org.ICIQ.eChempad.web.ui.tree;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.WebApps;
-import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.Selectors;
-import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
-public class TreeNavigation extends SelectorComposer<Window> {
+@Scope("desktop")
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+public class TreeUIController extends SelectorComposer<Window> {
 
-	private static final long serialVersionUID = 1L;
-	private static final Logger logger = LogManager.getLogger(TreeNavigation.class.getName());
-	
 	private EventQueue<Event> userEventsQueue = null;
 	private EventQueue<Event> navigationQueue = null;
 	private EventQueue<Event> elementPublishQueue = null;
 	private EventQueue<Event> reportManagementQueue = null;
 	private EventQueue<Event> displayQueue = null;
 
-	// private final CustomTreeitemComparator orderColumnComparator = new CustomTreeitemComparator(true, CustomTreeitemComparator.Order.USER_DEFINED);
-	private Base64 base64 = new Base64();
-	private boolean movingElements = false;
-	
 	@WireVariable("desktopScope")
 	private Map<String, Object> _desktopScope;
     
-	@Wire Window treeWindow;	
-	@Wire Tree tree;
-	@Wire Treecol orderTreeCol;
-	@Wire Treecol descriptionTreecol;
-	@Wire Treecol creationdateTreecol;
-	@Wire Treecol stateTreecol;
-	@Wire Treecol handleTreecol;
-	@Wire Treecol publishedTreeCol;
-	@Wire Treecol editableTreeCol;
+	@Wire
+    private Window treeWindow;
+
+	@Wire
+    private Tree tree;
+
+	@Wire
+    private Treecol orderTreeCol;
+
+	@Wire
+    private Treecol descriptionTreecol;
+
+	@Wire
+    private Treecol creationdateTreecol;
+
+	@Wire
+    private Treecol stateTreecol;
+
+	@Wire
+    private Treecol handleTreecol;
+
+	@Wire
+    private Treecol publishedTreeCol;
+
+	@Wire
+    private Treecol editableTreeCol;
 	
 	
-    @Wire Menupopup treePopup;
-	@Wire Menuitem treeDivExpandChildElements;
-	@Wire Menuitem treeDivCollapseChildElements;
-	@Wire Menuitem treeDivSelectChildElements;	  
-	@Wire Menuitem treeDivUnselectChildElements;
-	@Wire Menuitem treeDivPublishElements;
-	@Wire Menupopup reportPopup;
-	@Wire Menupopup emptyTreePopup;  
-	@Wire Popup thumbnailPopup;	
-	@Wire Button refreshBtn;
+    @Wire
+    private Menupopup treePopup;
+
+	@Wire
+    private Menuitem treeDivExpandChildElements;
+
+	@Wire
+    private Menuitem treeDivCollapseChildElements;
+
+	@Wire
+    private Menuitem treeDivSelectChildElements;
+
+	@Wire
+    private Menuitem treeDivUnselectChildElements;
+
+	@Wire
+    private Menuitem treeDivPublishElements;
+
+	@Wire
+    private Menupopup reportPopup;
+
+	@Wire
+    private Menupopup emptyTreePopup;
+
+	@Wire
+    private Popup thumbnailPopup;
+
+	@Wire
+    private Button refreshBtn;
 
 
-    // Backend
+    /**
+     * This instantiates the journal service of the backend, providing indirect access to the database.
+     *
+     * TODO Services do not enforce any type of security, only controllers do but they are expected to be called from
+     * a HTTP REST call. Develop a new layer of controllers that can be called programmatically and enforce security or
+     * try to make work the controller layer that is already implemented programmatically.
+     */
+    @WireVariable
     @Autowired
     private JournalService<Journal, UUID> journalService;
+
+    @Override
+    public ComponentInfo doBeforeCompose(Page page, Component parent, ComponentInfo compInfo) {
+        //wire service manually by calling Selectors API
+        Selectors.wireVariables(page, this, Selectors.newVariableResolvers(getClass(), null));
+
+        return compInfo;
+    }
+
 
     @Override
     public void doAfterCompose(Window comp) throws Exception {
         super.doAfterCompose(comp);
 
-        TreeModel<Journal> treeModel = this.tree.getModel();
+       /* TreeModel<Journal> model = new DefaultTreeModel<>(
+                new DefaultTreeNode(null,
+                        new DefaultTreeNode[] {
+                                new DefaultTreeNode(new Journal("/doc", "Release and License Notes")),
+                                new DefaultTreeNode(new Journal("/dist", "Distribution"),
+                                        new DefaultTreeNode[] {
+                                                new DefaultTreeNode(new Journal("/lib", "ZK Libraries"),
+                                                        new DefaultTreeNode[] {
+                                                                new DefaultTreeNode(new Journal("zcommon.jar", "ZK Common Library")),
+                                                                new DefaultTreeNode(new Journal("zk.jar", "ZK Core Library"))
+                                                        }),
+                                                new DefaultTreeNode(new Journal("/src", "Source Code")),
+                                                new DefaultTreeNode(new Journal("/xsd", "XSD Files"))
+                                        })
+                        }
+                ));
 
+        TreeModel<Journal> model2 = new DefaultTreeModel<>(
+                new DefaultTreeNode(null,
+                        new DefaultTreeNode[] {}));
+
+        model2.
+
+        DefaultTreeNode[] journalTreeNodes = new DefaultTreeNode[]{}; */
+
+        for (Journal journal: this.journalService.findAll()) {
+            DefaultTreeNode newNode = new DefaultTreeNode(journal);
+            DefaultTreeNode root = (DefaultTreeNode) ((DefaultTreeModel) this.tree.getModel()).getRoot();
+            root.add(newNode);
+        }
+
+
+        this.tree.setItemRenderer(new JournalTreeRenderer());
     }
 
 /*

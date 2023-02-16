@@ -31,6 +31,8 @@
 		<spring-security.version>5.7.3</spring-security.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
 		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
+		<zk.version>8.6.0.1</zk.version>
+		<zkspring.version>4.0.2</zkspring.version>
 
 		<reflections.version>0.9.10</reflections.version>
 		<!--Used by the licenses plugin-->
@@ -214,14 +216,33 @@
 			<version>${zkspringboot-starter.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkplus</artifactId>
+			<version>${zk.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-core</artifactId>
+			<version>${zkspring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-security</artifactId>
+			<version>${zkspring.version}</version>
+		</dependency>
+
 		<!-- To use the reflections' library, which is used in the code of iochem-bd
 		https://mvnrepository.com/artifact/org.reflections/reflections -->
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>${reflections.version}</version>
-
 		</dependency>
+
+
 	</dependencies>
 
 

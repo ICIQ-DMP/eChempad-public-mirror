@@ -18,7 +18,7 @@
 
 -->
 <?page title="Report Manager" contentType="text/html;charset=UTF-8"?>
- <window id="treeWindow" apply="org.ICIQ.eChempad.web.ui.TreeNavigation" onClientInfo="clientInfo(event)" hflex="1" vflex="1">
+ <window id="treeWindow" apply="org.ICIQ.eChempad.web.ui.tree.TreeUIController" onClientInfo="clientInfo(event)" hflex="1" vflex="1">
   <zscript>
 	  <!--
 	<![CDATA[

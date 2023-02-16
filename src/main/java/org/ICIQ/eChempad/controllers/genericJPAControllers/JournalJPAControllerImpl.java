@@ -13,14 +13,18 @@ import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.zkoss.spring.config.ZkScopesConfigurer;
 
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
 
+@Scope("desktop")
 @RestController
 @RequestMapping("/api/journal")
 public class JournalJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Journal, UUID> implements JournalJPAController<Journal, UUID> {

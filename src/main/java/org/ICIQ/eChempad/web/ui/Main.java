@@ -58,7 +58,6 @@ import java.util.logging.Logger;
  * @version 1.0
  * @since 1.0
  */
-@Service
 public class Main extends SelectorComposer<Window> {
 
 	/**
@@ -85,10 +84,6 @@ public class Main extends SelectorComposer<Window> {
 
 	private Constants.UploadType uploadType;
 	private Long maxSystemFileSize;
-
-	// Backend
-	@Autowired
-	private JournalService<Journal, UUID> journalService;
 
 	/**
 	 * Main windows component.
