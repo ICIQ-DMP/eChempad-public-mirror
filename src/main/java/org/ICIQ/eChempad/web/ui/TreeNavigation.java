@@ -17,9 +17,12 @@
  */
 package org.ICIQ.eChempad.web.ui;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WebApps;
@@ -80,6 +83,19 @@ public class TreeNavigation extends SelectorComposer<Window> {
 	@Wire Button refreshBtn;
 
 
+    // Backend
+    @Autowired
+    private JournalService<Journal, UUID> journalService;
+
+    @Override
+    public void doAfterCompose(Window comp) throws Exception {
+        super.doAfterCompose(comp);
+
+        TreeModel<Journal> treeModel = this.tree.getModel();
+
+    }
+
+/*
 	@Listen("onClick=#treeDivPublishElements")
 	public void onTreeDivPublishElementsClick() {
 		publishElements();
@@ -173,13 +189,6 @@ public class TreeNavigation extends SelectorComposer<Window> {
 
 
 
-	@Override
-	public void doAfterCompose(Window comp) throws Exception {		
-		super.doAfterCompose(comp);
-		initActionQueues();
-		initTree();
-		loadReportTypes();
-	}
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -250,7 +259,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 					case "showPublish":		elementPublishQueue.publish(new Event("show"));
 											break;
 																			
-				}							
+				}
 			}
 		});
 		elementPublishQueue	= EventQueues.lookup("elementpublish", EventQueues.DESKTOP, true);
@@ -637,7 +646,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 	}
 
 
-	 */
+
 	private boolean isMobileDevice(){		
 		String displayDevice = (String) Executions.getCurrent().getSession().getAttribute("displayDevice");		
 		if(displayDevice == null)
@@ -733,7 +742,7 @@ public class TreeNavigation extends SelectorComposer<Window> {
 	/*
 	 * This event listener captures project dropping at root level. 
 	 * We must first check all dropped elements are projects, calculations aren't allowed at this level.
-	 */
+
 	private class TreeDropEventListener implements EventListener<Event>{
 		@Override
 		public void onEvent(Event event) throws Exception {
@@ -771,5 +780,5 @@ public class TreeNavigation extends SelectorComposer<Window> {
 		return project;
 	}
 
-
+*/
 }

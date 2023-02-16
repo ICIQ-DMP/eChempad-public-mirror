@@ -31,7 +31,7 @@
     	<custom-attributes org.zkoss.zul.tree.autoSort="false"/>
 		<custom-attributes org.zkoss.zul.tree.rightSelect="false"/>		    
     	<treecols sizable="true">		    		            
-            <treecol hflex="15" id="nameTreecol" sclass="pr-sm-2" sort="none">
+            <treecol hflex="15" id="RefreshTreecol" sclass="pr-sm-2" sort="none">
             	<button id="refreshBtn" sclass="btn btn-block btn-secondary z-icon-refresh" tooltiptext="Refresh navigation" label=" Refresh" />
             </treecol>
  			<treecol hflex="15" label="Name" id="nameTreecol" sort="none" />

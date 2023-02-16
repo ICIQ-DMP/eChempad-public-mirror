@@ -34,7 +34,7 @@
 				<custom-attributes org.zkoss.zul.tree.rightSelect="true"/>
 			 	<treecols>				 				     				   
 			      <treecol id="idTreecol" hflex="2" label="Id" sort="none" align="right"/>
-			      <treecol id="nameTreecol" hflex="4" label="Name" align="left" sort="auto"/>
+			      <treecol id="nameTreecolReport" hflex="4" label="Name" align="left" sort="auto"/>
 			      <treecol id="descriptionTreecol" hflex="10" label="Description" align="left" sort="auto"/>
 			      <treecol id="typeTreecol" hflex="6" label="Type" sort="auto"/>
 			      <treecol id="creationDateTreecol" hflex="3" label="Creation Date" sort="auto"/>	
