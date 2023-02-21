@@ -24,8 +24,8 @@ The previous commands will show the help of the software if everything is okay.
 
 In the repository execute the next orders:
 ```bash
-sudo bash install.sh -v -o psql
-bash install.sh -v -o jdk pgadmin postman ideau  # ideac 
+sudo customizer-install -v -o psql
+bash cutomizer-install -v -o jdk pgadmin postman ideau  # ideac 
 
 ```
 
@@ -83,7 +83,8 @@ repository, and as such, the table can be initialized in both ways, which is wro
 schema for the schema and the JPA repository to modify the tables programmatically.
 
 #### Steps to reproduce a clean initialization
-1- To ensure the proper initialization of the schema first begin by dropping all tables.
+1- To ensure the proper initialization of the schema first begin by dropping all tables. You can use the SQL script 
+  under `./tools`
 2- Deactivate the initialization of JPA schema by setting the DB policy to *none*.
 3- Run application. The ACL SQL schema will be read from the `schema.sql` script and the app will fail because the
 schema for the JPA entities will not be present. The app should file with an error like this:
@@ -104,6 +105,13 @@ the first petitions to create an ACL can cause a collision.
 ACL is requested.
 In the next petitions, the ACL service will answer correctly.
 
+## IDE integration
+Open the project by calling the binary `ideau` with the same working directory as teh repository.
+
+After that the IDE will open and a lot of indexing and downloading will start. There are some things that you may need 
+to do in order to work with the project:
+- File -> project structure -> set SDK to Amazon Coretto 1.8 (any 1.8 java will be fine)
+- File -> project structure -> set language level to 1.8 (lambdas annotations..)
 
 ## Creating the file structures
 **(DEPRECATED)** The eChempad application stores files in the file system under the folder /eChempad/file_db. It also stores the 

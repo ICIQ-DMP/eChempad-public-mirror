@@ -28,6 +28,8 @@
 		<java.version>1.8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<spring-framework.version>5.3.9</spring-framework.version>
+		<springboot.version>2.5.4</springboot.version>
 		<spring-security.version>5.7.3</spring-security.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
 		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
@@ -99,6 +101,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<!-- Added with the project initialization, it is for using web page tools in the project -->
@@ -126,9 +129,14 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
+		<!-- To use a DataSource annotation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
 
 
-		<!-- Spring and Spring Boot packages -->
+		<!-- Spring -->
 
 		<!-- Used to control the ACL security infrastructure -->
 		<dependency>
@@ -161,6 +169,20 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+		</dependency>
+
+		<!-- Used to integrate ZK with Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+
+		<!-- Used to integrate ZK with Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring-framework.version}</version>
 		</dependency>
 
 
@@ -242,6 +264,13 @@
 			<version>${reflections.version}</version>
 		</dependency>
 
+
+		<!-- To use the @Inject annotation -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
 
 	</dependencies>
 

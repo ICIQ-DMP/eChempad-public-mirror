@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
+import javax.inject.Inject;
 import java.util.*;
 
 @Scope("desktop")
@@ -115,6 +116,8 @@ public class TreeUIController extends SelectorComposer<Window> {
      */
     @WireVariable
     @Autowired
+    @Inject
+    @Wire
     private JournalService<Journal, UUID> journalService;
 
     @Override
