@@ -34,8 +34,9 @@ import org.zkoss.zul.*;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-@Scope("desktop")
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class TreeUIController extends SelectorComposer<Window> {
 
@@ -114,26 +115,15 @@ public class TreeUIController extends SelectorComposer<Window> {
      * a HTTP REST call. Develop a new layer of controllers that can be called programmatically and enforce security or
      * try to make work the controller layer that is already implemented programmatically.
      */
-    @WireVariable
-    @Autowired
-    @Inject
-    @Wire
+    @WireVariable("journalService")
     private JournalService<Journal, UUID> journalService;
 
     @Override
-    public ComponentInfo doBeforeCompose(Page page, Component parent, ComponentInfo compInfo) {
-        //wire service manually by calling Selectors API
-        Selectors.wireVariables(page, this, Selectors.newVariableResolvers(getClass(), null));
-
-        return compInfo;
-    }
-
-
-    @Override
     public void doAfterCompose(Window comp) throws Exception {
+        // Propagate call to parent
         super.doAfterCompose(comp);
 
-       /* TreeModel<Journal> model = new DefaultTreeModel<>(
+        TreeModel<Journal> model = new DefaultTreeModel<>(
                 new DefaultTreeNode(null,
                         new DefaultTreeNode[] {
                                 new DefaultTreeNode(new Journal("/doc", "Release and License Notes")),
@@ -150,23 +140,50 @@ public class TreeUIController extends SelectorComposer<Window> {
                         }
                 ));
 
-        TreeModel<Journal> model2 = new DefaultTreeModel<>(
-                new DefaultTreeNode(null,
-                        new DefaultTreeNode[] {}));
-
-        model2.
-
-        DefaultTreeNode[] journalTreeNodes = new DefaultTreeNode[]{}; */
 
         for (Journal journal: this.journalService.findAll()) {
+            Logger.getGlobal().warning(journal.toString());
+
             DefaultTreeNode newNode = new DefaultTreeNode(journal);
             DefaultTreeNode root = (DefaultTreeNode) ((DefaultTreeModel) this.tree.getModel()).getRoot();
             root.add(newNode);
         }
 
 
+        this.tree.setModel(model);
         this.tree.setItemRenderer(new JournalTreeRenderer());
     }
+
+    /**
+     * Queries the database for all {@code Journal} from the logged user and builds a TreeModel from scratch. This
+     * TreeModel
+     * @return
+     */
+    public DefaultTreeModel<Journal> createModel()
+    {
+        // Transform the Journals in the Database to an array of DefaultTreeNode
+        DefaultTreeNode[] journalNodes = (DefaultTreeNode[]) this.journalService.findAll()
+                .stream()
+                .map(
+                (Journal journal) ->
+                {
+                    return new DefaultTreeNode(journal);
+                })
+                .collect(Collectors.toList())
+                .toArray();
+
+
+        DefaultTreeModel<Journal> model = new DefaultTreeModel<Journal>(new DefaultTreeNode<Journal>(null, journalNodes));
+        return model;
+    }
+
+        /*@Override
+    public ComponentInfo doBeforeCompose(Page page, Component parent, ComponentInfo compInfo) {
+        //wire service manually by calling Selectors API
+        //Selectors.wireVariables(page, this, Selectors.newVariableResolvers(getClass(), null));
+
+        return compInfo;
+    }*/
 
 /*
 	@Listen("onClick=#treeDivPublishElements")

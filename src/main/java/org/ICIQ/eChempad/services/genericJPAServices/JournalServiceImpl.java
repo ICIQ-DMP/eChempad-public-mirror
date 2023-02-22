@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Service
+@Service("journalService")
 public class JournalServiceImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericServiceImpl<Journal, UUID> implements JournalService<Journal, UUID> {
 
     @Autowired
