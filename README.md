@@ -14,7 +14,7 @@ platform.
 
 ## Credits
 
-Copyright 2020-2021.
+Copyright 2020-2023.
 
 ###### Institutions involved in the eChempad development:
 * [Institute of Chemical Research of Catalonia](https://www.iciq.es/) (ICIQ)
