@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.*;
 
-@Service
+@Service("researcherService")
 public class ResearcherServiceImpl<T extends JPAEntityImpl, S extends Serializable>  extends GenericServiceImpl<Researcher, UUID> implements ResearcherService<Researcher, UUID> {
 
     @Autowired

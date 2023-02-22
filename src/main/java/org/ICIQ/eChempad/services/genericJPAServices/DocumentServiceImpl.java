@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-@Service
+@Service("documentService")
 public class DocumentServiceImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
 
     @Autowired
