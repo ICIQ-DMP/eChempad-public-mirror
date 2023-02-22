@@ -17,26 +17,25 @@
  */
 package org.ICIQ.eChempad.web.ui.tree;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
+import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Page;
+import org.springframework.http.MediaType;
 import org.zkoss.zk.ui.event.*;
-import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.SelectorComposer;
-import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
-import javax.inject.Inject;
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
+@Scope("desktop")
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class TreeUIController extends SelectorComposer<Window> {
 
@@ -118,14 +117,20 @@ public class TreeUIController extends SelectorComposer<Window> {
     @WireVariable("journalService")
     private JournalService<Journal, UUID> journalService;
 
+    @WireVariable("experimentService")
+    private ExperimentService<Experiment, UUID> experimentService;
+
+    @WireVariable("documentService")
+    private DocumentService<Document, UUID> documentService;
+
     @Override
     public void doAfterCompose(Window comp) throws Exception {
         // Propagate call to parent
         super.doAfterCompose(comp);
 
-        TreeModel<Journal> model = new DefaultTreeModel<>(
+        /*TreeModel<Journal> model = new DefaultTreeModel<>(
                 new DefaultTreeNode(null,
-                        new DefaultTreeNode[] {
+                         {
                                 new DefaultTreeNode(new Journal("/doc", "Release and License Notes")),
                                 new DefaultTreeNode(new Journal("/dist", "Distribution"),
                                         new DefaultTreeNode[] {
@@ -138,21 +143,50 @@ public class TreeUIController extends SelectorComposer<Window> {
                                                 new DefaultTreeNode(new Journal("/xsd", "XSD Files"))
                                         })
                         }
-                ));
+                ));*/
 
 
-        for (Journal journal: this.journalService.findAll()) {
-            Logger.getGlobal().warning(journal.toString());
-
-            DefaultTreeNode newNode = new DefaultTreeNode(journal);
-            DefaultTreeNode root = (DefaultTreeNode) ((DefaultTreeModel) this.tree.getModel()).getRoot();
-            root.add(newNode);
-        }
 
 
-        this.tree.setModel(model);
-        this.tree.setItemRenderer(new JournalTreeRenderer());
+        this.tree.setModel(this.createModel());
+        this.tree.setItemRenderer(new JPAEntityTreeRenderer());
     }
+
+    /**
+     * Creates an example journal with experiments and documents in the database
+     */
+    public void createJournal()
+    {
+        Journal exampleJournal = new Journal("testing", "This is description");
+
+        Experiment exampleExperiment1 = new Experiment("This is supposed to be nested", "this even more nested because of files !");
+        Experiment exampleExperiment2 = new Experiment("Nested nested", "this too");
+        exampleExperiment1.setJournal(exampleJournal);
+        exampleExperiment2.setJournal(exampleJournal);
+
+        Document exampleDocument1 = new Document("Nested in two levels", "with description very nested");
+        exampleDocument1.setContentType(MediaType.ALL);
+        exampleDocument1.setExperiment(exampleExperiment1);
+        //Document exampleDocument2 = new Document("A file", "with description nested 2 times");
+        //Document exampleDocument3 = new Document("document name", "document description");
+        Set<Document> exampleDocuments = new HashSet<Document>();
+        exampleDocuments.add(exampleDocument1);
+        //exampleDocuments.add(exampleDocument2);
+        //exampleDocuments.add(exampleDocument3);
+
+        exampleExperiment1.setDocuments(exampleDocuments);
+        Set<Experiment> exampleExperiments = new HashSet<Experiment>();
+        exampleExperiments.add(exampleExperiment1);
+        exampleExperiments.add(exampleExperiment2);
+
+        exampleJournal.setExperiments(exampleExperiments);
+
+        this.journalService.save(exampleJournal);
+        this.experimentService.save(exampleExperiment1);
+        this.experimentService.save(exampleExperiment2);
+        this.documentService.save(exampleDocument1);
+    }
+
 
     /**
      * Queries the database for all {@code Journal} from the logged user and builds a TreeModel from scratch. This
@@ -161,20 +195,31 @@ public class TreeUIController extends SelectorComposer<Window> {
      */
     public DefaultTreeModel<Journal> createModel()
     {
+        this.createJournal();
+
         // Transform the Journals in the Database to an array of DefaultTreeNode
-        DefaultTreeNode[] journalNodes = (DefaultTreeNode[]) this.journalService.findAll()
-                .stream()
-                .map(
-                (Journal journal) ->
-                {
-                    return new DefaultTreeNode(journal);
-                })
-                .collect(Collectors.toList())
-                .toArray();
+        List<DefaultTreeNode<Journal>> journalNodesList = new ArrayList<DefaultTreeNode<Journal>>();
+        List<Journal> userJournals = this.journalService.findAll();
+        for (Journal journal: userJournals) {
+            List<Experiment> experimentList = new ArrayList<>(journal.getExperiments());
+            DefaultTreeNode<Experiment>[] experimentNodes = new DefaultTreeNode[journal.getExperiments().size()];
+            Logger.getGlobal().warning(journal.getName() + " has " + journal.getExperiments());
 
+            for (int i = 0; i < experimentNodes.length; i++)
+            {
+                Logger.getGlobal().warning(experimentList.get(i).toString());
+                experimentNodes[i] = new DefaultTreeNode<Experiment>(experimentList.get(i));
+            }
+            journalNodesList.add(new DefaultTreeNode(journal, experimentNodes));
+        }
 
-        DefaultTreeModel<Journal> model = new DefaultTreeModel<Journal>(new DefaultTreeNode<Journal>(null, journalNodes));
-        return model;
+        DefaultTreeNode<Journal>[] journalNodes = new DefaultTreeNode[journalNodesList.size()];
+        for (int i = 0; i < journalNodesList.size(); i++)
+        {
+            journalNodes[i] = journalNodesList.get(i);
+        }
+
+        return new DefaultTreeModel<Journal>(new DefaultTreeNode<Journal>(null, journalNodes));
     }
 
         /*@Override

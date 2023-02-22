@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-@Service
+@Service("experimentService")
 public class ExperimentServiceImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericServiceImpl<Experiment, UUID> implements ExperimentService<Experiment, UUID> {
 
     @Autowired

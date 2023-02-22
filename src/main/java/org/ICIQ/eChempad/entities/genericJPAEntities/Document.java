@@ -124,6 +124,11 @@ public class Document extends JPAEntityImpl{
 
     public Document() {}
 
+    public Document(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Document{" +
