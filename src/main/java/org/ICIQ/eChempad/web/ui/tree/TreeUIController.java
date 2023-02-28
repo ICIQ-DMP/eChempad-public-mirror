@@ -195,8 +195,6 @@ public class TreeUIController extends SelectorComposer<Window> {
      */
     public DefaultTreeModel<Journal> createModel()
     {
-        this.createJournal();
-
         // Transform the Journals in the Database to an array of DefaultTreeNode
         List<DefaultTreeNode<Journal>> journalNodesList = new ArrayList<DefaultTreeNode<Journal>>();
         List<Journal> userJournals = this.journalService.findAll();
