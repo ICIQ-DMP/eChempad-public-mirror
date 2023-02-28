@@ -168,24 +168,7 @@
 
         <center id="treeLayout">
             <div id="treeDiv" height="100%">
-                <tabbox id="mainTab" height="100%">
-                    <tabs sclass="mainTabs nav nav-tabs">
-                        <tab id="treeTab" label="Navigation/Edition" tooltiptext="Double click to maximize view" zclass="nav-item" />
-                        <tab id="searchTab" label="Search"  zclass="nav-item"  />
-                        <tab id="reportsTab" label="Reports"  zclass="nav-item"/>
-                    </tabs>
-                    <tabpanels id="mainTabTabpanels">
-                        <tabpanel style="overflow-x: hidden; overflow-y: auto;">
-                            <include src="~./zul/treenavigation.zul"/>
-                        </tabpanel>
-                        <tabpanel style="overflow:auto">
-                            <include src="~./zul/search.zul"/>
-                        </tabpanel>
-                        <tabpanel style="overflow:auto">
-                            <include src="~./zul/reportManager.zul"/>
-                        </tabpanel>
-                    </tabpanels>
-                </tabbox>
+                <include src="~./zul/treenavigation.zul"/>
             </div>
         </center>
 

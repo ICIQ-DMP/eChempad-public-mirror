@@ -13,12 +13,24 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 /**
- * A Journal contains many Experiment and some metadata (description, name).
+ * A Journal contains many Experiment and some metadata (description, name, creation date...). A journal is an entity,
+ * and as such, the class contains annotations on how data types are treated when interacting with the corresponding
+ * table in the database.
+ *
+ * @author Institut Català d'Investigació Química (iciq.cat)
+ * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
+ * @author Carles Bo Jané (cbo@iciq.es)
+ * @author Moisés Álvarez (malvarez@iciq.es)
+ * @version 1.0
+ * @since 10/10/2022
+ * @see <a href="https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148">...</a>
+ * @see <a href="https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/">...</a>
  */
 @Entity
 @Table(uniqueConstraints = {
@@ -31,10 +43,6 @@ import java.util.UUID;
         defaultImpl = Journal.class)
 
 public class Journal extends JPAEntityImpl {
-    /*
-     * https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148
-     * https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
-     */
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -50,6 +58,9 @@ public class Journal extends JPAEntityImpl {
 
     @Column(length = 1000, nullable = false)
     private String description;
+
+    @Column(nullable = false)
+    private Date creationDate;
 
     @OneToMany(
             targetEntity = Experiment.class,
@@ -70,7 +81,7 @@ public class Journal extends JPAEntityImpl {
     public Journal(String name, String description) {
         this.name = name;
         this.description = description;
-        // this.experiments = new HashSet<>();
+        this.creationDate = new Date();
     }
 
     // GETTERS AND SETTERS
@@ -105,6 +116,9 @@ public class Journal extends JPAEntityImpl {
         return this.getType().getName();
     }
 
+
+    // GETTERS, SETTERS AND TO STRINGS
+
     public String getName() {
         return this.name;
     }
@@ -127,6 +141,14 @@ public class Journal extends JPAEntityImpl {
 
     public void setExperiments(Set<Experiment> experiments) {
         this.experiments = experiments;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
