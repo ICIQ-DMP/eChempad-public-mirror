@@ -380,15 +380,7 @@ public class Main extends SelectorComposer<Window> {
     }
     
     private void resetHome(){
-    	isTreeFullSize = false;
-    	isSearchFullSize = false;
-    	if(searchTab.isSelected())
-    		treeDivMaximize(isSearchFullSize);
-    	else if(treeTab.isSelected())
-    		treeDivMaximize(isTreeFullSize);
-    	else
-    		treeDivMaximize(true);
-    	displayWelcome();
+
     }
     
     private void displayWelcome(){     

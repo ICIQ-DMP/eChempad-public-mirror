@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Blob;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -61,6 +62,9 @@ public class Document extends JPAEntityImpl{
      */
     @Column(length = 1000, nullable = false)
     protected String description;
+
+    @Column(nullable = false)
+    private Date creationDate;
 
     /**
      * Name of the file that is stored as a BLOB in this class. It can be the original name from the file that was
@@ -127,6 +131,7 @@ public class Document extends JPAEntityImpl{
     public Document(String name, String description) {
         this.name = name;
         this.description = description;
+        this.creationDate = new Date();
     }
 
     @Override
@@ -161,7 +166,7 @@ public class Document extends JPAEntityImpl{
      * designed to perform updates of existing entities of the database when an ID is not supplied with the received
      * data object.
      *
-     * @param id ID that will be set. Only usable on detached spring boot instances
+     * @param id ID that will be set. Only usable on detached spring boot instances.
      */
     @Override
     public void setId(Serializable id) {
@@ -178,7 +183,7 @@ public class Document extends JPAEntityImpl{
         return (Class<T>) Document.class;
     }
 
-    // GETTERS / SETTERS
+    // GETTERS SETTERS AND TO-STRING
 
     public String getName() {
         return name;
@@ -234,5 +239,13 @@ public class Document extends JPAEntityImpl{
 
     public void setBlob(Blob blob) {
         this.blob = blob;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }

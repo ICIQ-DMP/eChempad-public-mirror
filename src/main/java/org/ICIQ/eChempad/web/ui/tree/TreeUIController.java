@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -128,43 +129,27 @@ public class TreeUIController extends SelectorComposer<Window> {
         // Propagate call to parent
         super.doAfterCompose(comp);
 
-        /*TreeModel<Journal> model = new DefaultTreeModel<>(
-                new DefaultTreeNode(null,
-                         {
-                                new DefaultTreeNode(new Journal("/doc", "Release and License Notes")),
-                                new DefaultTreeNode(new Journal("/dist", "Distribution"),
-                                        new DefaultTreeNode[] {
-                                                new DefaultTreeNode(new Journal("/lib", "ZK Libraries"),
-                                                        new DefaultTreeNode[] {
-                                                                new DefaultTreeNode(new Journal("zcommon.jar", "ZK Common Library")),
-                                                                new DefaultTreeNode(new Journal("zk.jar", "ZK Core Library"))
-                                                        }),
-                                                new DefaultTreeNode(new Journal("/src", "Source Code")),
-                                                new DefaultTreeNode(new Journal("/xsd", "XSD Files"))
-                                        })
-                        }
-                ));*/
+        this.createJournal();  // For testing
 
-
-
-
+        // Sets the data to the tree
         this.tree.setModel(this.createModel());
+        // Sets how we want to display the data (look JPAEntityTreeRenderer)
         this.tree.setItemRenderer(new JPAEntityTreeRenderer());
     }
 
     /**
-     * Creates an example journal with experiments and documents in the database
+     * Creates an example journal programmatically with experiments and documents in the database.
      */
     public void createJournal()
     {
-        Journal exampleJournal = new Journal("testing", "This is description");
+        Journal exampleJournal = new Journal("Journal testing", "This is description");
 
-        Experiment exampleExperiment1 = new Experiment("This is supposed to be nested", "this even more nested because of files !");
-        Experiment exampleExperiment2 = new Experiment("Nested nested", "this too");
+        Experiment exampleExperiment1 = new Experiment("Experiment This is supposed to be nested", "this even more nested because of files !");
+        Experiment exampleExperiment2 = new Experiment("Experiment Nested nested", "this too");
         exampleExperiment1.setJournal(exampleJournal);
         exampleExperiment2.setJournal(exampleJournal);
 
-        Document exampleDocument1 = new Document("Nested in two levels", "with description very nested");
+        Document exampleDocument1 = new Document("File Nested in two levels", "with description very nested");
         exampleDocument1.setContentType(MediaType.ALL);
         exampleDocument1.setExperiment(exampleExperiment1);
         //Document exampleDocument2 = new Document("A file", "with description nested 2 times");
@@ -189,28 +174,36 @@ public class TreeUIController extends SelectorComposer<Window> {
 
 
     /**
-     * Queries the database for all {@code Journal} from the logged user and builds a TreeModel from scratch. This
-     * TreeModel
-     * @return
+     * Queries the database for all {@code Journal} from the logged user and builds a {@code TreeModel} from scratch. To
+     * do so, transform each {@code Journal} in the Database to an array of {@code DefaultTreeNode}.
+     * @return All the journals and its content as a suitable datatype to work with ZK.
      */
     public DefaultTreeModel<Journal> createModel()
     {
-        // Transform the Journals in the Database to an array of DefaultTreeNode
         List<DefaultTreeNode<Journal>> journalNodesList = new ArrayList<DefaultTreeNode<Journal>>();
         List<Journal> userJournals = this.journalService.findAll();
         for (Journal journal: userJournals) {
+            // For each journal loop through all the experiments
             List<Experiment> experimentList = new ArrayList<>(journal.getExperiments());
-            DefaultTreeNode<Experiment>[] experimentNodes = new DefaultTreeNode[journal.getExperiments().size()];
+            DefaultTreeNode<Experiment>[] experimentNodes = new DefaultTreeNode[experimentList.size()];
             Logger.getGlobal().warning(journal.getName() + " has " + journal.getExperiments());
 
-            for (int i = 0; i < experimentNodes.length; i++)
+            for (int i = 0; i < experimentList.size(); i++)
             {
+                Experiment experiment = experimentList.get(i);
+                List<Document> documentList = new ArrayList<>(experiment.getDocuments());
+                DefaultTreeNode<Document>[] documentNodes = new DefaultTreeNode[documentList.size()];
+                for (int j = 0; j < documentList.size(); j++) {
+                    documentNodes[j] = new DefaultTreeNode<Document>(documentList.get(j));
+                }
+
                 Logger.getGlobal().warning(experimentList.get(i).toString());
-                experimentNodes[i] = new DefaultTreeNode<Experiment>(experimentList.get(i));
+                experimentNodes[i] = new DefaultTreeNode(experimentList.get(i), documentNodes);
             }
             journalNodesList.add(new DefaultTreeNode(journal, experimentNodes));
         }
 
+        // Create the Array of TreeNode
         DefaultTreeNode<Journal>[] journalNodes = new DefaultTreeNode[journalNodesList.size()];
         for (int i = 0; i < journalNodesList.size(); i++)
         {
@@ -220,25 +213,19 @@ public class TreeUIController extends SelectorComposer<Window> {
         return new DefaultTreeModel<Journal>(new DefaultTreeNode<Journal>(null, journalNodes));
     }
 
-        /*@Override
-    public ComponentInfo doBeforeCompose(Page page, Component parent, ComponentInfo compInfo) {
-        //wire service manually by calling Selectors API
-        //Selectors.wireVariables(page, this, Selectors.newVariableResolvers(getClass(), null));
-
-        return compInfo;
-    }*/
 
 /*
 	@Listen("onClick=#treeDivPublishElements")
 	public void onTreeDivPublishElementsClick() {
 		publishElements();
 	}
-	
+	*/
 	@Listen("onClick=#refreshBtn")
 	public void onRefreshBtnClick() {
-		refresh();
+        createModel();
 	}
-	
+
+    /*
 	@Listen("onOpen=#treePopup")	
 	public void onTreePopupOpen() {
 		if(!existsSelection()){

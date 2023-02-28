@@ -22,8 +22,8 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<J
     public void render(Treeitem item, DefaultTreeNode<JPAEntity> data, int index) throws Exception {
         JPAEntity fi = data.getData();
         Treerow tr = new Treerow();
-        item.appendChild(tr);
 
+        // Append name and description
         if (fi instanceof Journal)
         {
             tr.appendChild(new Treecell( ((Journal)fi).getName()));
@@ -40,5 +40,23 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<J
             tr.appendChild(new Treecell( ((Document)fi).getDescription()));
         }
 
+        // Append item type
+        tr.appendChild(new Treecell(fi.getClass().getSimpleName()));
+
+        // Append the date
+        if (fi instanceof Journal)
+        {
+            tr.appendChild(new Treecell( ((Journal)fi).getCreationDate().toString()));
+        }
+        else if (fi instanceof Experiment)
+        {
+            tr.appendChild(new Treecell( ((Experiment)fi).getCreationDate().toString()));
+        }
+        else if (fi instanceof Document)
+        {
+            tr.appendChild(new Treecell( ((Document)fi).getCreationDate().toString()));
+        }
+
+        item.appendChild(tr);
     }
 }

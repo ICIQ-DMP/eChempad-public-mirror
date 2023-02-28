@@ -31,21 +31,15 @@
     	<custom-attributes org.zkoss.zul.tree.autoSort="false"/>
 		<custom-attributes org.zkoss.zul.tree.rightSelect="false"/>		    
     	<treecols sizable="true">		    		            
-            <treecol hflex="15" id="RefreshTreecol" sclass="pr-sm-2" sort="none">
+            <!-- <treecol hflex="15" id="RefreshTreecol" sclass="pr-sm-2" sort="none">
             	<button id="refreshBtn" sclass="btn btn-block btn-secondary z-icon-refresh" tooltiptext="Refresh navigation" label=" Refresh" />
-            </treecol>
- 			<treecol hflex="15" label="Name" id="nameTreecol" sort="none" />
-            <treecol hflex="3" label="Type" id="typeTreecol" sort="none"/>
-            <treecol hflex="12" label="Description" id="descriptionTreecol" sort="none"/>
-            <treecol hflex="6" label="Owner" id="ownerTreecol" sort="none" visible="false"/>
-            <treecol hflex="6" label="Group" id="groupTreecol" sort="none" visible="false"/>
-            <treecol hflex="6" label="Permissions" id="permissionsTreecol"  sort="none" visible="false"/>
-            <treecol hflex="6" label="Creation Date" id="creationdateTreecol" sort="none"/>
-            <treecol hflex="6" label="Concept Group" id="concepgroupTreecol" sort="none" visible="false"/>
-            <treecol hflex="6" label="State" id="stateTreecol" sort="none" visible="none"/>
-            <treecol hflex="min" label="Handle" id="handleTreecol" sort="none"/>
-            <treecol hflex="min" label="Pub." id="publishedTreeCol" sort="none" tooltiptext="Published" />
-            <treecol hflex="min" label="Edit" id="editableTreeCol" sort="none" tooltiptext="Edit published content"/>
+            </treecol> -->
+ 			<treecol hflex="12" label="Name" id="nameTreecol" sort="none" />
+            <treecol hflex="15" label="Description" id="descriptionTreecol" sort="none"/>
+			<treecol hflex="9" label="Type" id="typeTreecol" sort="none"/>
+			<treecol hflex="10" label="Creation Date" id="creationdateTreecol" sort="none"/>
+            <treecol hflex="10" label="Modification Date" id="concepgroupTreecol" sort="none" visible="false"/>
+            <treecol hflex="min" label="Published" id="publishedTreeCol" sort="none" tooltiptext="Published" />
             <treecol hflex="3" label="Order" id="orderTreeCol" sortAscending="${cUserDefinedOrderAsc}" sortDescending="${cUserDefinedOrderDsc}" sortDirection="ascending" sort="auto"  visible="false"/>            
             <treecol hflex="1" label="Id" id="idTreecol" sort="none" visible="false"/>            					           
         </treecols>
