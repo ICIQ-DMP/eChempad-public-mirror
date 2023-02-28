@@ -35,7 +35,15 @@
 		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
 		<zk.version>8.6.0.1</zk.version>
 		<zkspring.version>4.0.2</zkspring.version>
+		<hikari.version>4.0.3</hikari.version>
+		<hibernate-hikariCP.version>5.2.10.Final</hibernate-hikariCP.version>
+		<javax-inject.version>1</javax-inject.version>
+		<ehcache.version>3.10.2</ehcache.version>
+		<threetenbp.version>1.6.4</threetenbp.version>
+		<postgresql.version>42.5.0</postgresql.version>
+		<jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
 
+		<net-sf-ehcache.version>2.10.9.2</net-sf-ehcache.version>
 		<reflections.version>0.9.10</reflections.version>
 		<!--Used by the licenses plugin-->
 		<license.licenseName>apache_v2</license.licenseName>
@@ -197,21 +205,21 @@
 		<dependency>
 			<groupId>org.threeten</groupId>
 			<artifactId>threetenbp</artifactId>
-			<version>1.6.4</version>
+			<version>${threetenbp.version}</version>
 		</dependency>
 
 		<!-- To use postgresql dialect in spring -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.5.0</version>
+			<version>${postgresql.version}</version>
 		</dependency>
 
 		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>23.0.0</version>
+			<version>${jetbrains-annotations.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -220,7 +228,7 @@
 		<dependency>
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>3.10.2</version>
+			<version>${ehcache.version}</version>
 		</dependency>
 
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
@@ -228,6 +236,7 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
+			<version>${net-sf-ehcache.version}</version>
 		</dependency>
 
 		<!-- To use zkoss in our application -->
@@ -269,7 +278,20 @@
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
-			<version>1</version>
+			<version>${javax-inject.version}</version>
+		</dependency>
+
+		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikari.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-hikaricp</artifactId>
+			<version>${hibernate-hikariCP.version}</version>
 		</dependency>
 
 	</dependencies>
