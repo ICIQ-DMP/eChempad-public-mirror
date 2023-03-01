@@ -19,7 +19,10 @@ package org.ICIQ.eChempad.web.ui;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -31,20 +34,14 @@ import java.util.Map;
 
 
 public class ItemDetails extends SelectorComposer<Window> {
-	
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LogManager.getLogger(ItemDetails.class);
-	
-	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	
-	public static final String PARAM_ERROR = "Error in parameters.";
-		
-	@SuppressWarnings("rawtypes")
+
+
+
 	private EventQueue navigationQueue = null;
 	private String currentMode = "navigation";
 		
-	@WireVariable("desktopScope")
-	private Map<String, Object> _desktopScope;
+	//@WireVariable("desktopScope")
+	//private Map<String, Object> _desktopScope;
 	
 	private int defaultPermission = 0;
 
@@ -88,7 +85,8 @@ public class ItemDetails extends SelectorComposer<Window> {
 	@Wire
 	Button removeBtn;
 
-	
+
+
 	@Listen("onClick=#createProjectBtn")
 	public void createProjectClick() throws Exception{
 		// createProject();
@@ -107,43 +105,50 @@ public class ItemDetails extends SelectorComposer<Window> {
 	@Override
 	public void doAfterCompose(Window comp) throws Exception {
 		super.doAfterCompose(comp);		
-		initActionQueues();
+		//initActionQueues();
 		//fillListboxes();
 		disableBottomButtons(true);
 		defaultPermission = permissions.getSelectedIndex();
 	}
 	
 	
-	
+	/*
 	@SuppressWarnings("unchecked")
 	private void initActionQueues(){
-		/*
 		navigationQueue	= EventQueues.lookup("navigation", EventQueues.DESKTOP, true);
 		navigationQueue.subscribe(new EventListener(){
 			@Override
-			public void onEvent(Event event) throws BrowseCredentialsException{
-				if(event.getName().equals("resetHome")){
-					resetHome();
-				}else if(event.getName().equals("displaySearchElement")){
-					currentMode = "search";
-					Set<Entity> selectedElements = (Set<Entity>) _desktopScope.get("selectedSearchElements");
-					Entity node = selectedElements.size() == 1 ?selectedElements.iterator().next(): null;
-					displayElement((PublicableEntity)node);
-					hideBottomButtons(true);
-				}else if(event.getName().equals("displayNavigationElement")){
-					currentMode = "navigation";
-					Set<Entity> selectedElements = (Set<Entity>) _desktopScope.get("selectedElements");
-					Entity node = selectedElements.size() == 1 ?selectedElements.iterator().next(): null;
-					displayElement((PublicableEntity)node);
-					hideBottomButtons(false);
-				}else if(event.getName().equals("updateWithChildren")) {
-					modifyProject((Project)event.getData(), true);
-				}else if(event.getName().equals("updateWithoutChildren")) {
-					modifyProject((Project)event.getData(), false);
-                	}
+			public void onEvent(Event event) {
+				switch (event.getName()) {
+					case "resetHome":
+						resetHome();
+						break;
+					case "displaySearchElement": {
+						currentMode = "search";
+						Set<Entity> selectedElements = (Set<Entity>) _desktopScope.get("selectedSearchElements");
+						Entity node = selectedElements.size() == 1 ? selectedElements.iterator().next() : null;
+						displayElement((PublicableEntity) node);
+						hideBottomButtons(true);
+						break;
+					}
+					case "displayNavigationElement": {
+						currentMode = "navigation";
+						Set<Entity> selectedElements = (Set<Entity>) _desktopScope.get("selectedElements");
+						Entity node = selectedElements.size() == 1 ? selectedElements.iterator().next() : null;
+						displayElement((PublicableEntity) node);
+						hideBottomButtons(false);
+						break;
+					}
+					case "updateWithChildren":
+						modifyProject((Project) event.getData(), true);
+						break;
+					case "updateWithoutChildren":
+						modifyProject((Project) event.getData(), false);
+						break;
+				}
 			}
-		}); */
-	}
+		});
+	}*/
 		
 	/*
 	private void fillListboxes() throws BrowseCredentialsException{
@@ -196,6 +201,7 @@ public class ItemDetails extends SelectorComposer<Window> {
 		removeBtn.setDisabled(isPublished);	
 	}
 	
+
 	/*
 	private void displayElement(PublicableEntity dc) throws BrowseCredentialsException{
 		if(dc == null){
@@ -224,8 +230,9 @@ public class ItemDetails extends SelectorComposer<Window> {
 		enableGroupsList(dc);
 		setButtonsForElement(dc.isProject(),dc.isPublished());
 		itemDetailsDiv.invalidate();
-	}
+	} */
 
+	/*
 	private void setPermissionFields(Entity entity) {
 		String permissions = "";
 		try {

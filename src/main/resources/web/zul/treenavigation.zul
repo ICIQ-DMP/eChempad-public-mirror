@@ -36,10 +36,11 @@
             </treecol> -->
  			<treecol hflex="12" label="Name" id="nameTreecol" sort="none" />
             <treecol hflex="15" label="Description" id="descriptionTreecol" sort="none"/>
-			<treecol hflex="9" label="Type" id="typeTreecol" sort="none"/>
+			<treecol hflex="6" label="Type" id="typeTreecol" sort="none"/>
 			<treecol hflex="10" label="Creation Date" id="creationdateTreecol" sort="none"/>
             <treecol hflex="10" label="Modification Date" id="concepgroupTreecol" sort="none" visible="false"/>
             <treecol hflex="min" label="Published" id="publishedTreeCol" sort="none" tooltiptext="Published" />
+
             <treecol hflex="3" label="Order" id="orderTreeCol" sortAscending="${cUserDefinedOrderAsc}" sortDescending="${cUserDefinedOrderDsc}" sortDirection="ascending" sort="auto"  visible="false"/>            
             <treecol hflex="1" label="Id" id="idTreecol" sort="none" visible="false"/>            					           
         </treecols>
@@ -48,6 +49,7 @@
     </tree>
     
 
+	<!-- Right click menu -->
     <menupopup id="treePopup" sclass="custom-dropdown-menu">
 		<menuitem label="Expand all" id="treeDivExpandChildElements" sclass="treeWithSingleSelection"/>
 		<menuitem label="Collapse all" id="treeDivCollapseChildElements" sclass="treeWithSingleSelection"/>
@@ -61,36 +63,13 @@
 		<menuseparator sclass="dropdown-divider treeWithSelection "/>
 			  
 		<menu label="Generate report" sclass="treeWithSelection">
-		    <menupopup id="reportPopup" sclass="custom-dropdown-menu">
-		    </menupopup>
+			<menupopup id="reportPopup" sclass="custom-dropdown-menu"/>
 		</menu>
   	</menupopup>
+
   	<menupopup id="emptyTreePopup"/>
   	<popup id="thumbnailPopup" sclass="custom-popup">
 		<html/>
     </popup>	  						 	
-  	   	    	
-	<zscript>
-		<![CDATA[
-			//Solve 'Safari' browsers relative width bug (affects tree components)
-			
-			import org.zkoss.zk.ui.event.ClientInfoEvent;
-			import org.zkoss.zk.ui.event.Event;
-			import org.zkoss.zk.ui.Executions;
-			
-			void clientInfo(Event event){
-				ClientInfoEvent cievent = (ClientInfoEvent)event;
-				String userAgent =  Executions.getCurrent().getHeader("user-agent"); 
-		    	if(userAgent.toUpperCase().contains("SAFARI") && !userAgent.toUpperCase().contains("CHROME")){	//Safari    		
-		    		int desktopWidth = cievent.getDesktopWidth();
-		    	 	if(desktopWidth<800){
-		    	 		desktopWidth = 800;
-		    	 	}
-		    	 	desktopWidth -= 60;
-		    		tree.setWidth(String.valueOf(desktopWidth) + "px");
-		    		tree.invalidate();
-		    	}	 	
-			}
-		]]>   
-	</zscript>	     
+
 </window>

@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
 
-@Scope("desktop")
 @RestController
 @RequestMapping("/api/journal")
 public class JournalJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Journal, UUID> implements JournalJPAController<Journal, UUID> {

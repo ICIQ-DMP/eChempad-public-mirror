@@ -1,0 +1,10 @@
+<n:form action="/login" method="POST">
+    <grid width="450px">
+        <row spans="2" align="right">
+            <hlayout>
+                <button type="reset" label="Reset" />
+                <button type="submit" label="Submit" />
+            </hlayout>
+        </row>
+    </grid>
+</n:form>

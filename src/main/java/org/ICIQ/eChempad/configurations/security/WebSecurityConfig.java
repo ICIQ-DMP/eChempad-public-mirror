@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,30 +25,63 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.sql.DataSource;
 import java.util.Arrays;
 
+/**
+ * This class is the most important security orchestrator. It defines what URL endpoints are accessible under what
+ * circumstances and configures security mechanisms such as CSRF and CORS.
+ *
+ * @author Institut Català d'Investigació Química (iciq.cat)
+ * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
+ * @author Carles Bo Jané (cbo@iciq.es)
+ * @author Moisés Álvarez (malvarez@iciq.es)
+ * @version 1.0
+ * @since 1/3/2023
+ */
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * ZUL files regexp execution time
+     */
+    public static final String ZUL_FILES = "/zkau/web/**/*.zul";
+
+    /**
+     * web files regexp execution time
+     */
+    public static final String[] ZK_RESOURCES = {"/zkau/web/**/js/**", "/zkau/web/**/zul/css/**", "/zkau/web/**/img/**"};
+
+    /**
+     * Allow desktop cleanup after logout or when reloading login page
+     */
+    public static final String REMOVE_DESKTOP_REGEX = "/zkau\\?dtid=.*&cmd_0=rmDesktop&.*";
+
+    /**
+     * Sets the state of the CSRF protection
+     */
     @Value("${eChempad.security.csrf}")
     private boolean csrfDisabled;
 
+    /**
+     * Sets the state of the CORS protection
+     */
     @Value("${eChempad.security.csrf}")
     private boolean corsDisabled;
 
-    @Autowired
-    private DataSource dataSource;
-
+    /**
+     * To provide the {@code UserDetailsService} for authentication purposes.
+     */
     @Autowired
     private UserDetailsService userDetailsService;
 
     /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
      * Allow only authenticated users to access the API.
-     * <a href="https://stackoverflow.com/questions/2952196/ant-path-style-patterns">...</a>
-     * <a href="https://javabydeveloper.com/refused-to-display-in-a-frame-because-it-set-x-frame-options-to-deny-in-spring/">...</a>
+     *
+     * @see <a href="https://stackoverflow.com/questions/2952196/ant-path-style-patterns">...</a>
+     * @see <a href="https://stackoverflow.com/questions/57574981/what-is-httpbasic-method-in-spring-security">...</a>
+     * @see <a href="https://javabydeveloper.com/refused-to-display-in-a-frame-because-it-set-x-frame-options-to-deny-in-spring/">...</a>
      * @param http HTTP security class. Can be used to configure a lot of different parameters regarding HTTP security.
      * @throws Exception Any type of exception that occurs during the HTTP configuration
      */
@@ -63,19 +97,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         http
-                // Creates the http form login in the default URL /login· The first parameter is a string corresponding
-                // to the URL where we will map the login form
-                    .formLogin()
-                    .loginPage("/login")
-                .permitAll()
-
-                .and()
-
                 .headers().frameOptions().sameOrigin() // X-Frame-Options = SAMEORIGIN
 
                 .and()
-
-                .authorizeRequests()
+                    .authorizeRequests()
                     .antMatchers("/api/authority").authenticated()
                     .antMatchers("/api/researcher").authenticated()
                     .antMatchers("/api/journal").authenticated()
@@ -83,18 +108,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/document").authenticated()
                     .antMatchers("/api/**").authenticated()
 
-                // https://stackoverflow.com/questions/57574981/what-is-httpbasic-method-in-spring-security
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated*/
                 .and()
                     .httpBasic()
+
+                // For the GUI with ZKoss
                 .and()
-                    // For the GUI
-                    .authorizeRequests()
-                    .antMatchers("/").permitAll()
-                    .antMatchers("/index").permitAll();
+                .authorizeRequests()
+                    .antMatchers(ZUL_FILES).denyAll()  // Block direct access to zul files
+                    .antMatchers(HttpMethod.GET, ZK_RESOURCES).permitAll()  // Allow ZK resources
+                    .regexMatchers(HttpMethod.GET, REMOVE_DESKTOP_REGEX).permitAll()  // Allow desktop cleanup
+                    // Allow desktop cleanup from ZATS
+                    .requestMatchers(req -> "rmDesktop".equals(req.getParameter("cmd_0"))).permitAll()
+                    // Allow unauthenticated access to login or logout pages
+                    .mvcMatchers("/","/login.zul","/logout").permitAll()
+                    // Only allow authenticated users in the secure endpoints
+                    .mvcMatchers("/secure/**").hasRole("USER")
+                    // Only allow authenticated users in the API endpoint
+                    .mvcMatchers("/api/**").hasRole("USER")
+                    // Any other requests has to be authenticated too
+                    .anyRequest().authenticated()
 
+                // Creates the http form login in the default URL /login· The first parameter is a string corresponding
+                // to the URL where we will map the login form
+                .and()
+                    .formLogin()
+                    .loginPage("/login.zul")
+                    .defaultSuccessUrl("/")  // Successful redirect URL after login is root page
 
+                // Creates a logout form
+                .and()
+                    .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login.zul");  // After logout, redirect to login page again
     }
 
 
