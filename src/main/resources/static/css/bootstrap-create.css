@@ -1379,11 +1379,11 @@ i.z-icon-angle-right::before {
 
 .z-window-modal .z-window-content, 
 .z-messagebox-window .z-window-content {
-	padding: 16px;
+	padding: 0px;
 }
 /* .z-window-modal .z-window-content */
 .z-messagebox-window .z-window-content {
-	padding-left: 32px;
+	padding-left: 0px;
 }
 
 .z-window-header-move {

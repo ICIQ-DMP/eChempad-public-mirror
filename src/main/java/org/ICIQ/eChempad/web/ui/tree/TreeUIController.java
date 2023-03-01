@@ -40,7 +40,9 @@ import java.util.logging.Logger;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class TreeUIController extends SelectorComposer<Window> {
 
-	private EventQueue<Event> userEventsQueue = null;
+    // Event queues
+
+    private EventQueue<Event> userEventsQueue = null;
 	private EventQueue<Event> navigationQueue = null;
 	private EventQueue<Event> elementPublishQueue = null;
 	private EventQueue<Event> reportManagementQueue = null;
@@ -213,6 +215,10 @@ public class TreeUIController extends SelectorComposer<Window> {
         return new DefaultTreeModel<Journal>(new DefaultTreeNode<Journal>(null, journalNodes));
     }
 
+    @Listen("onClick=#treeTab")
+    public void treeTabClick(){
+        navigationQueue.publish(new Event("resetSearch"));
+    }
 
 /*
 	@Listen("onClick=#treeDivPublishElements")

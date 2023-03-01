@@ -105,50 +105,9 @@ public class Main extends SelectorComposer<Window> {
 	@Wire
 	protected Center itemDetails;
 	
-	@WireVariable("desktopScope")
-	private Map<String, Object> _desktopScope;
+	// @WireVariable("desktopScope")
+	//private Map<String, Object> _desktopScope;
 
-	//Report manager variables
-	@Wire
-	protected Div dcm;
-	@Wire
-	protected Div dcmPanelChildren;
-	//Browser display components	
-	@Wire
-	protected Tabpanels mainTabTabpanels;
-	@Wire
-	protected Tab treeTab;
-	@Wire
-	protected Tab searchTab;
-	@Wire
-	protected Tab reportsTab;
-	@Wire
-	protected Borderlayout propertiesLayout;
-	@Wire
-	protected South bottomButtonsSouth;
-	@Wire
-	protected Div welcome;
-	@Wire
-	protected Tabbox mainTab;
-	@Wire
-	protected Radiogroup calcType;
-	@Wire
-	protected Vbox calcFile;
-	@Wire
-	protected Div calcUpload;
-	@Wire
-	protected Listbox selectedElements;
-    @Wire
-	protected Textbox calcName;
-    @Wire
-	protected Textbox calcDescription;
-    @Wire
-	protected Button uploadCalcBtn;
-    @Wire
-	protected Button resetUploadCalcBtn;
-    @Wire
-	protected East propertiesEast;
-   
     /////////////////////////Event listener associations///////////////////////////////////////////
        
     @Listen("onEditProfileClick=#mainWindow")
@@ -181,36 +140,23 @@ public class Main extends SelectorComposer<Window> {
     @Listen("onSizeLimitExceeded=#mainWindow")
     public void onSizeLimitExceeded() {
 	}
-    
-	@Listen("onClick=#treeTab")
-	public void treeTabClick(){
-		treeDivMaximize(isTreeFullSize);
-		navigationQueue.publish(new Event("resetSearch"));
-	}
 	
 	@Listen("onDoubleClick=#treeTab")
 	public void treeTabDoubleClick(){
 		isTreeFullSize = !isTreeFullSize;
-		treeDivMaximize(isTreeFullSize);
+
 		navigationQueue.publish(new Event("resetSearch"));
 	}
 	
 	@Listen("onClick=#searchTab")
 	public void searchTabClick(){	
-		treeDivMaximize(isSearchFullSize);
-		navigationQueue.publish(new Event("resetHome"));
-	}
-	
-	@Listen("onDoubleClick=#searchTab")
-	public void searchTabDoubleClick(){
-		isSearchFullSize = !isSearchFullSize;
-		treeDivMaximize(isSearchFullSize);		
+
 		navigationQueue.publish(new Event("resetHome"));
 	}
 
 	@Listen("onClick=#reportsTab")
 	public void reportstTabClick(){
-		treeDivMaximize(true);
+
 	}
 	
     @Listen("onClick=#uploadCalcBtn")
@@ -219,7 +165,7 @@ public class Main extends SelectorComposer<Window> {
 
     @Listen("onClick=#resetUploadCalcBtn")
     public void resetUploadCalcBtnClick() throws IOException{
-    	resetLoadCalcForm();
+
     }
 
 
@@ -295,47 +241,40 @@ public class Main extends SelectorComposer<Window> {
      	this.displayQueue = EventQueues.lookup("display", EventQueues.DESKTOP, true);
      	     	
      	this.navigationQueue.subscribe((EventListener) event -> {
-			 if(event.getName().equals("resetHome"))
-				 resetHome();
-			 else if(event.getName().equals("showCalcUpload"))
-				 showCalcUpload();
-			 else if(event.getName().equals("displayNavigationElement")){
-				 displayNavigationElement();
-			 }
-			 else if(event.getName().equals("displaySearchElement")){
-				 displaySearchElement();
-			 }
+			switch (event.getName()) {
+				case "resetHome":
+					break;
+				case "showCalcUpload":
+					break;
+				case "displayNavigationElement":
+					displayNavigationElement();
+					break;
+				case "displaySearchElement":
+					displaySearchElement();
+					break;
+			}
 		 });
 
      	actionsQueue.subscribe((EventListener) event -> {
 			 if(event.getName().equals("dcmActionsMaximize")){
 				 boolean maximize = (Boolean)event.getData();
-				 dcmActionsMaximize(maximize);
 			 }
 		 });
 
-     	this.reportManagementQueue.subscribe((EventListener) event -> {
-			 if(event.getName().equals("openReport")){
-				 HashMap<String, Object> parameters = (HashMap<String, Object>)event.getData();
-				 int reportId = (Integer)parameters.get("reportId");
-				 boolean appendSessionElements = parameters.containsKey("appendSessionElements")? (boolean)parameters.get("appendSessionElements"):false;
-			 }else if(event.getName().equals("closeReport")){
-				 int reportId = (Integer)event.getData();
-			 }else if(event.getName().equals("deleteReport")){
-				 int reportId = (Integer)event.getData();
-			 }
-		 });
 
      	this.displayQueue.subscribe((EventListener) event -> {
-			 if(event.getName().equals("addBootstrapClasses")) {
-				 setBootstrapClasses();
-			 }else if(event.getName().equals("hideNavigationButtons")) {
-			 }else if(event.getName().equals("showNavigationButtons")) {
-			 }
+			switch (event.getName()) {
+				case "addBootstrapClasses":
+					setBootstrapClasses();
+					break;
+				case "hideNavigationButtons":
+					break;
+				case "showNavigationButtons":
+					break;
+			}
 		 });
     }
     
-    @SuppressWarnings("unchecked")
 	protected void fillCalculationTypes() throws InterruptedException{
 		/*
         Long maxFileSize = increaseByteUnits(getMaxFileSize(false, this.uploadType, maxSystemFileSize));  // Get kilobytes for upload restriction
@@ -351,51 +290,7 @@ public class Main extends SelectorComposer<Window> {
 
 
   
-    ////////////////////////////////// Navigation queue actions ///////////////////////////////////////////////////////    
-	private void dcmActionsMaximize(boolean maximize){
-		try{
-			if(maximize){		
-				propertiesEast.setSize("100%");	
-				propertiesNorth.setSize("100%");			
-			}else{
-				propertiesEast.setSize("50%");
-				propertiesNorth.setSize("65%");
-			}
-			setBootstrapClasses();
-		}catch(Exception e){
-			Logger.getGlobal().warning(e.getMessage());				// TODO: More than one desktop opened bug, we try to maximize a different Desktop element
-		}
-	}
-	
-    private void treeDivMaximize(boolean maximize){    	
-		if (maximize){
-			propertiesLayout.setVisible(false);
-			propertiesEast.setSize("0%");
-		}
-		else{
-			propertiesLayout.setVisible(true);
-			propertiesEast.setSize("50%");
-		}
-		setBootstrapClasses();
-    }
-    
-    private void resetHome(){
-
-    }
-    
-    private void displayWelcome(){     
- 		this.calcUpload.setVisible(false);
-		this.dcm.setVisible(false);
-		this.welcome.setVisible(true);
-		this.propertiesEast.invalidate();
-    }
-     
-	private void showCalcUpload(){
-		welcome.setVisible(false);
- 		dcm.setVisible(false);
-		calcUpload.setVisible(true);	
-		propertiesEast.invalidate();			
-	}
+    ////////////////////////////////// Navigation queue actions ///////////////////////////////////////////////////////
 	
 	private void displayNavigationElement() throws InterruptedException, IOException{
 		/*
@@ -415,7 +310,6 @@ public class Main extends SelectorComposer<Window> {
 		} */
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void displaySearchElement() throws InterruptedException, IOException{
 		/*
 		isSearchFullSize = false;
@@ -468,20 +362,5 @@ public class Main extends SelectorComposer<Window> {
     	else
     		Clients.evalJavaScript("addBootstrapClasses('small');");    	
     }
-
-     
-    public void resetLoadCalcForm() throws IOException {
-
-        this.parameterFile = new HashMap<>();
- 		this.calcName.setText("");
- 		this.calcDescription.setText("");
- 		this.calcType.setSelectedItem(null);
- 		Components.removeAllChildren(this.calcFile);
-		for (Component component : this.calcUpload.queryAll(".uploadFileLabel")) {
-			Label label = (Label) component;
-			label.setValue("-");
-		}
- 	}
-
 }
 

@@ -44,10 +44,10 @@ public class LoginInitiator implements Initiator {
         								   Executions.getCurrent().getServerName(),
         								   Executions.getCurrent().getServerPort(),
         								   Executions.getCurrent().getContextPath());
-    			response.sendRedirect(response.encodeRedirectURL(reconstructedURL.toString().concat("/zul/errors/notAuthAccount.zul")));
+    			response.sendRedirect(response.encodeRedirectURL(reconstructedURL.toString().concat("/zul/timeout.zul")));
     			exec.setVoided(true);
     		}else{
-    			Executions.sendRedirect("/zul/errors/notAuthAccount.zul");
+    			Executions.sendRedirect("/zul/timeout.zul");
     		}
     	//}
 	}
