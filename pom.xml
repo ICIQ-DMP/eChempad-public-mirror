@@ -40,7 +40,7 @@
 		<javax-inject.version>1</javax-inject.version>
 		<ehcache.version>3.10.2</ehcache.version>
 		<threetenbp.version>1.6.4</threetenbp.version>
-		<postgresql.version>42.5.0</postgresql.version>
+		<postgresql.version>42.5.1</postgresql.version>
 		<jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
 
 		<net-sf-ehcache.version>2.10.9.2</net-sf-ehcache.version>
@@ -59,6 +59,7 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
+
 
 	<!-- This is needed to be able to import directly a github repository, which we need to import the Dataverse Java
 	API Wrapper  -->
@@ -200,6 +201,14 @@
 			<groupId>com.github.IQSS</groupId>
 			<artifactId>dataverse-client-java</artifactId>
 			<version>master-SNAPSHOT</version>
+			<!-- This dependency pulls transitively a logging implementation, which is already satisfied using Spring,
+			exclude it -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
