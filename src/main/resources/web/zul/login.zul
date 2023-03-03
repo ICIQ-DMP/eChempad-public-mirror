@@ -6,12 +6,12 @@
 
     <div style="margin: 150px 250px;">
 
-        <html:form action="j_spring_security_check" method="POST"
+        <html:form id="loginForm" action="/login" method="POST"
                    xmlns:html="native">
             <grid>
                 <rows>
-                    <row>User: <textbox id="u" name="j_username"/></row>
-                    <row>Password: <textbox id="p" type="password" name="j_password"/></row>
+                    <row>User: <textbox id="u" type="text" name="username"/></row>
+                    <row>Password: <textbox id="p" type="password" name="password"/></row>
                     <row spans="2">
                         <hbox>
                             <button type="reset" label="Reset" />
