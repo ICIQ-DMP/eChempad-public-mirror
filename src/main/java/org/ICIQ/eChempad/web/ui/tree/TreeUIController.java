@@ -131,7 +131,7 @@ public class TreeUIController extends SelectorComposer<Window> {
         // Propagate call to parent
         super.doAfterCompose(comp);
 
-        this.createJournal();  // For testing
+        //this.createJournal();  // For testing
 
         // Sets the data to the tree
         this.tree.setModel(this.createModel());
