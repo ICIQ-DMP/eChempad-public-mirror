@@ -118,7 +118,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     // Allow desktop cleanup from ZATS
                     .requestMatchers(req -> "rmDesktop".equals(req.getParameter("cmd_0"))).permitAll()
                     // Allow unauthenticated access to login or logout pages
-                    .mvcMatchers("/", "/login","/logout").permitAll()
+                    .mvcMatchers("/login","/logout", "/timeout").permitAll()
                     // Only allow authenticated users in the secure endpoints
                     .mvcMatchers("/secure/**").hasRole("USER")
                     // Only allow authenticated users in the API endpoint
@@ -137,7 +137,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .logout()
                     .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login");  // After logout, redirect to login again
+                    .logoutSuccessUrl("/");  // After logout, redirect to main page
     }
 
 

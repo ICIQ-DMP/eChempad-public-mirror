@@ -142,7 +142,7 @@
                         <n:div class="dropdown-divider"/>
                         <n:a class="dropdown-item text-left d-sm-block d-md-none" href="#" onClick="fireEventFromClient('onBrowseClick')">Browse</n:a>
                         <n:div class="dropdown-divider d-sm-block d-md-none"/>
-                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onLogoutClick')">Logout
+                        <n:a class="dropdown-item text-left" href="/logout">Logout
                             <n:i class="fa fa-sign-out-alt" style="margin-left: 80px"/></n:a>
                     </n:div>
                 </n:li>
