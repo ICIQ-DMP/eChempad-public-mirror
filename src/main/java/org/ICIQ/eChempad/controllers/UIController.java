@@ -40,4 +40,18 @@ public interface UIController {
      * @return The required ZK view as a {@code String}.
      */
     String main();
+
+    /**
+     * Returns the needed information to access the help page.
+     *
+     * @return The required ZK view as a {@code String}.
+     */
+    String help();
+
+    /**
+     * Returns the needed information to access the help page.
+     *
+     * @return The required ZK view as a {@code String}.
+     */
+    String profile();
 }

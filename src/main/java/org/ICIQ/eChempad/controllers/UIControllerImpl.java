@@ -30,4 +30,16 @@ public class UIControllerImpl implements UIController {
     public String main() {
         return "main";
     }
+
+    @GetMapping("/help")
+    @Override
+    public String help() {
+        return "help";
+    }
+
+    @GetMapping("/profile")
+    @Override
+    public String profile() {
+        return "profile";
+    }
 }

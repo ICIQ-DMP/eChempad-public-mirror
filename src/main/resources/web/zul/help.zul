@@ -1,0 +1,4 @@
+<?page title="Item details" contentType="text/html;charset=UTF-8"?>
+<window xmlns:n="native" border="none"  height="100%">
+    This is supposed to be the help
+</window>

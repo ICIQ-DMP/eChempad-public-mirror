@@ -25,12 +25,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * This class is the most important security orchestrator. It defines what URL endpoints are accessible under what
  * circumstances and configures security mechanisms such as CSRF and CORS.
  *
+ * TODO: This class is DEPRECATED. The recommended way now to configure security is using a FilterChain
+ *
+ * @see <a href="https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter">...</a>
  * @author Institut Català d'Investigació Química (iciq.cat)
  * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
  * @author Carles Bo Jané (cbo@iciq.es)
@@ -83,6 +86,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Allow desktop cleanup after logout or when reloading login page
         String removeDesktopRegex = "/zkau\\?dtid=.*&cmd_0=rmDesktop&.*";
 
+        // Anonymous accessible pages
+        String[] anonymousPages = new String[]{"/login","/logout", "/timeout", "/help", "/exit"};
+
+        // Pages that need authentication: CRUD API & ZK page
+        String[] authenticatedPages = new String[]{"/api/**", "/", "/profile"};
+
         // you need to disable spring CSRF to make ZK AU pass security filter
         // ZK already sends a AJAX request with a built-in CSRF token,
         http.csrf().disable();
@@ -117,12 +126,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .regexMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
                     // Allow desktop cleanup from ZATS
                     .requestMatchers(req -> "rmDesktop".equals(req.getParameter("cmd_0"))).permitAll()
-                    // Allow unauthenticated access to login or logout pages
-                    .mvcMatchers("/login","/logout", "/timeout").permitAll()
-                    // Only allow authenticated users in the secure endpoints
-                    .mvcMatchers("/secure/**").hasRole("USER")
-                    // Only allow authenticated users in the API endpoint
-                    .mvcMatchers("/api/**").hasRole("USER")
+                    // Allow unauthenticated access to log in, log out, exit, help, report bug...
+                    .mvcMatchers(anonymousPages).permitAll()
+                    // Only allow authenticated users in the ZK main page and in the API endpoints
+                    .mvcMatchers(authenticatedPages).hasRole("USER")
                     // Any other requests has to be authenticated too
                     .anyRequest().authenticated()
 
@@ -137,7 +144,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .logout()
                     .logoutUrl("/logout")
-                    .logoutSuccessUrl("/");  // After logout, redirect to main page
+                    .logoutSuccessUrl("/login");  // After logout, redirect to login page
     }
 
 
@@ -180,9 +187,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public static CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
