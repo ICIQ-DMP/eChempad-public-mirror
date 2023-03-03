@@ -17,7 +17,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<!-- <?init class="cat.iciq.tcg.labbook.zk.ui.LoginInitiator"?> -->
 <?meta name="viewport" content="width=device-width, initial-scale=1"?>
 
 <?link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico"?>
@@ -135,10 +134,15 @@
                         Options
                     </n:a>
                     <n:div class="dropdown-menu  dropdown-menu-right text-right" aria-labelledby="navbarDropdown" style="right:0; left:auto;">
-                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onEditProfileClick')">Edit profile</n:a>
+
+                        <n:a class="dropdown-item text-left" href="/profile">Edit profile</n:a>
                         <div class="dropdown-divider"/>
-                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onHelpClick')">Help</n:a>
-                        <n:a class="dropdown-item text-left" href="#" onClick="fireEventFromClient('onFeedbackClick')">Report bug</n:a>
+
+
+                        <n:a class="dropdown-item text-left" href="/help">Help</n:a>
+                        <!-- on report bug we go to the issue page of the project -->
+                        <n:a class="dropdown-item text-left" href="https://github.com/AleixMT/eChempad">Report bug</n:a>
+
                         <n:div class="dropdown-divider"/>
                         <n:a class="dropdown-item text-left d-sm-block d-md-none" href="#" onClick="fireEventFromClient('onBrowseClick')">Browse</n:a>
                         <n:div class="dropdown-divider d-sm-block d-md-none"/>
@@ -148,7 +152,7 @@
                 </n:li>
                 <n:li class="nav-item d-none d-md-block" style="border-left: 2px solid white;">
                     <n:a class="nav-link" href="#" onClick="fireEventFromClient('onBrowseClick')">
-                        <n:image src="img/browse-small.png" class="navbar-brand" href="#"/>
+                        <n:image src="img/logout.png" class="navbar-brand" href="#"/>
                     </n:a>
                 </n:li>
             </n:ul>

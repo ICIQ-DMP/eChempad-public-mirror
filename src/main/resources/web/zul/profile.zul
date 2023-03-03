@@ -1,0 +1,28 @@
+<?meta name="viewport" content="width=device-width, initial-scale=1"?>
+
+
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul https://www.zkoss.org/2005/zul/zul.xsd http://www.w3.org/1999/xhtml https://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd">
+
+    <div style="margin: 150px 250px;">
+        <!-- Do form post against /api/researcher/${UUID}, where we will update the data of the logged user -->
+        <html:form id="editProfileForm" action="/api/researcher/" method="PUT" xmlns:html="native">
+            <grid>
+                <rows>
+                    <row>User: <textbox id="u" type="email" name="username"/></row>
+                    <row>Password: <textbox id="p" type="password" name="password"/></row>
+                    <row>Signals API Token: <textbox id="signalsToken" type="password" name="signalsAPIKey"/></row>
+                    <row spans="2">
+                        <hbox>
+                            <button type="reset" label="Reset" />
+                            <button type="submit" label="Submit" />
+                        </hbox>
+                    </row>
+                </rows>
+            </grid>
+        </html:form>
+
+    </div>
+</zk>

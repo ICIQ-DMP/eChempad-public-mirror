@@ -16,8 +16,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfiguration {
 
     /**
-     * https://stackoverflow.com/questions/59735951/databufferlimitexception-exceeded-limit-on-max-bytes-to-buffer-webflux-error
      * Increase the data buffer size for the webClient, so it can download bigger files, such as uploadedResource:a73eb824-0e97-4ec7-9ea9-43899e34fb13
+     *
+     * @see <a href="https://stackoverflow.com/questions/59735951/databufferlimitexception-exceeded-limit-on-max-bytes-to-buffer-webflux-error">...</a>
      * @return A webClient instance with increased buffer sizes.
      */
     @Bean
