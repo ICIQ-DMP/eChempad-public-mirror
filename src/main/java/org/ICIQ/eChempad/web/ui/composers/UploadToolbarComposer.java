@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.web.ui;
+package org.ICIQ.eChempad.web.ui.composers;
 
 import org.zkoss.zk.ui.WebApps;
 import org.zkoss.zk.ui.event.Event;
@@ -30,7 +30,7 @@ import org.zkoss.zul.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class UploadToolbar extends SelectorComposer<Window> {
+public class UploadToolbarComposer extends SelectorComposer<Window> {
 	
 	
 	@Wire
@@ -67,7 +67,7 @@ public class UploadToolbar extends SelectorComposer<Window> {
 	private HashMap<String, Hbox> processLines = null;
 	
 	@SuppressWarnings("unchecked")
-	public UploadToolbar(){
+	public UploadToolbarComposer(){
 		loadCalculationQueue = EventQueues.lookup("calculationloading",	WebApps.getCurrent(), true);
 		loadCalculationQueue.subscribe(new EventListener<Event>(){			
 			public void onEvent(Event event) throws Exception {

@@ -18,11 +18,11 @@
 
 -->
 <?page title="Report Manager" contentType="text/html;charset=UTF-8"?>
- <window id="treeWindow" apply="org.ICIQ.eChempad.web.ui.tree.TreeUIController" onClientInfo="clientInfo(event)" hflex="1" vflex="1">
+ <window id="treeWindow" apply="org.ICIQ.eChempad.web.ui.composers.TreeComposer" onClientInfo="clientInfo(event)" hflex="1" vflex="1">
   <zscript>
 	  <!--
 	<![CDATA[
-		import cat.iciq.tcg.labbook.zk.composers.main.navigation.CustomTreeitemComparator;		
+		import cat.iciq.tcg.labbook.zk.composers.mainComposer.navigation.CustomTreeitemComparator;
 		Comparator cUserDefinedOrderAsc = new CustomTreeitemComparator(true, CustomTreeitemComparator.Order.USER_DEFINED);
 		Comparator cUserDefinedOrderDsc = new CustomTreeitemComparator(false, CustomTreeitemComparator.Order.USER_DEFINED);	
 	]]>-->

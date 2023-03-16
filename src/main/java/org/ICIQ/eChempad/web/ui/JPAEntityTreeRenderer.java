@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.web.ui.tree;
+package org.ICIQ.eChempad.web.ui;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;

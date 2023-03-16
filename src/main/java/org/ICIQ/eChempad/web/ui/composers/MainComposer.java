@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.web.ui;
+package org.ICIQ.eChempad.web.ui.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
@@ -58,7 +58,7 @@ import java.util.logging.Logger;
  * @version 1.0
  * @since 1.0
  */
-public class Main extends SelectorComposer<Window> {
+public class MainComposer extends SelectorComposer<Window> {
 
 	/**
 	 * This instance variable is used to know what is the state of the screen size at any moment.

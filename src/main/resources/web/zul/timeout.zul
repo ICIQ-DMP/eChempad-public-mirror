@@ -36,7 +36,7 @@
 				This is normally caused by timeout, opening too many Web pages, or by server reboot.
 			</label>
 			<space orient="horizontal" />			
-			<a href="zul/main.zul" style="font-size: 16pt;">Back to main page</a>			
+			<a href="zul/mainComposer.zul" style="font-size: 16pt;">Back to mainComposer page</a>
 			<space orient="horizontal" />
 			<space orient="horizontal" />
 		</groupbox>
