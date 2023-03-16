@@ -63,6 +63,9 @@ public class Document extends JPAEntityImpl{
     @Column(length = 1000, nullable = false)
     protected String description;
 
+    /**
+     * Date of creation of the entity.
+     */
     @Column(nullable = false)
     private Date creationDate;
 
@@ -131,7 +134,7 @@ public class Document extends JPAEntityImpl{
     public Document(String name, String description) {
         this.name = name;
         this.description = description;
-        this.creationDate = new Date();
+        this.initCreationDate();
     }
 
     @Override
@@ -181,6 +184,12 @@ public class Document extends JPAEntityImpl{
     @Override
     public <T extends JPAEntity> Class<T> getType() {
         return (Class<T>) Document.class;
+    }
+
+
+    @Override
+    public void initCreationDate() {
+        this.creationDate = new Date();
     }
 
     // GETTERS SETTERS AND TO-STRING

@@ -52,7 +52,6 @@ public interface JPAEntity {
      */
     void setId(Serializable id);
 
-
     /**
      * Implemented by every class to return its own type.
      * @param <T> Parametrized type in order to return any type of class.
@@ -72,19 +71,9 @@ public interface JPAEntity {
     }
 
     /**
-     * Implemented differently by every entity class to know if the passed entity_uuid is contained by the current
-     * object
-     * @param entity_uuid UUID of an entity of type journal, experiment and document that is contained by this instance
-     * @return True if the supplied UUID is contained by the current object.
+     * Sets the creation date of the element. This method is needed since the fields need to be explicitly initialized
+     * outside the constructors of the entity.
      */
-    //boolean isContainer(UUID entity_uuid);
-
-
-    /**
-     * Implemented differently by every entity class to know if the passed entity_uuid is parent of the current
-     * instance.
-     * @param entity_uuid UUID of the entity of type journal, experiment and document that can contain this instance
-     * @return True if the supplied UUID is a container of the current object.
-     */
-    //boolean isContained(UUID entity_uuid);
+    @JsonIgnore
+    void initCreationDate();
 }

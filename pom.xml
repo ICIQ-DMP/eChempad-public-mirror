@@ -258,7 +258,7 @@
 			<version>${zkspringboot-starter.version}</version>
 		</dependency>
 
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zkplus</artifactId>
 			<version>${zk.version}</version>
@@ -274,19 +274,6 @@
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zkspring-security</artifactId>
 			<version>${zkspring.version}</version>
-		</dependency>
-
-		<!-- ZK library plugins, to use the @Subscribe annotation -->
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkmax</artifactId>
-			<version>${zkmax.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.zkoss.zk</groupId>
-					<artifactId>zul</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- To use the reflections' library, which is used in the code of iochem-bd

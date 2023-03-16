@@ -43,6 +43,9 @@ public class Experiment extends JPAEntityImpl {
     @Column(length = 1000, nullable = false)
     private String description;
 
+    /**
+     * Date of creation of the entity.
+     */
     @Column(nullable = false)
     private Date creationDate;
 
@@ -71,7 +74,7 @@ public class Experiment extends JPAEntityImpl {
     public Experiment(String name, String description) {
         this.name = name;
         this.description = description;
-        this.creationDate = new Date();
+        this.initCreationDate();
     }
 
     // GETTERS AND SETTERS
@@ -117,6 +120,11 @@ public class Experiment extends JPAEntityImpl {
     @Override
     public String getTypeName() {
         return Experiment.class.getCanonicalName();
+    }
+
+    @Override
+    public void initCreationDate() {
+        this.creationDate = new Date();
     }
 
 

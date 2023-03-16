@@ -7,7 +7,9 @@
  */
 package org.ICIQ.eChempad.configurations.security.ACL;
 
+import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.domain.BasePermission;
@@ -80,6 +82,9 @@ public class AclServiceCustomImpl implements AclService{
         Logger.getGlobal().info("ACL class ENTITY TYPE: " + JPAEntity.getTypeName());
         // Obtain the identity of the object by using its class and its id
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
+
+        Logger.getGlobal().warning("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA THE ENTITYT IS : " + objectIdentity.toString());
+        Logger.getGlobal().warning("AAAAAAAAAAAAAAAAAAAA security is : " + SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
 
         // Obtain the identity of the user
         Sid sid;
