@@ -151,7 +151,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     Specifies a TerracottaConfig which will be used to configure the Terracotta
     runtime for this CacheManager.
 
-    Configuration can be specified in two main ways: by reference to a source of
+    Configuration can be specified in two mainComposer ways: by reference to a source of
     configuration or by use of an embedded Terracotta configuration file.
 
     To specify a reference to a source (or sources) of configuration, use the url

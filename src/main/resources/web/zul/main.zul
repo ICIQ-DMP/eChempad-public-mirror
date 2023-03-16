@@ -26,7 +26,7 @@
 <?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
 <?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
 
-<window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.Main" style="height: 100%; width:100%">
+<window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.composers.MainComposer" style="height: 100%; width:100%">
 
     <script type="text/javascript" src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
     <script type="text/javascript" src="/js/bootstrap.min.js"> </script>
@@ -60,11 +60,11 @@
 
  	function setNavButtonsVisible(visible) {
  		if(visible) {
- 			jq('.main-small-navigation').show();
- 			jq('.main-small-inner-div').css('overflow-x', 'auto');		//Allow to side scroll to actions and properties section
+ 			jq('.mainComposer-small-navigation').show();
+ 			jq('.mainComposer-small-inner-div').css('overflow-x', 'auto');		//Allow to side scroll to actions and properties section
  		} else {
- 			jq('.main-small-navigation').hide()
- 			jq('.main-small-inner-div').css('overflow-x', 'hidden');	//Block side scroll
+ 			jq('.mainComposer-small-navigation').hide()
+ 			jq('.mainComposer-small-inner-div').css('overflow-x', 'hidden');	//Block side scroll
  		}
  	}
   	//Scroll animation functions
@@ -74,19 +74,19 @@
 
 	function toggleSlideButtons() {
 		if(currentStep == 0)
-			$('.main-small-navigation-previous').addClass('main-small-navigation-disabled');
+			$('.mainComposer-small-navigation-previous').addClass('mainComposer-small-navigation-disabled');
 		else
-			$('.main-small-navigation-previous').removeClass('main-small-navigation-disabled');
+			$('.mainComposer-small-navigation-previous').removeClass('mainComposer-small-navigation-disabled');
 
 		if(currentStep >= totalSteps - 1)
-			$('.main-small-navigation-next').addClass('main-small-navigation-disabled');
+			$('.mainComposer-small-navigation-next').addClass('mainComposer-small-navigation-disabled');
 		else
-			$('.main-small-navigation-next').removeClass('main-small-navigation-disabled');
+			$('.mainComposer-small-navigation-next').removeClass('mainComposer-small-navigation-disabled');
 	}
 
 	function slide() {
-	  	value = $('.main-small-div').scrollLeft();
-	  	obj=$($('.main-small-inner-div').children()[currentStep]);
+	  	value = $('.mainComposer-small-div').scrollLeft();
+	  	obj=$($('.mainComposer-small-inner-div').children()[currentStep]);
 	  	var childPos = obj.offset();
 	  	var parentPos = obj.parent().offset();
 	  	var childOffset = {
@@ -94,7 +94,7 @@
 	    	left: childPos.left - parentPos.left
 	  	}
 
-	  	$('.main-small-div').animate(
+	  	$('.mainComposer-small-div').animate(
 	  		{ scrollLeft : childOffset.left },
 	  		150,
 	  		'swing');

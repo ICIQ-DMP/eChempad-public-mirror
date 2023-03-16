@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.controllers;
+package org.ICIQ.eChempad.controllers.UIControllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,6 @@ public class UIControllerImpl implements UIController {
     public String login() {
         return "login";
     }
-
 
     @GetMapping("/exit")
     @Override

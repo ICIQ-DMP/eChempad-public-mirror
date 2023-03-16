@@ -23,7 +23,7 @@ Copyright 2020-2021.
 * Main developer: Aleix Mariné-Tena (2021 - now)
 
 ###### Software committee:
-* Moisés Álvarez (ICIQ - URV) (main developer of ioChem-BD)
+* Moisés Álvarez (ICIQ - URV) (mainComposer developer of ioChem-BD)
 
 ###### Scientific committee:
 * Carles Bo (ICIQ - URV)

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.web.ui;
+package org.ICIQ.eChempad.web.ui.composers;
 
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -30,7 +30,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
 
-public class QuestionDialog extends SelectorComposer<Window> {
+public class QuestionDialogComposer extends SelectorComposer<Window> {
 	
 	private static final long serialVersionUID = 1L;
 

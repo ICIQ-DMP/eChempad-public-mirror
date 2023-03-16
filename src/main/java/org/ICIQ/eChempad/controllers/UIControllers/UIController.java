@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.controllers;
+package org.ICIQ.eChempad.controllers.UIControllers;
 
 /**
  * Defines the operations that a login controller should have. These operations define URL endpoints that a client can

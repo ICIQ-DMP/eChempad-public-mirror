@@ -15,44 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.web.ui;
+package org.ICIQ.eChempad.web.ui.composers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
-
-import java.text.SimpleDateFormat;
-import java.util.Map;
+import org.zkoss.zkmax.ui.select.annotation.Subscribe;
 
 
-public class ItemDetails extends SelectorComposer<Window> {
-
-
+public class ItemDetailsComposer extends SelectorComposer<Window> {
 
 	private EventQueue navigationQueue = null;
 	private String currentMode = "navigation";
-		
-	//@WireVariable("desktopScope")
-	//private Map<String, Object> _desktopScope;
 	
 	private int defaultPermission = 0;
 
-	@Wire 
+	@Wire
 	Div itemDetailsDiv;
 	@Wire
-	Label hiddenID;	
+	Label hiddenID;
 	@Wire
 	Label currentSelectionTitle;		
 	@Wire
-	Textbox name;	
+	Textbox name;
 	@Wire
 	Textbox description;	
 	@Wire 
@@ -60,7 +47,7 @@ public class ItemDetails extends SelectorComposer<Window> {
 	@Wire
 	Textbox path;	
 	@Wire
-	Listbox owner;	
+	Listbox owner;
 	@Wire
 	Listbox group;	
 	@Wire 
@@ -110,8 +97,14 @@ public class ItemDetails extends SelectorComposer<Window> {
 		disableBottomButtons(true);
 		defaultPermission = permissions.getSelectedIndex();
 	}
-	
-	
+
+
+
+	public void displayEntityDetails()
+	{
+
+	}
+
 	/*
 	@SuppressWarnings("unchecked")
 	private void initActionQueues(){

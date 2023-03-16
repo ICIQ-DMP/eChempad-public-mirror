@@ -133,13 +133,13 @@ Also remember that the API key can be generated from [here](https://iciq.signals
 
 ## Certificates of the JVM
 The certificates of java are stored in the `cacerts` file, which can be located in different places of the system. We 
-have our own cacerts file uploaded to the git repository, which is located in ./eChempad/src/main/resources/CA_certificates/cacerts
+have our own cacerts file uploaded to the git repository, which is located in ./eChempad/src/mainComposer/resources/CA_certificates/cacerts
 and is the one that we are using. 
 
 To check the presence of certificates inside this cacerts file we can use the following command:
 
 ```
-keytool -list -keystore ~/Desktop/eChempad/src/main/resources/CA_certificates/cacerts -storepass changeit
+keytool -list -keystore ~/Desktop/eChempad/src/mainComposer/resources/CA_certificates/cacerts -storepass changeit
 ```
 
 If you can not see any certificate you must download another cacerts file or update the JDK you are using, since from 
@@ -306,24 +306,24 @@ Here is a list of the folders and files contained inside the root of this projec
 - `.run/`: Contains IntelliJ IDEA run configurations in XML format. Used by the IDE to retrieve execution options, so we
            do not have to configure each IDE that we are using. 
 - `src/`: Contains the code and resources used to build the project.
-- `src/main/java`: Contains the Java code used in the application. This is the main source code folder.
-- `src/main/resources`: Contains configuration code and other resources needed to set the development environment and
+- `src/mainComposer/java`: Contains the Java code used in the application. This is the mainComposer source code folder.
+- `src/mainComposer/resources`: Contains configuration code and other resources needed to set the development environment and
                         to project execution. 
-- `src/main/resources/CA_certificates`: CA certificates usually give troubles when using the Maven wrapper. The CA 
+- `src/mainComposer/resources/CA_certificates`: CA certificates usually give troubles when using the Maven wrapper. The CA 
                                         certificates in this directory are
                                         used as fallbacks if the ones provided by the system can not be used or are corrupted
-- `src/main/resources/META-INF`: Used to define our own schemas and properties inside the `.properties` files used by Spring,
+- `src/mainComposer/resources/META-INF`: Used to define our own schemas and properties inside the `.properties` files used by Spring,
                                  which can be used inside the Java code to define configurations.
-- `src/main/resources/Signals-API-Scratcher`: Contains the code to massively download the data from a user of the Signals Notebook 
+- `src/mainComposer/resources/Signals-API-Scratcher`: Contains the code to massively download the data from a user of the Signals Notebook 
                                     from ParkinElmerCloud into the file system using `bash` and `curl`. This is kept as
                                     reference since it will be integrated into this application.
-- `src/main/resources/static`: Created by default. Contains static content such as images or sounds usually used in the creation of web pages. 
-- `src/main/resources/templates`: Created by default. Contains templates in marking languages such as HTML or XML that are used to create the actual web pages to serve.
-- `src/main/resources/*.properties`: Files that define properties that can be used inside the Java code to change code behaviour 
-                                     without adding any code. The main one is `application.properties`, which is always parsed. Inside it 
+- `src/mainComposer/resources/static`: Created by default. Contains static content such as images or sounds usually used in the creation of web pages. 
+- `src/mainComposer/resources/templates`: Created by default. Contains templates in marking languages such as HTML or XML that are used to create the actual web pages to serve.
+- `src/mainComposer/resources/*.properties`: Files that define properties that can be used inside the Java code to change code behaviour 
+                                     without adding any code. The mainComposer one is `application.properties`, which is always parsed. Inside it 
                                      there is the property `spring.profiles.active` who tells which is the active profile and is used by the 
                                      Maven wrapper to also import the corresponding `.properties` file of the active profile.
-- `src/main/rsources/*.sh`: Files that define or modify system variables depending on the profile that we are on. The file 
+- `src/mainComposer/rsources/*.sh`: Files that define or modify system variables depending on the profile that we are on. The file 
                             `application.sh` is always executed when using the Maven wrapper to execute the code. The other `.sh` files
                             are executed when its corresponding profile is active. 
 - `src/test/java`: Contains the code of the test of the Java code. 

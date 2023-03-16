@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.web.ui;
 
+import org.ICIQ.eChempad.web.ui.composers.MainComposer;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
@@ -22,15 +23,15 @@ public class FileUploadedListener implements EventListener {
 
     private static final Pattern filePathWithExtensionPattern = Pattern.compile("(.*)?(\\.\\S+)");
 
-    private Main main = null;
+    private MainComposer mainComposer = null;
     private String parameter = null;
     private Label filenameLabel	= null;
     private String tmpFolderPath = null;
     private boolean isRepeatable = false;
 
 
-    public FileUploadedListener(Main main, String parameter, Label filenameLabel, boolean isRepeatable){
-        this.main = main;
+    public FileUploadedListener(MainComposer mainComposer, String parameter, Label filenameLabel, boolean isRepeatable){
+        this.mainComposer = mainComposer;
         this.parameter = parameter;
         this.filenameLabel = filenameLabel;
         this.tmpFolderPath = "";  // TODO spaghetti code

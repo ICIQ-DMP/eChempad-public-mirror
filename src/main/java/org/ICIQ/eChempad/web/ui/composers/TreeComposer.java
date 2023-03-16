@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.web.ui.tree;
+package org.ICIQ.eChempad.web.ui.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
@@ -23,6 +23,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.zkoss.zk.ui.event.*;
@@ -38,7 +39,7 @@ import java.util.logging.Logger;
 
 @Scope("desktop")
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
-public class TreeUIController extends SelectorComposer<Window> {
+public class TreeComposer extends SelectorComposer<Window> {
 
     // Event queues
 
@@ -215,9 +216,15 @@ public class TreeUIController extends SelectorComposer<Window> {
         return new DefaultTreeModel<Journal>(new DefaultTreeNode<Journal>(null, journalNodes));
     }
 
-    @Listen("onClick=#treeTab")
-    public void treeTabClick(){
-        navigationQueue.publish(new Event("resetSearch"));
+    /**
+     * Eveery time a tab from the tree is clicked, we send a message to the navigation queue in order to update the
+     * details display.
+     *
+     * @param event Contains the data of the event.
+     */
+    @Listen("onClick = #treeTab")
+    public void treeTabClick(MouseEvent event){
+        this.navigationQueue.publish(new Event("displayEntityDetails", this.treeWindow, event.getData()));
     }
 
 /*
