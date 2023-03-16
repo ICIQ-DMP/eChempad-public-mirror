@@ -73,6 +73,12 @@ public class Researcher extends JPAEntityImpl {
     @Column(length = 37, nullable = true)
     private String dataverseAPIKey;
 
+    /**
+     * Date of creation of the entity.
+     */
+    @Column(nullable = false)
+    private Date creationDate;
+
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "researcher",
@@ -102,6 +108,7 @@ public class Researcher extends JPAEntityImpl {
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
         this.signalsAPIKey = signalsAPIKey;
+        this.initCreationDate();
     }
 
     @Override
@@ -148,6 +155,12 @@ public class Researcher extends JPAEntityImpl {
         return this.getType().getName();
     }
 
+    @Override
+    public void initCreationDate() {
+        this.creationDate = new Date();
+    }
+
+    // GETTERS AND SETTERS
 
     /**
      * Returns the password used to authenticate the user.
@@ -262,5 +275,13 @@ public class Researcher extends JPAEntityImpl {
 
     public void setDataverseAPIKey(String dataverseAPIKey) {
         this.dataverseAPIKey = dataverseAPIKey;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }

@@ -104,9 +104,6 @@ public class MainComposer extends SelectorComposer<Window> {
 	protected Div properties;
 	@Wire
 	protected Center itemDetails;
-	
-	// @WireVariable("desktopScope")
-	//private Map<String, Object> _desktopScope;
 
     /////////////////////////Event listener associations///////////////////////////////////////////
        
@@ -235,7 +232,7 @@ public class MainComposer extends SelectorComposer<Window> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initActionQueues(){
      	//Load action queues
-    	navigationQueue = EventQueues.lookup("navigation", EventQueues.DESKTOP, true);
+    	this.navigationQueue = EventQueues.lookup("navigation", EventQueues.DESKTOP, true);
 		EventQueue<Event> actionsQueue = EventQueues.lookup("dcmactions", EventQueues.DESKTOP, true);
      	this.reportManagementQueue = EventQueues.lookup("reportmanagement", EventQueues.DESKTOP, true);
      	this.displayQueue = EventQueues.lookup("display", EventQueues.DESKTOP, true);

@@ -17,17 +17,25 @@
  */
 package org.ICIQ.eChempad.web.ui.composers;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
+import org.ICIQ.eChempad.web.ui.EventNames;
+import org.ICIQ.eChempad.web.ui.EventQueueNames;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.*;
-import org.zkoss.zkmax.ui.select.annotation.Subscribe;
+
+import java.util.logging.Logger;
 
 
 public class ItemDetailsComposer extends SelectorComposer<Window> {
 
-	private EventQueue navigationQueue = null;
+	private EventQueue<Event> itemDetailsQueue = null;
+
 	private String currentMode = "navigation";
 	
 	private int defaultPermission = 0;
@@ -88,12 +96,12 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		// deleteSelectedElement();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void doAfterCompose(Window comp) throws Exception {
-		super.doAfterCompose(comp);		
-		//initActionQueues();
-		//fillListboxes();
+		super.doAfterCompose(comp);
+
+		this.initActionQueues();
+
 		disableBottomButtons(true);
 		defaultPermission = permissions.getSelectedIndex();
 	}
@@ -105,43 +113,21 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 
 	}
 
-	/*
-	@SuppressWarnings("unchecked")
+
 	private void initActionQueues(){
-		navigationQueue	= EventQueues.lookup("navigation", EventQueues.DESKTOP, true);
-		navigationQueue.subscribe(new EventListener(){
-			@Override
-			public void onEvent(Event event) {
-				switch (event.getName()) {
-					case "resetHome":
-						resetHome();
-						break;
-					case "displaySearchElement": {
-						currentMode = "search";
-						Set<Entity> selectedElements = (Set<Entity>) _desktopScope.get("selectedSearchElements");
-						Entity node = selectedElements.size() == 1 ? selectedElements.iterator().next() : null;
-						displayElement((PublicableEntity) node);
-						hideBottomButtons(true);
-						break;
-					}
-					case "displayNavigationElement": {
-						currentMode = "navigation";
-						Set<Entity> selectedElements = (Set<Entity>) _desktopScope.get("selectedElements");
-						Entity node = selectedElements.size() == 1 ? selectedElements.iterator().next() : null;
-						displayElement((PublicableEntity) node);
-						hideBottomButtons(false);
-						break;
-					}
-					case "updateWithChildren":
-						modifyProject((Project) event.getData(), true);
-						break;
-					case "updateWithoutChildren":
-						modifyProject((Project) event.getData(), false);
-						break;
-				}
+		this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
+
+		this.itemDetailsQueue.subscribe(event -> {
+			switch (event.getName()) {
+				case EventNames.DISPLAY_ENTITY_EVENT:
+					Logger.getGlobal().warning("event received in the item details");
+					Logger.getGlobal().warning("content of event.getdata(): " + event.getData().toString());
+					break;
+				default:
+					Logger.getGlobal().warning("not recognized event");
 			}
 		});
-	}*/
+	}
 		
 	/*
 	private void fillListboxes() throws BrowseCredentialsException{

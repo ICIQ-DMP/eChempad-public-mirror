@@ -23,6 +23,8 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.web.ui.EventNames;
+import org.ICIQ.eChempad.web.ui.EventQueueNames;
 import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
@@ -42,12 +44,7 @@ import java.util.logging.Logger;
 public class TreeComposer extends SelectorComposer<Window> {
 
     // Event queues
-
-    private EventQueue<Event> userEventsQueue = null;
-	private EventQueue<Event> navigationQueue = null;
-	private EventQueue<Event> elementPublishQueue = null;
-	private EventQueue<Event> reportManagementQueue = null;
-	private EventQueue<Event> displayQueue = null;
+    private EventQueue<Event> itemDetailsQueue;
 
 	@WireVariable("desktopScope")
 	private Map<String, Object> _desktopScope;
@@ -224,7 +221,8 @@ public class TreeComposer extends SelectorComposer<Window> {
      */
     @Listen("onClick = #treeTab")
     public void treeTabClick(MouseEvent event){
-        this.navigationQueue.publish(new Event("displayEntityDetails", this.treeWindow, event.getData()));
+        Logger.getGlobal().warning("sent event fr9om tree composer");
+        this.itemDetailsQueue.publish(new Event(EventNames.DISPLAY_ENTITY_EVENT, this.treeWindow, event.getData()));
     }
 
 /*
@@ -322,11 +320,13 @@ public class TreeComposer extends SelectorComposer<Window> {
 
 
 
-
+*/
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initActionQueues(){
-		userEventsQueue = EventQueues.lookup(getUsername() + "userevents", WebApps.getCurrent(), true);
+		this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
+
+        /*
 		userEventsQueue.subscribe(new EventListener() {
 			@Override
 			public void onEvent(Event event) throws Exception {				
@@ -406,9 +406,9 @@ public class TreeComposer extends SelectorComposer<Window> {
 										setupLayout(size);	
 				}				
 			}        	
-        });
+        }); */
 	}
-
+/*
 
 	protected void moveOverCalculation(Calculation source, Calculation destination) {
     	try {

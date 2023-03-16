@@ -19,5 +19,5 @@ public class EventQueueNames {
      * Queue used by the item details component, which will receive events to rewrite the UI when elements from the tree
      * are selected.
      */
-    public static final String DISPLAY_DETAILS_QUEUE = "DISPLAY_DETAILS_QUEUE";
+    public static final String ITEM_DETAILS_QUEUE = "ITEM_DETAILS_QUEUE";
 }

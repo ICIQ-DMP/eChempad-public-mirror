@@ -88,8 +88,11 @@ schema for the schema and the JPA repository to modify the tables programmatical
 2- Deactivate the initialization of JPA schema by setting the DB policy to *none*.
 3- Run application. The ACL SQL schema will be read from the `schema.sql` script and the app will fail because the
 schema for the JPA entities will not be present. The app should file with an error like this:
-`(...) Caused by: org.postgresql.util.PSQLException: ERROR: relation "researcher" does not exist
-`. The *acl_sid* table will be created using the schema provided via a JPA entity class.
+```
+(...) org.springframework.dao.InvalidDataAccessResourceUsageException: could not extract ResultSet; SQL [n/a]; nested 
+exception is org.hibernate.exception.SQLGrammarException: could not extract ResultSet
+```
+The *acl_sid* table will be created using the schema provided via a JPA entity class.
 4- Reactivate the JPA initializations by setting the DB policy to *update*.
 5- Rerun the application, which now should be working (even though because of admin initialization it can have an error 
 of duplicated primary key, but if your rerun one more time everything should be working). The ACL tables from the schema,
@@ -99,11 +102,8 @@ initialized.
 6- We can encounter one more error while initializing the app, it goes like: 
 `org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "acl_sid_pkey"` This happens
 because we manipulate the acl_sid table "from behind" (not programmatically, we attack the raw SQL tables). And as such, 
-the first petitions to create an ACL can cause a collision. 
-7- After that error we may find another Exception! it goes like this: 
-`java.lang.IllegalArgumentException: Transaction must be running`, but only happens twice the first time that a valid
-ACL is requested.
-In the next petitions, the ACL service will answer correctly.
+the first petitions to create an ACL can cause a collision. Rerun app and it should be working. In the next run, 
+the ACL service will answer correctly.
 
 ## IDE integration
 Open the project by calling the binary `ideau` with the same working directory as teh repository.
