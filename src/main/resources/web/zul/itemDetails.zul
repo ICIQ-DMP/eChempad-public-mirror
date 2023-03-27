@@ -28,7 +28,7 @@
 	    		<div sclass="mt-2" id="itemDetailsDiv" style="overflow-x: hidden; overflow-y: auto;">		
 					<div sclass="row mb-1 item-details-row">
 						<label id="hiddenID" value="" visible="false" />
-						<textbox id="path" value="" width="300px" readonly="false" visible="false" tooltiptext="Absolute path of the selected resource. If 'create project' is pressed, the project is created under the specified path." />
+						<textbox id="ID" value="" width="300px" readonly="false" visible="false" tooltiptext="Absolute path of the selected resource. If 'create project' is pressed, the project is created under the specified path." />
 						
 						<n:label class="col-md-2 ">Path</n:label>
 						<label id="currentSelectionTitle" sclass="col-md-10" style="font-weight:bold;"/>
@@ -44,14 +44,6 @@
 					<div sclass="row mb-1 item-details-row">   			
 			 		    <n:label class="col-md-2 ">Description</n:label>
 				    	<textbox id="description" value="" sclass="form-control col-md-6" rows="2" readonly="false" tooltiptext="Description of the selected resource. If 'create project' is pressed, it's the description of the new project." />
-						
-						<div sclass="col-md-4 col-sm-12 item-details-row nopadding">							
-							<n:label class="col-md-6">State</n:label>
-							<textbox id="state" value="" sclass="form-control col-md-6 col-xs-10 mb-1" readonly="true" tooltiptext="State of the resource. Cannot be modified."/>	
-						
-							<n:label value="Concept Group" class="col-md-6">Concept Group</n:label>			               
-							<textbox id="conceptGroup" value="" sclass="form-control col-md-6" readonly="false" tooltiptext="Concept group of a project. Used as a free text field for tagging projects."/>																						         
-						</div>				    		   					   	
 					</div>
 					<div sclass="row mb-1 item-details-row">					
 						<n:label class="col-md-2 ">Owner</n:label>
@@ -83,9 +75,9 @@
 					<div id="operationButtonsLayout" sclass="row item-details-row">
 						<div sclass="col-md-2 col-sm-12 d-none d-md-block"></div>
 						<div sclass="col-md-10 offset-md-2 col-sm-12 ml-0 pl-0">							
-							<button id="createProjectBtn" label="Create Project" sclass="btn btn-primary" tooltiptext="Creates a project with the data specified in the above form."/>
-							<button id="modifyBtn" label="Modify" sclass="btn btn-secondary ml-1" tooltiptext="Modifies a project or calculation according to the values of the form."/>
-							<button id="removeBtn" sclass="btn btn-danger delete-btn ml-2" tooltiptext="Removes the selected project or calculation."/>
+							<button id="itemDetailsCreateButton" label="Create Project" sclass="btn btn-primary" tooltiptext="Creates a project with the data specified in the above form."/>
+							<button id="itemDetailsModifyButton" label="Modify" sclass="btn btn-secondary ml-1" tooltiptext="Modifies a project or calculation according to the values of the form."/>
+							<button id="itemDetailsRemoveButton" sclass="btn btn-danger delete-btn ml-2" tooltiptext="Removes the selected project or calculation."/>
 						</div>
 					</div>							
 				</div>  

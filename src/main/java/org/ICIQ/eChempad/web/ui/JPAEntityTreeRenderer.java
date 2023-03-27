@@ -6,6 +6,8 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.zkoss.zul.*;
 
+import java.text.SimpleDateFormat;
+
 /**
  * This class is used to provide an implementation to the render method, which receives data from the tree as Journal
  * instances and translate them to changes in the tree of the ZK web UI that render the Journal.
@@ -44,18 +46,8 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<J
         tr.appendChild(new Treecell(fi.getClass().getSimpleName()));
 
         // Append the date
-        if (fi instanceof Journal)
-        {
-            tr.appendChild(new Treecell( ((Journal)fi).getCreationDate().toString()));
-        }
-        else if (fi instanceof Experiment)
-        {
-            tr.appendChild(new Treecell( ((Experiment)fi).getCreationDate().toString()));
-        }
-        else if (fi instanceof Document)
-        {
-            tr.appendChild(new Treecell( ((Document)fi).getCreationDate().toString()));
-        }
+        SimpleDateFormat dateFormatter = new SimpleDateFormat();
+        tr.appendChild(new Treecell(dateFormatter.format(fi.getCreationDate())));
 
         item.appendChild(tr);
     }
