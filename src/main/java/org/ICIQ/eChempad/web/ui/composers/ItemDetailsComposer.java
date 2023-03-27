@@ -17,11 +17,9 @@
  */
 package org.ICIQ.eChempad.web.ui.composers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.ICIQ.eChempad.web.ui.EventNames;
 import org.ICIQ.eChempad.web.ui.EventQueueNames;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
