@@ -160,13 +160,12 @@
     </n:nav>
 
 
-    <!-- Large layout -->
     <borderlayout id="mainLarge" vflex="1">
 
 
         <center id="treeLayout">
             <div id="treeDiv" height="100%">
-                <include src="~./zul/treenavigation.zul"/>
+                <include src="~./zul/tree.zul"/>
             </div>
         </center>
 
@@ -236,7 +235,7 @@
 
 
                 <center id="itemDetails">
-                    <include src="~./zul/itemdetails.zul"/>
+                    <include src="~./zul/itemDetails.zul"/>
                 </center>
             </borderlayout>
         </east>

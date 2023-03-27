@@ -7,10 +7,10 @@
         <debug-js>true</debug-js> <!--TODO: In production change to false -->
     </client-config>
 
-    <session-config>
+    <!-- <session-config>
         <device-type>ajax</device-type>
         <session-timeout>30000</session-timeout>
         <timeout-uri>/zul/timeout.zul</timeout-uri>
         <timer-keep-alive>true</timer-keep-alive>
-    </session-config>
+    </session-config> -->
 </zk>

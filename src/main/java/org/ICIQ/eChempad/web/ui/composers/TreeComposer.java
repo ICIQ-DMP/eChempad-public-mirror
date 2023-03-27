@@ -19,6 +19,7 @@ package org.ICIQ.eChempad.web.ui.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
@@ -28,6 +29,7 @@ import org.ICIQ.eChempad.web.ui.EventQueueNames;
 import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -36,6 +38,8 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -131,6 +135,9 @@ public class TreeComposer extends SelectorComposer<Window> {
 
         //this.createJournal();  // For testing
 
+        // Initialize queues
+        this.initActionQueues();
+
         // Sets the data to the tree
         this.tree.setModel(this.createModel());
         // Sets how we want to display the data (look JPAEntityTreeRenderer)
@@ -214,27 +221,111 @@ public class TreeComposer extends SelectorComposer<Window> {
     }
 
     /**
-     * Eveery time a tab from the tree is clicked, we send a message to the navigation queue in order to update the
+     * Every time a tab from the tree is clicked, we send a message to the navigation queue in order to update the
      * details display.
      *
      * @param event Contains the data of the event.
      */
-    @Listen("onClick = #treeTab")
+    @Listen("onClick = #tree")
     public void treeTabClick(MouseEvent event){
-        Logger.getGlobal().warning("sent event fr9om tree composer");
-        this.itemDetailsQueue.publish(new Event(EventNames.DISPLAY_ENTITY_EVENT, this.treeWindow, event.getData()));
+        // Obtain the TreeItem that was selected.
+        Treeitem selectedItem = ((Tree) event.getTarget()).getSelectedItem();
+
+        // If selection is null do nothing
+        if (selectedItem == null)
+        {
+            return;
+        }
+
+        // Get the children components from the selected Treerow
+        JPAEntity entity = this.parseEntityFromTreeItem(selectedItem);
+
+        this.itemDetailsQueue.publish(new Event(EventNames.DISPLAY_ENTITY_EVENT, this.treeWindow, entity));
     }
 
-/*
-	@Listen("onClick=#treeDivPublishElements")
-	public void onTreeDivPublishElementsClick() {
-		publishElements();
-	}
-	*/
+
 	@Listen("onClick=#refreshBtn")
 	public void onRefreshBtnClick() {
         createModel();
 	}
+
+    // Data transformation methods
+
+    /**
+     * Receives a {@code Treeitem} object from the tree and parses the data inside into the corresponding JPAEntity.
+     *
+     * @param treeitem An item from the tree
+     * @return An object that contains the values of the {@code Treeitem}.
+     */
+    public JPAEntity parseEntityFromTreeItem(Treeitem treeitem)
+    {
+        // Search the type of the entity received in the parameter and create its corresponding class.
+        Class<?> entityClass = null;
+        List<Treecell> childrenComponents = treeitem.getTreerow().getChildren();
+        try {
+            entityClass = Class.forName("org.ICIQ.eChempad.entities.genericJPAEntities." + Objects.requireNonNull(childrenComponents.stream()
+                            .filter((Treecell treecell) ->
+                            {
+                                Logger.getGlobal().warning("the id" + treecell.getTreecol().getId());
+                                return treecell.getTreecol().getId().equals("typeTreeColumn");
+                            })
+                            .findFirst()
+                            .get()
+                            .getLabel()));
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Create new instance from class using reflective paradigm.
+        JPAEntity entity = null;
+        try {
+             entity = (JPAEntity) Objects.requireNonNull(entityClass).newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        if (entity == null)
+        {
+            return null;
+        }
+
+        // Parse tree cells into fields of the entity using id to identify
+        for (Treecell treecell : childrenComponents)
+        {
+            String id = treecell.getTreecol().getId();
+            String content = treecell.getLabel();
+
+            switch (id)
+            {
+                case "descriptionTreeColumn":
+                {
+                    entity.setDescription(content);
+                    break;
+                }
+                case "nameTreeColumn":
+                {
+                    entity.setName(content);
+                    break;
+                }
+                case "creationDateTreeColumn":
+                {
+                    try {
+                        SimpleDateFormat dateFormatter = new SimpleDateFormat();
+                        entity.setCreationDate(dateFormatter.parse(content));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+                default:
+                {
+                    Logger.getGlobal().warning("not recognised case");
+                }
+            }
+        }
+
+        return entity;
+    }
 
     /*
 	@Listen("onOpen=#treePopup")	
@@ -322,7 +413,6 @@ public class TreeComposer extends SelectorComposer<Window> {
 
 */
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initActionQueues(){
 		this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
 

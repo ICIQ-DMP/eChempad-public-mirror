@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.*;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.Date;
 
 /**
  * Used to limit the generic inheritance to entities to make them comply with this contract, which ensures the
@@ -76,4 +77,52 @@ public interface JPAEntity {
      */
     @JsonIgnore
     void initCreationDate();
+
+    /**
+     * Gets the name of the entity.
+     *
+     * @return Entity name.
+     */
+    @JsonIgnore
+    String getName();
+
+    /**
+     * Sets the name of an entity.
+     *
+     * @param name New name of the entity.
+     */
+    @JsonIgnore
+    void setName(String name);
+
+    /**
+     * Gets the description of an entity.
+     *
+     * @return Entity description.
+     */
+    @JsonIgnore
+    String getDescription();
+
+    /**
+     * Sets the description of an entity.
+     *
+     * @param description New description of the entity.
+     */
+    @JsonIgnore
+    void setDescription(String description);
+
+    /**
+     * Gets the creation of an entity.
+     *
+     * @return Date object with the creation date of the entity.
+     */
+    @JsonIgnore
+    Date getCreationDate();
+
+    /**
+     * Sets the creation date of an entity.
+     *
+     * @param creationDate Date object with the new creation date of the entity.
+     */
+    @JsonIgnore
+    void setCreationDate(Date creationDate);
 }

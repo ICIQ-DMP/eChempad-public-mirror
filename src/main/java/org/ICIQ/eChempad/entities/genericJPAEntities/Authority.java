@@ -113,6 +113,26 @@ public class Authority extends JPAEntityImpl implements GrantedAuthority{
     }
 
     @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public void setName(String name) {
+
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public void setDescription(String description) {
+
+    }
+
+    @Override
     public String getAuthority() {
         return this.authority;
     }

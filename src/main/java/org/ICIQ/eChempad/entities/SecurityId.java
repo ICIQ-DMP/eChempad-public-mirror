@@ -11,6 +11,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @javax.persistence.Entity
 @Table(
@@ -114,6 +115,36 @@ public class SecurityId implements Serializable, JPAEntity {
 
     @Override
     public void initCreationDate() {
+
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public void setName(String name) {
+
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public void setDescription(String description) {
+
+    }
+
+    @Override
+    public Date getCreationDate() {
+        return null;
+    }
+
+    @Override
+    public void setCreationDate(Date creationDate) {
 
     }
 }

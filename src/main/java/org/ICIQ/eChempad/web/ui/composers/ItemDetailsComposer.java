@@ -30,71 +30,70 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.*;
 
 import java.util.logging.Logger;
+import java.util.Date;
 
 
 public class ItemDetailsComposer extends SelectorComposer<Window> {
 
 	private EventQueue<Event> itemDetailsQueue = null;
 
-	private String currentMode = "navigation";
-	
 	private int defaultPermission = 0;
 
 	@Wire
-	Div itemDetailsDiv;
+	private Div itemDetailsDiv;
+
 	@Wire
-	Label hiddenID;
+	private Label hiddenID;
+
 	@Wire
-	Label currentSelectionTitle;		
+	private Label currentSelectionTitle;
+
 	@Wire
-	Textbox name;
+	private Textbox name;
+
 	@Wire
-	Textbox description;	
-	@Wire 
-	Label type;	
+	private Textbox description;
+
 	@Wire
-	Textbox path;	
+	private Label type;
+
 	@Wire
-	Listbox owner;
+	private Textbox path;
+
 	@Wire
-	Listbox group;	
-	@Wire 
-	Listbox permissions;	
+	private Listbox owner;
+
 	@Wire
-	Textbox cDate;	
+	private Listbox group;
+
 	@Wire
-	Textbox mDate;	
-	@Wire 
-	Textbox pDate;	
+	private Listbox permissions;
+
 	@Wire
-	Textbox conceptGroup;	
+	private Textbox cDate;
+
 	@Wire
-	Textbox state;
+	private Textbox mDate;
+
+	@Wire
+	private Textbox pDate;
+
+	@Wire
+	private Textbox conceptGroup;
 		
-	@Wire 
-	Div operationButtonsLayout;
 	@Wire
-	Button createProjectBtn;
+	private Div operationButtonsLayout;
+
 	@Wire
-	Button modifyBtn;
+	private Button itemDetailsCreateButton;
+
 	@Wire
-	Button removeBtn;
+	private Button itemDetailsModifyButton;
+
+	@Wire
+	private Button itemDetailsRemoveButton;
 
 
-
-	@Listen("onClick=#createProjectBtn")
-	public void createProjectClick() throws Exception{
-		// createProject();
-	}
-	@Listen("onClick=#modifyBtn")
-	public void modifyClick() throws InterruptedException, Exception{
-		// modifyElement();
-	}
-	@Listen("onClick=#removeBtn")
-	public void removeClick() throws InterruptedException{
-		System.out.println("sfdsdf");
-		// deleteSelectedElement();
-	}
 
 	@Override
 	public void doAfterCompose(Window comp) throws Exception {
@@ -102,16 +101,12 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 
 		this.initActionQueues();
 
-		disableBottomButtons(true);
-		defaultPermission = permissions.getSelectedIndex();
+		this.disableBottomButtons(true);
 	}
 
 
 
-	public void displayEntityDetails()
-	{
 
-	}
 
 
 	private void initActionQueues(){
@@ -120,34 +115,41 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		this.itemDetailsQueue.subscribe(event -> {
 			switch (event.getName()) {
 				case EventNames.DISPLAY_ENTITY_EVENT:
-					Logger.getGlobal().warning("event received in the item details");
-					Logger.getGlobal().warning("content of event.getdata(): " + event.getData().toString());
+				{
+					this.displayEntityDetails((JPAEntity) event.getData());
 					break;
+				}
 				default:
+				{
 					Logger.getGlobal().warning("not recognized event");
+				}
 			}
 		});
 	}
-		
-	/*
-	private void fillListboxes() throws BrowseCredentialsException{
-		ShiroManager manager = ShiroManager.getCurrent();
-	 	for(String username: manager.getOwners())
-    		owner.appendItem(username, String.valueOf(manager.getUserIdByName(username)));
-	 	
-	 	List<String> groupNames =Arrays.asList(manager.getGroups());
-	 	List<String> userGroups = Arrays.asList(manager.getUserGroups());
-	 	
-    	for(String groupName : groupNames ){
-    		String groupId = String.valueOf(manager.getGroupIdByName(groupName));    		
-			Listitem item = group.appendItem(groupName, groupId);			
-			item.setVisible(userGroups.contains(groupId));			
-    	}    	
+
+	@Listen("onClick = #itemDetailsCreateButton")
+	public void createProjectClick() throws Exception{
+		// createProject();
 	}
-	*/
-	
+	@Listen("onClick = #itemDetailsModifyButton")
+	public void modifyClick() throws InterruptedException, Exception{
+		// modifyElement();
+	}
+	@Listen("onClick = #itemDetailsRemoveButton")
+	public void removeClick() throws InterruptedException{
+		System.out.println("sfdsdf");
+		// deleteSelectedElement();
+	}
+
+	public void displayEntityDetails(JPAEntity entity)
+	{
+		this.name.setValue(entity.getName());
+		this.cDate.setValue(entity.getCreationDate().toString());
+		this.description.setValue(entity.getDescription());
+		this.type.setValue(entity.getClass().getSimpleName());
+	}
+
 	private void resetHome(){
-		//currentSelectionTitle.setValue(Main.getUserPath());
      	hiddenID.setValue("");
      	name.setText("");
      	type.setValue("");
@@ -157,29 +159,45 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
      	cDate.setText("");
      	mDate.setText("");
      	pDate.setText("");
-     	state.setText("");     	
      	permissions.setSelectedIndex(defaultPermission);
-     	createProjectBtn.setDisabled(false);
-		modifyBtn.setDisabled(true);
-		removeBtn.setDisabled(true);     	
+     	this.itemDetailsCreateButton.setDisabled(false);
+		this.itemDetailsModifyButton.setDisabled(true);
+		this.itemDetailsRemoveButton.setDisabled(true);
 	}	
 	
 	private void hideBottomButtons(boolean hide){		
 		operationButtonsLayout.setVisible(!hide);
 	}
 	
-	private void disableBottomButtons(boolean b){	
-		createProjectBtn.setDisabled(b);
-		modifyBtn.setDisabled(b);
-		removeBtn.setDisabled(b);
-    }
-
-	private void setButtonsForElement(boolean isProject, boolean isPublished){	
-		createProjectBtn.setDisabled(!isProject);		
-		modifyBtn.setDisabled(isPublished);
-		removeBtn.setDisabled(isPublished);	
+	private void disableBottomButtons(boolean b){
+		this.itemDetailsCreateButton.setDisabled(b);
+		this.itemDetailsModifyButton.setDisabled(b);
+		this.itemDetailsRemoveButton.setDisabled(b);
 	}
-	
+
+	private void setButtonsForElement(boolean isProject, boolean isPublished){
+		this.itemDetailsCreateButton.setDisabled(!isProject);
+		this.itemDetailsModifyButton.setDisabled(isPublished);
+		this.itemDetailsRemoveButton.setDisabled(isPublished);
+	}
+
+
+		/*
+	private void fillListboxes() throws BrowseCredentialsException{
+		ShiroManager manager = ShiroManager.getCurrent();
+	 	for(String username: manager.getOwners())
+    		owner.appendItem(username, String.valueOf(manager.getUserIdByName(username)));
+
+	 	List<String> groupNames =Arrays.asList(manager.getGroups());
+	 	List<String> userGroups = Arrays.asList(manager.getUserGroups());
+
+    	for(String groupName : groupNames ){
+    		String groupId = String.valueOf(manager.getGroupIdByName(groupName));
+			Listitem item = group.appendItem(groupName, groupId);
+			item.setVisible(userGroups.contains(groupId));
+    	}
+	}
+	*/
 
 	/*
 	private void displayElement(PublicableEntity dc) throws BrowseCredentialsException{
