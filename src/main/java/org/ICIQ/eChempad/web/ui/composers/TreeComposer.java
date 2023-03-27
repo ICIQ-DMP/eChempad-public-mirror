@@ -19,6 +19,7 @@ package org.ICIQ.eChempad.web.ui.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
@@ -28,7 +29,10 @@ import org.ICIQ.eChempad.web.ui.EventQueueNames;
 import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
-import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -36,6 +40,7 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -43,10 +48,22 @@ import java.util.logging.Logger;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class TreeComposer extends SelectorComposer<Window> {
 
-    // Event queues
+    // Sending event queues
+    /**
+     * To send the events to the tree component in order to modify it.
+     */
     private EventQueue<Event> itemDetailsQueue;
 
-	@WireVariable("desktopScope")
+    // Receiving event queues
+    /**
+     * Events that the tree component has to attend.
+     */
+    private EventQueue<Event> treeQueue;
+
+
+
+
+    @WireVariable("desktopScope")
 	private Map<String, Object> _desktopScope;
     
 	@Wire
@@ -173,54 +190,104 @@ public class TreeComposer extends SelectorComposer<Window> {
     }
 
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void initActionQueues(){
+        this.treeQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
+        this.treeQueue.subscribe(new EventListener(){
+            @Override
+            public void onEvent(Event event) throws Exception {
+                HashMap<String, Object> parameters = event.getData()
+
+                        l
+                switch(event.getName()) {
+                    case EventNames.DISPLAY_ENTITY_EVENT:
+                    {
+                        resetHome();
+                        break;
+                    }
+                    case "movetoproject":
+                    {
+                        parameters = (HashMap<String, Object>) event.getData();
+                        Entity project = (Entity) parameters.get("destinationItem");
+                        Set<Object> selectedElements = (Set<Object>) parameters.get("sourceItems");
+                        moveMultipleElementsToProject(project, selectedElements);
+                        break;
+                    }
+                    case "showPublish":
+                    {
+                        elementPublishQueue.publish(new Event("show"));
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+            }
+        });
+    }
+
     /**
      * Queries the database for all {@code Journal} from the logged user and builds a {@code TreeModel} from scratch. To
      * do so, transform each {@code Journal} in the Database to an array of {@code DefaultTreeNode}.
+     *
      * @return All the journals and its content as a suitable datatype to work with ZK.
      */
-    public DefaultTreeModel<Journal> createModel()
+    public DefaultTreeModel<JPAEntity> createModel()
     {
-        List<DefaultTreeNode<Journal>> journalNodesList = new ArrayList<DefaultTreeNode<Journal>>();
+        List<DefaultTreeNode<JPAEntity>> journalNodesList = new ArrayList<DefaultTreeNode<JPAEntity>>();
         List<Journal> userJournals = this.journalService.findAll();
         for (Journal journal: userJournals) {
             // For each journal loop through all the experiments
             List<Experiment> experimentList = new ArrayList<>(journal.getExperiments());
-            DefaultTreeNode<Experiment>[] experimentNodes = new DefaultTreeNode[experimentList.size()];
-            Logger.getGlobal().warning(journal.getName() + " has " + journal.getExperiments());
-
+            DefaultTreeNode<JPAEntity>[] experimentNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(Experiment.class, experimentList.size());
             for (int i = 0; i < experimentList.size(); i++)
             {
                 Experiment experiment = experimentList.get(i);
                 List<Document> documentList = new ArrayList<>(experiment.getDocuments());
-                DefaultTreeNode<Document>[] documentNodes = new DefaultTreeNode[documentList.size()];
+                DefaultTreeNode<JPAEntity>[] documentNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(Document.class, documentList.size());
                 for (int j = 0; j < documentList.size(); j++) {
-                    documentNodes[j] = new DefaultTreeNode<Document>(documentList.get(j));
+                    documentNodes[j] = new DefaultTreeNode<JPAEntity>(documentList.get(j));
                 }
 
                 Logger.getGlobal().warning(experimentList.get(i).toString());
-                experimentNodes[i] = new DefaultTreeNode(experimentList.get(i), documentNodes);
+                experimentNodes[i] = new DefaultTreeNode<JPAEntity>(experimentList.get(i), documentNodes);
             }
-            journalNodesList.add(new DefaultTreeNode(journal, experimentNodes));
+            journalNodesList.add(new DefaultTreeNode<JPAEntity>(journal, experimentNodes));
         }
 
         // Create the Array of TreeNode
-        DefaultTreeNode<Journal>[] journalNodes = new DefaultTreeNode[journalNodesList.size()];
+        DefaultTreeNode<JPAEntity>[] journalNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(DefaultTreeNode.class, journalNodesList.size());
         for (int i = 0; i < journalNodesList.size(); i++)
         {
             journalNodes[i] = journalNodesList.get(i);
         }
 
-        return new DefaultTreeModel<Journal>(new DefaultTreeNode<Journal>(null, journalNodes));
+        return new DefaultTreeModel<JPAEntity>(new DefaultTreeNode<JPAEntity>(null, journalNodes));
     }
 
     /**
-     * Eveery time a tab from the tree is clicked, we send a message to the navigation queue in order to update the
+     * Every time a tab from the tree is clicked, we send a message to the navigation queue in order to update the
      * details display.
      *
      * @param event Contains the data of the event.
      */
     @Listen("onClick = #treeTab")
     public void treeTabClick(MouseEvent event){
+
+        Set<Object> nodes = tree.
+
+
+        Set<Object> data = new LinkedHashSet<Object>();
+        Iterator iter = nodes.iterator();
+        while(iter.hasNext()) {
+            Object node = iter.next();
+            if(node != null)
+                data.add(((TreeNode<Entity>)node).getData());
+        }
+
+        _desktopScope.put("selectedElements", data);
+
         Logger.getGlobal().warning("sent event fr9om tree composer");
         this.itemDetailsQueue.publish(new Event(EventNames.DISPLAY_ENTITY_EVENT, this.treeWindow, event.getData()));
     }
@@ -322,92 +389,6 @@ public class TreeComposer extends SelectorComposer<Window> {
 
 */
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void initActionQueues(){
-		this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
-
-        /*
-		userEventsQueue.subscribe(new EventListener() {
-			@Override
-			public void onEvent(Event event) throws Exception {				
-				switch(event.getName()) {
-					case "projectAdded":		appendProject((String) event.getData());
-												break;
-					case "calculationAdded":	appendCalculation((String) event.getData());
-												break;
-					case "projectModified":     updateProject((HashMap<String,String>) event.getData());					
-												break;
-					case "calculationModified": updateCalculation((HashMap<String,String>) event.getData());
-												break;
-					case "projectDeleted":		deleteProject((String) event.getData());
-												break;
-					case "calculationDeleted" :	deleteCalculation((String) event.getData());
-												break;
-					case "checkRefreshNeeded":	if(((TreeNavigationModel)(((CustomTreeModel)tree.getModel()))).needsRefresh() && !movingElements)
-												refresh();
-												break;					
-					case "projectReorder":	 	reorderProjects((HashMap<String,Object>) event.getData());
-												break;												
-					case "calculationReorder":  reorderCalculation((HashMap<String,Object>) event.getData());
-												break;				
-					case "resetHome":			navigationQueue.publish(new Event("resetHome"));
-												reorderTree();
-												break;
-					case "refresh":				refresh();
-												break;
-					case "fileRetrieved":       String[] values = ((String)event.getData()).split("#");
-                                                notifyFileRetrieved(values[0], values[1]);
-                                                break;
-					
-				}
-			}
-		});		
-		navigationQueue = EventQueues.lookup("navigation", EventQueues.DESKTOP, true);
-		navigationQueue.subscribe(new EventListener(){
-			@Override
-			public void onEvent(Event event) throws Exception {
-				HashMap<String, Object> parameters = null;								 		
-				switch(event.getName()) {
-					case "resetHome":		resetHome();
-											break;
-					case "newnavigation":	newNavigation();
-											break;
-					case "movetoproject":	parameters = (HashMap<String, Object>) event.getData();
-											Entity project = (Entity) parameters.get("destinationItem");
-											Set<Object> selectedElements = (Set<Object>) parameters.get("sourceItems");
-											moveMultipleElementsToProject(project, selectedElements);
-											break;
-					case "movetocalculation":	parameters = (HashMap<String, Object>) event.getData();
-												Calculation source = (Calculation) parameters.get("sourceItems");
-												Calculation destination = (Calculation) parameters.get("destinationItem");
-												moveOverCalculation(source, destination);
-												break;
-					case "selectelementchildren":		onTreeDivSelectChildElementsClick();			// Only one project selected, select all children
-					case "checkParentPublished":
-					                                    if(selectTopParents() > 1)
-					                                        Messagebox.show("Can't publish content from unrelated projects, please select the content to publish from the same project.", "Multiple unrelated projects selected", Messagebox.OK, Messagebox.INFORMATION);  
-					                                    else
-					                                        elementPublishQueue.publish(new Event("show")); //showPublishedParentsDialog();
-														break;
-					case "showPublish":		elementPublishQueue.publish(new Event("show"));
-											break;
-																			
-				}
-			}
-		});
-		elementPublishQueue	= EventQueues.lookup("elementpublish", EventQueues.DESKTOP, true);
-        reportManagementQueue = EventQueues.lookup("reportmanagement", EventQueues.DESKTOP,true);
-        displayQueue = EventQueues.lookup("display", EventQueues.DESKTOP,true);
-        displayQueue.subscribe(new EventListener() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				switch(event.getName()) {
-					case "sizeChanged":	ScreenSize size = (ScreenSize)event.getData();  
-										setupLayout(size);	
-				}				
-			}        	
-        }); */
-	}
 /*
 
 	protected void moveOverCalculation(Calculation source, Calculation destination) {
