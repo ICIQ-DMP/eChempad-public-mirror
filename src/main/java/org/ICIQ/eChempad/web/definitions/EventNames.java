@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.web.ui;
+package org.ICIQ.eChempad.web.definitions;
 
 /**
  * This class is used to substitute the usage of strings to mention the {@code Event} names with constant public fields
@@ -16,7 +16,17 @@ package org.ICIQ.eChempad.web.ui;
 public class EventNames {
 
     /**
-     * Event that is used to notify the ItemDetailsComposer
+     * Event that is used to notify the ItemDetailsComposer to render an item.
      */
     public static final String DISPLAY_ENTITY_EVENT = "DISPLAY_ENTITY_EVENT";
+
+    /**
+     * Event that is used to modify the properties from an entity in the tree and in the backend.
+     */
+    public static final String MODIFY_ENTITY_PROPERTIES_EVENT = "MODIFY_ENTITY_PROPERTIES_EVENT";
+
+    /**
+     * Event used to create a new entity as children under another in the tree, modifying the view and the backend.
+     */
+    public static final String CREATE_CHILDREN_WITH_PROPERTIES_EVENT = "CREATE_CHILDREN_WITH_PROPERTIES_EVENT";
 }

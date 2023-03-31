@@ -17,8 +17,9 @@
  */
 package org.ICIQ.eChempad.web.ui.composers;
 
-import org.ICIQ.eChempad.web.ui.EventNames;
-import org.ICIQ.eChempad.web.ui.EventQueueNames;
+import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
+import org.ICIQ.eChempad.web.definitions.EventNames;
+import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
@@ -28,7 +29,6 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.*;
 
 import java.util.logging.Logger;
-import java.util.Date;
 
 
 public class ItemDetailsComposer extends SelectorComposer<Window> {
@@ -91,8 +91,12 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	@Wire
 	private Button itemDetailsRemoveButton;
 
-
-
+	/**
+	 * De-facto constructor for composer components.
+	 *
+	 * @param comp Window component
+	 * @throws Exception If something goes wrong during initialization.
+	 */
 	@Override
 	public void doAfterCompose(Window comp) throws Exception {
 		super.doAfterCompose(comp);
@@ -102,11 +106,9 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		this.disableBottomButtons(true);
 	}
 
-
-
-
-
-
+	/**
+	 * Initialize the action queues used to receive events and also declared the event listeners to attend to events.
+	 */
 	private void initActionQueues(){
 		this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
 
@@ -125,6 +127,50 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		});
 	}
 
+	/**
+	 * Displays the details of an entity in the ItemDetails component.
+	 *
+	 * @param entity Entity that contains the data to represent in the UI.
+	 */
+	public void displayEntityDetails(JPAEntity entity)
+	{
+		this.name.setValue(entity.getName());
+		this.cDate.setValue(entity.getCreationDate().toString());
+		this.description.setValue(entity.getDescription());
+		this.type.setValue(entity.getClass().getSimpleName());
+	}
+
+	/**
+	 * Enables / disables the buttons from the ItemDetails component.
+	 *
+	 * @param b Boolean with selected option
+	 */
+	private void disableBottomButtons(boolean b){
+		this.itemDetailsCreateButton.setDisabled(b);
+		this.itemDetailsModifyButton.setDisabled(b);
+		this.itemDetailsRemoveButton.setDisabled(b);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
 	@Listen("onClick = #itemDetailsCreateButton")
 	public void createProjectClick() throws Exception{
 		// createProject();
@@ -139,13 +185,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		// deleteSelectedElement();
 	}
 
-	public void displayEntityDetails(JPAEntity entity)
-	{
-		this.name.setValue(entity.getName());
-		this.cDate.setValue(entity.getCreationDate().toString());
-		this.description.setValue(entity.getDescription());
-		this.type.setValue(entity.getClass().getSimpleName());
-	}
+
 
 	private void resetHome(){
      	hiddenID.setValue("");
@@ -167,11 +207,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		operationButtonsLayout.setVisible(!hide);
 	}
 	
-	private void disableBottomButtons(boolean b){
-		this.itemDetailsCreateButton.setDisabled(b);
-		this.itemDetailsModifyButton.setDisabled(b);
-		this.itemDetailsRemoveButton.setDisabled(b);
-	}
+
 
 	private void setButtonsForElement(boolean isProject, boolean isPublished){
 		this.itemDetailsCreateButton.setDisabled(!isProject);
