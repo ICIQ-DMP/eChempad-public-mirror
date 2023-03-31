@@ -24,12 +24,11 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
-import org.ICIQ.eChempad.web.ui.EventNames;
-import org.ICIQ.eChempad.web.ui.EventQueueNames;
+import org.ICIQ.eChempad.web.definitions.EventNames;
+import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
-import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -176,12 +175,8 @@ public class TreeComposer extends SelectorComposer<Window> {
         Document exampleDocument1 = new Document("File Nested in two levels", "with description very nested");
         exampleDocument1.setContentType(MediaType.ALL);
         exampleDocument1.setExperiment(exampleExperiment1);
-        //Document exampleDocument2 = new Document("A file", "with description nested 2 times");
-        //Document exampleDocument3 = new Document("document name", "document description");
         Set<Document> exampleDocuments = new HashSet<Document>();
         exampleDocuments.add(exampleDocument1);
-        //exampleDocuments.add(exampleDocument2);
-        //exampleDocuments.add(exampleDocument3);
 
         exampleExperiment1.setDocuments(exampleDocuments);
         Set<Experiment> exampleExperiments = new HashSet<Experiment>();
@@ -199,37 +194,28 @@ public class TreeComposer extends SelectorComposer<Window> {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void initActionQueues(){
-        this.treeQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
-        this.treeQueue.subscribe(new EventListener(){
-            @Override
-            public void onEvent(Event event) throws Exception {
-                HashMap<String, Object> parameters = (HashMap<String, Object>) event.getData();
-                switch(event.getName()) {
-                    case EventNames.DISPLAY_ENTITY_EVENT:
-                    {
-                   /*     resetHome();
-                        break;
-                    }
-                    case "movetoproject":
-                    {
-                        parameters = (HashMap<String, Object>) event.getData();
-                        Entity project = (Entity) parameters.get("destinationItem");
-                        Set<Object> selectedElements = (Set<Object>) parameters.get("sourceItems");
-                        moveMultipleElementsToProject(project, selectedElements);
-                        break;
-                    }
-                    case "showPublish":
-                    {
-                        elementPublishQueue.publish(new Event("show"));
-                        break;*/
-                    }
-                    default:
-                    {
-                        break;
-                    }
+        this.treeQueue = EventQueues.lookup(EventQueueNames.TREE_QUEUE, EventQueues.DESKTOP, true);
+        this.treeQueue.subscribe((EventListener) event -> {
+            HashMap<String, Object> parameters = (HashMap<String, Object>) event.getData();
+            switch(event.getName()) {
+                case EventNames.MODIFY_ENTITY_PROPERTIES_EVENT:
+                {
+                    resetHome();
+                    break;
+                }
+                case EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT:
+                {
+                    resetHome();
+                    break;
+                }
+                default:
+                {
+                    break;
                 }
             }
         });
+
+        this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
     }
 
     /**
@@ -245,12 +231,12 @@ public class TreeComposer extends SelectorComposer<Window> {
         for (Journal journal: userJournals) {
             // For each journal loop through all the experiments
             List<Experiment> experimentList = new ArrayList<>(journal.getExperiments());
-            DefaultTreeNode<JPAEntity>[] experimentNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(Experiment.class, experimentList.size());
+            DefaultTreeNode<JPAEntity>[] experimentNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(DefaultTreeNode.class, experimentList.size());
             for (int i = 0; i < experimentList.size(); i++)
             {
                 Experiment experiment = experimentList.get(i);
                 List<Document> documentList = new ArrayList<>(experiment.getDocuments());
-                DefaultTreeNode<JPAEntity>[] documentNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(Document.class, documentList.size());
+                DefaultTreeNode<JPAEntity>[] documentNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(DefaultTreeNode.class, documentList.size());
                 for (int j = 0; j < documentList.size(); j++) {
                     documentNodes[j] = new DefaultTreeNode<JPAEntity>(documentList.get(j));
                 }
@@ -377,6 +363,53 @@ public class TreeComposer extends SelectorComposer<Window> {
 
         return entity;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
 	@Listen("onOpen=#treePopup")	

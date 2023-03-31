@@ -17,29 +17,19 @@
  */
 package org.ICIQ.eChempad.web.ui.composers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
-import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.ICIQ.eChempad.web.definitions.Constants;
-import org.ICIQ.eChempad.web.definitions.CustomProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * This is a custom controller, which in ZK is called a composer. To implement it, extend SelectorComposer and bound
@@ -69,9 +59,6 @@ public class MainComposer extends SelectorComposer<Window> {
 	 * Contains the String that represents the name of the user, which will be its ICIQ email.
 	 */
     private String userName = null;
-
-    private boolean isTreeFullSize = false;
-    private boolean isSearchFullSize = true;
 
 	// for loading calculation.
 	private HashMap<String,String> parameterFile = null;
@@ -119,14 +106,13 @@ public class MainComposer extends SelectorComposer<Window> {
 
     @Listen("onHelpClick=#mainWindow")
     public void helpBtnClick(){
-		String knowledgebaseUrl	= CustomProperties.getProperty("knowledgebase.url");
-		Executions.getCurrent().sendRedirect(knowledgebaseUrl, "_blank");
+
 	}
 
     @Listen("onFeedbackClick=#mainWindow")
     public void feedbackBtnClick(){
-		String knowledgebaseUrl	= CustomProperties.getProperty("feedback.url");
-		Executions.getCurrent().sendRedirect(knowledgebaseUrl, "_blank");
+		// String knowledgebaseUrl	= CustomProperties.getProperty("feedback.url");
+		// Executions.getCurrent().sendRedirect(knowledgebaseUrl, "_blank");
 	}
 
     @Listen("onLogoutClick=#mainWindow")
@@ -140,8 +126,6 @@ public class MainComposer extends SelectorComposer<Window> {
 	
 	@Listen("onDoubleClick=#treeTab")
 	public void treeTabDoubleClick(){
-		isTreeFullSize = !isTreeFullSize;
-
 		navigationQueue.publish(new Event("resetSearch"));
 	}
 	

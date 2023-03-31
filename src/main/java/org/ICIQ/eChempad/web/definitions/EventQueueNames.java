@@ -1,4 +1,4 @@
-package org.ICIQ.eChempad.web.ui;
+package org.ICIQ.eChempad.web.definitions;
 
 /**
  * This class is used to substitute the usage of strings to mention the {@code EventQueue}s with constant public fields
@@ -20,4 +20,10 @@ public class EventQueueNames {
      * are selected.
      */
     public static final String ITEM_DETAILS_QUEUE = "ITEM_DETAILS_QUEUE";
+
+    /**
+     * Queue used by the tree component, which will receive events to modify or create elements from the tree and also
+     * modify accordingly the backend.
+     */
+    public static final String TREE_QUEUE = "TREE_QUEUE";
 }
