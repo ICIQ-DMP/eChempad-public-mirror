@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.web.ui;
 
+import net.bytebuddy.build.Plugin;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
@@ -7,6 +8,8 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.zkoss.zul.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * This class is used to provide an implementation to the render method, which receives data from the tree as Journal
@@ -25,22 +28,11 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<J
         JPAEntity fi = data.getData();
         Treerow tr = new Treerow();
 
-        // Append name and description
-        if (fi instanceof Journal)
-        {
-            tr.appendChild(new Treecell( ((Journal)fi).getName()));
-            tr.appendChild(new Treecell( ((Journal)fi).getDescription()));
-        }
-        else if (fi instanceof Experiment)
-        {
-            tr.appendChild(new Treecell( ((Experiment)fi).getName()));
-            tr.appendChild(new Treecell( ((Experiment)fi).getDescription()));
-        }
-        else if (fi instanceof Document)
-        {
-            tr.appendChild(new Treecell( ((Document)fi).getName()));
-            tr.appendChild(new Treecell( ((Document)fi).getDescription()));
-        }
+        // Append name
+        tr.appendChild(new Treecell(fi.getName()));
+
+        // Append description
+        tr.appendChild(new Treecell(fi.getDescription()));
 
         // Append item type
         tr.appendChild(new Treecell(fi.getClass().getSimpleName()));
@@ -48,6 +40,10 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<J
         // Append the date
         SimpleDateFormat dateFormatter = new SimpleDateFormat();
         tr.appendChild(new Treecell(dateFormatter.format(fi.getCreationDate())));
+        Logger.getGlobal().warning("render date " + dateFormatter.format(fi.getCreationDate()));
+
+        // Append hidden ID
+        tr.appendChild(new Treecell(fi.getId().toString()));
 
         item.appendChild(tr);
     }

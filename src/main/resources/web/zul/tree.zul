@@ -21,11 +21,12 @@
  <window id="treeWindow" apply="org.ICIQ.eChempad.web.ui.composers.TreeComposer" onClientInfo="clientInfo(event)" hflex="1" vflex="1">
     <tree id="tree" sclass="navigation-tree" multiple="true" checkmark="false" context="emptyTreePopup" hflex="1" vflex="1">
     	<treecols sizable="true">
- 			<treecol hflex="12" label="Name" id="nameTreeColumn" sort="none" />
+			<treecol hflex="12" label="Name" id="nameTreeColumn" sort="none" />
             <treecol hflex="15" label="Description" id="descriptionTreeColumn" sort="none"/>
 			<treecol hflex="6" label="Type" id="typeTreeColumn" sort="none"/>
 			<treecol hflex="10" label="Creation Date" id="creationDateTreeColumn" sort="none"/>
-            <treecol hflex="10" label="Modification Date" id="modificationDateTreeColumn" sort="none" visible="false"/>
+			<treecol id="hiddenID" visible="false"/>
+			<treecol hflex="10" label="Modification Date" id="modificationDateTreeColumn" sort="none" visible="false"/>
             <treecol hflex="min" label="Published" id="publishedTreeColumn" sort="none" tooltiptext="Published" />
         </treecols>
         <treechildren id="elementsChildren">        
