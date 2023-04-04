@@ -165,6 +165,7 @@ public class Journal extends JPAEntityImpl {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", creationDate=" + creationDate +
                 ", experiments=" + experiments +
                 '}';
     }

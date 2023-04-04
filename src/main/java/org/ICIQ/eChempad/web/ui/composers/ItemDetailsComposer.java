@@ -28,12 +28,26 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.*;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 
 public class ItemDetailsComposer extends SelectorComposer<Window> {
 
+	/**
+	 * Receiving event queue
+	 */
 	private EventQueue<Event> itemDetailsQueue = null;
+
+	/**
+	 * Events that the tree component has to attend.
+	 */
+	private EventQueue<Event> treeQueue;
 
 	private int defaultPermission = 0;
 
@@ -103,7 +117,10 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 
 		this.initActionQueues();
 
-		this.disableBottomButtons(true);
+		// Enable create button from the beginning
+		this.itemDetailsCreateButton.setDisabled(false);
+		this.itemDetailsModifyButton.setDisabled(true);
+		this.itemDetailsRemoveButton.setDisabled(true);
 	}
 
 	/**
@@ -111,12 +128,16 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	 */
 	private void initActionQueues(){
 		this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
-
 		this.itemDetailsQueue.subscribe(event -> {
 			switch (event.getName()) {
 				case EventNames.DISPLAY_ENTITY_EVENT:
 				{
 					this.displayEntityDetails((JPAEntity) event.getData());
+					break;
+				}
+				case EventNames.CLEAR_ENTITY_DETAILS_EVENT:
+				{
+					this.clearDetails();
 					break;
 				}
 				default:
@@ -125,7 +146,28 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 				}
 			}
 		});
+
+		this.treeQueue = EventQueues.lookup(EventQueueNames.TREE_QUEUE, EventQueues.DESKTOP, true);
 	}
+
+
+	// LISTENERS
+
+	@Listen("onClick = #itemDetailsCreateButton")
+	public void createProjectClick() throws Exception{
+		this.treeQueue.publish(new Event(EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT, null, this.parseEntityFromDetails()));
+	}
+
+	@Listen("onClick = #itemDetailsModifyButton")
+	public void modifyClick() throws InterruptedException, Exception{
+		this.treeQueue.publish(new Event(EventNames.MODIFY_ENTITY_PROPERTIES_EVENT, null, this.parseEntityFromDetails()));
+	}
+
+	@Listen("onClick = #itemDetailsRemoveButton")
+	public void removeClick() throws InterruptedException{
+		this.treeQueue.publish(new Event(EventNames.DELETE_TREE_ENTITY_EVENT, null, this.parseEntityFromDetails()));
+	}
+
 
 	/**
 	 * Displays the details of an entity in the ItemDetails component.
@@ -134,28 +176,83 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	 */
 	public void displayEntityDetails(JPAEntity entity)
 	{
+		// Load data into UI
+		this.hiddenID.setValue(entity.getId().toString());
 		this.name.setValue(entity.getName());
-		this.cDate.setValue(entity.getCreationDate().toString());
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+		this.cDate.setValue(simpleDateFormat.format(entity.getCreationDate()));
 		this.description.setValue(entity.getDescription());
 		this.type.setValue(entity.getClass().getSimpleName());
+
+		// Enable delete and modification button
+		this.itemDetailsRemoveButton.setDisabled(false);
+		this.itemDetailsModifyButton.setDisabled(false);
 	}
 
 	/**
-	 * Enables / disables the buttons from the ItemDetails component.
-	 *
-	 * @param b Boolean with selected option
+	 * Clears all the details from the ItemDetails UI component.
 	 */
-	private void disableBottomButtons(boolean b){
-		this.itemDetailsCreateButton.setDisabled(b);
-		this.itemDetailsModifyButton.setDisabled(b);
-		this.itemDetailsRemoveButton.setDisabled(b);
+	public void clearDetails()
+	{
+		// Load data into UI
+		this.hiddenID.setValue("");
+		this.name.setValue("");
+		this.cDate.setValue("");
+		this.description.setValue("");
+		this.type.setValue("");
+
+		// Enable delete and modification button
+		this.itemDetailsRemoveButton.setDisabled(true);
+		this.itemDetailsModifyButton.setDisabled(true);
+		this.itemDetailsCreateButton.setDisabled(false);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	void deleteSelectedElement() throws InterruptedException{
+		/*if (getSelectedElementPath() == null)
+			Messagebox.show("No selected Element, please, select one.","No selection",Messagebox.OK, Messagebox.ERROR);
+		else
+			Messagebox.show("Confirm element removal: \n" + getSelectedElementPath() ,"Remove element",Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new DeleteElementListener());*/
+	}
 
+	private JPAEntity parseEntityFromDetails()
+	{
+		// Search the type of the entity received in the parameter and create its corresponding class.
+		Class<?> entityClass = null;
+		try {
+			entityClass = Class.forName("org.ICIQ.eChempad.entities.genericJPAEntities." + this.type.getValue());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 
+		// Create new instance from class using reflective paradigm.
+		JPAEntity entity = null;
+		try {
+			entity = (JPAEntity) Objects.requireNonNull(entityClass).newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		if (entity == null)
+		{
+			return null;
+		}
 
+		SimpleDateFormat dateFormatter = new SimpleDateFormat();
+		try {
+			Logger.getGlobal().warning("itemdetails value " + this.cDate.getValue());
+			entity.setCreationDate(dateFormatter.parse(this.cDate.getValue()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
+		entity.setName(this.name.getValue());
+		entity.setDescription(this.description.getValue());
 
+		Logger.getGlobal().warning("this.hiddenID.getId()" + this.hiddenID.getValue());
+		entity.setId(UUID.fromString(this.hiddenID.getValue()));
+
+		return entity;
+	}
 
 
 
@@ -171,22 +268,6 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 
 
 	/*
-	@Listen("onClick = #itemDetailsCreateButton")
-	public void createProjectClick() throws Exception{
-		// createProject();
-	}
-	@Listen("onClick = #itemDetailsModifyButton")
-	public void modifyClick() throws InterruptedException, Exception{
-		// modifyElement();
-	}
-	@Listen("onClick = #itemDetailsRemoveButton")
-	public void removeClick() throws InterruptedException{
-		System.out.println("sfdsdf");
-		// deleteSelectedElement();
-	}
-
-
-
 	private void resetHome(){
      	hiddenID.setValue("");
      	name.setText("");
@@ -340,19 +421,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		return DATE_FORMATTER.format(date);
 	}
 
-    @SuppressWarnings("unchecked")
-	private void createProject() throws Exception{
-    	final String userHome = Main.getUserPath();
-    	Entity oldData = null;
 
-    	String elementId = hiddenID.getValue();
-    	String userPath = "";
-    	if (elementId.equals(""))
-    		userPath = userHome;
-    	else {
-    		oldData = ProjectService.getById(Integer.valueOf(elementId));
-    		userPath = isProjectSelected()? oldData.getPath(): oldData.getParentPath();    		
-    	}
     	
     	name.setText(Main.normalizeField(name.getText()));
     	if(areCreateProjectParametersValid(userPath, userHome)){
@@ -401,22 +470,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
     	return true;
     }
    
-    public void modifyElement() throws Exception {
-    	if(getSelectedElementPath() == null) {
-    		Messagebox.show("No selected Element, please, select one.","No selection",Messagebox.OK, Messagebox.ERROR);
-    		return;
-    	}    	
-    	int entityId = Integer.valueOf(hiddenID.getValue());
-    	if(isProjectSelected()) {    	    
-    		Project project = ProjectService.getById(entityId);
-    		if(havePermissionsChanged(project))     		
-    		    showUpdateChildrenDialog(project);
-    		else
-    		    modifyProject(project, false);
-    	} else {    	       		
-    		modifyCalculation(CalculationService.getById(entityId));        	     		    
-    	}    	
-    }
+
     
     private void modifyCalculation(Calculation calculation) {        
         calculation.setDescription(description.getText());
@@ -470,13 +524,6 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
         window.doModal();
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	void deleteSelectedElement() throws InterruptedException{
-    	if (getSelectedElementPath() == null)
-    		Messagebox.show("No selected Element, please, select one.","No selection",Messagebox.OK, Messagebox.ERROR);    	
-    	else
-        	Messagebox.show("Confirm element removal: \n" + getSelectedElementPath() ,"Remove element",Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new DeleteElementListener());    	
-    }
 
     public String getSelectedElementPath() throws InterruptedException {
     	if ((hiddenID.getValue() == null) || (hiddenID.getValue().equals(""))) 

@@ -29,6 +29,7 @@ import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -53,7 +54,7 @@ public class TreeComposer extends SelectorComposer<Window> {
 
     // Sending event queues
     /**
-     * To send the events to the tree component in order to modify it.
+     * To send the events to the item details component in order to modify it.
      */
     private EventQueue<Event> itemDetailsQueue;
 
@@ -62,8 +63,6 @@ public class TreeComposer extends SelectorComposer<Window> {
      * Events that the tree component has to attend.
      */
     private EventQueue<Event> treeQueue;
-
-
 
 
     @WireVariable("desktopScope")
@@ -195,17 +194,53 @@ public class TreeComposer extends SelectorComposer<Window> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void initActionQueues(){
         this.treeQueue = EventQueues.lookup(EventQueueNames.TREE_QUEUE, EventQueues.DESKTOP, true);
+        this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
         this.treeQueue.subscribe((EventListener) event -> {
-            HashMap<String, Object> parameters = (HashMap<String, Object>) event.getData();
             switch(event.getName()) {
                 case EventNames.MODIFY_ENTITY_PROPERTIES_EVENT:
                 {
-                    resetHome();
+                    Logger.getGlobal().warning("jpa entityt received in tree " + ((JPAEntity)event.getData()).toString());
+                    this.unParseOverTreeCell((JPAEntity) event.getData(), this.tree.getSelectedItem());
                     break;
                 }
                 case EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT:
                 {
-                    resetHome();
+                    // Ignore new entities created under a Document
+                    if (((JPAEntity) event.getData()).getTypeName().equals("Document"))
+                    {
+                        Logger.getGlobal().warning("cannot create children under document entity");
+                    }
+
+                    // Obtain children from the selected element. If not available append to it.
+                    Treeitem treeitem = new Treeitem();
+                    Treechildren treechildren = this.tree.getSelectedItem().getTreechildren();
+                    if (treechildren == null) {
+                        treechildren = new Treechildren();
+                        treeitem.appendChild(treechildren); // Append the Treechildren object to the item
+                    }
+
+                    Treerow row = new Treerow();
+                    Treecell cell = new Treecell("New Element");
+                    row.appendChild(cell); // Append the Treecell object to the Treerow object
+
+                    treechildren.appendChild(row); // Append the Treerow object to the Treechildren object
+
+                    break;
+                }
+                case EventNames.DELETE_TREE_ENTITY_EVENT:
+                {
+                    // UI modification tree
+                    Treeitem selectedItem = this.tree.getSelectedItem();
+                    if (selectedItem != null) {
+                        selectedItem.detach();  // Remove the selected Treeitem
+                    }
+
+                    // UI modification item details
+                    this.itemDetailsQueue.publish(new Event(EventNames.CLEAR_ENTITY_DETAILS_EVENT, this.tree, null));
+
+                    // Backend modification
+                    this.removeBackendEntity((JPAEntity) event.getData());
+
                     break;
                 }
                 default:
@@ -215,7 +250,89 @@ public class TreeComposer extends SelectorComposer<Window> {
             }
         });
 
-        this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
+    }
+
+    /**
+     * Receives an object instance that contains the data to be applied over the selected item of the tree.
+     *
+     * @param jpaEntity Entity that contains data.
+     */
+    public void unParseOverTreeCell(JPAEntity jpaEntity, Treeitem treeitem)
+    {
+        // Obtain the childrenComponents of the received TreeItem.
+        List<Treecell> childrenComponents = treeitem.getTreerow().getChildren();
+
+        // Parse tree cells into fields of the entity using id to identify
+        for (Treecell treecell : childrenComponents)
+        {
+            String id = treecell.getTreecol().getId();
+            switch (id)
+            {
+                case "descriptionTreeColumn":
+                {
+                    treecell.setLabel(jpaEntity.getDescription());
+                    break;
+                }
+                case "nameTreeColumn":
+                {
+                    treecell.setLabel(jpaEntity.getName());
+                    break;
+                }
+                case "creationDateTreeColumn":
+                {
+                    SimpleDateFormat dateFormatter = new SimpleDateFormat();
+
+                    Logger.getGlobal().warning(jpaEntity.getCreationDate().toString());
+                    Logger.getGlobal().warning(dateFormatter.format(jpaEntity.getCreationDate()));
+
+                    treecell.setLabel(dateFormatter.format(jpaEntity.getCreationDate()));
+                    break;
+                }
+                case "hiddenID":
+                {
+                    treecell.setLabel(jpaEntity.getId().toString());
+                    break;
+                }
+                default:
+                {
+                    Logger.getGlobal().warning("not recognised case" + id);
+                }
+            }
+        }
+    }
+
+    /**
+     * Method to produce changes in the backend of the application.
+     *
+     * @param jpaEntity Entity that is going to be removed from the DB.
+     */
+    public void removeBackendEntity(JPAEntity jpaEntity)
+    {
+        switch (jpaEntity.getTypeName())
+        {
+            case "org.ICIQ.eChempad.entities.genericJPAEntities.Journal":
+            {
+                this.journalService.delete((Journal) jpaEntity);
+                break;
+            }
+            case "org.ICIQ.eChempad.entities.genericJPAEntities.Experiment":
+            {
+                this.experimentService.delete((Experiment) jpaEntity);
+                break;
+            }
+            case "org.ICIQ.eChempad.entities.genericJPAEntities.Document":
+            {
+                this.documentService.delete((Document) jpaEntity);
+                break;
+            }
+            default:
+            {
+                Logger.getGlobal().warning(jpaEntity.getTypeName());
+
+                Logger.getGlobal().warning("Nope");
+                break;
+            }
+        }
     }
 
     /**
@@ -280,10 +397,12 @@ public class TreeComposer extends SelectorComposer<Window> {
         this.itemDetailsQueue.publish(new Event(EventNames.DISPLAY_ENTITY_EVENT, this.treeWindow, entity));
     }
 
-
-	@Listen("onClick=#refreshBtn")
+    /**
+     * Handles the click on the refresh button of the tree component
+     */
+    @Listen("onClick=#refreshBtn")
 	public void onRefreshBtnClick() {
-        createModel();
+        this.createModel();
 	}
 
     // Data transformation methods
@@ -303,7 +422,6 @@ public class TreeComposer extends SelectorComposer<Window> {
             entityClass = Class.forName("org.ICIQ.eChempad.entities.genericJPAEntities." + Objects.requireNonNull(childrenComponents.stream()
                             .filter((Treecell treecell) ->
                             {
-                                Logger.getGlobal().warning("the id" + treecell.getTreecol().getId());
                                 return treecell.getTreecol().getId().equals("typeTreeColumn");
                             })
                             .findFirst()
@@ -352,6 +470,11 @@ public class TreeComposer extends SelectorComposer<Window> {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+                    break;
+                }
+                case "hiddenID":
+                {
+                    entity.setId(UUID.fromString(content));
                     break;
                 }
                 default:

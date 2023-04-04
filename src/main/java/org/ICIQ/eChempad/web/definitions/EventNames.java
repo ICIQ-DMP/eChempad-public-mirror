@@ -29,4 +29,15 @@ public class EventNames {
      * Event used to create a new entity as children under another in the tree, modifying the view and the backend.
      */
     public static final String CREATE_CHILDREN_WITH_PROPERTIES_EVENT = "CREATE_CHILDREN_WITH_PROPERTIES_EVENT";
+
+    /**
+     * Event to delete an entity from the tree using its id.
+     */
+    public static final String DELETE_TREE_ENTITY_EVENT = "DELETE_TREE_ENTITY_EVENT";
+
+    /**
+     * Event to clear the details of an entity in the details component.
+     */
+    public static final String CLEAR_ENTITY_DETAILS_EVENT = "CLEAR_ENTITY_DETAILS_EVENT";
+
 }
