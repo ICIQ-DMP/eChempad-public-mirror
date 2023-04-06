@@ -28,10 +28,9 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.*;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -115,12 +114,29 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	public void doAfterCompose(Window comp) throws Exception {
 		super.doAfterCompose(comp);
 
+		// Create event queues
 		this.initActionQueues();
 
+		// Set UI initial state
+		this.setInitialDetailsState();
+	}
+
+	/**
+	 * This method initializes the item details form so the create button could be pressed right away after the
+	 * initialization fo the UI. It assigns a type Journal, a creation date in the moment of initialization and a UUID
+	 * so a new Journal can be created.
+	 */
+	private void setInitialDetailsState()
+	{
 		// Enable create button from the beginning
 		this.itemDetailsCreateButton.setDisabled(false);
 		this.itemDetailsModifyButton.setDisabled(true);
 		this.itemDetailsRemoveButton.setDisabled(true);
+
+		// Assign default data to the item details component so the creation button has consistent data at startup
+		this.type.setValue("Journal");
+		this.cDate.setValue(new SimpleDateFormat().format(new Date()));
+		this.hiddenID.setValue(UUID.randomUUID().toString());
 	}
 
 	/**

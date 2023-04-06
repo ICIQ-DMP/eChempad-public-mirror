@@ -39,7 +39,7 @@
 			   			<textbox id="name" value="" sclass="form-control col-md-6" readonly="false" tooltiptext="Name of the selected resource. If 'create project' is pressed is the name of the new created project."/>
 			   			
 			   			<n:label class="col-md-2 ">Type</n:label>
-			   			<label id="type" value="" sclass="col-md-2 " />	                     			
+			   			<label id="type" value="" sclass="col-md-2 " />
 					</div>
 					<div sclass="row mb-1 item-details-row">   			
 			 		    <n:label class="col-md-2 ">Description</n:label>

@@ -22,6 +22,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
+import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
@@ -30,11 +31,8 @@ import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zk.ui.event.MouseEvent;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -42,9 +40,9 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -143,6 +141,9 @@ public class TreeComposer extends SelectorComposer<Window> {
     @WireVariable("documentService")
     private DocumentService<Document, UUID> documentService;
 
+    @WireVariable("entityConversionService")
+    private EntityConversionService entityConversionService;
+
     @Override
     public void doAfterCompose(Window comp) throws Exception {
         // Propagate call to parent
@@ -199,33 +200,78 @@ public class TreeComposer extends SelectorComposer<Window> {
             switch(event.getName()) {
                 case EventNames.MODIFY_ENTITY_PROPERTIES_EVENT:
                 {
-                    Logger.getGlobal().warning("jpa entityt received in tree " + ((JPAEntity)event.getData()).toString());
                     this.unParseOverTreeCell((JPAEntity) event.getData(), this.tree.getSelectedItem());
                     break;
                 }
                 case EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT:
                 {
-                    // Ignore new entities created under a Document
-                    if (((JPAEntity) event.getData()).getTypeName().equals("Document"))
+                    // Check if there is a selected element. If not just create it in the root.
+                    Treeitem selectedItem = this.tree.getSelectedItem();
+                    if (selectedItem == null)
                     {
-                        Logger.getGlobal().warning("cannot create children under document entity");
+                        // There is no selection, create the new project as a Journal in the root
+                        Treechildren root = tree.getTreechildren();  // Get the Treechildren object of the tree
+                        if (root == null)
+                        {
+                            root = new Treechildren();
+                            tree.appendChild(root);  // Append the Treechildren object to the tree
+                        }
+                        Treeitem newTreeItem = new Treeitem();
+                        root.appendChild(newTreeItem); // Append the Treeitem object to the root Treechildren object
+                        this.unParseOverTreeCell((JPAEntity) event.getData(), newTreeItem);
                     }
+                    else  // There is a selection. We need to create element under the selection.
+                    {
+                        // Ignore new entities created under a Document
+                        if (((JPAEntity) event.getData()).getTypeName().equals("Document"))
+                        {
+                            Logger.getGlobal().warning("cannot create children under document entity");
+                            break;
+                        }
 
-                    // Obtain children from the selected element. If not available append to it.
-                    Treeitem treeitem = new Treeitem();
-                    Treechildren treechildren = this.tree.getSelectedItem().getTreechildren();
-                    if (treechildren == null) {
-                        treechildren = new Treechildren();
-                        treeitem.appendChild(treechildren); // Append the Treechildren object to the item
+                        // Obtain children from the selected element. If not available create it and append to the
+                        // selection
+                        Treechildren treechildren = selectedItem.getTreechildren();
+                        if (treechildren == null)
+                        {
+                            treechildren = new Treechildren();  // Create a list of children under the selected element
+                            selectedItem.appendChild(treechildren);
+                        }
+
+                        // Create the tree item that will store the newly created info
+                        Treeitem newTreeItem = new Treeitem();
+                        treechildren.appendChild(newTreeItem);
+
+                        // Obtain the type of the selected element
+                        Optional<Component> typeTreeCellOptional = selectedItem.getTreerow().getChildren().stream().filter(
+                                (Component comp) -> {
+                                    return ((Treecell) comp).getTreecol().getId().equals("Type");
+                                }
+                        )
+                                .findFirst();
+
+                        String selectedType;
+                        if (typeTreeCellOptional.isPresent())
+                        {
+                            selectedType = ((Treecell) typeTreeCellOptional.get()).getTreecol().getLabel();
+                        }
+                        else throw new Exception();
+
+                        // Parse item details sent entity into the desired type depending on the type of the selected
+                        // item
+                        JPAEntity newJpaEntity;
+                        if (selectedType.equals("Journal"))
+                        {
+                            newJpaEntity = this.entityConversionService.parseExperiment((JPAEntity) event.getData());
+                        }
+                        else if (selectedType.equals("Experiment"))
+                        {
+                            newJpaEntity = this.entityConversionService.parseExperiment((JPAEntity) event.getData());
+                        }
+
+                        // Unparse data over the tree item
+                        this.unParseOverTreeCell((JPAEntity) event.getData(), newTreeItem);
                     }
-
-                    Treerow row = new Treerow();
-                    Treecell cell = new Treecell("New Element");
-                    row.appendChild(cell); // Append the Treecell object to the Treerow object
-
-                    treechildren.appendChild(row); // Append the Treerow object to the Treechildren object
-
-                    break;
                 }
                 case EventNames.DELETE_TREE_ENTITY_EVENT:
                 {
