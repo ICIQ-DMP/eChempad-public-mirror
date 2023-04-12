@@ -40,7 +40,6 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<J
         // Append the date
         SimpleDateFormat dateFormatter = new SimpleDateFormat();
         tr.appendChild(new Treecell(dateFormatter.format(fi.getCreationDate())));
-        Logger.getGlobal().warning("render date " + dateFormatter.format(fi.getCreationDate()));
 
         // Append hidden ID
         tr.appendChild(new Treecell(fi.getId().toString()));

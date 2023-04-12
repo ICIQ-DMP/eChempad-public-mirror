@@ -216,8 +216,11 @@ public class TreeComposer extends SelectorComposer<Window> {
                             root = new Treechildren();
                             tree.appendChild(root);  // Append the Treechildren object to the tree
                         }
-                        Treeitem newTreeItem = new Treeitem();
-                        root.appendChild(newTreeItem); // Append the Treeitem object to the root Treechildren object
+
+                        // Obtain a template treeitem and append it to the tree
+                        Treeitem newTreeItem = this.getEmptyCustomTreeItem();
+                        root.appendChild(newTreeItem);
+
                         this.unParseOverTreeCell((JPAEntity) event.getData(), newTreeItem);
                     }
                     else  // There is a selection. We need to create element under the selection.
@@ -306,12 +309,14 @@ public class TreeComposer extends SelectorComposer<Window> {
     public void unParseOverTreeCell(JPAEntity jpaEntity, Treeitem treeitem)
     {
         // Obtain the childrenComponents of the received TreeItem.
-        List<Treecell> childrenComponents = treeitem.getTreerow().getChildren();
+        Treerow treerow = treeitem.getTreerow();
+        List<Treecell> childrenComponents = treerow.getChildren();
 
         // Parse tree cells into fields of the entity using id to identify
         for (Treecell treecell : childrenComponents)
         {
-            String id = treecell.getTreecol().getId();
+            Treecol treecol = treecell.getTreecol();
+            String id = treecol.getId();
             switch (id)
             {
                 case "descriptionTreeColumn":
@@ -346,6 +351,66 @@ public class TreeComposer extends SelectorComposer<Window> {
             }
         }
     }
+
+
+    /**
+     * This method returns an instance of Treeitem that contains the rows that we use on the Zkoss template.
+     *
+     * @return Treeitem instance with a row containing all the Treecells and the properties that we are using on the tree.
+     */
+    public Treeitem getEmptyCustomTreeItem()
+    {
+        Treeitem newTreeItem = new Treeitem();
+        Treerow newTreeRow = new Treerow();
+
+        for (Component treecol : this.tree.getTreecols().getChildren())
+        {
+            Logger.getGlobal().warning("treecol id " + treecol.getId() + " treecol value " + ((Treecol) treecol).getLabel());
+            String id = treecol.getId();
+            switch (id)
+            {
+                case "descriptionTreeColumn":
+                {
+
+                    Treecell descriptionTreeColumn = new Treecell();
+                    descriptionTreeColumn.setId("descriptionTreeCell");
+                    newTreeRow.appendChild(descriptionTreeColumn);
+                    break;
+                }
+                case "nameTreeColumn":
+                {
+                    Treecell nameTreeColumn = new Treecell();
+                    nameTreeColumn.setId("nameTreeCell");
+                    newTreeRow.appendChild(nameTreeColumn);
+                    break;
+                }
+                case "creationDateTreeColumn":
+                {
+                    Treecell creationDateTreeColumn = new Treecell();
+                    creationDateTreeColumn.setId("creationDateTreeCell");
+                    newTreeRow.appendChild(creationDateTreeColumn);
+                    break;
+                }
+                case "hiddenID":
+                {
+                    Treecell hiddenID = new Treecell();
+                    hiddenID.setId("hiddenIDCell");
+                    newTreeRow.appendChild(hiddenID);
+                    break;
+                }
+                default:
+                {
+                    Logger.getGlobal().warning("not recognised case" + id);
+                    break;
+                }
+            }
+        }
+
+        newTreeItem.appendChild(newTreeRow);
+
+        return newTreeItem;
+    }
+
 
     /**
      * Method to produce changes in the backend of the application.
