@@ -31,7 +31,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
-@Service
+@Service("signalsImportService")
 @ConfigurationProperties(prefix = "signals")
 public class SignalsImportServiceImpl implements SignalsImportService {
 
@@ -76,6 +76,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         String APIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
 
         Logger.getGlobal().warning("Using token for signals " + APIKey);
+        Logger.getGlobal().warning(" researcher logged    " + ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher());
 
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();

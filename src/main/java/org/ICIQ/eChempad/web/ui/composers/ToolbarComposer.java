@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.web.ui.composers;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.SignalsImportService;
 import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
@@ -18,6 +19,7 @@ import org.zkoss.zul.Window;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Scope("desktop")
@@ -25,16 +27,16 @@ import java.util.logging.Logger;
 public class ToolbarComposer extends SelectorComposer<Window> {
 
     @Wire
-    private Button import_signals;
+    private Button importSignals;
 
     @Wire
-    private Button import_dataverse;
+    private Button importDataverse;
 
     @WireVariable("signalsImportService")
     private SignalsImportService signalsImportService;
 
     @WireVariable("journalService")
-    private JournalService journalService;
+    private JournalService<Journal, UUID> journalService;
 
     /**
      * De-facto constructor for composer components.
@@ -45,13 +47,12 @@ public class ToolbarComposer extends SelectorComposer<Window> {
     @Override
     public void doAfterCompose(Window comp) throws Exception {
         super.doAfterCompose(comp);
-
-        this.signalsImportService = (SignalsImportService) SpringUtil.getBean("signalsImportService");
     }
 
 
-    @Listen("onClick = #import_signals")
-    public void onClickImportDataverseButton() throws IOException {
+    @Listen("onClick = #importSignals")
+    public void onClickImportSignalButton() throws IOException {
+
         Logger.getGlobal().warning(journalService.findAll().toString());
 
         this.signalsImportService.importWorkspace();
