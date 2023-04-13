@@ -18,6 +18,7 @@
 package org.ICIQ.eChempad.web.ui.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.zkoss.zk.ui.event.Event;
@@ -200,6 +201,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		this.description.setValue(entity.getDescription());
 		this.type.setValue(entity.getClass().getSimpleName());
 
+
 		// Enable delete and modification button
 		this.itemDetailsRemoveButton.setDisabled(false);
 		this.itemDetailsModifyButton.setDisabled(false);
@@ -211,11 +213,11 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	public void clearDetails()
 	{
 		// Load data into UI
-		this.hiddenID.setValue("");
+		this.hiddenID.setValue(UUID.randomUUID().toString());
 		this.name.setValue("");
-		this.cDate.setValue("");
+		this.cDate.setValue(new SimpleDateFormat().format(new Date()));
 		this.description.setValue("");
-		this.type.setValue("");
+		this.type.setValue("Journal");
 
 		// Enable delete and modification button
 		this.itemDetailsRemoveButton.setDisabled(true);
@@ -238,7 +240,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		try {
 			entityClass = Class.forName("org.ICIQ.eChempad.entities.genericJPAEntities." + this.type.getValue());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			entityClass = Journal.class;
 		}
 
 		// Create new instance from class using reflective paradigm.

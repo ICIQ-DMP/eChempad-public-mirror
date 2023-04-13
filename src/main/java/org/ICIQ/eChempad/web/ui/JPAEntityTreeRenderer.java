@@ -25,6 +25,14 @@ import java.util.logging.Logger;
  */
 public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<JPAEntity>> {
     public void render(Treeitem item, DefaultTreeNode<JPAEntity> data, int index) throws Exception {
+        if (data == null)
+        {
+            Logger.getGlobal().warning("null data in renderer");
+            return;
+        }
+        DefaultTreeNode<JPAEntity> defaultTreeNode = item.getValue();
+        Logger.getGlobal().warning("the default tre node " + defaultTreeNode);
+
         JPAEntity fi = data.getData();
         Treerow tr = new Treerow();
 

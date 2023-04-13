@@ -162,6 +162,9 @@
 
     <borderlayout id="mainLarge" vflex="1">
 
+        <north id="propertiesCenter">
+            <include src="~./zul/toolbar.zul"/>
+        </north>
 
         <center id="treeLayout">
             <div id="treeDiv" height="100%">
@@ -172,6 +175,8 @@
 
         <east id="propertiesEast" splittable="true" collapsible="false" size="50%" >
             <borderlayout id="propertiesLayout">
+
+
 
 
                 <north id="propertiesNorth"  splittable="true" collapsible="false" size="50%" >
