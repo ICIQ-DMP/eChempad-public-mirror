@@ -163,6 +163,13 @@
 			<version>${spring-security.version}</version>
 		</dependency>
 
+		<!-- Used to control login / logout with ZK -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
 		<!-- Allows the creation of our own properties in application.properties file -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -196,6 +203,19 @@
 			<version>${spring-framework.version}</version>
 		</dependency>
 
+		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+		</dependency>
 
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
 		<dependency>

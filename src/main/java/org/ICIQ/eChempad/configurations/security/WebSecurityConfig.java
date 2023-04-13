@@ -87,10 +87,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         String removeDesktopRegex = "/zkau\\?dtid=.*&cmd_0=rmDesktop&.*";
 
         // Anonymous accessible pages
-        String[] anonymousPages = new String[]{"/", "/login","/logout", "/timeout", "/help", "/exit"};
+        String[] anonymousPages = new String[]{"/login","/logout", "/timeout", "/help", "/exit"};
 
         // Pages that need authentication: CRUD API & ZK page
-        String[] authenticatedPages = new String[]{"/api/**", "/profile"};
+        String[] authenticatedPages = new String[]{"/api/**", "/profile", "/"};
 
         // you need to disable spring CSRF to make ZK AU pass security filter
         // ZK already sends a AJAX request with a built-in CSRF token,

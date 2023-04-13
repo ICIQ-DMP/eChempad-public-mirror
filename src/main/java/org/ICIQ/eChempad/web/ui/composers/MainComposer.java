@@ -18,6 +18,8 @@
 package org.ICIQ.eChempad.web.ui.composers;
 
 import org.ICIQ.eChempad.web.definitions.Constants;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -130,8 +132,7 @@ public class MainComposer extends SelectorComposer<Window> {
 	}
 	
 	@Listen("onClick=#searchTab")
-	public void searchTabClick(){	
-
+	public void searchTabClick(){
 		navigationQueue.publish(new Event("resetHome"));
 	}
 
@@ -173,6 +174,13 @@ public class MainComposer extends SelectorComposer<Window> {
 		// First thing to do is execute the same method in the parent
 		super.doAfterCompose(window);
 
+		// Manage login
+		if (! this.isUserAuthenticated())
+		{
+			Executions.sendRedirect("/login");
+		}
+
+
 		// Append an event listener that gets called every time the UI is resized
 		window.addEventListener(Events.ON_AFTER_SIZE, (EventListener<AfterSizeEvent>) event -> {});  // TODO empty lambda
 
@@ -186,7 +194,18 @@ public class MainComposer extends SelectorComposer<Window> {
 		navigationQueue.publish(new Event("resetHome"));
 		navigationQueue.publish(new Event("newnavigation"));
 	}
-    
+
+	/**
+	 * Returns true if a user is authenticated and false if the authentication is anonymous.
+	 *
+	 * @return Boolean depending on the state of authentication.
+	 */
+	public boolean isUserAuthenticated()
+	{
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return !(authentication instanceof AnonymousAuthenticationToken);
+	}
+
 	private void initUploadRestrictions() {
 
 	}
