@@ -332,8 +332,8 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  "${JAVA_HOME}/jre/lib/security/cacerts"
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
 # "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts" <-- The static one that we have stored in the repo
-trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/tools/CA_certificates/cacerts")
-trustStore="${trustStores[3]}"
+trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/tools/CA_certificates/cacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java")
+trustStore="${trustStores[5]}"
 
 if [ ! -f "${trustStore}" ]; then
   echo "ERROR: The trust store ${trustStore} is not a valid or existent file"
@@ -349,15 +349,13 @@ if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]
   echo Executed command:
   echo exec "${JAVACMD}" ${JAVA_FLAGS} \
          -Djavax.net.ssl.trustStore="${trustStore}" \
+         -Djavax.net.ssl.trustStorePassword=changeit \
          -Dspring.profiles.active=dev \
          ${MAVEN_OPTS} \
          -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
          "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
          ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
          "$@"
-
-                  #-Djavax.net.ssl.trustStorePassword=changeit \
-
 fi
 
 # If there is any application listening to port 8081 (which is the one used to deploy the app) kill it.
