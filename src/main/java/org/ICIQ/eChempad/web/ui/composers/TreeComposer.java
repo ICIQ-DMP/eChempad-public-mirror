@@ -206,74 +206,57 @@ public class TreeComposer extends SelectorComposer<Window> {
                 case EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT:
                 {
                     // Check if there is a selected element. If not just create it in the root.
+                    JPAEntity jpaEntity = null;
                     Treeitem selectedItem = this.tree.getSelectedItem();
+                    DefaultTreeNode newNode = new DefaultTreeNode(event.getData());
                     if (selectedItem == null)
                     {
                         // There is no selection, create the new project as a Journal in the root
-                        Treechildren root = tree.getTreechildren();  // Get the Treechildren object of the tree
-                        if (root == null)
-                        {
-                            root = new Treechildren();
-                            tree.appendChild(root);  // Append the Treechildren object to the tree
-                        }
-
-                        // Obtain a template treeitem and append it to the tree
-                        Treeitem newTreeItem = this.getEmptyCustomTreeItem();
-                        root.appendChild(newTreeItem);
-
-                        this.unParseOverTreeCell((JPAEntity) event.getData(), newTreeItem);
+                        DefaultTreeNode selectedNode = (DefaultTreeNode) this.tree.getModel().getRoot();
+                        selectedNode.add(newNode);
                     }
                     else  // There is a selection. We need to create element under the selection.
                     {
-                        // Ignore new entities created under a Document
-                        if (((JPAEntity) event.getData()).getTypeName().equals("Document"))
-                        {
-                            Logger.getGlobal().warning("cannot create children under document entity");
-                            break;
-                        }
-
-                        // Obtain children from the selected element. If not available create it and append to the
-                        // selection
-                        Treechildren treechildren = selectedItem.getTreechildren();
-                        if (treechildren == null)
-                        {
-                            treechildren = new Treechildren();  // Create a list of children under the selected element
-                            selectedItem.appendChild(treechildren);
-                        }
-
-                        // Create the tree item that will store the newly created info
-                        Treeitem newTreeItem = new Treeitem();
-                        treechildren.appendChild(newTreeItem);
-
-                        // Obtain the type of the selected element
-                        Optional<Component> typeTreeCellOptional = selectedItem.getTreerow().getChildren().stream().filter(
-                                (Component comp) -> {
-                                    return ((Treecell) comp).getTreecol().getId().equals("Type");
+                        // Check the type of the selection
+                        for (Component child : selectedItem.getTreerow().getChildren()) {
+                            if (((Treecell) child).getTreecol().getId().equals("Type"))
+                            {
+                                switch(((Treecell) child).getLabel())
+                                {
+                                    case "Document":
+                                    {
+                                        Logger.getGlobal().warning("cannot add entity to a document");
+                                        throw new Exception();
+                                    }
+                                    case "Experiment":
+                                    {
+                                        jpaEntity = this.entityConversionService.parseDocument((JPAEntity) event.getData());
+                                        break;
+                                    }
+                                    case "Journal":
+                                    {
+                                        jpaEntity = this.entityConversionService.parseExperiment((JPAEntity) event.getData());
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        Logger.getGlobal().warning("not recognised type ");
+                                    }
                                 }
-                        )
-                                .findFirst();
-
-                        String selectedType;
-                        if (typeTreeCellOptional.isPresent())
-                        {
-                            selectedType = ((Treecell) typeTreeCellOptional.get()).getTreecol().getLabel();
-                        }
-                        else throw new Exception();
-
-                        // Parse item details sent entity into the desired type depending on the type of the selected
-                        // item
-                        JPAEntity newJpaEntity;
-                        if (selectedType.equals("Journal"))
-                        {
-                            newJpaEntity = this.entityConversionService.parseExperiment((JPAEntity) event.getData());
-                        }
-                        else if (selectedType.equals("Experiment"))
-                        {
-                            newJpaEntity = this.entityConversionService.parseExperiment((JPAEntity) event.getData());
+                            }
                         }
 
-                        // Unparse data over the tree item
-                        this.unParseOverTreeCell((JPAEntity) event.getData(), newTreeItem);
+                        // Create a children and set the selected item as parent.
+                        Treechildren newChild = new Treechildren();
+                        newChild.setParent(selectedItem);
+
+                        // Create a new item, attach received data to it, and set the new child as parent
+                        Treeitem newItem = new Treeitem();
+                        newItem.setValue(new DefaultTreeNode<JPAEntity>(jpaEntity));
+                        newItem.setParent(newChild);
+
+                        // Finally, close the loop by adding the new Child as child of the selected item
+                        // selectedItem.getChildren().add(newChild);
                     }
                 }
                 case EventNames.DELETE_TREE_ENTITY_EVENT:
