@@ -25,6 +25,7 @@ import org.zkoss.zk.ui.util.Initiator;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * This class will implement user authorization before accessing zul pages.
@@ -35,7 +36,8 @@ import java.util.Map;
 public class LoginInitiator implements Initiator {
 
 	@Override
-	public void doInit(Page page, Map<String, Object> args) throws Exception {	
+	public void doInit(Page page, Map<String, Object> args) throws Exception {
+		Logger.getGlobal().warning("hello \n");
 		//if(!ShiroManager.isValidSubject()){
     		Execution exec = Executions.getCurrent();
     		if(exec != null){

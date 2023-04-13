@@ -149,7 +149,7 @@ public class TreeComposer extends SelectorComposer<Window> {
         // Propagate call to parent
         super.doAfterCompose(comp);
 
-        //this.createJournal();  // For testing
+        // this.createJournal();  // For testing
 
         // Initialize queues
         this.initActionQueues();
