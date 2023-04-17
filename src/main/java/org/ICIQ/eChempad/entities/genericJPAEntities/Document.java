@@ -143,6 +143,7 @@ public class Document extends JPAEntityImpl{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", creationDate=" + creationDate +
                 ", originalFilename='" + originalFilename + '\'' +
                 ", contentType=" + contentType +
                 ", fileSize=" + fileSize +

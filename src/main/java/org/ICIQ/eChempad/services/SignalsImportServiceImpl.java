@@ -26,7 +26,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -211,8 +216,10 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 String signalsJournalDescription = journalJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
                 signalsJournal.setDescription(signalsJournalDescription);
 
-                // metadata parsing (...)
+                // Parse journal creation date
+                signalsJournal.setCreationDate(SignalsImportService.parseDateFromJSON(journalJSON));
 
+                // metadata parsing (...)
                 this.journalService.save(signalsJournal);
 
                 // Now call getExperimentsFromJournal using the created journal in order to import their children, recursively
@@ -268,10 +275,12 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 // Parse experiment description
                 signalsExperiment.setDescription(experimentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
 
-                Logger.getGlobal().info("EXPERIMENT EID IS: " + experiment_eid + " with name " + signalsExperimentName);
+                // Parse experiment creation date
+                signalsExperiment.setCreationDate(SignalsImportService.parseDateFromJSON(experimentJSON));
 
                 // metadata parsing (...)
 
+                Logger.getGlobal().warning("Experiment json " + experimentJSON.toPrettyString());
                 this.experimentService.addExperimentToJournal(signalsExperiment, journal_uuid);
 
                 // printJSON(experimentJSON);
@@ -329,6 +338,12 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 }
                 documentHelper.setDescription(documentHelperDescription);
 
+                // Parse journal creation date
+                documentHelper.setCreationDate(SignalsImportService.parseDateFromJSON(documentJSON));
+
+                Logger.getGlobal().warning("creation date json " + documentJSON.toPrettyString());
+                Logger.getGlobal().warning("creation date unparsed " + SignalsImportService.parseDateFromJSON(documentJSON));
+                Logger.getGlobal().warning("creation date  " + documentHelper.getCreationDate());
                 // Parse file
                 // First we obtain the inputStream of this document, which actually corresponds to a file. We also need
                 // to obtain the values of the HTTP header "Content-Disposition" which looks like this in an arbitrary
@@ -413,4 +428,5 @@ public class SignalsImportServiceImpl implements SignalsImportService {
             return responseEntity.getBody();
         }
     }
+
 }

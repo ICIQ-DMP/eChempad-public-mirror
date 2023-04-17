@@ -94,14 +94,12 @@ public class DocumentWrapper extends JPAEntityImpl {
 
     @Override
     public String toString() {
-        return "DocumentHelper{" +
-                "name='" + name + '\'' +
+        return "DocumentWrapper{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", file={" +
-                " name: " + file.getName() +
-                " originalName: " + file.getOriginalFilename() +
-                " contentType: " + file.getContentType() +
-                "}" +
+                ", creationDate=" + creationDate +
+                ", file=" + file +
                 '}';
     }
 

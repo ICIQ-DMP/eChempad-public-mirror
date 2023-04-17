@@ -83,9 +83,6 @@ public class AclServiceCustomImpl implements AclService{
         // Obtain the identity of the object by using its class and its id
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
 
-        Logger.getGlobal().warning("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA THE ENTITYT IS : " + objectIdentity.toString());
-        Logger.getGlobal().warning("AAAAAAAAAAAAAAAAAAAA security is : " + SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-
         // Obtain the identity of the user
         Sid sid;
         if (userName == null) {
