@@ -275,6 +275,12 @@ public class TreeComposer extends SelectorComposer<Window> {
 
                     break;
                 }
+                case EventNames.REFRESH_EVENT:
+                {
+                    this.onRefreshBtnClick();
+
+                    break;
+                }
                 default:
                 {
                     break;
@@ -494,7 +500,7 @@ public class TreeComposer extends SelectorComposer<Window> {
     /**
      * Handles the click on the refresh button of the tree component
      */
-    @Listen("onClick=#refreshBtn")
+    @Listen("onClick = #refreshBtn")
 	public void onRefreshBtnClick() {
         this.createModel();
 	}

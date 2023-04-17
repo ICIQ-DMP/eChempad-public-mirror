@@ -30,9 +30,6 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<J
             Logger.getGlobal().warning("null data in renderer");
             return;
         }
-        DefaultTreeNode<JPAEntity> defaultTreeNode = item.getValue();
-        Logger.getGlobal().warning("the default tre node " + defaultTreeNode);
-
         JPAEntity fi = data.getData();
         Treerow tr = new Treerow();
 

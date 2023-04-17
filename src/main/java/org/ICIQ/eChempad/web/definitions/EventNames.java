@@ -40,4 +40,10 @@ public class EventNames {
      */
     public static final String CLEAR_ENTITY_DETAILS_EVENT = "CLEAR_ENTITY_DETAILS_EVENT";
 
+    /**
+     * Event that reloads the data from the backend. Attended in the tree.
+     */
+    public static final String REFRESH_EVENT = "REFRESH_EVENT";
+
+
 }
