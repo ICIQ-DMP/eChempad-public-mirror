@@ -1,4 +1,4 @@
-/**
+/*
  * Create module - Create module inside the ioChem-BD software.
  * Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
  *
