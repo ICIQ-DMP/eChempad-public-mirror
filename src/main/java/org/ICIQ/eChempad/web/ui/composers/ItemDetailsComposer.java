@@ -1,4 +1,4 @@
-/**
+/*
  * Create module - Create module inside the ioChem-BD software.
  * Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
  *
@@ -37,6 +37,26 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 
+/**
+ * This is a custom controller, which in ZK is called a composer. To implement it, extend SelectorComposer and bound
+ * the type of component that you want to control with this class.
+ * <p>
+ * This class is used to answer all the events that are fired from the ZK UI programmatically from Java instead of
+ * javascript, which is the usual way to control HTML elements.
+ *
+ * It also contains all the properties that we can control from the Java side annotated with the @wire annotation.
+ * Modifying properties of those @wired objects will modify the properties of hte HTML components in the UI.
+ *
+ * This class controls the events and manages the UI component of the item details, which is a panel with many text
+ * boxes and labels to display information of the elements selected from the tree.
+ *
+ * @author Institut Català d'Investigació Química (iciq.cat)
+ * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
+ * @author Carles Bo Jané (cbo@iciq.es)
+ * @author Moisés Álvarez (malvarez@iciq.es)
+ * @version 1.0
+ * @since 1.0
+ */
 public class ItemDetailsComposer extends SelectorComposer<Window> {
 
 	/**
@@ -49,7 +69,6 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	 */
 	private EventQueue<Event> treeQueue;
 
-	private int defaultPermission = 0;
 
 	@Wire
 	private Div itemDetailsDiv;
@@ -105,6 +124,8 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	@Wire
 	private Button itemDetailsRemoveButton;
 
+
+	// UI COMPOSER METHODS
 	/**
 	 * De-facto constructor for composer components.
 	 *
@@ -167,25 +188,6 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		this.treeQueue = EventQueues.lookup(EventQueueNames.TREE_QUEUE, EventQueues.DESKTOP, true);
 	}
 
-
-	// LISTENERS
-
-	@Listen("onClick = #itemDetailsCreateButton")
-	public void createProjectClick() throws Exception{
-		this.treeQueue.publish(new Event(EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT, null, this.parseEntityFromDetails()));
-	}
-
-	@Listen("onClick = #itemDetailsModifyButton")
-	public void modifyClick() throws InterruptedException, Exception{
-		this.treeQueue.publish(new Event(EventNames.MODIFY_ENTITY_PROPERTIES_EVENT, null, this.parseEntityFromDetails()));
-	}
-
-	@Listen("onClick = #itemDetailsRemoveButton")
-	public void removeClick() throws InterruptedException{
-		this.treeQueue.publish(new Event(EventNames.DELETE_TREE_ENTITY_EVENT, null, this.parseEntityFromDetails()));
-	}
-
-
 	/**
 	 * Displays the details of an entity in the ItemDetails component.
 	 *
@@ -219,10 +221,51 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		this.description.setValue("");
 		this.type.setValue("Journal");
 
+		// UI comp not used yet
+		this.conceptGroup.setText("");
+		this.path.setText("");
+		this.mDate.setText("");
+		this.pDate.setText("");
+		this.permissions.setSelectedIndex(0);
+
 		// Enable delete and modification button
 		this.itemDetailsRemoveButton.setDisabled(true);
 		this.itemDetailsModifyButton.setDisabled(true);
 		this.itemDetailsCreateButton.setDisabled(false);
+	}
+
+
+	// LISTENER METHODS
+
+	/**
+	 * Parses entity from details and send event to the tree component to create entity.
+	 *
+	 * @throws Exception If something goes wrong
+	 */
+	@Listen("onClick = #itemDetailsCreateButton")
+	public void createProjectClick() throws Exception{
+		this.treeQueue.publish(new Event(EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT, null, this.parseEntityFromDetails()));
+	}
+
+	/**
+	 * Parses entity from details and send event to the tree component to modify the selected element.
+	 *
+	 * @throws InterruptedException If the process is interrupted via UI.
+	 * @throws Exception If something goes wrong.
+	 */
+	@Listen("onClick = #itemDetailsModifyButton")
+	public void modifyClick() throws InterruptedException, Exception{
+		this.treeQueue.publish(new Event(EventNames.MODIFY_ENTITY_PROPERTIES_EVENT, null, this.parseEntityFromDetails()));
+	}
+
+	/**
+	 * Parses entity from details and send event to the tree component to delete the selected element.
+	 *
+	 * @throws InterruptedException If the process is interrupted via UI.
+	 */
+	@Listen("onClick = #itemDetailsRemoveButton")
+	public void removeClick() throws InterruptedException{
+		this.treeQueue.publish(new Event(EventNames.DELETE_TREE_ENTITY_EVENT, null, this.parseEntityFromDetails()));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -271,307 +314,4 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 
 		return entity;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	private void resetHome(){
-     	hiddenID.setValue("");
-     	name.setText("");
-     	type.setValue("");
-     	description.setText("");
-     	conceptGroup.setText("");
-     	path.setText("");
-     	cDate.setText("");
-     	mDate.setText("");
-     	pDate.setText("");
-     	permissions.setSelectedIndex(defaultPermission);
-     	this.itemDetailsCreateButton.setDisabled(false);
-		this.itemDetailsModifyButton.setDisabled(true);
-		this.itemDetailsRemoveButton.setDisabled(true);
-	}	
-	
-	private void hideBottomButtons(boolean hide){		
-		operationButtonsLayout.setVisible(!hide);
-	}
-	
-
-
-	private void setButtonsForElement(boolean isProject, boolean isPublished){
-		this.itemDetailsCreateButton.setDisabled(!isProject);
-		this.itemDetailsModifyButton.setDisabled(isPublished);
-		this.itemDetailsRemoveButton.setDisabled(isPublished);
-	}
-
-
-		/*
-	private void fillListboxes() throws BrowseCredentialsException{
-		ShiroManager manager = ShiroManager.getCurrent();
-	 	for(String username: manager.getOwners())
-    		owner.appendItem(username, String.valueOf(manager.getUserIdByName(username)));
-
-	 	List<String> groupNames =Arrays.asList(manager.getGroups());
-	 	List<String> userGroups = Arrays.asList(manager.getUserGroups());
-
-    	for(String groupName : groupNames ){
-    		String groupId = String.valueOf(manager.getGroupIdByName(groupName));
-			Listitem item = group.appendItem(groupName, groupId);
-			item.setVisible(userGroups.contains(groupId));
-    	}
-	}
-	*/
-
-	/*
-	private void displayElement(PublicableEntity dc) throws BrowseCredentialsException{
-		if(dc == null){
-			resetHome();
-			disableBottomButtons(true);
-			return;
-		}
-		
-		this.hiddenID.setValue(String.valueOf(dc.getId()));
-		this.name.setText(dc.getName());
-		this.description.setText(dc.getDescription());
-		this.type.setValue(getType(dc));		
-		setPermissionFields(dc);
-		this.cDate.setText(formatDate(dc.getCreationDate()));		
-		this.permissions.setDisabled(dc.isCalculation());
-		this.conceptGroup.setReadonly(dc.isCalculation());
-		if(dc.isProject()) {
-			Project project = (Project)dc;
-			this.mDate.setText(formatDate(project.getModificationDate()));
-			this.state.setText(project.getState());
-			this.conceptGroup.setText(project.getConceptGroup());
-		}		
-		this.pDate.setText(formatDate(dc.getPublicationDate()));		
-		this.path.setText(dc.getPath());
-		this.currentSelectionTitle.setValue(dc.getPath());		
-		enableGroupsList(dc);
-		setButtonsForElement(dc.isProject(),dc.isPublished());
-		itemDetailsDiv.invalidate();
-	} */
-
-	/*
-	private void setPermissionFields(Entity entity) {
-		String permissions = "";
-		try {
-			Project project = entity.isProject()? (Project)entity : ProjectService.getByPath(entity.getParentPath());			
-			permissions = Project.binaryPermissionToLinux(project.getPermissions());			
-			setSelectedListItem(String.valueOf(project.getOwner()), this.owner);
-			setSelectedListItem(String.valueOf(project.getGroup()), this.group);
-			setSelectedListItem(permissions, this.permissions);
-		}catch(Exception e) {
-			log.error("Error loading item details for item " + entity.toString());
-		}
-	}
-	
-	
-	private String getType(Entity entity) {
-		if(entity instanceof Project)
-			return "PRO";
-		else if(entity instanceof Calculation) 
-			return ((Calculation)entity).getType().getAbbreviation();
-		return "";
-	}
-	
-	private void setSelectedListItem(String selection,Listbox list){		
-		List<Listitem> iList = list.getItems();
-		Listitem lItem;
-		for (int i=0;i<iList.size();i++){
-			lItem = (Listitem)iList.get(i); 
-			if (lItem.getValue().equals(selection)){
-				list.selectItem(lItem);
-				break;
-			}
-		}
-	}
-
-	private void enableGroupsList(Entity dc) throws BrowseCredentialsException{
-		if(currentMode.equals("navigation")){
-			group.setDisabled(dc.isCalculation());			
-			String[] userGroups = ShiroManager.getCurrent().getUserGroups();
-			
-			String entityGroup = getEntityGroupName(dc);			
-			for(Listitem item: group.getItems())
-				try {
-					if(ArrayUtils.contains(userGroups, item.getValue()) || entityGroup.equals(item.getValue())) //Groups user belong to or just element specific configuration
-						item.setVisible(true);
-					else
-						item.setVisible(false);	
-				}catch(Exception e) {
-					item.setVisible(false);
-				}									
-		}else if(currentMode.equals("search")){
-			for(Listitem item : group.getItems())
-				item.setVisible(true);
-			group.setDisabled(true);
-		}		
-	}
-	
-	private String getEntityGroupName(Entity entity) {
-		try {
-			if(entity.isProject())
-				return ShiroManager.getCurrent().getGroupNameById(((Project)entity).getGroup());
-			else if(entity.isCalculation()) {
-				int groupId = ProjectService.getByPath(entity.getParentPath()).getGroup();
-				return ShiroManager.getCurrent().getGroupNameById(groupId);							
-			}			
-		}catch(Exception e) {
-			log.error("Error setting visible user groups on item display form for entity: "  + entity.toString());
-		}
-		return "";
-	}
-
-	private String formatDate(Timestamp date) {
-		if(date == null)
-			return "";
-		return DATE_FORMATTER.format(date);
-	}
-
-
-    	
-    	name.setText(Main.normalizeField(name.getText()));
-    	if(areCreateProjectParametersValid(userPath, userHome)){
-    		Project project = new Project();
-    		project.setParentPath(userPath);
-    		project.setName(name.getText());
-    		project.setDescription(description.getText());
-    		project.setConceptGroup(conceptGroup.getText());
-    		project.setPermissions(Project.linuxPermissionToBinary(((String)permissions.getSelectedItem().getValue())));
-    		if(owner.getSelectedItem() == null) 
-    			setSelectedListItem(String.valueOf(ShiroManager.getCurrent().getUserId()), this.owner);			
-    		if(group.getSelectedItem() == null)
-    			setSelectedListItem(String.valueOf(ShiroManager.getCurrent().getMainGroupId()), this.group);
-    		
-    		project.setOwner(Integer.valueOf((String)owner.getSelectedItem().getValue()));
-       		project.setGroup(Integer.valueOf((String)group.getSelectedItem().getValue()));
-       		try {
-    			ProjectService.add(project);
-    		}catch(Exception e) {
-    			Messagebox.show(e.getMessage(), "Error while saving project", Messagebox.OK, Messagebox.INFORMATION);
-    		}
-    	}
-    }
-         
-    private boolean isProjectSelected(){
-    	return type.getValue().equals("PRO"); 
-    }
-    
-    private boolean areCreateProjectParametersValid(String userPath, String userHome) throws WrongValueException, InterruptedException{
-    	if  ((userPath.equals(userHome)) && (!path.getText().trim().equals(""))){
-    		Messagebox.show("Path must be selected using the web interface.", PARAM_ERROR, Messagebox.OK, Messagebox.INFORMATION);
-    		return false;    		
-    	}    	 
-    	if (userPath.endsWith("/")){
-    		Messagebox.show("Path must not be ended by /", PARAM_ERROR, Messagebox.OK, Messagebox.INFORMATION);
-    		return false;
-    	}
-    	if (name.getText().isEmpty() || name.getText().contains(" ")) {
-    		Messagebox.show("Name field is mandatory and doesn't allow blank spaces, use underscores otherwise", PARAM_ERROR, Messagebox.OK, Messagebox.INFORMATION);
-    		return false;
-    	}
-    	if (description.getText().isEmpty()) {
-    		Messagebox.show("Description field is mandatory", PARAM_ERROR, Messagebox.OK, Messagebox.INFORMATION);
-    		return false;
-    	}
-    	return true;
-    }
-   
-
-    
-    private void modifyCalculation(Calculation calculation) {        
-        calculation.setDescription(description.getText());
-        if (!(calculation.getName().equals(name.getText()))) {
-            name.setText(Main.normalizeField(name.getText()));  
-            calculation.setName(name.getText());
-            TreeEvent.sendEventToUserQueue(new Event("resetHome", null, null));  // If path is replaced, refresh itemDetails and itemView
-        }
-        try {
-            CalculationService.update(calculation);
-        }catch(Exception e) {
-            Messagebox.show(e.getMessage(), "Error updating element", Messagebox.OK, Messagebox.INFORMATION);
-        }
-    }
-    private void modifyProject(Project project, boolean updateChildrenPermissions) {    
-        project.setDescription(description.getText());
-        project.setOwner(Integer.valueOf((String)owner.getSelectedItem().getValue()));
-        project.setGroup(Integer.valueOf((String)group.getSelectedItem().getValue()));
-        project.setConceptGroup(conceptGroup.getText());
-        project.setPermissions(Project.linuxPermissionToBinary(((String)permissions.getSelectedItem().getValue())));            
-        if (!(project.getName().equals(name.getText()))) {
-            name.setText(Main.normalizeField(name.getText()));
-            project.setName(name.getText());
-            TreeEvent.sendEventToUserQueue(new Event("resetHome", null, null));  // If path is replaced, refresh itemDetails and itemView
-        }
-        try {
-            ProjectService.update(project);
-            if(updateChildrenPermissions) {                
-                ProjectService.cascadePermissionsToChildren(project);
-                TreeEvent.sendEventToUserQueue(new Event("refresh"));
-            }
-        } catch(Exception e) {
-            Messagebox.show(e.getMessage(), "Error updating element", Messagebox.OK, Messagebox.INFORMATION);
-        }
-    }
-    
-    private boolean havePermissionsChanged(Project project) {
-        return project.getGroup() != Integer.valueOf((String)group.getSelectedItem().getValue()) ||
-                !project.getPermissions().equals(Project.linuxPermissionToBinary((String)permissions.getSelectedItem().getValue()));
-    }
-
-    private void showUpdateChildrenDialog(Project project) {
-        Window window = (Window) Executions.createComponents("errors/questionDialog.zul", null, null);
-        QuestionDialog questionDialog = (QuestionDialog) window.getAttribute("$composer");
-        questionDialog.setTitle("Update children permissions");
-        questionDialog.setContent("Current project has modified its access or its owner group.",
-                                  "Should this changes be applied to all its children projects?",
-                                  "Yes", "No");
-        questionDialog.setParameters(project);
-        questionDialog.configEventQueue("navigation", "updateWithChildren", "updateWithoutChildren");
-        window.doModal();
-    }
-
-
-    public String getSelectedElementPath() throws InterruptedException {
-    	if ((hiddenID.getValue() == null) || (hiddenID.getValue().equals(""))) 
-    		return null;    	
-    	int id = Integer.valueOf(hiddenID.getValue());    	    
-    	if (isProjectSelected()) 	
-    		return ProjectService.getById(id).getPath();
-    	else 								
-    		return CalculationService.getById(id).getPath();   	        
-    }
-
-    class DeleteElementListener implements EventListener{
-		@Override
-		public void onEvent(Event event) throws Exception {
-		      if("onYes".equals(event.getName()))
-              	delete(Integer.valueOf(hiddenID.getValue()));		     
-		}
-
-		private void delete(int id) throws InterruptedException{						
-			try {
-				if(isProjectSelected())
-					ProjectService.deleteProject(id);
-				else
-					CalculationService.deleteCalculation(id);
-			}catch(Exception e) {
-				Messagebox.show(e.getMessage(), "Error removing element", Messagebox.OK, Messagebox.INFORMATION);
-			}
-			TreeEvent.sendEventToUserQueue(new Event("resetHome", null, null));
-		}
-    }
-    	*/
-
 }
