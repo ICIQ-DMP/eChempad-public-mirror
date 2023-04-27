@@ -1,13 +1,13 @@
 package org.ICIQ.eChempad.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
 import org.ICIQ.eChempad.entities.DocumentWrapper;
-import org.ICIQ.eChempad.entities.genericJPAEntities.*;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
 import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
@@ -26,12 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
-import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -69,8 +64,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     public String importWorkspace(String APIKey) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Logger.getGlobal().warning("Using token for signals " + APIKey);
-
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
@@ -79,9 +72,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         StringBuilder stringBuilder = new StringBuilder();
 
         String APIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
-
-        Logger.getGlobal().warning("Using token for signals " + APIKey);
-        Logger.getGlobal().warning(" researcher logged    " + ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher());
 
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
@@ -122,9 +112,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
         // Check if the journal owner email coincides with the email of the logged user, if not discard journal
 
-        Logger.getGlobal().warning(journalJSON.toPrettyString() + "");
         JsonNode includedData = journalJSON.get("included");
-        Logger.getGlobal().warning(includedData.toPrettyString() + "");
         JsonNode includedOwner = includedData.get(0);
         JsonNode ownerAttributes = includedOwner.get("attributes");
         JsonNode ownerName = ownerAttributes.get("userName");
@@ -162,7 +150,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         // This function will fill the passed journal with the new retrieved experiments from Signals. It will also
         // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
         this.getExperimentsFromJournal(APIKey, journal_eid, (UUID) signalsJournal.getId(), stringBuilder);
-        Logger.getGlobal().info("JOURNAL NUMBER " + id + " FINISHED IMPORT");
         return stringBuilder.toString();
     }
 
@@ -189,9 +176,8 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
                 if (getOnlyOwnedResources && ! ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getUsername().equals(ownerNameTrimmed))
                 {
+                    // TODO throw unchecked ex
                     Logger.getGlobal().info("Owner name does not coincide with currently logged user in eChempad application side" + ownerName);
-
-                    Logger.getGlobal().info("attributes " + ownerAttributes.toString());
 
                     i++;
                     continue;
@@ -227,7 +213,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
                 this.getExperimentsFromJournal(APIKey, journal_eid, (UUID) signalsJournal.getId(), stringBuilder);
                 i++;
-                Logger.getGlobal().info("JOURNAL NUMBER " + i + " FINISHED IMPORT");
             }
         }
     }
@@ -280,7 +265,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
                 // metadata parsing (...)
 
-                Logger.getGlobal().warning("Experiment json " + experimentJSON.toPrettyString());
                 this.experimentService.addExperimentToJournal(signalsExperiment, journal_uuid);
 
                 // printJSON(experimentJSON);
@@ -323,7 +307,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 DocumentWrapper documentHelper = new DocumentWrapper();
 
                 // Parse document name
-                String documentHelperName = documentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
+                String documentHelperName = documentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
                 if (documentHelperName.equals(""))
                 {
                     documentHelperName = "(No name provided)";
@@ -331,7 +315,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 documentHelper.setName(documentHelperName);
 
                 // Parse document description
-                String documentHelperDescription = documentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
+                String documentHelperDescription = documentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
                 if (documentHelperDescription.equals(""))
                 {
                     documentHelperDescription = "(No description provided)";
@@ -341,9 +325,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 // Parse journal creation date
                 documentHelper.setCreationDate(SignalsImportService.parseDateFromJSON(documentJSON));
 
-                Logger.getGlobal().warning("creation date json " + documentJSON.toPrettyString());
-                Logger.getGlobal().warning("creation date unparsed " + SignalsImportService.parseDateFromJSON(documentJSON));
-                Logger.getGlobal().warning("creation date  " + documentHelper.getCreationDate());
                 // Parse file
                 // First we obtain the inputStream of this document, which actually corresponds to a file. We also need
                 // to obtain the values of the HTTP header "Content-Disposition" which looks like this in an arbitrary
@@ -355,12 +336,10 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 // the previous example has the value "MZ7-085-DC_10%5B1%5D.zip"
                 // We also need to obtain the header Content-type which indicates the mimetype of the file we are
                 // retrieving. That will allow to know the type of file inorder to process it further.
-                Logger.getGlobal().warning("Document data is " +  documentHelperName + " with description " + documentHelperDescription);
                 HttpHeaders receivedHeaders = null;
                 try {
                     receivedHeaders = new HttpHeaders();
                     InputStream is = this.exportDocument(APIKey, document_eid, receivedHeaders).getInputStream();
-                    Logger.getGlobal().warning("HEADERS: " + receivedHeaders.toString());
                     MultipartFile multipartFile = new MockMultipartFile(document_eid, receivedHeaders.getContentDisposition().getFilename(), receivedHeaders.getContentType().toString(), is);
 
                     documentHelper.setFile(multipartFile);
@@ -375,7 +354,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 stringBuilder.append("     # Document ").append(i).append(" with EID ").append(document_eid).append(": ").append(documentHelperName).append("\n");
 
                 // Transform into a DB document
-                Logger.getGlobal().warning("Document parsed" + documentHelper.toString());
                 Document document = this.documentWrapperConverter.convertToDatabaseColumn(documentHelper);
 
                 // Add the parsed document to its corresponding experiment
@@ -387,7 +365,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
     public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
     {
-        Logger.getGlobal().warning("Getting document " + pageOffset + " from experiment " + experiment_eid);
         return this.webClient.get()
                 .uri(SignalsImportServiceImpl.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + ((Integer) pageOffset) + "&page[limit]=1&include=children%2C%20owner")
                 .header("x-api-key", APIKey)

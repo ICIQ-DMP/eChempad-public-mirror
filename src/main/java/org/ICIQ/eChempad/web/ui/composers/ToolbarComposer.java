@@ -1,58 +1,54 @@
 package org.ICIQ.eChempad.web.ui.composers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.services.SignalsImportService;
-import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
-import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.springframework.context.annotation.Scope;
-import org.zkoss.spring.SpringUtil;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
-import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zul.*;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Queue;
-import java.util.UUID;
-import java.util.logging.Logger;
 
 @Scope("desktop")
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class ToolbarComposer extends SelectorComposer<Window> {
 
+    /**
+     * Button UI component to import from Signals
+     */
     @Wire
     private Button importSignals;
 
+    /**
+     * Button UI component to export to Dataverse
+     */
     @Wire
-    private Button importDataverse;
+    private Button exportDataverse;
 
+    /**
+     * Button UI to refresh views
+     */
     @Wire
     private Button refreshButton;
 
     /**
-     * Used to send events to the tree.
+     * Used to send events to the tree
      */
     private EventQueue<Event> treeQueue;
 
+    /**
+     * Service to connect to Signals using the API key of the current user to retrieve all available data
+     */
     @WireVariable("signalsImportService")
     private SignalsImportService signalsImportService;
-
-    @WireVariable("journalService")
-    private JournalService<Journal, UUID> journalService;
 
     /**
      * De-facto constructor for composer components.
@@ -73,15 +69,24 @@ public class ToolbarComposer extends SelectorComposer<Window> {
 
     @Listen("onClick = #importSignals")
     public void onClickImportSignalButton() throws IOException {
-
-        Logger.getGlobal().warning(journalService.findAll().toString());
-
+        // Import all visible data from Signals into eChempad workspace.
         this.signalsImportService.importWorkspace();
-    }
 
-
-    @Listen("onClick = #refreshButton")
-    public void onClickRefreshButton() throws IOException {
+        // Publish refresh event in order to reload the UI
         this.treeQueue.publish(new Event(EventNames.REFRESH_EVENT, null, null));
     }
+
+
+    /**
+     * Method that communicates with the tree and gets the UUID of the selected elements. Then, uses those UUID to
+     * export those entities to Dataverse using the Dataverse API key of the currently logged user.
+     *
+     * @throws IOException If something goes wrong during connection.
+     */
+    @Listen("onClick = #exportDataverse")
+    public void onClickExportDataverseButton() throws IOException {
+        this.treeQueue.publish(new Event(EventNames.EXPORT_SELECTED_ENTITY_EVENT, null, null));
+    }
+
+
 }

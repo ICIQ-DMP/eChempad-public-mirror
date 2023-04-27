@@ -45,5 +45,11 @@ public class EventNames {
      */
     public static final String REFRESH_EVENT = "REFRESH_EVENT";
 
+    /**
+     * Event that is generated in the toolbar and is sent to the tree so the tree can get the selected elements and send
+     * them back into Dataverse.
+     */
+    public static final String EXPORT_SELECTED_ENTITY_EVENT = "EXPORT_SELECTED_ENTITY_EVENT";
+
 
 }
