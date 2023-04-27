@@ -23,8 +23,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import java.io.Serializable;
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -142,10 +143,11 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
 
     /**
      * Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
+     *
+     * WARNING! You are using getById which can cause a Lazy Initialization Exception if used out of session. Use
+     * getById to avoid this and load the full entity.
      */
     public T getById(S s) {
-        Logger.getGlobal().warning("WARNING! You are using getById which can cause a Lazy Initialization Exception " +
-                "if used out of session, use getById to avoid this and load the full entity.");
         return this.genericRepository.getById(s);
     }
 

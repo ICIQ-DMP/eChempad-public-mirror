@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -45,7 +46,7 @@ import java.util.*;
  * @since 24/10/2022
  * @see <a href="https://guides.dataverse.org/en/latest/api/intro.html">...</a>
  */
-@Service
+@Service("dataverseExportService")
 public class DataverseExportServiceImpl implements DataverseExportService {
 
     /**
@@ -176,7 +177,16 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         return convFile;
     }
 
+    /**
+     * Exports the journal identified by the supplied UUID in the first parameter. Is Transactional because of
+     * connection with the LOB service, which has special DB connection requirements (not to be in auto-commit mode)
+     *
+     * @param id Contains an identifier for the journal that we want to export.
+     * @return String that summarizes all the exported entities.
+     * @throws IOException Exception thrown if something goes wrong during connection.
+     */
     @Override
+    @Transactional
     public String exportJournal(Serializable id) throws IOException {
         return exportJournal( ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getDataverseAPIKey(), id);
     }

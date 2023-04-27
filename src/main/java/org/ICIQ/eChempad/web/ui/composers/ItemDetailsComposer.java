@@ -222,11 +222,11 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		this.type.setValue("Journal");
 
 		// UI comp not used yet
-		this.conceptGroup.setText("");
-		this.path.setText("");
-		this.mDate.setText("");
-		this.pDate.setText("");
-		this.permissions.setSelectedIndex(0);
+		//this.conceptGroup.setText("");
+		//this.path.setText("");
+		//this.mDate.setText("");
+		//this.pDate.setText("");
+		//this.permissions.setSelectedIndex(0);
 
 		// Enable delete and modification button
 		this.itemDetailsRemoveButton.setDisabled(true);

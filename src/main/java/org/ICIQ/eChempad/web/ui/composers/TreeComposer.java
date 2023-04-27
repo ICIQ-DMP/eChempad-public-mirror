@@ -21,6 +21,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.services.DataverseExportService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
 import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
@@ -30,6 +31,7 @@ import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.ResourceAccessException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;
@@ -144,6 +146,12 @@ public class TreeComposer extends SelectorComposer<Window> {
     @WireVariable("entityConversionService")
     private EntityConversionService entityConversionService;
 
+    /**
+     * Service to export eChempad entities into Dataverse
+     */
+    @WireVariable("dataverseExportService")
+    private DataverseExportService dataverseExportService;
+
     @Override
     public void doAfterCompose(Window comp) throws Exception {
         // Propagate call to parent
@@ -240,7 +248,7 @@ public class TreeComposer extends SelectorComposer<Window> {
                                     }
                                     default:
                                     {
-                                        Logger.getGlobal().warning("not recognised type ");
+                                        Logger.getGlobal().warning(((Treecell) child).getLabel() + " is not a recognised type ");
                                     }
                                 }
                             }
@@ -279,6 +287,48 @@ public class TreeComposer extends SelectorComposer<Window> {
                 {
                     this.onRefreshBtnClick();
 
+                    break;
+                }
+                case EventNames.EXPORT_SELECTED_ENTITY_EVENT:
+                {
+                    // Check if there is selection
+                    Treeitem selectedItem = this.tree.getSelectedItem();
+                    if (selectedItem == null) {
+                        throw new Exception();
+                    }
+
+                    UUID journalToExport = null;
+                    // If there is selection check that the selection is of Journal type
+                    for (Component child : selectedItem.getTreerow().getChildren()) {
+                        if (((Treecell) child).getTreecol().getId().equals("Type")) {
+                            if (! ((Treecell) child).getTreecol().getLabel().equals("Journal")) {
+                                // Not a journal selected
+                                throw new Exception();
+                            }
+                        }
+                    }
+
+                    UUID uuidSelected = null;
+                    // Get UUID of the selected item, which we know that is a Journal
+                    for (Component child : selectedItem.getTreerow().getChildren()) {
+                        // Logger.getGlobal().warning("treecol content " + ((Treecell) child).getTreecol()..getLabel());
+                        if (((Treecell) child).getTreecol().getId().equals("hiddenID")) {
+                            // Logger.getGlobal().warning(((Treecell) child).getTreecol().toString() + "tostr");
+
+                            //Logger.getGlobal().warning(((Treecell) child).getTreecol().getLabel() + "the id of the sele cted");
+                            uuidSelected = UUID.fromString(((Treecell) child).getLabel());
+                        }
+                    }
+
+                    try
+                    {
+                        // Call backend service to export the selected Journal by using its UUID.
+                        this.dataverseExportService.exportJournal(uuidSelected);
+                    }
+                    catch (ResourceAccessException e)
+                    {
+                        e.printStackTrace();
+                    }
                     break;
                 }
                 default:
@@ -503,7 +553,18 @@ public class TreeComposer extends SelectorComposer<Window> {
     @Listen("onClick = #refreshBtn")
 	public void onRefreshBtnClick() {
         this.createModel();
+        this.refreshAllItems();
 	}
+
+    public void refreshAllItems()
+    {
+        List<Component> components = this.tree.getChildren();
+        for (Component component : components)
+        {
+            Logger.getGlobal().warning("invalidating " + component);
+            component.invalidate();
+        }
+    }
 
     // Data transformation methods
 
