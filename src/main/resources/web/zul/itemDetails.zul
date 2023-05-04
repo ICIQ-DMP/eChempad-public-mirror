@@ -25,14 +25,8 @@
 	    </tabs>
 	    <tabpanels>		    
 	    	<tabpanel style="padding-left: 1em; padding-right: 1em;  overflow-y: auto;">
-	    		<div sclass="mt-2" id="itemDetailsDiv" style="overflow-x: hidden; overflow-y: auto;">		
-					<div sclass="row mb-1 item-details-row">
-						<label id="hiddenID" value="" visible="false" />
-						<textbox id="ID" value="" width="300px" readonly="false" visible="false" tooltiptext="Absolute path of the selected resource. If 'create project' is pressed, the project is created under the specified path." />
-						
-						<n:label class="col-md-2 ">Path</n:label>
-						<label id="currentSelectionTitle" sclass="col-md-10" style="font-weight:bold;"/>
-					</div>
+	    		<div sclass="mt-2" id="itemDetailsDiv" style="overflow-x: hidden; overflow-y: auto;">
+					<label id="hiddenID" value="" visible="false" />
 					
 					<div sclass="row mb-1 item-details-row">		
 						<n:label class="col-md-2 ">Name</n:label>
