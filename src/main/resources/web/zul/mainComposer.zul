@@ -32,85 +32,6 @@
     <script type="text/javascript" src="/js/bootstrap.min.js"> </script>
     <script type="text/javascript" src="/js/popper.min.js"> </script>
 
-    <script type="text/javascript">
-        <![CDATA[
-
-	function fireEventFromClient(eventName) {
-		zAu.send(new zk.Event(zk.Widget.$('$mainWindow'), eventName, null, {toServer:true}));
-	}
-
-	function addBootstrapClasses(type) {
-		type = type || 0;
-		jq('.z-tabs-content').addClass('nav nav-tabs');
-		jq('.nav-item-content').addClass('nav-link');
-		jq('.z-tab-content').addClass('nav-link');
-		if(type == 0 ||type == 'large'){
-			//Code specific large nav tabs classes
-		}else if(type == 'small') {
-			jq('.z-tabs-content').addClass('nav-tabs-small');
-			jq('.nav-item-content').addClass('nav-link-small');
-			jq('.z-tab-content').addClass('nav-link-small');
-		}
-	}
-
-	function clearMainTabsSelection() {
-	 jq('.mainTabs ul li.nav-item-selected').removeClass('nav-item-selected');
-	 jq('.mainTabs ul li.z-tab-selected').removeClass('z-tab-selected');
-	}
-
- 	function setNavButtonsVisible(visible) {
- 		if(visible) {
- 			jq('.mainComposer-small-navigation').show();
- 			jq('.mainComposer-small-inner-div').css('overflow-x', 'auto');		//Allow to side scroll to actions and properties section
- 		} else {
- 			jq('.mainComposer-small-navigation').hide()
- 			jq('.mainComposer-small-inner-div').css('overflow-x', 'hidden');	//Block side scroll
- 		}
- 	}
-  	//Scroll animation functions
-	currentStep  = 0;
-	totalSteps = 3;
-	firstRun = true;
-
-	function toggleSlideButtons() {
-		if(currentStep == 0)
-			$('.mainComposer-small-navigation-previous').addClass('mainComposer-small-navigation-disabled');
-		else
-			$('.mainComposer-small-navigation-previous').removeClass('mainComposer-small-navigation-disabled');
-
-		if(currentStep >= totalSteps - 1)
-			$('.mainComposer-small-navigation-next').addClass('mainComposer-small-navigation-disabled');
-		else
-			$('.mainComposer-small-navigation-next').removeClass('mainComposer-small-navigation-disabled');
-	}
-
-	function slide() {
-	  	value = $('.mainComposer-small-div').scrollLeft();
-	  	obj=$($('.mainComposer-small-inner-div').children()[currentStep]);
-	  	var childPos = obj.offset();
-	  	var parentPos = obj.parent().offset();
-	  	var childOffset = {
-	    	top: childPos.top - parentPos.top,
-	    	left: childPos.left - parentPos.left
-	  	}
-
-	  	$('.mainComposer-small-div').animate(
-	  		{ scrollLeft : childOffset.left },
-	  		150,
-	  		'swing');
-
-	}
-
-	//Setup ajax calls to retrieve requested url
-	$.ajaxSetup({
-	    beforeSend: function(jqXHR, settings) {
-	        jqXHR.url = settings.url;
-	    }
-	});
-
-	]]>
-    </script>
-
     <script>
         zk.afterMount(function()
         {
@@ -119,7 +40,7 @@
         })
     </script>
 
-    <n:nav class="navbar navbar-expand navbar-light bg-light" style="height:60px" href="/" padding="0" margins="0">
+    <n:nav class="navbar navbar-expand navbar-light bg-light" style="height:60px" href="/">
         <n:button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"/>
         </n:button>
@@ -246,24 +167,6 @@
             </borderlayout>
         </east>
     </borderlayout>
-
-    <!-- Notification toast
-    <script type="text/javascript">
-        <![CDATA[
-	    function setupToast(message) {
-	         $('.toast-body').html(message);
-	         $('.toast').toast('show');
-	    }
-	]]>
-    </script>
-
-    <n:div class="position-absolute" style="z-index: 50000; right: 0; bottom: 0;">
-        <n:div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000">
-            <n:div class="toast-body">
-
-            </n:div>
-        </n:div>
-    </n:div>  -->
 
     <!-- <include src="~./zul/uploadToolbar.zul"/>  -->
 </window>
