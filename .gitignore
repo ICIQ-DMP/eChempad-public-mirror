@@ -15,7 +15,7 @@
 # vendor/
 HELP.md
 target/
-!**/src/main/**/target/
+!**/src/mainComposer/**/target/
 !**/src/test/**/target/
 .mvn/wrapper/maven-wrapper.jar
 
@@ -41,7 +41,7 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
+!**/src/mainComposer/**/build/
 !**/src/test/**/build/
 
 ### VS Code ###

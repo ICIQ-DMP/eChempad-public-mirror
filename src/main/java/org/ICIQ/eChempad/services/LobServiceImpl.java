@@ -14,6 +14,8 @@ import org.postgresql.util.PSQLException;
 
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -34,11 +36,20 @@ public class LobServiceImpl implements LobService {
         return blob;
     }
 
+    /**
+     * Retrieves the InputStream associated with a Blob.
+     *
+     * @param blob Binary large object reference in the database
+     * @return The InputStream from the BLOB
+     */
     @Override
     public InputStream readBlob(Blob blob) {
+
+        // Delimit transaction boundaries explicitly to access the BLOB
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
 
+        // Read InputStream from BLOB
         InputStream is = null;
         try {
             is = blob.getBinaryStream();
@@ -46,6 +57,7 @@ public class LobServiceImpl implements LobService {
             e.printStackTrace();
         }
 
+        // Delimit transaction boundaries. End operation.
         session.getTransaction().commit();
         session.close();
 

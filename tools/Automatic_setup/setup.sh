@@ -20,6 +20,17 @@
 # -License:
 ########################################################################################################################
 
+
+# - Description: Installs the different software using the Customizer project
+install_software_dependencies()
+{
+  customizer-install -v -o ideau
+  customizer-install -v -o postman
+  customizer-install -v -o pgadmin
+  customizer-install -v -o psql
+
+}
+
 main()
 {
   # Create the database template for eChempad

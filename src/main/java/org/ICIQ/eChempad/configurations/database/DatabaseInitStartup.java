@@ -99,6 +99,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         researcher.setPassword("chemistry");
         researcher.setUsername("eChempad@iciq.es");
         researcher.setAccountNonLocked(true);
+        researcher.setCreationDate(new Date());
 
         HashSet<Authority> authorities = new HashSet<>();
         authorities.add(new Authority("ROLE_ADMIN", researcher));
@@ -132,6 +133,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
         journal.setDescription("The journal of the admin");
         journal.setName("Journal Admin");
+        journal.initCreationDate();
 
         // Indirectly obtain the ID of the journal by saving it on the DB
         this.journalService.save(journal);

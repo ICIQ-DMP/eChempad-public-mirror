@@ -8,14 +8,11 @@
 package org.ICIQ.eChempad.configurations.security.ACL;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.*;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,7 +74,6 @@ public class AclServiceCustomImpl implements AclService{
     @Transactional
     public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission, String userName)
     {
-        Logger.getGlobal().info("ACL class ENTITY TYPE: " + JPAEntity.getTypeName());
         // Obtain the identity of the object by using its class and its id
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
 

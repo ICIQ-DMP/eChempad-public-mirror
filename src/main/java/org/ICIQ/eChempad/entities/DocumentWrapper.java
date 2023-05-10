@@ -7,7 +7,9 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Column;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -32,6 +34,11 @@ public class DocumentWrapper extends JPAEntityImpl {
 
     private String description;
 
+    /**
+     * Date of creation of the entity.
+     */
+    private Date creationDate;
+
     @JsonIgnore
     private MultipartFile file;
 
@@ -42,6 +49,7 @@ public class DocumentWrapper extends JPAEntityImpl {
         this.name = name;
         this.description = description;
         this.file = file;
+        this.initCreationDate();
     }
 
     public String getName() {
@@ -86,14 +94,12 @@ public class DocumentWrapper extends JPAEntityImpl {
 
     @Override
     public String toString() {
-        return "DocumentHelper{" +
-                "name='" + name + '\'' +
+        return "DocumentWrapper{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", file={" +
-                " name: " + file.getName() +
-                " originalName: " + file.getOriginalFilename() +
-                " contentType: " + file.getContentType() +
-                "}" +
+                ", creationDate=" + creationDate +
+                ", file=" + file +
                 '}';
     }
 
@@ -131,5 +137,20 @@ public class DocumentWrapper extends JPAEntityImpl {
     @Override
     public <T extends JPAEntity> Class<T> getType() {
         return (Class<T>) DocumentWrapper.class;
+    }
+
+    @Override
+    public void initCreationDate() {
+        this.creationDate = new Date();
+    }
+
+    // GETTERS AND SETTERS
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }

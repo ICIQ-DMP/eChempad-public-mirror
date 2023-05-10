@@ -15,6 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -50,15 +51,30 @@ public class Authority extends JPAEntityImpl implements GrantedAuthority{
     @JsonBackReference
     protected Researcher researcher;
 
+    /**
+     * Date of creation of the entity.
+     */
+    private Date creationDate;
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public Authority() {}
 
     public Authority(String authority, Researcher researcher) {
         this.authority = authority;
         this.researcher = researcher;
+        this.initCreationDate();
     }
 
     public Authority(String authority) {
         this.authority = authority;
+        this.initCreationDate();
     }
 
     @Override
@@ -89,6 +105,31 @@ public class Authority extends JPAEntityImpl implements GrantedAuthority{
     @Override
     public String getTypeName() {
         return this.getType().getName();
+    }
+
+    @Override
+    public void initCreationDate() {
+        this.creationDate = new Date();
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public void setName(String name) {
+
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public void setDescription(String description) {
+
     }
 
     @Override
