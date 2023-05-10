@@ -18,11 +18,17 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+[![Code quality][codacy-shield]][codacy-url]
 [![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![Top language][language-shield]][language-url]
+[![GNU GPL v3 License][license-shield]][license-url]
+[![Lines of code][loc-shield]][loc-url]
+[![Number of commits since v0.1][commit-shield]][commit-url]
+[![Commit activity][activity-shield]][activity-url]
+[![Last commit on][last-shield]][last-url]
+[![But me a coffee][coffee-shield]][coffee-url]
+[![number of stars][stars-shield]][stars-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 
@@ -109,10 +115,12 @@ enrich them with metadata, and finally publish them into [CORA RDR](https://data
 This section lists any major frameworks/libraries used to bootstrap the eChempad platform:
 
 
-
 * [![Bootstrap][Bootstrap-shield]][Bootstrap-url]
 * [![JQuery][JQuery-shield]][JQuery-url]
 * [![PostgreSQL][postgres-shield]][postgres-url]
+* [![Java][java-shield]][java-url]
+* [![Git][git-shield]][git-url]
+* [![Spring Boot][springboot-shield]][springboot-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -121,34 +129,78 @@ This section lists any major frameworks/libraries used to bootstrap the eChempad
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+This is how you can get a local copy up and running follow these simple steps:
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+The first thing that we got to do is clone the repository that contains the software
+[`Linux-Auto-Customizer`](https://github.com/AleixMT/Linux-Auto-Customizer). This
+software consists in a set of scripts to automatically install dependencies, libraries and programs to a Linux
+Environment. It can be used in many distros, but in this guide we suppose that our environment is Ubuntu Linux. It
+may be the same or similar instructions in related distros.
+
+We can clone the repository anywhere, for example in our HOME folder:
+
+```bash
+cd $HOME
+git clone https://github.com/AleixMT/Linux-Auto-Customizer
+cd Linux-Auto-Customizer
+bash src/core/install.sh -v -o customizer
+```
+
+The previous commands will install the software, so it can be accessed using the link `customizer-install` and
+`customizer-uninstall` software if everything is okay.
+
+#### Resolving dependencies
+
+In the repository execute the next orders:
+```bash
+sudo customizer-install -v -o psql
+bash cutomizer-install -v -o jdk pgadmin postman ideau  # ideac 
+```
+
+This will install:
+* **JDK8:** Java development kit. Contains the interpreter for the Java programming language `java` and the tool to
+  manipulate the certificates used in the java VM `keytool`
+* **psql:** PostGreSQL, SQL DataBase engine
+* **IntelliJ IDEA Community / IntelliJ IDEA Ultimate:** IDE with a high customization via plugins to work with Java.
+  The  ultimate edition needs a license; The community version, which is commented out, has also all the required
+  features to work with the project.
+* **pgadmin:** Graphical viewer of the PostGreSQL DataBase using a web browser.
+* **postman:** UI used to manage API calls and requests. Useful for testing and for keeping record of interesting API
+  calls. Has cloud synchronization, environments variables, workflows, etc.
+
+This will set up the software with some new soft links and aliases, which will be populated in your environment by
+writing to the `.bashrc` of your HOME folder.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+#### Setting up database connection
+Log in as the `postgres` user:
+```bash
+sudo su - postgres
+```
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+Then create the user that the installation will use:
+```bash
+createuser --interactive --pwprompt
+```
+Notice that there are other ways of doing this. You can also do it directly by submitting orders to the database from
+this user, but in this case it is easier if you have this binary wrapper. It will ask for a password, consider this the
+database password.
+
+Then we need to create the database for our software:
+```bash
+createdb eChempad
+```
+
+##### Connect to the database manually using terminal
+``` 
+psql -d eChempad -h localhost -p 5432 -U amarine
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -157,7 +209,8 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos 
+work well in this space. You may also link to more resources.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
@@ -167,14 +220,10 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <!-- ROADMAP -->
 ## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [x] Frontend addition with ZK
+- [ ] Write tests
+- [ ] Customize license plugins
+- [ ] Change backend to composite structure
 
 See the [open issues](https://github.com/AleixMT/eChempad/issues) for a full list of proposed features (and known issues).
 
@@ -185,9 +234,12 @@ See the [open issues](https://github.com/AleixMT/eChempad/issues) for a full lis
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any 
+contributions you make are **greatly appreciated**. You can start by taking a look to the 
+[`README_DEVELOPER.md`](https://github.com/AleixMT/eChempad/blob/develop/doc/README_DEVELOPER.md).
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also 
+simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
@@ -203,7 +255,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3. See `LICENSE.md` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -240,10 +292,12 @@ Use this space to list resources you find helpful and would like to give credit 
 
 ## Credits
 
-Copyright 2020-2023.
+Copyright 2020-2023 Institute of Chemical Research of Catalonia (ICIQ) 
 
 ###### Institutions involved in the eChempad development:
-* [Institute of Chemical Research of Catalonia(ICIQ)](https://www.iciq.es/)
+
+* [Institute of Chemical Research of Catalonia(ICIQ)](https://www.iciq.es/) ![img_1.png](.github/images/logo-ICIQ.png)
+
 
 ###### Development:
 * Main developer: Aleix Mariné-Tena (2021 - now)
@@ -253,8 +307,6 @@ Copyright 2020-2023.
 
 ###### Scientific committee:
 * Carles Bo (ICIQ)
-* Núria Lopez (ICIQ)
-* Feliu Maseras (ICIQ - URV)
 
 ###### Scientific contributors:
 * Imma Escofet (ICIQ)
@@ -267,35 +319,46 @@ Copyright 2020-2023.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/AleixMT/eChempad?style=for-the-badge
 [contributors-url]: https://github.com/AleixMT/eChempad/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/AleixMT/eChempad.svg?style=for-the-badge&label=Fork&maxAge=2592000  
 [forks-url]: https://github.com/AleixMT/eChempad/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/AleixMT/eChempad?style=for-the-badge
 [stars-url]: https://github.com/AleixMT/eChempad/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/AleixMT/eChempad/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/AleixMT/eChempad?style=for-the-badge
 [license-url]: https://github.com/AleixMT/eChempad/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/aleix-marin%C3%A9-083672122/
 [product-screenshot]: .github/images/screenshot.png
-[Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+
+[codacy-shield]: https://app.codacy.com/project/badge/Grade/9d77f6c73bab4a11b847d131146fc243
+[codacy-url]: https://app.codacy.com/gh/AleixMT/eChempad/dashboard
+[language-shield]: https://img.shields.io/github/languages/top/AleixMT/eChempad?style=for-the-badge&color=blue&logo=oracle
+[language-url]: https://www.gnu.org/software/bash
+[loc-shield]: https://img.shields.io/tokei/lines/github/AleixMT/eChempad?style=for-the-badge&logo=github
+[loc-url]: https://gitlab.com/AleixMT/eChempad
+[commit-shield]: https://img.shields.io/github/last-commit/AleixMT/eChempad?style=for-the-badge
+[commit-url]: https://github.com/AleixMT/eChempad/issues
+[activity-shield]: https://img.shields.io/github/commit-activity/m/AleixMT/eChempad?style=for-the-badge
+[activity-url]: https://github.com/AleixMT/eChempad/graphs/commit-activity
+[last-shield]: https://img.shields.io/github/last-commit/AleixMT/eChempad?&style=for-the-badge&color=blue
+[last-url]: https://github.com/AleixMT/eChempad/commits/master
+[coffee-shield]: https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&style=for-the-badge
+[coffee-url]: https://www.buymeacoffee.com/VidWise
+[stars-shield]: https://img.shields.io/github/stars/AleixMT/eChempad?style=for-the-badge&logo=github
+[stars-url]: https://github.com/AleixMT/eChempad/stargazers
+
+[Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-1.0+-white?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
-[JQuery-shield]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[JQuery-shield]: https://img.shields.io/badge/jQuery-1.0+-orange?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com
-[postgres-shield]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
+[postgres-shield]: https://img.shields.io/badge/postgres-12.14+-blue?style=for-the-badge&logo=postgresql&logoColor=white
 [postgres-url]: https://www.postgresql.org/
-[java-shield]: https://img.shields.io/badge/java-%23316192.svg?style=for-the-badge&logo=java&logoColor=white
+[java-shield]: https://img.shields.io/badge/java-8.0+-green?style=for-the-badge&logo=oracle&logoColor=white
 [java-url]: https://www.java.com/es/
-
-
-
-
-
-
-
-
-
-
-
+[git-shield]: https://img.shields.io/badge/git-2.25.1+-black?style=for-the-badge&logo=git
+[git-url]: https://git.com
+[bash-shield]: https://img.shields.io/badge/bash-4.0+-black?style=for-the-badge&logo=gnubash
+[bash-url]: https://www.gnu.org/software/bash/
+[springboot-shield]: https://img.shields.io/badge/springboot-4.0+-black?style=for-the-badge&logo=gnubash
+[springboot-url]: https://spring.io/
