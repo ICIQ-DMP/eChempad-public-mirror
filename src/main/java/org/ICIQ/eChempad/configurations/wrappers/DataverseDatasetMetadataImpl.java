@@ -1,11 +1,8 @@
 package org.ICIQ.eChempad.configurations.wrappers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -24,7 +21,7 @@ public class DataverseDatasetMetadataImpl implements DataverseDatasetMetadata{
     public DataverseDatasetMetadataImpl() {
         Stream<String> lines = null;
         try{
-            Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("static/dataset-finch1.json")).toURI());
+            Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("Dataverse-Templates/dataset-finch1.json")).toURI());
             lines = Files.lines(path);
             String data = lines.collect(Collectors.joining("\n"));
 

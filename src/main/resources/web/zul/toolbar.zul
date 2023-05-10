@@ -1,0 +1,10 @@
+<?page title="Item details" contentType="text/html;charset=UTF-8"?>
+<window xmlns:n="native" border="none" apply="org.ICIQ.eChempad.web.ui.composers.ToolbarComposer"  height="100%">
+    <div id="treeDivCenter" height="100%">
+        <toolbar id="mainTab" height="100%">
+            <button id="refreshButton" label="Refresh" tooltiptext="Click to reconnect to server and update the page with the new content" zclass="nav-item" />
+            <button id="importSignals" label="Import from Signals" tooltiptext="Click to retrieve all the available elements from Signals Notebook" zclass="nav-item" />
+            <button id="exportDataverse" label="Export to CORA RDR" tooltiptext="Click to export all the available elements to CORA RDR Dataverse instance" zclass="nav-item" />
+        </toolbar>
+    </div>
+</window>

@@ -78,6 +78,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
         documentWrapper.setId(document.getId());
         documentWrapper.setName(document.getName());
         documentWrapper.setDescription(document.getDescription());
+        documentWrapper.setCreationDate(document.getCreationDate());
         documentWrapper.setId(document.getId());
 
         MultipartFile multipartFile = null;
@@ -108,6 +109,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
         document.setId(documentWrapper.getId());
         document.setName(documentWrapper.getName());
         document.setDescription(documentWrapper.getDescription());
+        document.setCreationDate(documentWrapper.getCreationDate());
         document.setId(documentWrapper.getId());
         document.setContentType(documentWrapper.getContentType());
         document.setFileSize(documentWrapper.getSize());

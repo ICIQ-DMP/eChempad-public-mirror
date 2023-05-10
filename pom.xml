@@ -28,32 +28,58 @@
 		<java.version>1.8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<spring.version>5.3.22</spring.version>
+		<spring-framework.version>5.3.9</spring-framework.version>
+		<springboot.version>2.5.4</springboot.version>
 		<spring-security.version>5.7.3</spring-security.version>
+		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
+		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
+		<zk.version>8.6.0.1</zk.version>
+		<zkspring.version>4.0.2</zkspring.version>
+		<zkmax.version>3.6.3</zkmax.version>
+		<hikari.version>4.0.3</hikari.version>
+		<hibernate-hikariCP.version>5.2.10.Final</hibernate-hikariCP.version>
+		<javax-inject.version>1</javax-inject.version>
+		<ehcache.version>3.10.2</ehcache.version>
+		<threetenbp.version>1.6.4</threetenbp.version>
+		<postgresql.version>42.5.1</postgresql.version>
+		<jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
 
+		<net-sf-ehcache.version>2.10.9.2</net-sf-ehcache.version>
+		<reflections.version>0.9.10</reflections.version>
 		<!--Used by the licenses plugin-->
 		<license.licenseName>apache_v2</license.licenseName>
-		<current.year>2022</current.year>
+		<current.year>2023</current.year>
 	</properties>
 
 	<!--Licenses -->
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
 
+
 	<!-- This is needed to be able to import directly a github repository, which we need to import the Dataverse Java
 	API Wrapper  -->
 	<repositories>
+
+		<!-- ZK dependency -->
+		<repository>
+			<id>ZK CE</id>
+			<name>ZK CE Repository</name>
+			<url>https://mavensync.zkoss.org/maven2</url>
+		</repository>
+
+		<!-- To use the dataverse API client for java -->
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
+
 
 
 	<dependencies>
@@ -85,6 +111,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<!-- Added with the project initialization, it is for using web page tools in the project -->
@@ -98,6 +125,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<!-- Allows the use of the WebClient class, used to perform REST operations as a client. Used to communicate with Signals API-->
@@ -112,9 +140,14 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
+		<!-- To use a DataSource annotation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
 
 
-		<!-- Spring and Spring Boot packages -->
+		<!-- Spring -->
 
 		<!-- Used to control the ACL security infrastructure -->
 		<dependency>
@@ -127,6 +160,13 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
+		<!-- Used to control login / logout with ZK -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
 
@@ -149,28 +189,68 @@
 			<artifactId>spring-test</artifactId>
 		</dependency>
 
+		<!-- Used to integrate ZK with Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
 
+		<!-- Used to integrate ZK with Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
 
+		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
+		<dependency>
+			<groupId>com.github.IQSS</groupId>
+			<artifactId>dataverse-client-java</artifactId>
+			<version>master-SNAPSHOT</version>
+			<!-- This dependency pulls transitively a logging implementation, which is already satisfied using Spring,
+			exclude it -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
 		<dependency>
 			<groupId>org.threeten</groupId>
 			<artifactId>threetenbp</artifactId>
-			<version>1.6.0</version>
+			<version>${threetenbp.version}</version>
 		</dependency>
 
 		<!-- To use postgresql dialect in spring -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.3.6</version>
+			<version>${postgresql.version}</version>
 		</dependency>
 
 		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>22.0.0</version>
+			<version>${jetbrains-annotations.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -179,7 +259,7 @@
 		<dependency>
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>3.10.1</version>
+			<version>${ehcache.version}</version>
 		</dependency>
 
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
@@ -187,18 +267,69 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>2.10.5</version>
+			<version>${net-sf-ehcache.version}</version>
 		</dependency>
 
-		<!-- To obtain the Java Dataverse API wrapper
-		@see https://jitpack.io/
-		@see https://github.com/IQSS/dataverse-client-java  -->
+		<!-- To use zkoss in our application -->
 		<dependency>
-			<groupId>com.github.IQSS</groupId>
-			<artifactId>dataverse-client-java</artifactId>
-			<version>master-SNAPSHOT</version>
+			<groupId>org.zkoss.zkspringboot</groupId>
+			<artifactId>zkspringboot-starter</artifactId>
+			<type>pom</type>
+			<version>${zkspringboot-starter.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkplus</artifactId>
+			<version>${zk.version}</version>
+			<exclusions>
+				<exclusion>  <!-- Exclude log4j to avoid duplicate artifacts in the classpath -->
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-core</artifactId>
+			<version>${zkspring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-security</artifactId>
+			<version>${zkspring.version}</version>
+		</dependency>
+
+		<!-- To use the reflections' library, which is used in the code of iochem-bd
+		https://mvnrepository.com/artifact/org.reflections/reflections -->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${reflections.version}</version>
+		</dependency>
+
+
+		<!-- To use the @Inject annotation -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>${javax-inject.version}</version>
+		</dependency>
+
+		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikari.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-hikaricp</artifactId>
+			<version>${hibernate-hikariCP.version}</version>
+		</dependency>
 
 	</dependencies>
 
@@ -253,7 +384,16 @@
 									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms|apache license, version 2.0 - license-2.0|apache license 2.0 - license-2.0</licenseMerge>
+										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version
+											2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software
+											License, Version 2.0|The Apache License, Version 2.0|Apache License Version
+											2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software
+											License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License
+											V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache
+											2.0|Apache Software License,
+											Version2.0|https://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT
+											Terms|apache license, version 2.0 - license-2.0|apache license 2.0 -
+											license-2.0</licenseMerge>
 										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
 										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
 										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
@@ -305,7 +445,16 @@
 									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
 									<licenseMerges>
 										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version 2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software License, Version 2.0|The Apache License, Version 2.0|Apache License Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache 2.0|Apache Software License, Version2.0|http://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT Terms|apache license, version 2.0 - license-2.0|apache license 2.0 - license-2.0</licenseMerge>
+										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version
+											2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software
+											License, Version 2.0|The Apache License, Version 2.0|Apache License Version
+											2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software
+											License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License
+											V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache
+											2.0|Apache Software License,
+											Version2.0|https://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT
+											Terms|apache license, version 2.0 - license-2.0|apache license 2.0 -
+											license-2.0</licenseMerge>
 										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
 										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
 										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
@@ -392,7 +541,7 @@
 								<exclude>license/**</exclude>
 								<exclude>src/log4j2.xml</exclude>
 								<exclude>target/**</exclude>
-								<exclude>src/main/resources/CA_certificates/**</exclude>
+								<exclude>src/mainComposer/resources/CA_certificates/**</exclude>
 							</excludes>
 							<includes>
 								<include>src/**</include>
@@ -412,10 +561,8 @@
 							</execution>
 						</executions>
 					</plugin>
-
 				</plugins>
 			</build>
 		</profile>
-
 	</profiles>
 </project>

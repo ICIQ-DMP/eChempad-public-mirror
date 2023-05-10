@@ -15,18 +15,18 @@ We can clone the repository anywhere, for example in our HOME folder:
 cd $HOME
 git clone https://github.com/AleixMT/Linux-Auto-Customizer
 cd Linux-Auto-Customizer
-bash src/core/install.sh -h
+bash src/core/install.sh -v -o customizer
 ```
 
-The previous commands will show the help of the software if everything is okay.
+The previous commands will install the software, so it can be accessed using the link `customizer-install` and 
+`customizer-uninstall` software if everything is okay.
 
 ## Resolving dependencies
 
 In the repository execute the next orders:
 ```bash
-sudo bash install.sh -v -o psql
-bash install.sh -v -o jdk pgadmin postman ideau  # ideac 
-
+sudo customizer-install -v -o psql
+bash cutomizer-install -v -o jdk pgadmin postman ideau  # ideac 
 ```
 
 This will install:
@@ -67,28 +67,72 @@ createdb eChempad
 psql -d eChempad -h localhost -p 5432 -U amarine
 ```
 
+#### Connect to the database manually using pgAdmin
+Use `pgadmin` program to connect to the database using a graphical interface. To do so, just launch pgadmin by calling 
+the binary. You can access the interface using a web browser pointing to `localhost:5050`.
+
 ## ACL SQL schema & JPA entities SQL schema
-The application combines two different strategies to initialize the SQL schema for our database, which will use
-postgresql. The first strategy is using a `schema.sql` file, which by activating some properties in
-`application.properties` it can be executed every time our application goes up. We can add sql conditionals to
-initialize the schema if and only if the schema is not present. The schema is mainly used to initialize the SQL tables
-for the ACL initialization.
+The application combines *two* different strategies to initialize the SQL schema for our database and manipulate its 
+records: 
+
+The first strategy is using a `schema.sql` file, which by activating some properties in
+`application.properties` like `spring.sql.init.mode=always` it can be executed every time our application goes up. We 
+can add SQL conditionals to initialize the schema if and only if the schema is not present. The schema is mainly used to
+initialize the SQL tables for the ACL initialization.
 
 The other strategy is using the automatic schema initialization that comes with JPA data repositories / entities.
-By modifying the corresponding property in `application.properties` we can choose to initialize the schema when our app
-goes up, validate it, or do nothing.
+By modifying the corresponding property `eChempad.db.policy` in `application.properties` we can choose to initialize the
+schema when our app goes up, validate it, or do nothing.
 
 The problem and the reason why I am documenting this is that there is an ACL table that also has an associated JPA
 repository, and as such, the table can be initialized in both ways, which is wrong, since we need to use the ACL SQL
 schema for the schema and the JPA repository to modify the tables programmatically.
 
+The last paragraph means that on an initialization stage, where the database is empty, we need to create the 
+tables using the schema and *not* using the automatic initialization with JPA repositories. Why? Because we need to
+programmatically modify the `SecurityId` table to add records, so users can be registered in the ACL service and 
+actually use the JPA generic controllers. By using a schema to generate the table we do not have this capability. So, 
+why not use only the repository to initialize the schema and also modify the table programmatically? Because if we use 
+Hibernate to initialize the corresponding table with the repository class `SecurityIdRepository` the schema of that 
+table is not the schema that the default implementation of ACL needs, and the ACL service will fail. 
+
+Database initialization by schema or by JPA repository seem to be mutually exclusive under spring boot and also database 
+initialization by repository takes precedence over the schema initialization, so two executions of the application are 
+needed to obtain the needed state in the database, with the first initialization failing because repository tables do 
+not exist.
+
+To change the fact that two runs are needed to obtain the needed database state, you have some options:
+- Add the needed Hibernate annotations to the class `SecurityIdRepository` so the schema created by Hibernate when using 
+repository initialization is the correct one, and you also have the possibility to modify the table programmatically. 
+- Apply `schema.sql` before repository initialization takes place manually. 
+- Do not use a JPA repository to manipulate the table. Instead, use a regular repository that contains the SQL queries 
+to manipulate the needed tables. Initialize the database with the schema, which is the recommended way to obtain the ACL
+tables.
+
+
 #### Steps to reproduce a clean initialization
-1- To ensure the proper initialization of the schema first begin by dropping all tables.
+1- To ensure the proper initialization of the schema first begin by dropping all tables. You can use the SQL script 
+  under `./tools`
 2- Deactivate the initialization of JPA schema by setting the DB policy to *none*.
 3- Run application. The ACL SQL schema will be read from the `schema.sql` script and the app will fail because the
 schema for the JPA entities will not be present. The app should file with an error like this:
-`(...) Caused by: org.postgresql.util.PSQLException: ERROR: relation "researcher" does not exist
-`. The *acl_sid* table will be created using the schema provided via a JPA entity class.
+```
+(...) org.springframework.dao.InvalidDataAccessResourceUsageException: could not extract ResultSet; SQL [n/a]; nested 
+exception is org.hibernate.exception.SQLGrammarException: could not extract ResultSet
+```
+
+If the error is like this:
+
+```
+org.springframework.dao.DataIntegrityViolationException: PreparedStatementCallback; SQL [insert into acl_sid (principal, sid) values (?, ?)]; ERROR: null value in column "id" violates not-null constraint
+```
+
+It means that the database has been initialized using the JPA repositories, which is not what we need to do to properly 
+initialize the database for the `SecurityId` table. If that is the case, you can also check which tables have been 
+created. After the first run, you need to have *ONLY* the four tables of the ACL schema, not all the tables of the 
+program (ACL schema + JPA tables) 
+
+The *acl_sid* table will be created using the schema provided via a JPA entity class.
 4- Reactivate the JPA initializations by setting the DB policy to *update*.
 5- Rerun the application, which now should be working (even though because of admin initialization it can have an error 
 of duplicated primary key, but if your rerun one more time everything should be working). The ACL tables from the schema,
@@ -98,40 +142,33 @@ initialized.
 6- We can encounter one more error while initializing the app, it goes like: 
 `org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "acl_sid_pkey"` This happens
 because we manipulate the acl_sid table "from behind" (not programmatically, we attack the raw SQL tables). And as such, 
-the first petitions to create an ACL can cause a collision. 
-7- After that error we may find another Exception! it goes like this: 
-`java.lang.IllegalArgumentException: Transaction must be running`, but only happens twice the first time that a valid
-ACL is requested.
-In the next petitions, the ACL service will answer correctly.
+the first petitions to create an ACL can cause a collision. Rerun app and it should be working. In the next run, 
+the ACL service will answer correctly.
+
+## IDE integration
+Open the project by calling the binary `ideau` with the same working directory as teh repository.
+
+After that the IDE will open and a lot of indexing and downloading will start. There are some things that you may need 
+to do in order to work with the project:
+- File -> project structure -> set SDK to Amazon Coretto 1.8 (any 1.8 java will be fine)
+- File -> project structure -> set language level to 1.8 (lambdas annotations..)
+- File -> Settings -> Plugins -> ZK framework
+- File -> Settings -> Plugins -> JPA buddy
 
 
-## Creating the file structures
-**(DEPRECATED)** The eChempad application stores files in the file system under the folder /eChempad/file_db. It also stores the 
-credentials of the APIKeys under /eChempad/APIKeys. Now, for debug purposes we store in this path a file called "key" 
-which contains a dummy APIKey inside a file. To create this file structure use
-
-```bash
-sudo mkdir -p /eChempad/file_db
-sudo mkdir -p /eChempad/APIKeys
-sudo chown eChempad:eChempad /eChempad/file_db
-sudo chown eChempad:eChempad /eChempad/APIKeys
-sudo nano /eChempad/APIKeys/key  # Introduce the key here. Remember to not paste it in the terminal or it will be kept in the history!
-sudo chmod 400 -R /eChempad
-```
-
-You can also use another user if the eChempad is executed from another user.
+## API keys
 
 Also remember that the API key can be generated from [here](https://iciq.signalsnotebook.perkinelmercloud.eu/snconfig/settings/apikey)
 
 ## Certificates of the JVM
 The certificates of java are stored in the `cacerts` file, which can be located in different places of the system. We 
-have our own cacerts file uploaded to the git repository, which is located in ./eChempad/src/main/resources/CA_certificates/cacerts
+have our own cacerts file uploaded to the git repository, which is located in `./eChempad/src/mainComposer/resources/CA_certificates/cacerts`
 and is the one that we are using. 
 
 To check the presence of certificates inside this cacerts file we can use the following command:
 
 ```
-keytool -list -keystore ~/Desktop/eChempad/src/main/resources/CA_certificates/cacerts -storepass changeit
+keytool -list -keystore ~/Desktop/eChempad/src/mainComposer/resources/CA_certificates/cacerts -storepass changeit
 ```
 
 If you can not see any certificate you must download another cacerts file or update the JDK you are using, since from 
@@ -143,15 +180,16 @@ time to time the certificates expire and will not work.
 In a terminal, clone the repository, enter its root directory and run the maven wrapper with the `compile` option. By
 using the installation before, all the needed
 software and its dependencies and environmental variables are resolved, so they can be found by maven and our editor:
+
 ```bash
 git clone https://github.com/AleixMT/eChempad
 cd eChempad
 ./mvnw compile
 ```
+
 This will download all the necessary libraries to execute the project.
-This script has also
-been modified to accept different configuration files, kill anything that is using the port that we are going to
-deploy our app and is easy to modify the certificates that it uses.
+This script has also been modified to accept different configuration files, kill anything that is using the port that we
+are going to deploy our app and is easy to modify the certificates that it uses.
 
 #### IDE
 You can also compile the software by using the IDE. To do so, after cloning the repository `cd` into it and call the 
@@ -298,24 +336,24 @@ Here is a list of the folders and files contained inside the root of this projec
 - `.run/`: Contains IntelliJ IDEA run configurations in XML format. Used by the IDE to retrieve execution options, so we
            do not have to configure each IDE that we are using. 
 - `src/`: Contains the code and resources used to build the project.
-- `src/main/java`: Contains the Java code used in the application. This is the main source code folder.
-- `src/main/resources`: Contains configuration code and other resources needed to set the development environment and
+- `src/mainComposer/java`: Contains the Java code used in the application. This is the mainComposer source code folder.
+- `src/mainComposer/resources`: Contains configuration code and other resources needed to set the development environment and
                         to project execution. 
-- `src/main/resources/CA_certificates`: CA certificates usually give troubles when using the Maven wrapper. The CA 
+- `src/mainComposer/resources/CA_certificates`: CA certificates usually give troubles when using the Maven wrapper. The CA 
                                         certificates in this directory are
                                         used as fallbacks if the ones provided by the system can not be used or are corrupted
-- `src/main/resources/META-INF`: Used to define our own schemas and properties inside the `.properties` files used by Spring,
+- `src/mainComposer/resources/META-INF`: Used to define our own schemas and properties inside the `.properties` files used by Spring,
                                  which can be used inside the Java code to define configurations.
-- `src/main/resources/Signals-API-Scratcher`: Contains the code to massively download the data from a user of the Signals Notebook 
+- `src/mainComposer/resources/Signals-API-Scratcher`: Contains the code to massively download the data from a user of the Signals Notebook 
                                     from ParkinElmerCloud into the file system using `bash` and `curl`. This is kept as
                                     reference since it will be integrated into this application.
-- `src/main/resources/static`: Created by default. Contains static content such as images or sounds usually used in the creation of web pages. 
-- `src/main/resources/templates`: Created by default. Contains templates in marking languages such as HTML or XML that are used to create the actual web pages to serve.
-- `src/main/resources/*.properties`: Files that define properties that can be used inside the Java code to change code behaviour 
-                                     without adding any code. The main one is `application.properties`, which is always parsed. Inside it 
+- `src/mainComposer/resources/static`: Created by default. Contains static content such as images or sounds usually used in the creation of web pages. 
+- `src/mainComposer/resources/templates`: Created by default. Contains templates in marking languages such as HTML or XML that are used to create the actual web pages to serve.
+- `src/mainComposer/resources/*.properties`: Files that define properties that can be used inside the Java code to change code behaviour 
+                                     without adding any code. The mainComposer one is `application.properties`, which is always parsed. Inside it 
                                      there is the property `spring.profiles.active` who tells which is the active profile and is used by the 
                                      Maven wrapper to also import the corresponding `.properties` file of the active profile.
-- `src/main/rsources/*.sh`: Files that define or modify system variables depending on the profile that we are on. The file 
+- `src/mainComposer/rsources/*.sh`: Files that define or modify system variables depending on the profile that we are on. The file 
                             `application.sh` is always executed when using the Maven wrapper to execute the code. The other `.sh` files
                             are executed when its corresponding profile is active. 
 - `src/test/java`: Contains the code of the test of the Java code. 

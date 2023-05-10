@@ -3,17 +3,14 @@ package org.ICIQ.eChempad.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.researchspace.dataverse.api.v1.DataverseAPI;
 import com.researchspace.dataverse.api.v1.DataverseConfig;
-import com.researchspace.dataverse.entities.Dataset;
 import com.researchspace.dataverse.entities.DatasetFileList;
 import com.researchspace.dataverse.entities.Identifier;
 import com.researchspace.dataverse.http.DataverseAPIImpl;
 import com.researchspace.dataverse.http.FileUploadMetadata;
-import com.researchspace.dataverse.sword.FileUploader;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
-import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
@@ -25,23 +22,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Logger;
-
-import static com.researchspace.dataverse.entities.facade.PublicationIDType.doi;
 
 /**
  * Implementation of class to export data to a running Dataverse instance.
@@ -54,7 +48,7 @@ import static com.researchspace.dataverse.entities.facade.PublicationIDType.doi;
  * @since 24/10/2022
  * @see <a href="https://guides.dataverse.org/en/latest/api/intro.html">...</a>
  */
-@Service
+@Service("dataverseExportService")
 public class DataverseExportServiceImpl implements DataverseExportService {
 
     /**
@@ -147,20 +141,24 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         // Call Dataverse API client to create dataset into the ICIQ Dataverse
         Identifier datasetDatabaseIdentifier = api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
 
+        // Keep track of directory labels
+
         // Upload files of each experiment into the created dataset
         // Get all experiments from selected journal
         for (Experiment experiment: this.experimentService.getExperimentsFromJournal((UUID) id))
         {
             // Get all documents for each experiment
-            for (Document document: this.documentService.getDocumentsFromExperiment(((UUID) experiment.getId())))
-            {
-                try {
-                    // Create File metadata for the upload
-                    FileUploadMetadata fileUploadMetadata = FileUploadMetadata.builder()
-                            .description(document.getDescription())
-                            .directoryLabel(experiment.getName())
-                            .build();
+            for (Document document: this.documentService.getDocumentsFromExperiment(((UUID) experiment.getId()))) {
+                Logger.getGlobal().warning("Directory label is: \"" + experiment.getName() + "\"");
 
+                // Create File metadata for the upload
+                FileUploadMetadata fileUploadMetadata = FileUploadMetadata.builder()
+                        .description(document.getDescription())
+                        .directoryLabel(experiment.getName())
+                        .build();
+
+                // TODO: when using iescofet experiments, when changing experiments a 400 error is found
+                try {
                     // Upload file
                     DatasetFileList datasetFileList = api.getDatasetOperations().uploadNativeFile(
                             document.getBlob().getBinaryStream(),
@@ -169,14 +167,12 @@ public class DataverseExportServiceImpl implements DataverseExportService {
                             datasetDatabaseIdentifier,
                             document.getName()
                     );
-
-                } catch (SQLException e) {
-                    // TODO throw exception
+                } catch (Exception e) {
+                    Logger.getGlobal().warning("The current document made the app fail");
                     e.printStackTrace();
                 }
             }
         }
-
         return datasetDatabaseIdentifier.toString();
     }
 
@@ -186,7 +182,16 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         return convFile;
     }
 
+    /**
+     * Exports the journal identified by the supplied UUID in the first parameter. Is Transactional because of
+     * connection with the LOB service, which has special DB connection requirements (not to be in auto-commit mode)
+     *
+     * @param id Contains an identifier for the journal that we want to export.
+     * @return String that summarizes all the exported entities.
+     * @throws IOException Exception thrown if something goes wrong during connection.
+     */
     @Override
+    @Transactional
     public String exportJournal(Serializable id) throws IOException {
         return exportJournal( ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getDataverseAPIKey(), id);
     }

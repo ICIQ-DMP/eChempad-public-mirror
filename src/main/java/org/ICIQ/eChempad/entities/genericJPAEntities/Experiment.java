@@ -43,6 +43,12 @@ public class Experiment extends JPAEntityImpl {
     @Column(length = 1000, nullable = false)
     private String description;
 
+    /**
+     * Date of creation of the entity.
+     */
+    @Column(nullable = false)
+    private Date creationDate;
+
     @OneToMany(
             targetEntity = Document.class,
             mappedBy = "experiment",
@@ -68,6 +74,7 @@ public class Experiment extends JPAEntityImpl {
     public Experiment(String name, String description) {
         this.name = name;
         this.description = description;
+        this.initCreationDate();
     }
 
     // GETTERS AND SETTERS
@@ -105,6 +112,24 @@ public class Experiment extends JPAEntityImpl {
         return (Class<T>) Experiment.class;
     }
 
+    /**
+     * Obtains the typeName, used by jackson to deserialize generics.
+     *
+     * @return Name of the class as string.
+     */
+    @Override
+    public String getTypeName() {
+        return Experiment.class.getCanonicalName();
+    }
+
+    @Override
+    public void initCreationDate() {
+        this.creationDate = new Date();
+    }
+
+
+    // GETTERS SETTERS AND TO-STRING
+
     public String getName() {
         return this.name;
     }
@@ -137,14 +162,12 @@ public class Experiment extends JPAEntityImpl {
         this.documents = documents;
     }
 
-    /**
-     * Obtains the typeName, used by jackson to deserialize generics.
-     *
-     * @return Name of the class as string.
-     */
-    @Override
-    public String getTypeName() {
-        return Experiment.class.getCanonicalName();
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override

@@ -23,8 +23,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import java.io.Serializable;
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -63,12 +64,17 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
     // Business methods: Contains the logic of the application
 
     /**
-     * Saves entity and gives full permissions to the creator
+     * Saves entity and gives full permissions to the creator.
+     *
      * @param entity must not be {@literal null}.
      * @param <S1> entity to be saved
      * @return entity that has been saved
      */
     public <S1 extends T> S1 save(S1 entity) {
+        // Save the creation date of this entity.
+        entity.initCreationDate();
+
+        // Save it in the database
         S1 t = genericRepository.save(entity);
 
         // Save all possible permission against the saved entity with the current logged user
@@ -80,7 +86,8 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
     }
 
     /**
-     * Returns all entities of a certain type T
+     * Returns all entities of a certain type T.
+     *
      * @return List of entities
      */
     public List<T> findAll() {
@@ -136,10 +143,11 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
 
     /**
      * Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
+     *
+     * WARNING! You are using getById which can cause a Lazy Initialization Exception if used out of session. Use
+     * getById to avoid this and load the full entity.
      */
     public T getById(S s) {
-        Logger.getGlobal().warning("WARNING! You are using getById which can cause a Lazy Initialization Exception " +
-                "if used out of session, use getById to avoid this and load the full entity.");
         return this.genericRepository.getById(s);
     }
 
