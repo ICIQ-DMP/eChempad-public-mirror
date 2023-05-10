@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EChempadApplicationTests.contextLoads" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="eChempad" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.ICIQ.eChempad.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="org.ICIQ.eChempad" />
+    <option name="MAIN_CLASS_NAME" value="org.ICIQ.eChempad.EChempadApplicationTests" />
+    <option name="METHOD_NAME" value="contextLoads" />
+    <option name="TEST_OBJECT" value="method" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

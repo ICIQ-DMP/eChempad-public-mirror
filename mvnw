@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # ----------------------------------------------------------------------------
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -34,6 +34,7 @@
 #   MAVEN_SKIP_RC - flag to disable loading of mavenrc files
 # ----------------------------------------------------------------------------
 
+clear  # Clean screen when running this script because it outputs a lot of things
 if [ -z "$MAVEN_SKIP_RC" ] ; then
 
   if [ -f /etc/mavenrc ] ; then
@@ -304,28 +305,71 @@ export MAVEN_CMD_LINE_ARGS
 WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
 
-### CUSTOM CODE TO INCLUDE PROFILES FOR MAVEN WRAPPER
+### CUSTOM CODE TO SOURCE DIFFERENT BASH CODE FOR EACH APPLICATION PROFILE ###
 
-# Debug net issues (HTTPS)
-#-Djavax.net.debug=all \
-# Explicitly set the cacerts files
-
+# Obtain full path to the folder that contains this script
 MAVEN_WRAPPER_DIR="$(dirname "$(realpath "$0")")"
+# Obtain application profile
 SPRINGBOOT_PROFILE="$(
   cat "${MAVEN_WRAPPER_DIR}/src/main/resources/application.properties" |
-  grep -Eo "spring.profiles.active=.*" |
-  cut -d "=" -f2-
+  grep -Eo "spring.profiles.active = .*" |
+  cut -d "=" -f2- |
+  tr -d " "
   )"
 
-echo $MAVEN_WRAPPER_DIR
+
+# Added to the original code the sourcing of the application-env.sh and the corresponding environment for the profile
+# that we have currently active
+# {
 source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-env.sh"
 source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE}-env.sh"
+# }
 
-# "${JAVA_FLAGS}"
+# Added a hardcoded truststore using $JAVA_HOME
+# Added maven options in MAVEN_OPTIONS. This var is defined in the application profile.
+# trust-anchors parameters problems? pick a new cacerts file between:
+# *  /etc/default/cacerts
+# *  "${JAVA_HOME}/jre/lib/security/cacerts"
+# *  /etc/ssl/certs/java/cacerts  <-- this is a good one
+# "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts" <-- The static one that we have stored in the repo
+trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/tools/CA_certificates/cacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
+trustStore="${trustStores[5]}"
+
+if [ ! -f "${trustStore}" ]; then
+  echo "ERROR: The trust store ${trustStore} is not a valid or existent file"
+  exit 1
+fi
+if [ ! -r "${trustStore}" ]; then
+  echo "ERROR: The trust store ${trustStore} can not be read"
+  exit 1
+fi
+
+# Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
+if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]; then
+  echo Executed command:
+  echo exec "${JAVACMD}" ${JAVA_FLAGS} \
+         -Djavax.net.ssl.trustStore="${trustStore}" \
+         -Djavax.net.ssl.trustStorePassword=changeit \
+         -Dspring.profiles.active=dev \
+         ${MAVEN_OPTS} \
+         -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
+         "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
+         ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
+         "$@"
+fi
+
+# If there is any application listening to port 8081 (which is the one used to deploy the app) kill it.
+if lsof -ti tcp:8081 &> /dev/null; then
+  # if there is someone running in port 8081
+  lsof -ti tcp:8081 | xargs kill
+fi
+
 exec "${JAVACMD}" ${JAVA_FLAGS} \
-  -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts \
+  -Djavax.net.ssl.trustStore="${trustStore}" \
   ${MAVEN_OPTS} \
   -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
   "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
   ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
   "$@"
+
+  #-Djavax.net.ssl.trustStorePassword=changeit \

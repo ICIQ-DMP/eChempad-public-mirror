@@ -1,0 +1,63 @@
+{
+  "properties": [
+    {
+      "name": "spring.security.user.name",
+      "type": "java.lang.Boolean",
+      "description": "Value of the default user name of eChempad (//RF it transforms magically to amarine)."
+    },
+    {
+      "name": "security.disable.cors",
+      "type": "java.lang.String",
+      "description": "Description for security.disable.cors."
+    },
+    {
+      "name": "security.disable.csrf",
+      "type": "java.lang.String",
+      "description": "Description for security.disable.csrf."
+    },
+    {
+      "name": "file.upload-dir",
+      "type": "java.lang.String",
+      "description": "Description for file.upload-dir."
+    },
+    {
+      "name": "signals.baseURL",
+      "type": "java.lang.String",
+      "description": "Contains the URL where the API REST of Signals is located."
+    },
+    {
+      "name": "signals.APIKeys.path",
+      "type": "java.lang.String",
+      "description": "Contains a path to a file that contains the API key for a testing user."
+    },
+    {
+      "name": "signals.APIKeys.filename",
+      "type": "java.lang.String",
+      "description": "Filename for a file containing the API key. Used in testing."
+    },
+    {
+      "name": "eChempad.db.dialect",
+      "type": "java.lang.String",
+      "description": "Dialect for the database"
+    },
+    {
+      "name": "eChempad.db.driver",
+      "type": "java.lang.String",
+      "description": "Description for eChempad.db.driver."
+    },
+    {
+      "name": "eChempad.db.url",
+      "type": "java.lang.String",
+      "description": "Description for eChempad.db.url."
+    },
+    {
+      "name": "eChempad.db.policy",
+      "type": "java.lang.String",
+      "description": "Initialization mode for automatic JPA tables"
+    },
+    {
+      "name": "eChempad.db.show-sql",
+      "type": "java.lang.String",
+      "description": "Description for eChempad.db.show-sql."
+    }
+  ] }
