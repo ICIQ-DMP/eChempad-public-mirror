@@ -1,7 +1,6 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.researchspace.dataverse.api.v1.DataverseAPI;
 import com.researchspace.dataverse.api.v1.DataverseConfig;
 import com.researchspace.dataverse.entities.DatasetFileList;
@@ -32,8 +31,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Implementation of class to export data to a running Dataverse instance.
@@ -139,20 +141,24 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         // Call Dataverse API client to create dataset into the ICIQ Dataverse
         Identifier datasetDatabaseIdentifier = api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
 
+        // Keep track of directory labels
+
         // Upload files of each experiment into the created dataset
         // Get all experiments from selected journal
         for (Experiment experiment: this.experimentService.getExperimentsFromJournal((UUID) id))
         {
             // Get all documents for each experiment
-            for (Document document: this.documentService.getDocumentsFromExperiment(((UUID) experiment.getId())))
-            {
-                try {
-                    // Create File metadata for the upload
-                    FileUploadMetadata fileUploadMetadata = FileUploadMetadata.builder()
-                            .description(document.getDescription())
-                            .directoryLabel(experiment.getName())
-                            .build();
+            for (Document document: this.documentService.getDocumentsFromExperiment(((UUID) experiment.getId()))) {
+                Logger.getGlobal().warning("Directory label is: \"" + experiment.getName() + "\"");
 
+                // Create File metadata for the upload
+                FileUploadMetadata fileUploadMetadata = FileUploadMetadata.builder()
+                        .description(document.getDescription())
+                        .directoryLabel(experiment.getName())
+                        .build();
+
+                // TODO: when using iescofet experiments, when changing experiments a 400 error is found
+                try {
                     // Upload file
                     DatasetFileList datasetFileList = api.getDatasetOperations().uploadNativeFile(
                             document.getBlob().getBinaryStream(),
@@ -161,9 +167,8 @@ public class DataverseExportServiceImpl implements DataverseExportService {
                             datasetDatabaseIdentifier,
                             document.getName()
                     );
-
-                } catch (SQLException e) {
-                    // TODO throw exception
+                } catch (Exception e) {
+                    Logger.getGlobal().warning("The current document made the app fail");
                     e.printStackTrace();
                 }
             }
