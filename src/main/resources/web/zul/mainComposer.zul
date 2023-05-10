@@ -16,30 +16,6 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
--->
-<?meta name="viewport" content="width=device-width, initial-scale=1"?>
-
-<?link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico"?>
-<?link rel="icon" type="image/x-icon" href="/img/favicon.ico"?>
-
-<?link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css" ?>
-<?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
-<?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
-
-<window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.composers.MainComposer" style="height: 100%; width:100%">
-
-    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
-    <script type="text/javascript" src="/js/bootstrap.min.js"> </script>
-    <script type="text/javascript" src="/js/popper.min.js"> </script>
-
-    <script>
-        zk.afterMount(function()
-        {
-            jq('.z-tabs-content').addClass('nav nav-tabs');
-            jq('.nav-item-content').addClass('nav-link');
-        })
-    </script>
-
     <n:nav class="navbar navbar-expand navbar-light bg-light" style="height:60px" href="/">
         <n:button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"/>
