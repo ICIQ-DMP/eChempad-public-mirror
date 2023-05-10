@@ -119,8 +119,12 @@ This section lists any major frameworks/libraries used to bootstrap the eChempad
 * [![JQuery][JQuery-shield]][JQuery-url]
 * [![PostgreSQL][postgres-shield]][postgres-url]
 * [![Java][java-shield]][java-url]
-* [![Git][git-shield]][git-url]
 * [![Spring Boot][springboot-shield]][springboot-url]
+* [![ZK][zk-shield]][zk-url]
+* [![Hibernate][hibernate-shield]][hibernate-url]
+* [![Jackson][jackson-shield]][jackson-url]
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -354,11 +358,17 @@ Copyright 2020-2023 Institute of Chemical Research of Catalonia (ICIQ)
 [JQuery-url]: https://jquery.com
 [postgres-shield]: https://img.shields.io/badge/postgres-12.14+-blue?style=for-the-badge&logo=postgresql&logoColor=white
 [postgres-url]: https://www.postgresql.org/
-[java-shield]: https://img.shields.io/badge/java-8.0+-green?style=for-the-badge&logo=oracle&logoColor=white
+[java-shield]: https://img.shields.io/badge/java-8.0+-yellow?style=for-the-badge&logo=oracle&logoColor=white
 [java-url]: https://www.java.com/es/
 [git-shield]: https://img.shields.io/badge/git-2.25.1+-black?style=for-the-badge&logo=git
 [git-url]: https://git.com
 [bash-shield]: https://img.shields.io/badge/bash-4.0+-black?style=for-the-badge&logo=gnubash
 [bash-url]: https://www.gnu.org/software/bash/
-[springboot-shield]: https://img.shields.io/badge/springboot-4.0+-black?style=for-the-badge&logo=gnubash
+[springboot-shield]: https://img.shields.io/badge/springboot-4.0+-green?style=for-the-badge&logo=spring
 [springboot-url]: https://spring.io/
+[zk-shield]: https://img.shields.io/badge/zk-4.0+-purple?style=for-the-badge&logo=zkoss
+[zk-url]: https://www.zkoss.org/
+[hibernate-shield]: https://img.shields.io/badge/hibernate-1.0+-red?style=for-the-badge&logo=hibernate
+[hibernate-url]: https://www.zkoss.org/
+[jackson-shield]: https://img.shields.io/badge/jackson-1.0+-brown?style=for-the-badge&logo=jackson
+[jackson-url]: https://github.com/FasterXML/jackson
