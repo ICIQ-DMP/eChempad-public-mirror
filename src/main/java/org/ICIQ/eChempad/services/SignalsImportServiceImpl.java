@@ -73,6 +73,8 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
         String APIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
 
+        Logger.getGlobal().warning("API key: " + APIKey);
+
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
@@ -140,6 +142,10 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
         // Parse journal description
         String signalsJournalDescription = journalJSON.get("data").get("attributes").get("description").toString().replace("\"", "");
+        if (signalsJournalDescription.equals(""))
+        {
+            signalsJournalDescription = "(No description provided)";
+        }
         signalsJournal.setDescription(signalsJournalDescription);
 
         // metadata parsing (...)
@@ -190,7 +196,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 Journal signalsJournal = new Journal();
 
                 // Parse and log journal name
-                String signalsJournalName = journalJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
+                String signalsJournalName = journalJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
                 if (signalsJournalName.equals(""))
                 {
                     signalsJournalName = "(No name provided)";
@@ -199,7 +205,11 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 stringBuilder.append(" * Journal ").append(i).append(" with EID ").append(journal_eid).append(": ").append(signalsJournalName).append("\n");
 
                 // Parse journal description
-                String signalsJournalDescription = journalJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
+                String signalsJournalDescription = journalJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
+                if (signalsJournalDescription.equals(""))
+                {
+                    signalsJournalDescription = "(No description provided)";
+                }
                 signalsJournal.setDescription(signalsJournalDescription);
 
                 // Parse journal creation date
@@ -220,7 +230,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     public ObjectNode getJournalWithOffset(String APIKey, int pageOffset)
     {
         return this.webClient.get()
-                .uri(SignalsImportServiceImpl.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=owner&includeOptions=mine")
+                .uri(SignalsImportServiceImpl.baseURL + "/entities?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&includeTypes=journal&include=owner") // &includeOptions=mine
                 .header("x-api-key", APIKey)
                 .retrieve()
                 .bodyToMono(ObjectNode.class)
@@ -249,7 +259,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 Experiment signalsExperiment = new Experiment();
 
                 // Parse and log experiment name
-                String signalsExperimentName = experimentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
+                String signalsExperimentName = experimentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
                 if (signalsExperimentName.equals(""))
                 {
                     signalsExperimentName = "(No name provided)";
@@ -258,7 +268,12 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 stringBuilder.append("   - Experiment ").append(i).append(" with EID ").append(experiment_eid).append(": ").append(signalsExperimentName).append("\n");
 
                 // Parse experiment description
-                signalsExperiment.setDescription(experimentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
+                String signalsExperimentDescription = experimentJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", "");
+                if (signalsExperimentDescription.equals(""))
+                {
+                    signalsExperimentDescription = "(No description provided)";
+                }
+                signalsExperiment.setDescription(signalsExperimentDescription);
 
                 // Parse experiment creation date
                 signalsExperiment.setCreationDate(SignalsImportService.parseDateFromJSON(experimentJSON));
