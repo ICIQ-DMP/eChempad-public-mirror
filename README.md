@@ -43,11 +43,11 @@ data life-cycle of experiments and assays from Experimental Chemistry and relate
     <a href="https://github.com/AleixMT/eChempad"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/AleixMT/eChempad">View Demo</a>
+    <a href="https://d.iciq.es">View Demo</a>
     ·
-    <a href="https://github.com/AleixMT/eChempad/issues">Report Bug</a>
+    <a href="https://github.com/AleixMT/eChempad/issues/new">Report Bug</a>
     ·
-    <a href="https://github.com/AleixMT/eChempad/issues">Request Feature</a>
+    <a href="https://github.com/AleixMT/eChempad/issues/new">Request Feature</a>
   </p>
 </div>
 
@@ -96,7 +96,9 @@ successful platform for **Computational Chemistry** developed at ICIQ,
 
 Currently, the eChempad platform allows researchers to extract experimentation data from the 
 [PerkinElmer Signals Notebook](https://perkinelmerinformatics.com/products/research/signals-notebook-eln) in bulk, 
-enrich them with metadata, and finally publish them into a [Dataverse](https://dataverse.org/) instance. 
+enrich them with metadata, and finally publish them into [CORA RDR](https://dataverse.csuc.cat/) a 
+[Dataverse](https://dataverse.org/) instance maintained by the 
+[Consorci de Serveis Universitaris de Catalunya (CSUC)](https://www.csuc.cat/en). 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -210,9 +212,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Your Name - [@ioChem_BD](https://twitter.com/ioChem_BD) - [dmp@iciq.es](dmp@iciq.es)
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/AleixMT/eChempad](https://github.com/AleixMT/eChempad)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -241,21 +243,22 @@ Use this space to list resources you find helpful and would like to give credit 
 Copyright 2020-2023.
 
 ###### Institutions involved in the eChempad development:
-* [Institute of Chemical Research of Catalonia](https://www.iciq.es/) (ICIQ)
+* [Institute of Chemical Research of Catalonia(ICIQ)](https://www.iciq.es/)
 
 ###### Development:
 * Main developer: Aleix Mariné-Tena (2021 - now)
 
 ###### Software committee:
-* Moisés Álvarez (ICIQ - URV) (mainComposer developer of ioChem-BD)
+* Moisés Álvarez (ICIQ - URV) (main developer of [ioChem-BD](https://www.iochem-bd.org/))
 
 ###### Scientific committee:
-* Carles Bo (ICIQ - URV)
+* Carles Bo (ICIQ)
 * Núria Lopez (ICIQ)
 * Feliu Maseras (ICIQ - URV)
 
 ###### Scientific contributors:
-* Gemma Aragay
+* Imma Escofet (ICIQ)
+* Gemma Aragay (ICIQ)
 
 ###### System administrators:
 * Martin Gumbau (ICIQ)
@@ -275,14 +278,16 @@ Copyright 2020-2023.
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
 [license-url]: https://github.com/AleixMT/eChempad/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+[linkedin-url]: https://www.linkedin.com/in/aleix-marin%C3%A9-083672122/
+[product-screenshot]: .github/images/screenshot.png
 [Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery-shield]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com
 [postgres-shield]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
 [postgres-url]: https://www.postgresql.org/
+[java-shield]: https://img.shields.io/badge/java-%23316192.svg?style=for-the-badge&logo=java&logoColor=white
+[java-url]: https://www.java.com/es/
 
 
 

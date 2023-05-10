@@ -1,4 +1,11 @@
 /*
+ * |===================================================================================|
+ * | Copyright (C) 2021 - 2023 ICIQ <contact@iochem-bd.org>                            |
+ * |                                                                                   |
+ * | This software is the property of ICIQ.                                            |
+ * |===================================================================================|
+ */
+/*
  * Create module - Create module inside the ioChem-BD software.
  * Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
  *
