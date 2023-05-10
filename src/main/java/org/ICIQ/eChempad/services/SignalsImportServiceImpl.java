@@ -420,5 +420,4 @@ public class SignalsImportServiceImpl implements SignalsImportService {
             return responseEntity.getBody();
         }
     }
-
 }
