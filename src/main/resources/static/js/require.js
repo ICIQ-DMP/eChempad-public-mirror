@@ -1,3 +1,10 @@
+/*
+ * |===================================================================================|
+ * | Copyright (C) 2021 - 2023 ICIQ <contact@iochem-bd.org>                            |
+ * |                                                                                   |
+ * | This software is the property of ICIQ.                                            |
+ * |===================================================================================|
+ */
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.3.5 Copyright jQuery Foundation and other contributors.
  * Released under MIT license, https://github.com/requirejs/requirejs/blob/master/LICENSE

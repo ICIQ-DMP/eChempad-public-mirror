@@ -1,3 +1,10 @@
+/*
+ * |===================================================================================|
+ * | Copyright (C) 2021 - 2023 ICIQ <contact@iochem-bd.org>                            |
+ * |                                                                                   |
+ * | This software is the property of ICIQ.                                            |
+ * |===================================================================================|
+ */
 package org.ICIQ.eChempad.controllers.UIControllers;
 
 /**
