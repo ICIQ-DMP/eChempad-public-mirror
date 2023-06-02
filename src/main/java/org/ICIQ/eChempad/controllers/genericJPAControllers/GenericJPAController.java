@@ -14,14 +14,14 @@
  */
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 
 import java.io.Serializable;
 import java.util.Set;
 
-public interface GenericJPAController<T extends JPAEntityImpl, S extends Serializable> {
+public interface GenericJPAController<T extends EntityImpl, S extends Serializable> {
 
     /**
      * return the entity class of this generic repository.

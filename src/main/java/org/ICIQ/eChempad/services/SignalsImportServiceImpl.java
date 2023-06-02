@@ -12,12 +12,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
 import org.ICIQ.eChempad.entities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
-import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
-import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
@@ -33,7 +31,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -54,10 +54,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     static final boolean getOnlyOwnedResources = false;
 
     @Autowired
-    private JournalService<Journal, UUID> journalService;
-
-    @Autowired
-    private ExperimentService<Experiment, UUID> experimentService;
+    private ContainerService<Container, UUID> containerService;
 
     @Autowired
     private DocumentService<Document, UUID> documentService;
@@ -136,7 +133,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         String journal_eid = journalJSON.get("data").get("attributes").get("eid").toString().replace("\"", "");
 
         // Create unmanaged journal to save the metadata
-        Journal signalsJournal = new Journal();
+        Container signalsContainer = new Container();
 
         // Parse and log journal name
         String signalsJournalName = journalJSON.get("data").get("attributes").get("name").toString().replace("\"", "");
@@ -144,7 +141,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         {
             signalsJournalName = "(No name provided)";
         }
-        signalsJournal.setName(signalsJournalName);
+        signalsContainer.setName(signalsJournalName);
         stringBuilder.append(" * Journal ").append(0).append(" with EID ").append(journal_eid).append(": ").append(signalsJournalName).append("\n");
 
         // Parse journal description
@@ -153,16 +150,16 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         {
             signalsJournalDescription = "(No description provided)";
         }
-        signalsJournal.setDescription(signalsJournalDescription);
+        signalsContainer.setDescription(signalsJournalDescription);
 
         // metadata parsing (...)
 
-        this.journalService.save(signalsJournal);
+        this.containerService.save(signalsContainer);
 
         // Now call getExperimentsFromJournal using the created journal in order to import their children, recursively
         // This function will fill the passed journal with the new retrieved experiments from Signals. It will also
         // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
-        this.getExperimentsFromJournal(APIKey, journal_eid, (UUID) signalsJournal.getId(), stringBuilder);
+        this.getExperimentsFromJournal(APIKey, journal_eid, (UUID) signalsContainer.getId(), stringBuilder);
         return stringBuilder.toString();
     }
 
@@ -200,7 +197,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 String journal_eid = journalJSON.get("data").get(0).get("id").toString().replace("\"", "");
 
                 // Create unmanaged journal to save the metadata
-                Journal signalsJournal = new Journal();
+                Container signalsContainer = new Container();
 
                 // Parse and log journal name
                 String signalsJournalName = journalJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
@@ -208,7 +205,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 {
                     signalsJournalName = "(No name provided)";
                 }
-                signalsJournal.setName(signalsJournalName);
+                signalsContainer.setName(signalsJournalName);
                 stringBuilder.append(" * Journal ").append(i).append(" with EID ").append(journal_eid).append(": ").append(signalsJournalName).append("\n");
 
                 // Parse journal description
@@ -217,18 +214,18 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 {
                     signalsJournalDescription = "(No description provided)";
                 }
-                signalsJournal.setDescription(signalsJournalDescription);
+                signalsContainer.setDescription(signalsJournalDescription);
 
                 // Parse journal creation date
-                signalsJournal.setCreationDate(SignalsImportService.parseDateFromJSON(journalJSON));
+                signalsContainer.setCreationDate(SignalsImportService.parseDateFromJSON(journalJSON));
 
                 // metadata parsing (...)
-                this.journalService.save(signalsJournal);
+                this.containerService.save(signalsContainer);
 
                 // Now call getExperimentsFromJournal using the created journal in order to import their children, recursively
                 // This function will fill the passed journal with the new retrieved experiments from Signals. It will also
                 // call the function to getDocumentFromExperiment passing the reference of the experiment, to fill the DB.
-                this.getExperimentsFromJournal(APIKey, journal_eid, (UUID) signalsJournal.getId(), stringBuilder);
+                this.getExperimentsFromJournal(APIKey, journal_eid, (UUID) signalsContainer.getId(), stringBuilder);
                 i++;
             }
         }
@@ -263,7 +260,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 String experiment_eid = experimentJSON.get("data").get(0).get("id").toString().replace("\"", "");
 
                 // Create unmanaged journal to save the metadata
-                Experiment signalsExperiment = new Experiment();
+                Container signalsExperiment = new Container();
 
                 // Parse and log experiment name
                 String signalsExperimentName = experimentJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", "");
@@ -287,7 +284,9 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
                 // metadata parsing (...)
 
-                this.experimentService.addExperimentToJournal(signalsExperiment, journal_uuid);
+                Set<Container> experiments = new HashSet<Container>();
+                experiments.add(signalsExperiment);
+                this.containerService.addContainersToContainer(experiments, journal_uuid);
 
                 // printJSON(experimentJSON);
 
@@ -379,7 +378,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 Document document = this.documentWrapperConverter.convertToDatabaseColumn(documentHelper);
 
                 // Add the parsed document to its corresponding experiment
-                this.documentService.addDocumentToExperiment(document, experiment_uuid);
+                this.documentService.addDocumentToContainer(document, experiment_uuid);
                 i++;
             }
         }

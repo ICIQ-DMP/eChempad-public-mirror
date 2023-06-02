@@ -17,7 +17,6 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 import com.fasterxml.jackson.annotation.*;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
 import java.util.Date;
 
 /**
@@ -41,7 +40,7 @@ import java.util.Date;
  */
 
 
-public interface JPAEntity {
+public interface Entity {
     /**
      * Exposes and returns the UUID of an entity.
      * @return UUID of the entity.
@@ -66,7 +65,7 @@ public interface JPAEntity {
      * @return Class of the object implementing this interface.
      */
     @JsonIgnore
-    <T extends JPAEntity> Class<T> getType();
+    <T extends Entity> Class<T> getType();
 
     /**
      * Obtains the typeName, used by jackson to deserialize generics.
@@ -77,13 +76,6 @@ public interface JPAEntity {
     {
         return this.getType().getCanonicalName();
     }
-
-    /**
-     * Sets the creation date of the element. This method is needed since the fields need to be explicitly initialized
-     * outside the constructors of the entity.
-     */
-    @JsonIgnore
-    void initCreationDate();
 
     /**
      * Gets the name of the entity.
@@ -132,4 +124,11 @@ public interface JPAEntity {
      */
     @JsonIgnore
     void setCreationDate(Date creationDate);
+
+    /**
+     * Sets the creation date of the element. This method is needed since the fields need to be explicitly initialized
+     * outside the constructors of the entity.
+     */
+    @JsonIgnore
+    void initCreationDate();
 }

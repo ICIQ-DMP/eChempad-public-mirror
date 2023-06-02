@@ -16,7 +16,7 @@ package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.GenericRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Example;
@@ -36,7 +36,7 @@ import java.util.Optional;
 
 
 @Service
-public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericService<T, S>{
+public abstract class GenericServiceImpl<T extends EntityImpl, S extends Serializable> implements GenericService<T, S>{
 
     /**
      * Persistence context of the class. This provides extended programmatic capabilities to access the database data.
@@ -148,12 +148,6 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
         genericRepository.deleteAllInBatch();
     }
 
-    /**
-     * Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
-     *
-     * WARNING! You are using getById which can cause a Lazy Initialization Exception if used out of session. Use
-     * getById to avoid this and load the full entity.
-     */
     public T getById(S s) {
         return this.genericRepository.getById(s);
     }

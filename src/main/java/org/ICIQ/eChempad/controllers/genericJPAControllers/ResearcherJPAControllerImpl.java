@@ -14,7 +14,7 @@
  */
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -30,7 +30,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/researcher")
-public class ResearcherJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Researcher, UUID> implements ResearcherJPAController<Researcher, UUID> {
+public class ResearcherJPAControllerImpl<T extends EntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Researcher, UUID> implements ResearcherJPAController<Researcher, UUID> {
 
     @Autowired
     public ResearcherJPAControllerImpl(ResearcherService<Researcher, UUID> researcherService) {

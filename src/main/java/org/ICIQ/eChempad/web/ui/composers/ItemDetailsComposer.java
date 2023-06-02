@@ -24,8 +24,8 @@
  */
 package org.ICIQ.eChempad.web.ui.composers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.zkoss.zk.ui.event.Event;
@@ -177,7 +177,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 			switch (event.getName()) {
 				case EventNames.DISPLAY_ENTITY_EVENT:
 				{
-					this.displayEntityDetails((JPAEntity) event.getData());
+					this.displayEntityDetails((Entity) event.getData());
 					break;
 				}
 				case EventNames.CLEAR_ENTITY_DETAILS_EVENT:
@@ -200,7 +200,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	 *
 	 * @param entity Entity that contains the data to represent in the UI.
 	 */
-	public void displayEntityDetails(JPAEntity entity)
+	public void displayEntityDetails(Entity entity)
 	{
 		// Load data into UI
 		this.hiddenID.setValue(entity.getId().toString());
@@ -283,20 +283,20 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 			Messagebox.show("Confirm element removal: \n" + getSelectedElementPath() ,"Remove element",Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new DeleteElementListener());*/
 	}
 
-	private JPAEntity parseEntityFromDetails()
+	private Entity parseEntityFromDetails()
 	{
 		// Search the type of the entity received in the parameter and create its corresponding class.
 		Class<?> entityClass = null;
 		try {
 			entityClass = Class.forName("org.ICIQ.eChempad.entities.genericJPAEntities." + this.type.getValue());
 		} catch (ClassNotFoundException e) {
-			entityClass = Journal.class;
+			entityClass = Container.class;
 		}
 
 		// Create new instance from class using reflective paradigm.
-		JPAEntity entity = null;
+		Entity entity = null;
 		try {
-			entity = (JPAEntity) Objects.requireNonNull(entityClass).newInstance();
+			entity = (Entity) Objects.requireNonNull(entityClass).newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}

@@ -7,10 +7,9 @@
  */
 package org.ICIQ.eChempad.services.genericJPAServices;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 
 /**
  * This interface exists to parse Journal, Experiment and Document into one another. This is clearly a design flaw.
@@ -23,24 +22,16 @@ public interface EntityConversionService {
     /**
      * Transforms the received JPA entity into a Journal.
      *
-     * @param jpaEntity A JPA entity to be parsed.
+     * @param entity A JPA entity to be parsed.
      * @return Journal with the metadata of the JPA entity in the parameter.
      */
-    Journal parseJournal(JPAEntity jpaEntity);
-
-    /**
-     * Transforms the received JPA entity into an Experiment.
-     *
-     * @param jpaEntity A JPA entity to be parsed.
-     * @return Experiment with the metadata of the JPA entity in the parameter.
-     */
-    Experiment parseExperiment(JPAEntity jpaEntity);
+    Container parseJournal(Entity entity);
 
     /**
      * Transforms the received JPA entity into a Document.
      *
-     * @param jpaEntity A JPA entity to be parsed.
+     * @param entity A JPA entity to be parsed.
      * @return Document with the metadata of the JPA entity in the parameter.
      */
-    Document parseDocument(JPAEntity jpaEntity);
+    Document parseDocument(Entity entity);
 }
