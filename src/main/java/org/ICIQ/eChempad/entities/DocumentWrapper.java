@@ -9,20 +9,20 @@ package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
 /**
  * Class used to receive the data of the addDocument request because it contains metadata at the same time as a
  * multipart file which gives a lot of troubles.
- *
+ * <p>
  * This class will contain all the fields that are present in the Document class, so they can be mapped from this class
  * to the entity class, while transforming the multipart file type into a LOB type that we will store into the DB.
  */
@@ -33,16 +33,7 @@ import java.util.UUID;
         defaultImpl = DocumentWrapper.class)
 public class DocumentWrapper extends EntityImpl {
 
-    private UUID id;
-
-    private String name;
-
-    private String description;
-
-    /**
-     * Date of creation of the entity.
-     */
-    private Date creationDate;
+    private Container parent;
 
     @JsonIgnore
     private MultipartFile file;
@@ -96,18 +87,6 @@ public class DocumentWrapper extends EntityImpl {
         return MediaType.parseMediaType(Objects.requireNonNull(this.file.getContentType()));
     }
 
-
-    @Override
-    public String toString() {
-        return "DocumentWrapper{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", creationDate=" + creationDate +
-                ", file=" + file +
-                '}';
-    }
-
     /**
      * Exposes and returns the UUID of an entity.
      *
@@ -145,17 +124,12 @@ public class DocumentWrapper extends EntityImpl {
     }
 
     @Override
-    public void initCreationDate() {
-        this.creationDate = new Date();
+    public Container getParent() {
+        return this.parent;
     }
 
-    // GETTERS AND SETTERS
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    @Override
+    public void setParent(Container parent) {
+        this.parent = parent;
     }
 }

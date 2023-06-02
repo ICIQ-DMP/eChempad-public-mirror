@@ -96,6 +96,11 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      * Initializes an admin researcher with data.
      */
     private void initAdminResearcher() {
+
+        // If we have the administrator already in the DB skip initialization
+        if (this.researcherService.loadUserByUsername("eChempad@iciq.es") != null)
+            return;
+
         // Init the admin user
         Researcher researcher = new Researcher();
 
@@ -116,23 +121,27 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         authorities.add(new Authority("ROLE_USER", researcher, "user rol", "has privileges against its own resources"));
         researcher.setAuthorities(authorities);
 
+        Logger.getGlobal().info("About to enter in DB init");
+
         // If the user is not in the DB create it
-        if (this.researcherService.loadUserByUsername(researcher.getUsername()) == null)
-        {
-            // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
-            Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
+        Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
-            // Save of the authority is cascaded
-            this.researcherService.save(researcher);
+        // Insert role ROLE_ADMIN and ROLE_USER in the db, in acl_sid
+        this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));
+        this.securityIdRepository.save(new SecurityId(false, "ROLE_USER"));
 
-            // Insert role ROLE_ADMIN and ROLE_USER in the db, in acl_sid
-            this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));
-            this.securityIdRepository.save(new SecurityId(false, "ROLE_USER"));
 
-            // Now create some data associated with this admin user
-            this.initJournal();
-        }
+        Logger.getGlobal().info("Entering in sid repository save");
+
+        // Save of the authority is cascaded
+        this.researcherService.save(researcher);
+
+        Logger.getGlobal().info("researcher saved");
+
+        // Now create some data associated with this admin user
+        this.initJournal();
     }
 
     /**
