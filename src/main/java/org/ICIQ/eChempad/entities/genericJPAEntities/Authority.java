@@ -66,6 +66,16 @@ public class Authority extends EntityImpl implements GrantedAuthority{
     }
 
     @Override
+    public Container getParent() {
+        return null;
+    }
+
+    @Override
+    public void setParent(Container parent) {
+
+    }
+
+    @Override
     public String getAuthority() {
         return this.authority;
     }

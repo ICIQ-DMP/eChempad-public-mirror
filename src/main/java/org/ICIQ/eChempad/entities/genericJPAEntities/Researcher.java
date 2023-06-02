@@ -149,6 +149,16 @@ public class Researcher extends EntityImpl {
         return this.getType().getName();
     }
 
+    @Override
+    public Container getParent() {
+        return null;
+    }
+
+    @Override
+    public void setParent(Container parent) {
+
+    }
+
 
     // GETTERS AND SETTERS
 

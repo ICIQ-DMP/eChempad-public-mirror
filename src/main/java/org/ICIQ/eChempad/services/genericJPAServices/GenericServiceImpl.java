@@ -23,14 +23,12 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,10 +83,8 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
         S1 t = genericRepository.save(entity);
 
         // Save all possible permission against the saved entity with the current logged user
-        Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
-        while (iterator.hasNext()) {
-            this.aclRepository.addPermissionToUserInEntity(t, iterator.next());
-        }
+        this.aclRepository.addPermissionToEntity(t, true, PermissionBuilder.getFullPermissions(), null);
+
         return t;
     }
 

@@ -131,4 +131,18 @@ public interface Entity {
      */
     @JsonIgnore
     void initCreationDate();
+
+    /**
+     * Gets the parent entity of the current entity.
+     *
+     * @return the parent entity.
+     */
+    Container getParent();
+
+    /**
+     * Sets the parent entity of the current entity.
+     *
+     * @param parent the new parent entity.
+     */
+    void setParent(Container parent);
 }

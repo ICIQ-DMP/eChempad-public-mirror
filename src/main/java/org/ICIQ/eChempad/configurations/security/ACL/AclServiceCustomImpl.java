@@ -24,7 +24,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -36,7 +35,7 @@ import java.util.logging.Logger;
  * @author Moisés Álvarez (malvarez@iciq.es)
  * @version 1.0
  * @since 14/10/2022
- *
+ * <p>
  * Wraps the {@code AclService} provided by Spring, and adds some decoration calls in order to ease the use of the ACL
  * infrastructure. This class forwards all the calls to it to an instance of {@code MutableAclService} contained in the
  * instance.
@@ -55,46 +54,51 @@ public class AclServiceCustomImpl implements AclService{
     }
 
     /**
-     * We assume that the security context is full
+     * Receives an entity whose permissions have to be modified with the supplied Permission object. Then, obtains the
+     * authentication of SecurityContextHolder (implicit parameter) and depending on its type performs a conversion to
+     * obtain the username in String format.
      */
     public void addPermissionToUserInEntity(Entity Entity, Permission permission) {
         // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
         // using this function manually
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        String username = null;
         if (principal instanceof String)
         {
-            this.addPermissionToUserInEntity(Entity, permission, (String) principal);
+            username = (String) principal;
         }
         else if (principal instanceof UserDetails)
         {
-            this.addPermissionToUserInEntity(Entity, permission, (UserDetails) principal);
+            username = ((UserDetails) principal).getUsername();
         }
         else
         {
-            // TODO throw exception
             Logger.getGlobal().warning("In func addPermissionToUserInEntity the security context is: " + principal.toString());
+            // TODO throw exception
+            return;
         }
+
+        this.addPermissionToEntity(Entity,true, permission, username);
     }
 
-    // TODO refactor methods, so only one big private method is exposed and the rest are just decorators to that method.
     @Transactional
-    public void addPermissionToUserInEntity(Entity Entity, Permission permission, String userName)
+    public void addPermissionToEntity(Entity entity, boolean inheriting, Permission permission, String username)
     {
         // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Entity.getType(), Entity.getId());
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(entity.getType(), entity.getId());
 
         // Obtain the identity of the user
         Sid sid;
-        if (userName == null) {
+        if (username == null) {  // If not received obtain in from SecurityContextHolder
             // If we do not receive a userDetails, obtain it from the security context
             UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             sid = new PrincipalSid(u.getUsername());
         }
         else {
-            sid = new PrincipalSid(userName);
+            sid = new PrincipalSid(username);
         }
 
+        Logger.getGlobal().warning("" + objectIdentity);
         // Create or update the relevant ACL
         MutableAcl acl;
         try {
@@ -112,46 +116,13 @@ public class AclServiceCustomImpl implements AclService{
             setPermission = permission;
         }
 
-        // Now grant some permissions via an access control entry (ACE)
-        acl.insertAce(acl.getEntries().size(), setPermission, sid, true);
-        aclService.updateAcl(acl);
-    }
-
-    @Transactional
-    public void addAllPermissionToLoggedUserInEntity(Entity Entity, boolean inheriting, Entity parentEntity, Class<?> theClass)
-    {
-        // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
-        // initialization will be triggered in order to retrieve the full object from DB, and the method will fail
-        // because we are outside transactional boundaries
-
-        // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Entity.getType(), Entity.getId());
-
-        // Obtain the identity of the user
-        UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Sid sid = new PrincipalSid(u.getUsername());
-
-        // Create or update the relevant ACL
-        MutableAcl acl;
-        try {
-            acl = (MutableAcl) this.aclService.readAclById(objectIdentity);
-        } catch (NotFoundException nfe) {
-            acl = this.aclService.createAcl(objectIdentity);
-        }
-
-        // Now grant all permissions via an access control entry (ACE)
-        Iterator<Permission> it = PermissionBuilder.getFullPermissionsIterator();
-        while (it.hasNext())
-        {
-            acl.insertAce(acl.getEntries().size(), it.next(), sid, true);
-        }
-
+        // If inheriting is true then set entries inheriting and build the ACL of the parent
         if (inheriting)
         {
             acl.setEntriesInheriting(true);
 
             // Construct identity of parent object
-            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(theClass, parentEntity.getId());
+            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(entity.getParent().getType(), entity.getParent().getId());
 
             // Retrieve ACL of parent object
             MutableAcl acl_parent;
@@ -163,17 +134,10 @@ public class AclServiceCustomImpl implements AclService{
             acl.setParent(acl_parent);
         }
 
-        this.aclService.updateAcl(acl);
+        // Now grant some permissions via an access control entry (ACE)
+        acl.insertAce(acl.getEntries().size(), setPermission, sid, true);
+        aclService.updateAcl(acl);
     }
-
-    /**
-     * We assume that the security context is full
-     */
-    public void addPermissionToUserInEntity(Entity Entity, Permission permission, UserDetails userDetails)
-    {
-        this.addPermissionToUserInEntity(Entity, permission, userDetails.getUsername());
-    }
-
 
     /*
      * DELEGATED METHODS

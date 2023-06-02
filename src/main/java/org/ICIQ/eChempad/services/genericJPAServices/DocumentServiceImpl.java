@@ -8,6 +8,7 @@
 package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
+import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -37,7 +38,7 @@ public class DocumentServiceImpl<T extends EntityImpl, S extends Serializable> e
         Document documentDB = this.genericRepository.save(document);
 
         // Add all permissions to document for the current user, and set also inheriting entries for parent experiment
-        this.aclRepository.addAllPermissionToLoggedUserInEntity(documentDB, true, container, Container.class);
+        this.aclRepository.addPermissionToEntity(documentDB, true, PermissionBuilder.getFullPermissions(), null);
 
         return documentDB;
     }
