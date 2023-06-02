@@ -14,7 +14,7 @@
  */
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 
 import java.io.Serializable;
@@ -26,7 +26,7 @@ import java.util.UUID;
  * own user, except for the administrator who can call all the methods over all researchers.
  * Researcher in this application is what we generically call the users.
  */
-public interface ResearcherJPAController<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAController<Researcher, UUID> {
+public interface ResearcherJPAController<T extends EntityImpl, S extends Serializable> extends GenericJPAController<Researcher, UUID> {
 
 
 

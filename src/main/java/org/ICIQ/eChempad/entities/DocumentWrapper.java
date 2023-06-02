@@ -9,17 +9,15 @@ package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Class used to receive the data of the addDocument request because it contains metadata at the same time as a
@@ -33,7 +31,7 @@ import java.util.logging.Logger;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = DocumentWrapper.class)
-public class DocumentWrapper extends JPAEntityImpl {
+public class DocumentWrapper extends EntityImpl {
 
     private UUID id;
 
@@ -142,7 +140,7 @@ public class DocumentWrapper extends JPAEntityImpl {
      * @return Class of the object implementing this interface.
      */
     @Override
-    public <T extends JPAEntity> Class<T> getType() {
+    public <T extends Entity> Class<T> getType() {
         return (Class<T>) DocumentWrapper.class;
     }
 

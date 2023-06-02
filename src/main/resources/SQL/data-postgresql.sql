@@ -23,7 +23,7 @@ ON CONFLICT DO NOTHING;
 
 
 INSERT INTO acl_class (id, class, class_id_type) VALUES
-    (0, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal', 'java.util.UUID')
+    (0, 'org.ICIQ.eChempad.entities.genericJPAEntities.Container', 'java.util.UUID')
 ON CONFLICT DO NOTHING;
 
 

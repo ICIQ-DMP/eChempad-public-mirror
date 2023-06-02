@@ -14,7 +14,7 @@
  */
 package org.ICIQ.eChempad.configurations.security.ACL;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
@@ -57,18 +57,18 @@ public class AclServiceCustomImpl implements AclService{
     /**
      * We assume that the security context is full
      */
-    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission) {
+    public void addPermissionToUserInEntity(Entity Entity, Permission permission) {
         // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
         // using this function manually
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof String)
         {
-            this.addPermissionToUserInEntity(JPAEntity, permission, (String) principal);
+            this.addPermissionToUserInEntity(Entity, permission, (String) principal);
         }
         else if (principal instanceof UserDetails)
         {
-            this.addPermissionToUserInEntity(JPAEntity, permission, (UserDetails) principal);
+            this.addPermissionToUserInEntity(Entity, permission, (UserDetails) principal);
         }
         else
         {
@@ -79,10 +79,10 @@ public class AclServiceCustomImpl implements AclService{
 
     // TODO refactor methods, so only one big private method is exposed and the rest are just decorators to that method.
     @Transactional
-    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission, String userName)
+    public void addPermissionToUserInEntity(Entity Entity, Permission permission, String userName)
     {
         // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Entity.getType(), Entity.getId());
 
         // Obtain the identity of the user
         Sid sid;
@@ -118,14 +118,14 @@ public class AclServiceCustomImpl implements AclService{
     }
 
     @Transactional
-    public void addAllPermissionToLoggedUserInEntity(JPAEntity JPAEntity, boolean inheriting, JPAEntity parentEntity, Class<?> theClass)
+    public void addAllPermissionToLoggedUserInEntity(Entity Entity, boolean inheriting, Entity parentEntity, Class<?> theClass)
     {
         // parentEntity is lazily loaded. It only has loaded its ID! If we try to use other fields, an implicit proxy
         // initialization will be triggered in order to retrieve the full object from DB, and the method will fail
         // because we are outside transactional boundaries
 
         // Obtain the identity of the object by using its class and its id
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(JPAEntity.getType(), JPAEntity.getId());
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Entity.getType(), Entity.getId());
 
         // Obtain the identity of the user
         UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -169,9 +169,9 @@ public class AclServiceCustomImpl implements AclService{
     /**
      * We assume that the security context is full
      */
-    public void addPermissionToUserInEntity(JPAEntity JPAEntity, Permission permission, UserDetails userDetails)
+    public void addPermissionToUserInEntity(Entity Entity, Permission permission, UserDetails userDetails)
     {
-        this.addPermissionToUserInEntity(JPAEntity, permission, userDetails.getUsername());
+        this.addPermissionToUserInEntity(Entity, permission, userDetails.getUsername());
     }
 
 

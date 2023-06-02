@@ -18,13 +18,11 @@ import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadata;
 import org.ICIQ.eChempad.configurations.wrappers.DataverseDatasetMetadataImpl;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
-import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
-import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -68,13 +66,7 @@ public class DataverseExportServiceImpl implements DataverseExportService {
      * Encapsulates {@code Journal} manipulation business logic.
      */
     @Autowired
-    JournalService<Journal, UUID> journalService;
-
-    /**
-     * Encapsulates {@code Experiment} manipulation business logic.
-     */
-    @Autowired
-    ExperimentService<Experiment, UUID> experimentService;
+    ContainerService<Container, UUID> containerService;
 
     /**
      * Encapsulates {@code Document} manipulation business logic.
@@ -108,13 +100,13 @@ public class DataverseExportServiceImpl implements DataverseExportService {
     public String exportJournal(String APIKey, Serializable id) {
 
         // Search journal to export in the current database
-        Optional<Journal> exportJournal = this.journalService.findById((UUID) id);
+        Optional<Container> exportJournal = this.containerService.findById((UUID) id);
         if (! exportJournal.isPresent())
         {
             // TODO throw exception
             return "Could not export the journal " + id + ". It could not be found for the current user.";
         }
-        Journal journalToExport = exportJournal.get();
+        Container containerToExport = exportJournal.get();
 
         // Get researcher currently logged in to retrieve user data to fill metadata
         Researcher author = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher();
@@ -133,11 +125,11 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         // Create and configure Dataverse API library
         // Basic metadata
         DataverseDatasetMetadata dataverseDatasetMetadata = new DataverseDatasetMetadataImpl();
-        dataverseDatasetMetadata.setTitle(journalToExport.getName());
+        dataverseDatasetMetadata.setTitle(containerToExport.getName());
         dataverseDatasetMetadata.setAuthorAffiliation("ICIQ");
         dataverseDatasetMetadata.setAuthorName(author.getUsername());
         dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
-        dataverseDatasetMetadata.setDescription(journalToExport.getDescription());
+        dataverseDatasetMetadata.setDescription(containerToExport.getDescription());
         dataverseDatasetMetadata.setContactEmail(author.getUsername());
         // Subject metadata
         List<String> subjects = new ArrayList<>();
@@ -152,10 +144,10 @@ public class DataverseExportServiceImpl implements DataverseExportService {
 
         // Upload files of each experiment into the created dataset
         // Get all experiments from selected journal
-        for (Experiment experiment: this.experimentService.getExperimentsFromJournal((UUID) id))
+        for (Container experiment: this.containerService.getChildrenContainers((UUID) id))
         {
             // Get all documents for each experiment
-            for (Document document: this.documentService.getDocumentsFromExperiment(((UUID) experiment.getId()))) {
+            for (Document document: this.documentService.getDocumentsFromContainer(((UUID) experiment.getId()))) {
                 Logger.getGlobal().warning("Directory label is: \"" + experiment.getName() + "\"");
 
                 // Create File metadata for the upload

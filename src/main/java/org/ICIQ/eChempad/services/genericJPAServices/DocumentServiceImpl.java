@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service("documentService")
-public class DocumentServiceImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
+public class DocumentServiceImpl<T extends EntityImpl, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
 
     @Autowired
     public DocumentServiceImpl(DocumentRepository<T, S> documentRepository, AclServiceCustomImpl aclRepository) {
@@ -28,25 +28,25 @@ public class DocumentServiceImpl<T extends JPAEntityImpl, S extends Serializable
     }
     
     @Override
-    public Document addDocumentToExperiment(Document document, UUID experiment_uuid) {
-        // Obtain lazily loaded journal. DB will be accessed if accessing any other field than id
-        Experiment experiment = super.entityManager.getReference(Experiment.class, experiment_uuid);
+    public Document addDocumentToContainer(Document document, UUID container_uuid) {
+        // Obtain lazily loaded container. DB will be accessed if accessing any other field than id
+        Container container = super.entityManager.getReference(Container.class, container_uuid);
 
         // Set the journal of this experiment and sav experiment. Save is cascaded
-        document.setExperiment(experiment);
+        document.setParent(container);
         Document documentDB = this.genericRepository.save(document);
 
         // Add all permissions to document for the current user, and set also inheriting entries for parent experiment
-        this.aclRepository.addAllPermissionToLoggedUserInEntity(documentDB, true, experiment, Experiment.class);
+        this.aclRepository.addAllPermissionToLoggedUserInEntity(documentDB, true, container, Container.class);
 
         return documentDB;
     }
 
 
     @Override
-    public Set<Document> getDocumentsFromExperiment(UUID experiment_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
+    public Set<Document> getDocumentsFromContainer(UUID container_uuid) throws ResourceNotExistsException, NotEnoughAuthorityException {
         // We punctually use the Entity manager to get a Journal entity from the Experiment service
-        return super.entityManager.find(Experiment.class, experiment_uuid).getDocuments();
+        return super.entityManager.find(Container.class, container_uuid).getChildrenDocuments();
     }
 
 }

@@ -24,15 +24,13 @@
  */
 package org.ICIQ.eChempad.web.ui.composers;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.services.DataverseExportService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
-import org.ICIQ.eChempad.services.genericJPAServices.ExperimentService;
-import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
@@ -49,7 +47,6 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -142,10 +139,7 @@ public class TreeComposer extends SelectorComposer<Window> {
      * try to make work the controller layer that is already implemented programmatically.
      */
     @WireVariable("journalService")
-    private JournalService<Journal, UUID> journalService;
-
-    @WireVariable("experimentService")
-    private ExperimentService<Experiment, UUID> experimentService;
+    private ContainerService<Container, UUID> containerService;
 
     @WireVariable("documentService")
     private DocumentService<Document, UUID> documentService;
@@ -180,29 +174,14 @@ public class TreeComposer extends SelectorComposer<Window> {
      */
     public void createJournal()
     {
-        Journal exampleJournal = new Journal("Journal testing", "This is description");
-
-        Experiment exampleExperiment1 = new Experiment("Experiment This is supposed to be nested", "this even more nested because of files !");
-        Experiment exampleExperiment2 = new Experiment("Experiment Nested nested", "this too");
-        exampleExperiment1.setJournal(exampleJournal);
-        exampleExperiment2.setJournal(exampleJournal);
+        Container exampleContainer = new Container("Journal testing", "This is description");
 
         Document exampleDocument1 = new Document("File Nested in two levels", "with description very nested");
         exampleDocument1.setContentType(MediaType.ALL);
-        exampleDocument1.setExperiment(exampleExperiment1);
         Set<Document> exampleDocuments = new HashSet<Document>();
         exampleDocuments.add(exampleDocument1);
 
-        exampleExperiment1.setDocuments(exampleDocuments);
-        Set<Experiment> exampleExperiments = new HashSet<Experiment>();
-        exampleExperiments.add(exampleExperiment1);
-        exampleExperiments.add(exampleExperiment2);
-
-        exampleJournal.setExperiments(exampleExperiments);
-
-        this.journalService.save(exampleJournal);
-        this.experimentService.save(exampleExperiment1);
-        this.experimentService.save(exampleExperiment2);
+        this.containerService.save(exampleContainer);
         this.documentService.save(exampleDocument1);
     }
 
@@ -215,13 +194,13 @@ public class TreeComposer extends SelectorComposer<Window> {
             switch(event.getName()) {
                 case EventNames.MODIFY_ENTITY_PROPERTIES_EVENT:
                 {
-                    this.unParseOverTreeCell((JPAEntity) event.getData(), this.tree.getSelectedItem());
+                    this.unParseOverTreeCell((Entity) event.getData(), this.tree.getSelectedItem());
                     break;
                 }
                 case EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT:
                 {
                     // Check if there is a selected element. If not just create it in the root.
-                    JPAEntity jpaEntity = null;
+                    Entity entity = null;
                     Treeitem selectedItem = this.tree.getSelectedItem();
                     DefaultTreeNode newNode = new DefaultTreeNode(event.getData());
                     if (selectedItem == null)
@@ -245,12 +224,12 @@ public class TreeComposer extends SelectorComposer<Window> {
                                     }
                                     case "Experiment":
                                     {
-                                        jpaEntity = this.entityConversionService.parseDocument((JPAEntity) event.getData());
+                                        entity = this.entityConversionService.parseDocument((Entity) event.getData());
                                         break;
                                     }
                                     case "Journal":
                                     {
-                                        jpaEntity = this.entityConversionService.parseExperiment((JPAEntity) event.getData());
+                                        //entity = this.entityConversionService.parseExperiment((Entity) event.getData());
                                         break;
                                     }
                                     default:
@@ -267,7 +246,7 @@ public class TreeComposer extends SelectorComposer<Window> {
 
                         // Create a new item, attach received data to it, and set the new child as parent
                         Treeitem newItem = new Treeitem();
-                        newItem.setValue(new DefaultTreeNode<JPAEntity>(jpaEntity));
+                        newItem.setValue(new DefaultTreeNode<Entity>(entity));
                         newItem.setParent(newChild);
 
                         // Finally, close the loop by adding the new Child as child of the selected item
@@ -286,7 +265,7 @@ public class TreeComposer extends SelectorComposer<Window> {
                     this.itemDetailsQueue.publish(new Event(EventNames.CLEAR_ENTITY_DETAILS_EVENT, this.tree, null));
 
                     // Backend modification
-                    this.removeBackendEntity((JPAEntity) event.getData());
+                    this.removeBackendEntity((Entity) event.getData());
 
                     break;
                 }
@@ -350,9 +329,9 @@ public class TreeComposer extends SelectorComposer<Window> {
     /**
      * Receives an object instance that contains the data to be applied over the selected item of the tree.
      *
-     * @param jpaEntity Entity that contains data.
+     * @param entity Entity that contains data.
      */
-    public void unParseOverTreeCell(JPAEntity jpaEntity, Treeitem treeitem)
+    public void unParseOverTreeCell(Entity entity, Treeitem treeitem)
     {
         // Obtain the childrenComponents of the received TreeItem.
         Treerow treerow = treeitem.getTreerow();
@@ -367,27 +346,27 @@ public class TreeComposer extends SelectorComposer<Window> {
             {
                 case "descriptionTreeColumn":
                 {
-                    treecell.setLabel(jpaEntity.getDescription());
+                    treecell.setLabel(entity.getDescription());
                     break;
                 }
                 case "nameTreeColumn":
                 {
-                    treecell.setLabel(jpaEntity.getName());
+                    treecell.setLabel(entity.getName());
                     break;
                 }
                 case "creationDateTreeColumn":
                 {
                     SimpleDateFormat dateFormatter = new SimpleDateFormat();
 
-                    Logger.getGlobal().warning(jpaEntity.getCreationDate().toString());
-                    Logger.getGlobal().warning(dateFormatter.format(jpaEntity.getCreationDate()));
+                    Logger.getGlobal().warning(entity.getCreationDate().toString());
+                    Logger.getGlobal().warning(dateFormatter.format(entity.getCreationDate()));
 
-                    treecell.setLabel(dateFormatter.format(jpaEntity.getCreationDate()));
+                    treecell.setLabel(dateFormatter.format(entity.getCreationDate()));
                     break;
                 }
                 case "hiddenID":
                 {
-                    treecell.setLabel(jpaEntity.getId().toString());
+                    treecell.setLabel(entity.getId().toString());
                     break;
                 }
                 default:
@@ -461,30 +440,30 @@ public class TreeComposer extends SelectorComposer<Window> {
     /**
      * Method to produce changes in the backend of the application.
      *
-     * @param jpaEntity Entity that is going to be removed from the DB.
+     * @param entity Entity that is going to be removed from the DB.
      */
-    public void removeBackendEntity(JPAEntity jpaEntity)
+    public void removeBackendEntity(Entity entity)
     {
-        switch (jpaEntity.getTypeName())
+        switch (entity.getTypeName())
         {
             case "org.ICIQ.eChempad.entities.genericJPAEntities.Journal":
             {
-                this.journalService.delete((Journal) jpaEntity);
+                this.containerService.delete((Container) entity);
                 break;
             }
             case "org.ICIQ.eChempad.entities.genericJPAEntities.Experiment":
             {
-                this.experimentService.delete((Experiment) jpaEntity);
+                //this.experimentService.delete((Experiment) entity);
                 break;
             }
             case "org.ICIQ.eChempad.entities.genericJPAEntities.Document":
             {
-                this.documentService.delete((Document) jpaEntity);
+                this.documentService.delete((Document) entity);
                 break;
             }
             default:
             {
-                Logger.getGlobal().warning(jpaEntity.getTypeName());
+                Logger.getGlobal().warning(entity.getTypeName());
 
                 Logger.getGlobal().warning("Nope");
                 break;
@@ -498,37 +477,40 @@ public class TreeComposer extends SelectorComposer<Window> {
      *
      * @return All the journals and its content as a suitable datatype to work with ZK.
      */
-    public DefaultTreeModel<JPAEntity> createModel()
+    public DefaultTreeModel<Entity> createModel()
     {
-        List<DefaultTreeNode<JPAEntity>> journalNodesList = new ArrayList<DefaultTreeNode<JPAEntity>>();
-        List<Journal> userJournals = this.journalService.findAll();
-        for (Journal journal: userJournals) {
+        /*
+        List<DefaultTreeNode<Entity>> journalNodesList = new ArrayList<DefaultTreeNode<Entity>>();
+        List<Container> userContainers = this.journalService.findAll();
+        for (Container container : userContainers) {
             // For each journal loop through all the experiments
-            List<Experiment> experimentList = new ArrayList<>(journal.getExperiments());
-            DefaultTreeNode<JPAEntity>[] experimentNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(DefaultTreeNode.class, experimentList.size());
+            List<Experiment> experimentList = new ArrayList<>(container.getExperiments());
+            DefaultTreeNode<Entity>[] experimentNodes = (DefaultTreeNode<Entity>[]) Array.newInstance(DefaultTreeNode.class, experimentList.size());
             for (int i = 0; i < experimentList.size(); i++)
             {
                 Experiment experiment = experimentList.get(i);
                 List<Document> documentList = new ArrayList<>(experiment.getDocuments());
-                DefaultTreeNode<JPAEntity>[] documentNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(DefaultTreeNode.class, documentList.size());
+                DefaultTreeNode<Entity>[] documentNodes = (DefaultTreeNode<Entity>[]) Array.newInstance(DefaultTreeNode.class, documentList.size());
                 for (int j = 0; j < documentList.size(); j++) {
-                    documentNodes[j] = new DefaultTreeNode<JPAEntity>(documentList.get(j));
+                    documentNodes[j] = new DefaultTreeNode<Entity>(documentList.get(j));
                 }
 
                 Logger.getGlobal().warning(experimentList.get(i).toString());
-                experimentNodes[i] = new DefaultTreeNode<JPAEntity>(experimentList.get(i), documentNodes);
+                experimentNodes[i] = new DefaultTreeNode<Entity>(experimentList.get(i), documentNodes);
             }
-            journalNodesList.add(new DefaultTreeNode<JPAEntity>(journal, experimentNodes));
+            journalNodesList.add(new DefaultTreeNode<Entity>(container, experimentNodes));
         }
 
         // Create the Array of TreeNode
-        DefaultTreeNode<JPAEntity>[] journalNodes = (DefaultTreeNode<JPAEntity>[]) Array.newInstance(DefaultTreeNode.class, journalNodesList.size());
+        DefaultTreeNode<Entity>[] journalNodes = (DefaultTreeNode<Entity>[]) Array.newInstance(DefaultTreeNode.class, journalNodesList.size());
         for (int i = 0; i < journalNodesList.size(); i++)
         {
             journalNodes[i] = journalNodesList.get(i);
         }
 
-        return new DefaultTreeModel<JPAEntity>(new DefaultTreeNode<JPAEntity>(null, journalNodes));
+        return new DefaultTreeModel<Entity>(new DefaultTreeNode<Entity>(null, journalNodes));
+        */
+        return null;
     }
 
     /**
@@ -549,7 +531,7 @@ public class TreeComposer extends SelectorComposer<Window> {
         }
 
         // Get the children components from the selected Treerow
-        JPAEntity entity = this.parseEntityFromTreeItem(selectedItem);
+        Entity entity = this.parseEntityFromTreeItem(selectedItem);
 
         this.itemDetailsQueue.publish(new Event(EventNames.DISPLAY_ENTITY_EVENT, this.treeWindow, entity));
     }
@@ -581,7 +563,7 @@ public class TreeComposer extends SelectorComposer<Window> {
      * @param treeitem An item from the tree
      * @return An object that contains the values of the {@code Treeitem}.
      */
-    public JPAEntity parseEntityFromTreeItem(Treeitem treeitem)
+    public Entity parseEntityFromTreeItem(Treeitem treeitem)
     {
         // Search the type of the entity received in the parameter and create its corresponding class.
         Class<?> entityClass = null;
@@ -601,9 +583,9 @@ public class TreeComposer extends SelectorComposer<Window> {
         }
 
         // Create new instance from class using reflective paradigm.
-        JPAEntity entity = null;
+        Entity entity = null;
         try {
-             entity = (JPAEntity) Objects.requireNonNull(entityClass).newInstance();
+             entity = (Entity) Objects.requireNonNull(entityClass).newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }

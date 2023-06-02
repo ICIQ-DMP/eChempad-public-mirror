@@ -14,7 +14,7 @@
  */
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericService;
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 
 @Component
 @Configuration
-public abstract class GenericJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericJPAController<T, S> {
+public abstract class GenericJPAControllerImpl<T extends EntityImpl, S extends Serializable> implements GenericJPAController<T, S> {
 
     protected GenericService<T, S> genericService;
 

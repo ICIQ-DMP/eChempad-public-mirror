@@ -7,10 +7,8 @@
  */
 package org.ICIQ.eChempad.controllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
 import org.springframework.http.ResponseEntity;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 /**

@@ -4,30 +4,30 @@ from scratching the API of the Signals notebook.
 
 ## Journal 
 
-#### Signals journal metadata example
+#### Signals container metadata example
 ```json
 {
   "links": {
-    "self": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?includeTypes=journal&include=children, owner&page[offset]=7&page[limit]=1",
-    "first": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?includeTypes=journal&include=children, owner&page[offset]=0&page[limit]=1",
-    "prev": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?includeTypes=journal&include=children, owner&page[offset]=6&page[limit]=1",
-    "next": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?includeTypes=journal&include=children, owner&page[offset]=8&page[limit]=1"
+    "self": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?includeTypes=container&include=children, owner&page[offset]=7&page[limit]=1",
+    "first": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?includeTypes=container&include=children, owner&page[offset]=0&page[limit]=1",
+    "prev": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?includeTypes=container&include=children, owner&page[offset]=6&page[limit]=1",
+    "next": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities?includeTypes=container&include=children, owner&page[offset]=8&page[limit]=1"
   },
   "data": [
     {
-      "type": "JPAEntity",
-      "id": "journal:ddac1092-5f55-4952-a5f1-7f2c553fef46",
+      "type": "Entity",
+      "id": "container:ddac1092-5f55-4952-a5f1-7f2c553fef46",
       "links": {
-        "self": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities/journal:ddac1092-5f55-4952-a5f1-7f2c553fef46"
+        "self": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities/container:ddac1092-5f55-4952-a5f1-7f2c553fef46"
       },
       "attributes": {
-        "id": "journal:ddac1092-5f55-4952-a5f1-7f2c553fef46",
-        "eid": "journal:ddac1092-5f55-4952-a5f1-7f2c553fef46",
+        "id": "container:ddac1092-5f55-4952-a5f1-7f2c553fef46",
+        "eid": "container:ddac1092-5f55-4952-a5f1-7f2c553fef46",
         "name": "Linear Acenes",
         "description": "",
         "createdAt": "2020-05-27T19:52:54.871Z",
         "editedAt": "2020-05-27T19:52:54.871Z",
-        "type": "journal",
+        "type": "container",
         "digest": "43254827",
         "fields": {
           "Confidential": {
@@ -74,7 +74,7 @@ from scratching the API of the Signals notebook.
         },
         "children": {
           "links": {
-            "self": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities/journal:ddac1092-5f55-4952-a5f1-7f2c553fef46/children"
+            "self": "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0/entities/container:ddac1092-5f55-4952-a5f1-7f2c553fef46/children"
           }
         }
       }
@@ -108,7 +108,7 @@ from scratching the API of the Signals notebook.
 ```
 
 
-#### Signals journal metadata action 
+#### Signals container metadata action 
 
 ```json
 {
@@ -121,7 +121,7 @@ from scratching the API of the Signals notebook.
   "data": [
     {
       "type": "PARSED FOR CHECKS, it will be always an entity",
-      "id": "KEPT structural metadata, for reference to the corresponding journal in Signals",
+      "id": "KEPT structural metadata, for reference to the corresponding container in Signals",
       "links": {
         "self": "IGNORED (can be deduced using the id value)"
       },
@@ -179,7 +179,7 @@ from scratching the API of the Signals notebook.
         },
         "children": {
           "links": {
-            "self": "PARSED FOR CHECKS, recursively parsed from the base Journal inorder to scratch all data from the journal. "
+            "self": "PARSED FOR CHECKS, recursively parsed from the base Journal inorder to scratch all data from the container. "
           }
         }
       }

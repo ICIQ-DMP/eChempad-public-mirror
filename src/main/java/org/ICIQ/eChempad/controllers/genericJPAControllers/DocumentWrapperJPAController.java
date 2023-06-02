@@ -9,8 +9,7 @@ package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
 import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.configurations.wrappers.UploadFileResponse;
-import org.ICIQ.eChempad.controllers.genericJPAControllers.GenericJPAController;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.springframework.core.io.Resource;
@@ -23,7 +22,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-public interface DocumentWrapperJPAController<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAController<DocumentWrapper, UUID> {
+public interface DocumentWrapperJPAController<T extends EntityImpl, S extends Serializable> extends GenericJPAController<DocumentWrapper, UUID> {
 
     ResponseEntity<Resource> getDocumentData(@PathVariable(value = "id") UUID uuid, HttpServletRequest request) throws ResourceNotExistsException, NotEnoughAuthorityException;
 

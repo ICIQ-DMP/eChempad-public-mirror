@@ -7,8 +7,6 @@
  */
 package org.ICIQ.eChempad.services;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
-
 import java.io.IOException;
 import java.io.Serializable;
 

@@ -15,11 +15,11 @@
 package org.ICIQ.eChempad.configurations.database;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.entities.SecurityId;
 import org.ICIQ.eChempad.repositories.SecurityIdRepository;
-import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      * We use our {@code JournalService} to create new example journals.
      */
     @Autowired
-    private JournalService<Journal, UUID> journalService;
+    private ContainerService<Container, UUID> containerService;
 
     /**
      * In order to manipulate the acl_security_id table, we need to have an entity and an associated repository to work
@@ -105,12 +105,15 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         researcher.setCredentialsNonExpired(true);
         researcher.setPassword("chemistry");
         researcher.setUsername("eChempad@iciq.es");
+        researcher.setDescription("Account of the administrator of eChempad");
+        researcher.setName("eChempad Administrator");
+        Logger.getGlobal().warning(researcher.toString());
         researcher.setAccountNonLocked(true);
         researcher.setCreationDate(new Date());
 
         HashSet<Authority> authorities = new HashSet<>();
-        authorities.add(new Authority("ROLE_ADMIN", researcher));
-        authorities.add(new Authority("ROLE_USER", researcher));
+        authorities.add(new Authority("ROLE_ADMIN", researcher, "Admin role", "Has privileges against all resources"));
+        authorities.add(new Authority("ROLE_USER", researcher, "user rol", "has privileges against its own resources"));
         researcher.setAuthorities(authorities);
 
         // If the user is not in the DB create it
@@ -136,14 +139,14 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      * Initializes a test journal.
      */
     private void initJournal() {
-        Journal journal = new Journal();
+        Container container = new Container();
 
-        journal.setDescription("The journal of the admin");
-        journal.setName("Journal Admin");
-        journal.initCreationDate();
+        container.setDescription("The journal of the admin");
+        container.setName("Journal Admin");
+        container.initCreationDate();
 
         // Indirectly obtain the ID of the journal by saving it on the DB
-        this.journalService.save(journal);
+        this.containerService.save(container);
     }
 
     // Constructors

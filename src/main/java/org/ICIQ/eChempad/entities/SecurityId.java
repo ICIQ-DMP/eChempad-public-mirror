@@ -14,7 +14,7 @@
  */
 package org.ICIQ.eChempad.entities;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,7 +26,7 @@ import java.util.Date;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"id"})
         })
-public class SecurityId implements Serializable, JPAEntity {
+public class SecurityId implements Serializable, Entity {
     @Column(unique = true)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -106,7 +106,7 @@ public class SecurityId implements Serializable, JPAEntity {
      * @return Class of the object implementing this interface.
      */
     @Override
-    public <T extends JPAEntity> Class<T> getType() {
+    public <T extends Entity> Class<T> getType() {
         return (Class<T>) this.getClass();
     }
 
