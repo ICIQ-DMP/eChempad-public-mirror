@@ -24,6 +24,6 @@ import java.util.UUID;
 
 @Repository
 @Transactional
-public interface JournalRepository<T extends EntityImpl, S extends Serializable> extends GenericRepository<Container, UUID> {
+public interface ContainerRepository<T extends EntityImpl, S extends Serializable> extends GenericRepository<Container, UUID> {
 
 }

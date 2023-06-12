@@ -19,7 +19,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
-import org.ICIQ.eChempad.repositories.genericJPARepositories.JournalRepository;
+import org.ICIQ.eChempad.repositories.genericJPARepositories.ContainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +32,8 @@ import java.util.UUID;
 public class ContainerServiceImpl<T extends EntityImpl, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
 
     @Autowired
-    public ContainerServiceImpl(JournalRepository<T, S> journalRepository, AclServiceCustomImpl aclRepository) {
-        super(journalRepository, aclRepository);
+    public ContainerServiceImpl(ContainerRepository<T, S> containerRepository, AclServiceCustomImpl aclRepository) {
+        super(containerRepository, aclRepository);
     }
 
     @Override

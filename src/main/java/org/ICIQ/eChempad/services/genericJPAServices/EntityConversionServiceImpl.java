@@ -8,6 +8,7 @@
 package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class EntityConversionServiceImpl implements EntityConversionService{
 
     @Override
-    public Container parseJournal(Entity entity) {
+    public Container parseJournal(DataEntity entity) {
         if (entity instanceof Container)
         {
             return (Container) entity;
@@ -32,7 +33,7 @@ public class EntityConversionServiceImpl implements EntityConversionService{
     }
 
     @Override
-    public Document parseDocument(Entity entity) {
+    public Document parseDocument(DataEntity entity) {
         if (entity instanceof Document)
         {
             return (Document) entity;

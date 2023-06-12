@@ -26,10 +26,10 @@ import java.lang.reflect.ParameterizedType;
  * IMPLEMENTED regarding the bounded class, the name of the class and / or the name of the method.
  * JPA tries to deduce the suitable implementation by processing the natural language of the class or methods to
  * implement.
- *
+ * <p>
  * Alternative usage of CrudRepository
  * Code modified from http://www.codesenior.com/en/tutorial/Spring-Generic-DAO-and-Generic-Service-Implementation
- *
+ * <p>
  * This interfaces defines basic generic methods for all repositories / entities, in order to modify the database.
  * @author malvarez
  *

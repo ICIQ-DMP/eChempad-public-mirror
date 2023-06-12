@@ -17,10 +17,7 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,7 +41,7 @@ import java.util.Set;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Container.class)
-public class Container extends EntityImpl {
+public class Container extends EntityImpl implements DataEntity {
 
     @ManyToOne(cascade={CascadeType.ALL})
     @JoinColumn(name="parent_id")
@@ -61,6 +58,18 @@ public class Container extends EntityImpl {
         return (Class<T>) Container.class;
     }
 
+    /**
+     * Name of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String name;
+
+    /**
+     * Description of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String description;
+
     public Container() {}
 
     /**
@@ -75,7 +84,34 @@ public class Container extends EntityImpl {
         this.initCreationDate();
     }
 
+    @Override
+    public String toString() {
+        return "Container{" +
+                "parent=" + parent +
+                ", childrenContainers=" + childrenContainers +
+                ", childrenDocuments=" + childrenDocuments +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
     // GETTERS AND SETTERS
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Container getParent() {
         return parent;

@@ -44,14 +44,11 @@ public class Authority extends EntityImpl implements GrantedAuthority{
     @JsonBackReference
     protected Researcher researcher;
 
-
     public Authority() {}
 
-    public Authority(String authority, Researcher researcher, String name, String description) {
+    public Authority(String authority, Researcher researcher) {
         this.authority = authority;
         this.researcher = researcher;
-        this.description = description;
-        this.name = name;
         this.initCreationDate();
     }
 
@@ -63,16 +60,6 @@ public class Authority extends EntityImpl implements GrantedAuthority{
     @Override
     public <T extends Entity> Class<T> getType() {
         return (Class<T>) Authority.class;
-    }
-
-    @Override
-    public Container getParent() {
-        return null;
-    }
-
-    @Override
-    public void setParent(Container parent) {
-
     }
 
     @Override

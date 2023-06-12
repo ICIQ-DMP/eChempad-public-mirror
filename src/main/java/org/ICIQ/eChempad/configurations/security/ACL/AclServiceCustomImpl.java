@@ -14,6 +14,7 @@
  */
 package org.ICIQ.eChempad.configurations.security.ACL;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -58,7 +59,7 @@ public class AclServiceCustomImpl implements AclService{
      * authentication of SecurityContextHolder (implicit parameter) and depending on its type performs a conversion to
      * obtain the username in String format.
      */
-    public void addPermissionToUserInEntity(Entity Entity, Permission permission) {
+    public void addPermissionToUserInEntity(DataEntity entity, Permission permission) {
         // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
         // using this function manually
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -78,7 +79,7 @@ public class AclServiceCustomImpl implements AclService{
             return;
         }
 
-        this.addPermissionToEntity(Entity,true, permission, username);
+        this.addPermissionToEntity(entity,true, permission, username);
     }
 
     @Transactional
@@ -91,8 +92,23 @@ public class AclServiceCustomImpl implements AclService{
         Sid sid;
         if (username == null) {  // If not received obtain in from SecurityContextHolder
             // If we do not receive a userDetails, obtain it from the security context
-            UserDetails u = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            sid = new PrincipalSid(u.getUsername());
+            Object userPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            String usernameDeduced;
+            if (userPrincipal instanceof UserDetails)
+            {
+                usernameDeduced = ((UserDetails) userPrincipal).getUsername();
+            }
+            else if (userPrincipal instanceof String)
+            {
+                usernameDeduced = (String) userPrincipal;
+            }
+            else
+            {
+                usernameDeduced = "";
+                Logger.getGlobal().warning("Username deduced from context is empty!");
+            }
+            sid = new PrincipalSid(usernameDeduced);
         }
         else {
             sid = new PrincipalSid(username);
@@ -102,8 +118,10 @@ public class AclServiceCustomImpl implements AclService{
         // Create or update the relevant ACL
         MutableAcl acl;
         try {
+            Logger.getGlobal().warning("The object identity is " + objectIdentity.toString());
             acl = (MutableAcl) aclService.readAclById(objectIdentity);
         } catch (NotFoundException nfe) {
+            Logger.getGlobal().warning("The security context before creating acl is " + ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).toString());
             acl = aclService.createAcl(objectIdentity);
         }
 
@@ -117,12 +135,12 @@ public class AclServiceCustomImpl implements AclService{
         }
 
         // If inheriting is true then set entries inheriting and build the ACL of the parent
-        if (inheriting)
+        if (inheriting && entity instanceof DataEntity)
         {
             acl.setEntriesInheriting(true);
 
             // Construct identity of parent object
-            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(entity.getParent().getType(), entity.getParent().getId());
+            ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(((DataEntity)entity).getParent().getType(), ((DataEntity)entity).getParent().getId());
 
             // Retrieve ACL of parent object
             MutableAcl acl_parent;

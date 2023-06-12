@@ -14,7 +14,6 @@
  */
 package org.ICIQ.eChempad.entities;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 
 import javax.persistence.*;
@@ -101,36 +100,6 @@ public class SecurityId implements Serializable, Entity {
 
     @Override
     public void initCreationDate() {
-
-    }
-
-    @Override
-    public Container getParent() {
-        return null;
-    }
-
-    @Override
-    public void setParent(Container parent) {
-
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public void setName(String name) {
-
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public void setDescription(String description) {
 
     }
 

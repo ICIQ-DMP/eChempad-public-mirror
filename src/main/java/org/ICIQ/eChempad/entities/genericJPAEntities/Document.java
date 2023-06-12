@@ -33,7 +33,7 @@ import java.sql.Blob;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Document.class)
-public class Document extends EntityImpl {
+public class Document extends EntityImpl implements DataEntity {
 
     /**
      * Name of the file that is stored as a BLOB in this class. It can be the original name from the file that was
@@ -95,6 +95,18 @@ public class Document extends EntityImpl {
     @Basic(fetch = FetchType.EAGER)
     protected Blob blob;
 
+    /**
+     * Name of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String name;
+
+    /**
+     * Description of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String description;
+
     public Document() {}
 
     public Document(String name, String description) {
@@ -128,7 +140,27 @@ public class Document extends EntityImpl {
         return (Class<T>) Document.class;
     }
 
-    // GETTERS SETTERS AND TO-STRING
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+// GETTERS SETTERS AND TO-STRING
 
     public String getOriginalFilename() {
         return originalFilename;

@@ -14,10 +14,10 @@
  */
 package org.ICIQ.eChempad.configurations.database;
 
+import org.ICIQ.eChempad.entities.SecurityId;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
-import org.ICIQ.eChempad.entities.SecurityId;
 import org.ICIQ.eChempad.repositories.SecurityIdRepository;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
@@ -30,7 +30,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -92,6 +97,23 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
     }
 
+    private String getSignalsAPIKey()
+    {
+        StringBuilder data = new StringBuilder();
+        try {
+            File myObj = new File("secrets/signalsKey.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                data.append(myReader.nextLine());
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return data.toString();
+    }
+
     /**
      * Initializes an admin researcher with data.
      */
@@ -104,21 +126,20 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         // Init the admin user
         Researcher researcher = new Researcher();
 
-        researcher.setSignalsAPIKey("basure");
+        researcher.setSignalsAPIKey(this.getSignalsAPIKey());
+
         researcher.setAccountNonExpired(true);
         researcher.setEnabled(true);
         researcher.setCredentialsNonExpired(true);
         researcher.setPassword("chemistry");
         researcher.setUsername("eChempad@iciq.es");
-        researcher.setDescription("Account of the administrator of eChempad");
-        researcher.setName("eChempad Administrator");
         Logger.getGlobal().warning(researcher.toString());
         researcher.setAccountNonLocked(true);
         researcher.setCreationDate(new Date());
 
         HashSet<Authority> authorities = new HashSet<>();
-        authorities.add(new Authority("ROLE_ADMIN", researcher, "Admin role", "Has privileges against all resources"));
-        authorities.add(new Authority("ROLE_USER", researcher, "user rol", "has privileges against its own resources"));
+        authorities.add(new Authority("ROLE_ADMIN", researcher));
+        authorities.add(new Authority("ROLE_USER", researcher));
         researcher.setAuthorities(authorities);
 
         Logger.getGlobal().info("About to enter in DB init");
