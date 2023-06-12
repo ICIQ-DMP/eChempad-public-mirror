@@ -7,6 +7,7 @@
  */
 package org.ICIQ.eChempad.web.ui;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.zkoss.zul.*;
 
@@ -32,7 +33,7 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<E
             Logger.getGlobal().warning("null data in renderer");
             return;
         }
-        Entity fi = data.getData();
+        DataEntity fi = (DataEntity) data.getData();
         Treerow tr = new Treerow();
 
         // Append name

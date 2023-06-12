@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/journal")
+@RequestMapping("/api/container")
 public class ContainerJPAControllerImpl<T extends EntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Container, UUID> implements ContainerJPAController<Container, UUID> {
 
     @Autowired

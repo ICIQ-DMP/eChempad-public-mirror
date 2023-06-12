@@ -10,11 +10,13 @@ package org.ICIQ.eChempad.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
@@ -31,7 +33,7 @@ import java.util.UUID;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = DocumentWrapper.class)
-public class DocumentWrapper extends EntityImpl {
+public class DocumentWrapper extends EntityImpl implements DataEntity {
 
     private Container parent;
 
@@ -48,6 +50,17 @@ public class DocumentWrapper extends EntityImpl {
         this.initCreationDate();
     }
 
+    /**
+     * Name of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String name;
+
+    /**
+     * Description of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String description;
     public String getName() {
         return name;
     }

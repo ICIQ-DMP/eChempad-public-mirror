@@ -21,22 +21,24 @@ import java.util.Date;
 
 /**
  * Used to limit the generic inheritance to entities to make them comply with this contract, which ensures the
- * possibility of manipulating its UUID.
- *
+ * possibility of manipulating its UUID for all the entities in our project.
+ * <p>
  * To use it, in a generic class that uses bounding parametrization such as Repository<T>, add inheritance to the
  * bounded parametrization in order to get access to the field UUID of an Entity, like:
  * class Repository<T extends IEntity> {
  *     ...
  * }
  * which will expose these methods for this specific entity.
- *
+ * <p>
  * Of course entities will need to comply to this specification by also defining themselves as children of this
  * interface such as:
  * class Researcher implements IEntity {
  *     ...
  * }
- *
+ * <p>
  * and implements the required methods by the interface.
+ * <p>
+ * This interface defines the contract that need to fulfill all model classes for the entities in the database.
  */
 
 
@@ -78,38 +80,6 @@ public interface Entity {
     }
 
     /**
-     * Gets the name of the entity.
-     *
-     * @return Entity name.
-     */
-    @JsonIgnore
-    String getName();
-
-    /**
-     * Sets the name of an entity.
-     *
-     * @param name New name of the entity.
-     */
-    @JsonIgnore
-    void setName(String name);
-
-    /**
-     * Gets the description of an entity.
-     *
-     * @return Entity description.
-     */
-    @JsonIgnore
-    String getDescription();
-
-    /**
-     * Sets the description of an entity.
-     *
-     * @param description New description of the entity.
-     */
-    @JsonIgnore
-    void setDescription(String description);
-
-    /**
      * Gets the creation of an entity.
      *
      * @return Date object with the creation date of the entity.
@@ -131,18 +101,4 @@ public interface Entity {
      */
     @JsonIgnore
     void initCreationDate();
-
-    /**
-     * Gets the parent entity of the current entity.
-     *
-     * @return the parent entity.
-     */
-    Container getParent();
-
-    /**
-     * Sets the parent entity of the current entity.
-     *
-     * @param parent the new parent entity.
-     */
-    void setParent(Container parent);
 }

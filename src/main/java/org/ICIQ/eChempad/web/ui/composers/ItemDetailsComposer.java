@@ -25,6 +25,7 @@
 package org.ICIQ.eChempad.web.ui.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
@@ -177,7 +178,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 			switch (event.getName()) {
 				case EventNames.DISPLAY_ENTITY_EVENT:
 				{
-					this.displayEntityDetails((Entity) event.getData());
+					this.displayEntityDetails((DataEntity) event.getData());
 					break;
 				}
 				case EventNames.CLEAR_ENTITY_DETAILS_EVENT:
@@ -200,7 +201,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	 *
 	 * @param entity Entity that contains the data to represent in the UI.
 	 */
-	public void displayEntityDetails(Entity entity)
+	public void displayEntityDetails(DataEntity entity)
 	{
 		// Load data into UI
 		this.hiddenID.setValue(entity.getId().toString());
@@ -294,9 +295,9 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		}
 
 		// Create new instance from class using reflective paradigm.
-		Entity entity = null;
+		DataEntity entity = null;
 		try {
-			entity = (Entity) Objects.requireNonNull(entityClass).newInstance();
+			entity = (DataEntity) Objects.requireNonNull(entityClass).newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}

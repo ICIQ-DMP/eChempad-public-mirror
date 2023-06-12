@@ -53,7 +53,7 @@ import java.util.UUID;
         include=JsonTypeInfo.As.EXISTING_PROPERTY,
         property="typeName")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Container.class, name = "Journal"),
+        @JsonSubTypes.Type(value = Container.class, name = "Container"),
         @JsonSubTypes.Type(value = Authority.class, name = "Authority"),
         @JsonSubTypes.Type(value = Researcher.class, name = "Researcher"),
         @JsonSubTypes.Type(value = DocumentWrapper.class, name = "Document")
@@ -71,18 +71,6 @@ public abstract class EntityImpl implements Entity {
     )
     @Column(name = "id", nullable = false, unique = true)
     protected UUID id;
-
-    /**
-     * Name of this {@code Document}.
-     */
-    @Column(length = 1000, nullable = false)
-    protected String name;
-
-    /**
-     * Description of this {@code Document}.
-     */
-    @Column(length = 1000, nullable = false)
-    protected String description;
 
     /**
      * Date of creation of the entity.
@@ -139,26 +127,6 @@ public abstract class EntityImpl implements Entity {
     @Override
     public void setId(Serializable id) {
         this.id = (UUID) id;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
-
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override

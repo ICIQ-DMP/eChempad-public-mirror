@@ -114,8 +114,6 @@ public class Researcher extends EntityImpl {
                 ", dataverseAPIKey='" + dataverseAPIKey + '\'' +
                 ", authorities=" + authorities +
                 ", id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
                 '}';
     }
 
@@ -147,16 +145,6 @@ public class Researcher extends EntityImpl {
     @Override
     public String getTypeName() {
         return this.getType().getName();
-    }
-
-    @Override
-    public Container getParent() {
-        return null;
-    }
-
-    @Override
-    public void setParent(Container parent) {
-
     }
 
 

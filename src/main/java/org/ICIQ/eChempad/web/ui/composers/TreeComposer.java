@@ -25,12 +25,13 @@
 package org.ICIQ.eChempad.web.ui.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.services.DataverseExportService;
+import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
-import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
@@ -224,7 +225,7 @@ public class TreeComposer extends SelectorComposer<Window> {
                                     }
                                     case "Experiment":
                                     {
-                                        entity = this.entityConversionService.parseDocument((Entity) event.getData());
+                                        entity = this.entityConversionService.parseDocument((DataEntity) event.getData());
                                         break;
                                     }
                                     case "Journal":
@@ -346,12 +347,26 @@ public class TreeComposer extends SelectorComposer<Window> {
             {
                 case "descriptionTreeColumn":
                 {
-                    treecell.setLabel(entity.getDescription());
+                    if (entity instanceof DataEntity)
+                    {
+                        treecell.setLabel(((DataEntity)entity).getDescription());
+                    }
+                    else
+                    {
+                        treecell.setLabel("");
+                    }
                     break;
                 }
                 case "nameTreeColumn":
                 {
-                    treecell.setLabel(entity.getName());
+                    if (entity instanceof DataEntity)
+                    {
+                        treecell.setLabel(((DataEntity)entity).getName());
+                    }
+                    else
+                    {
+                        treecell.setLabel("");
+                    }
                     break;
                 }
                 case "creationDateTreeColumn":
@@ -583,9 +598,9 @@ public class TreeComposer extends SelectorComposer<Window> {
         }
 
         // Create new instance from class using reflective paradigm.
-        Entity entity = null;
+        DataEntity entity = null;
         try {
-             entity = (Entity) Objects.requireNonNull(entityClass).newInstance();
+             entity = (DataEntity) Objects.requireNonNull(entityClass).newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
