@@ -150,8 +150,8 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         // Insert role ROLE_ADMIN and ROLE_USER in the db, in acl_sid
-        this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));
-        this.securityIdRepository.save(new SecurityId(false, "ROLE_USER"));
+        //this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));
+        //this.securityIdRepository.save(new SecurityId(false, "ROLE_USER"));
 
 
         Logger.getGlobal().info("Entering in sid repository save");
