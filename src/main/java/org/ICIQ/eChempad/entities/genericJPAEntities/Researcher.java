@@ -40,7 +40,7 @@ import java.util.UUID;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Researcher.class)
-public class Researcher extends EntityImpl {
+public class Researcher extends EntityImpl implements Entity{
 
     //TODO set a certain length for the used hashed algorithm
     @Column(length = 50, nullable = false)

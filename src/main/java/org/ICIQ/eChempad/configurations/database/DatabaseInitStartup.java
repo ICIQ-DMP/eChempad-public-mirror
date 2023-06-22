@@ -1,12 +1,5 @@
 /*
  * |===================================================================================|
- * | Copyright (C) 2021 - 2023 ICIQ <contact@iochem-bd.org>                            |
- * |                                                                                   |
- * | This software is the property of ICIQ.                                            |
- * |===================================================================================|
- */
-/*
- * |===================================================================================|
  * | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
  * |                                                                                   |
  * | This software is the property of ICIQ.                                            |
@@ -18,7 +11,7 @@ import org.ICIQ.eChempad.entities.SecurityId;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
-import org.ICIQ.eChempad.repositories.SecurityIdRepository;
+import org.ICIQ.eChempad.repositories.manualRepositories.SecurityIdRepository;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.jetbrains.annotations.NotNull;
@@ -94,7 +87,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         Logger.getGlobal().info("INITIALIZING DB");
         this.initAdminResearcher();
         Logger.getGlobal().info("END INITIALIZING DB");
-
     }
 
     private String getSignalsAPIKey()
@@ -142,25 +134,18 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         authorities.add(new Authority("ROLE_USER", researcher));
         researcher.setAuthorities(authorities);
 
-        Logger.getGlobal().info("About to enter in DB init");
-
         // If the user is not in the DB create it
         // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
         Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         // Insert role ROLE_ADMIN and ROLE_USER in the db, in acl_sid
-        //this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));
-        //this.securityIdRepository.save(new SecurityId(false, "ROLE_USER"));
-
-
-        Logger.getGlobal().info("Entering in sid repository save");
+        this.securityIdRepository.save(new SecurityId(10L,false, "ROLE_ADMIN"));
+        this.securityIdRepository.save(new SecurityId(20L, false, "ROLE_USER"));
 
         // Save of the authority is cascaded
         this.researcherService.save(researcher);
-
-        Logger.getGlobal().info("researcher saved");
-
+        
         // Now create some data associated with this admin user
         this.initJournal();
     }

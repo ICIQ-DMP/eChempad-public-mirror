@@ -481,3 +481,4 @@ For further reference, please consider the following sections:
 * [hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path](https://stackoverflow.com/questions/53199558/hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path)
 * [Field injection is not recommended and injection types in Spring Boot](https://blog.marcnuri.com/field-injection-is-not-recommended)
 * [How to ignore Null fields in Jackson](https://stackoverflow.com/questions/11757487/how-to-tell-jackson-to-ignore-a-field-during-serialization-if-its-value-is-null)
+* [Java equivalent of unsigned long long int, big serial in SQL](https://stackoverflow.com/questions/508630/java-equivalent-of-unsigned-long-long)
