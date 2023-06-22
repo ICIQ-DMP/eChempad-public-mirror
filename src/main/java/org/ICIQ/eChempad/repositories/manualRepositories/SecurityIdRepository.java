@@ -5,8 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
 
 /**
  * This class is used to manipulate the SID ACL table. Note that this is not a JPA repository, so the associated table
@@ -14,8 +17,8 @@ import org.springframework.stereotype.Repository;
  * the project. We need to be able to add (and remove) SIDs from this table manually in order to allow users to obtain
  * its dedicated SID to be identified, so they can use the ACL services.
  */
-@Repository
-public interface SecurityIdRepository<T extends SecurityId, S> extends CrudRepository<T, S> {
+@org.springframework.stereotype.Repository
+public interface SecurityIdRepository<T extends SecurityId, S extends Long> extends Repository<T, S> {
 
     /**
      * Returns all SecurityId stored in the database.
