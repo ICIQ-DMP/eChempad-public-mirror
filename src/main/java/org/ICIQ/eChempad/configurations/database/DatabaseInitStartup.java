@@ -68,7 +68,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      * if the initialization has been done by JPA initializations.
      */
     @Autowired
-    private SecurityIdRepository securityIdRepository;
+    private SecurityIdRepository<SecurityId, Long> securityIdRepository;
 
     /**
      * This code run after the application is completely ready but just before it starts serving requests.
