@@ -68,7 +68,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      * if the initialization has been done by JPA initializations.
      */
     @Autowired
-    private SecurityIdRepository<SecurityId, Long> securityIdRepository;
+    private SecurityIdRepository securityIdRepository;
 
     /**
      * This code run after the application is completely ready but just before it starts serving requests.
@@ -93,7 +93,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     {
         StringBuilder data = new StringBuilder();
         try {
-            File myObj = new File("secrets/signalsKey.txt");
+            File myObj = new File("src/main/resources/secrets/signalsKey.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 data.append(myReader.nextLine());

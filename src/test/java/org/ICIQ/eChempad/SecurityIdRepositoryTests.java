@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 })  // Test Container
 class SecurityIdRepositoryTests {
 
-    SecurityIdRepository<SecurityId, Long> securityIdRepository;
+    SecurityIdRepository securityIdRepository;
 
     @Test
     void securityIdIsSaved() {

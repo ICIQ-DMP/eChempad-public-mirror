@@ -114,14 +114,12 @@ public class AclServiceCustomImpl implements AclService{
             sid = new PrincipalSid(username);
         }
 
-        Logger.getGlobal().warning("" + objectIdentity);
         // Create or update the relevant ACL
         MutableAcl acl;
         try {
-            Logger.getGlobal().warning("The object identity is " + objectIdentity.toString());
+            // Logger.getGlobal().warning("The object identity is " + objectIdentity.toString());
             acl = (MutableAcl) aclService.readAclById(objectIdentity);
         } catch (NotFoundException nfe) {
-            Logger.getGlobal().warning("The security context before creating acl is " + ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).toString());
             acl = aclService.createAcl(objectIdentity);
         }
 

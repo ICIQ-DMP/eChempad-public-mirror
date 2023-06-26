@@ -221,3 +221,5 @@ buildNumber.properties
 # End of https://www.toptal.com/developers/gitignore/api/mavenfile_db
 file_db
 secrets
+
+src/main/resources/secrets
