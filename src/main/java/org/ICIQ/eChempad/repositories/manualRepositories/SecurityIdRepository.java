@@ -5,11 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
 
 /**
  * This class is used to manipulate the SID ACL table. Note that this is not a JPA repository, so the associated table
@@ -18,7 +14,7 @@ import java.io.Serializable;
  * its dedicated SID to be identified, so they can use the ACL services.
  */
 @org.springframework.stereotype.Repository
-public interface SecurityIdRepository<T extends SecurityId, S extends Long> extends Repository<T, S> {
+public interface SecurityIdRepository extends CrudRepository<SecurityId, Long> {
 
     /**
      * Returns all SecurityId stored in the database.
@@ -27,7 +23,7 @@ public interface SecurityIdRepository<T extends SecurityId, S extends Long> exte
      */
     @Query(value = "SELECT * FROM acl_sid", nativeQuery = true)
     @NotNull
-    Iterable<T> findAll();
+    Iterable<SecurityId> findAll();
 
     /**
      * Returns all the SecurityIds stored in the database that match at least one of the supplied SecurityId.
@@ -37,7 +33,7 @@ public interface SecurityIdRepository<T extends SecurityId, S extends Long> exte
      */
     @Query(value = "SELECT * FROM acl_sid WHERE id IN :ids", nativeQuery = true)
     @NotNull
-    Iterable<T> findAllById(@Param("ids") @NotNull Iterable<S> ids);
+    Iterable<SecurityId> findAllById(@Param("ids") @NotNull Iterable<Long> ids);
 
     /**
      * Saves a Security ID record in the database.
@@ -47,8 +43,7 @@ public interface SecurityIdRepository<T extends SecurityId, S extends Long> exte
      */
     @Modifying
     @Query(value = "INSERT INTO acl_sid VALUES (:sid)", nativeQuery = true)
-    @NotNull
-    <K extends SecurityId> SecurityId save(@Param("sid") @NotNull K sid);  // Unchecked kung-fu!
+    int save(@Param("sid") @NotNull Long sid);
 
     /**
      * Save all security IDs into the database.
@@ -59,7 +54,7 @@ public interface SecurityIdRepository<T extends SecurityId, S extends Long> exte
 
     @Modifying
     @Query(value = "INSERT INTO acl_sid VALUES (:sids)", nativeQuery = true)
-    <K extends T> @NotNull Iterable<K> saveAll(@Param("sids") @NotNull Iterable<K> sids);
+    <S extends SecurityId> @NotNull Iterable<S> saveAll(@Param("sids") @NotNull Iterable<S> sids);
 
     /**
      * Delete all Security IDs that match the supplied list of SIDs.
