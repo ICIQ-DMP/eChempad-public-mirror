@@ -121,7 +121,7 @@ public class Document extends EntityImpl implements DataEntity {
                 "originalFilename='" + originalFilename + '\'' +
                 ", contentType=" + contentType +
                 ", fileSize=" + fileSize +
-                ", parent=" + parent +
+                ", parent=" + parent.getId() +
                 ", blob=" + blob +
                 ", id=" + id +
                 ", name='" + name + '\'' +

@@ -48,6 +48,7 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -139,7 +140,7 @@ public class TreeComposer extends SelectorComposer<Window> {
      * a HTTP REST call. Develop a new layer of controllers that can be called programmatically and enforce security or
      * try to make work the controller layer that is already implemented programmatically.
      */
-    @WireVariable("journalService")
+    @WireVariable("containerService")
     private ContainerService<Container, UUID> containerService;
 
     @WireVariable("documentService")
@@ -494,17 +495,23 @@ public class TreeComposer extends SelectorComposer<Window> {
      */
     public DefaultTreeModel<Entity> createModel()
     {
-        /*
+
         List<DefaultTreeNode<Entity>> journalNodesList = new ArrayList<DefaultTreeNode<Entity>>();
-        List<Container> userContainers = this.journalService.findAll();
+        List<Container> userContainers = this.containerService.findAll();
         for (Container container : userContainers) {
+            // If this container is not a root container, skip
+            if (container.getParent() != null)
+            {
+                continue;
+            }
+
             // For each journal loop through all the experiments
-            List<Experiment> experimentList = new ArrayList<>(container.getExperiments());
+            List<Container> experimentList = new ArrayList<>(container.getChildrenContainers());
             DefaultTreeNode<Entity>[] experimentNodes = (DefaultTreeNode<Entity>[]) Array.newInstance(DefaultTreeNode.class, experimentList.size());
             for (int i = 0; i < experimentList.size(); i++)
             {
-                Experiment experiment = experimentList.get(i);
-                List<Document> documentList = new ArrayList<>(experiment.getDocuments());
+                Container experiment = experimentList.get(i);
+                List<Document> documentList = new ArrayList<>(experiment.getChildrenDocuments());
                 DefaultTreeNode<Entity>[] documentNodes = (DefaultTreeNode<Entity>[]) Array.newInstance(DefaultTreeNode.class, documentList.size());
                 for (int j = 0; j < documentList.size(); j++) {
                     documentNodes[j] = new DefaultTreeNode<Entity>(documentList.get(j));
@@ -524,8 +531,6 @@ public class TreeComposer extends SelectorComposer<Window> {
         }
 
         return new DefaultTreeModel<Entity>(new DefaultTreeNode<Entity>(null, journalNodes));
-        */
-        return null;
     }
 
     /**

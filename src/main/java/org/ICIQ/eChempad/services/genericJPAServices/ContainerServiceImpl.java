@@ -61,9 +61,14 @@ public class ContainerServiceImpl<T extends EntityImpl, S extends Serializable> 
     @Override
     public void addContainersToContainer(Set<Container> newChildren, UUID uuid_container) {
         Container container = this.genericRepository.getById(uuid_container);
+        for (Container containerChildren: newChildren)
+        {
+            containerChildren.setParent(container);
+            this.genericRepository.save(containerChildren);
+        }
 
-        Set<Container> childrenContainers = container.getChildrenContainers();
-        childrenContainers.addAll(newChildren);
+        container.getChildrenContainers().addAll(newChildren);
+        this.genericRepository.save(container);
     }
 
     @Override
