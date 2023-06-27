@@ -88,7 +88,6 @@ public class Container extends EntityImpl implements DataEntity {
     @Override
     public String toString() {
         return "Container{" +
-                "parent=" + parent.getId() +
                 ", childrenContainers=" + childrenContainers +
                 ", childrenDocuments=" + childrenDocuments +
                 ", id=" + id +

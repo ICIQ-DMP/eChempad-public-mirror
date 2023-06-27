@@ -299,11 +299,7 @@ public class TreeComposer extends SelectorComposer<Window> {
                     UUID uuidSelected = null;
                     // Get UUID of the selected item, which we know that is a Journal
                     for (Component child : selectedItem.getTreerow().getChildren()) {
-                        // Logger.getGlobal().warning("treecol content " + ((Treecell) child).getTreecol()..getLabel());
                         if (((Treecell) child).getTreecol().getId().equals("hiddenID")) {
-                            // Logger.getGlobal().warning(((Treecell) child).getTreecol().toString() + "tostr");
-
-                            //Logger.getGlobal().warning(((Treecell) child).getTreecol().getLabel() + "the id of the sele cted");
                             uuidSelected = UUID.fromString(((Treecell) child).getLabel());
                         }
                     }
@@ -462,14 +458,9 @@ public class TreeComposer extends SelectorComposer<Window> {
     {
         switch (entity.getTypeName())
         {
-            case "org.ICIQ.eChempad.entities.genericJPAEntities.Journal":
+            case "org.ICIQ.eChempad.entities.genericJPAEntities.Container":
             {
                 this.containerService.delete((Container) entity);
-                break;
-            }
-            case "org.ICIQ.eChempad.entities.genericJPAEntities.Experiment":
-            {
-                //this.experimentService.delete((Experiment) entity);
                 break;
             }
             case "org.ICIQ.eChempad.entities.genericJPAEntities.Document":
@@ -479,9 +470,7 @@ public class TreeComposer extends SelectorComposer<Window> {
             }
             default:
             {
-                Logger.getGlobal().warning(entity.getTypeName());
-
-                Logger.getGlobal().warning("Nope");
+                Logger.getGlobal().warning("This type is not recognised as entity type: " + entity.getTypeName());
                 break;
             }
         }
@@ -517,7 +506,6 @@ public class TreeComposer extends SelectorComposer<Window> {
                     documentNodes[j] = new DefaultTreeNode<Entity>(documentList.get(j));
                 }
 
-                Logger.getGlobal().warning(experimentList.get(i).toString());
                 experimentNodes[i] = new DefaultTreeNode<Entity>(experimentList.get(i), documentNodes);
             }
             journalNodesList.add(new DefaultTreeNode<Entity>(container, experimentNodes));
@@ -647,9 +635,14 @@ public class TreeComposer extends SelectorComposer<Window> {
                     entity.setId(UUID.fromString(content));
                     break;
                 }
+                case "typeTreeColumn":
+                {
+                    // Do nothing. The type is handled implicitly when choosing the entity
+                    break;
+                }
                 default:
                 {
-                    Logger.getGlobal().warning("not recognised case");
+                    Logger.getGlobal().warning("not recognised case: " + id);
                 }
             }
         }

@@ -116,6 +116,8 @@ public class AclServiceCustomImpl implements AclService{
 
         // Create or update the relevant ACL
         MutableAcl acl;
+        Logger.getGlobal().warning("normal; type: " + objectIdentity.getType() + " id: " + objectIdentity.getIdentifier());
+
         try {
             // Logger.getGlobal().warning("The object identity is " + objectIdentity.toString());
             acl = (MutableAcl) aclService.readAclById(objectIdentity);
@@ -136,6 +138,8 @@ public class AclServiceCustomImpl implements AclService{
         if (inheriting && entity instanceof DataEntity)
         {
             acl.setEntriesInheriting(true);
+
+            Logger.getGlobal().warning("Inheriting; type: " + ((DataEntity)entity).getParent().getType() + " id: " + ((DataEntity)entity).getParent().getId());
 
             // Construct identity of parent object
             ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(((DataEntity)entity).getParent().getType(), ((DataEntity)entity).getParent().getId());

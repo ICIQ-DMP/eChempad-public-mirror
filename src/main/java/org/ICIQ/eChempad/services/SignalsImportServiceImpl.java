@@ -77,7 +77,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
         String APIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
 
-        Logger.getGlobal().warning("API key: " + APIKey);
+        // Logger.getGlobal().warning("API key: " + APIKey);
 
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
@@ -397,8 +397,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     public ByteArrayResource exportDocument(String APIKey, String document_eid, HttpHeaders receivedHeaders) throws IOException {
 
         String url = SignalsImportServiceImpl.baseURL + "/entities/" + document_eid + "/export";
-
-        Logger.getGlobal().info("\n\n" + document_eid);
 
         ResponseEntity<ByteArrayResource> responseEntity = this.webClient.get()
                 .uri(url)
