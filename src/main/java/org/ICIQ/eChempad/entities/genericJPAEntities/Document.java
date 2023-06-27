@@ -66,8 +66,7 @@ public class Document extends EntityImpl implements DataEntity {
             fetch = FetchType.EAGER
     )
     @JoinColumn(
-            name = "parent_id",
-            referencedColumnName = "id"
+            name = "parent_id"
     )
     @JsonIgnore
     protected Container parent;

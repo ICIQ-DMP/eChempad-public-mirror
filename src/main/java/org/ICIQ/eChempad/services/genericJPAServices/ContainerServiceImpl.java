@@ -14,19 +14,23 @@
  */
 package org.ICIQ.eChempad.services.genericJPAServices;
 
+import org.ICIQ.eChempad.configurations.database.HibernateUtil;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.ContainerRepository;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service("containerService")
 public class ContainerServiceImpl<T extends EntityImpl, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
@@ -53,9 +57,12 @@ public class ContainerServiceImpl<T extends EntityImpl, S extends Serializable> 
         return childrenEntities;
     }
 
+    @Transactional
     @Override
     public void addContainersToContainer(Set<Container> newChildren, UUID uuid_container) {
-        Set<Container> childrenContainers = this.genericRepository.getById(uuid_container).getChildrenContainers();
+        Container container = this.genericRepository.getById(uuid_container);
+
+        Set<Container> childrenContainers = container.getChildrenContainers();
         childrenContainers.addAll(newChildren);
     }
 

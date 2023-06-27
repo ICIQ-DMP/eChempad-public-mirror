@@ -43,14 +43,15 @@ import java.util.Set;
         defaultImpl = Container.class)
 public class Container extends EntityImpl implements DataEntity {
 
-    @ManyToOne(cascade={CascadeType.ALL})
-    @JoinColumn(name="parent_id")
+    @ManyToOne(cascade={CascadeType.ALL},
+            fetch = FetchType.EAGER
+    )
     private Container parent;
 
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Container> childrenContainers = new HashSet<Container>();
 
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Document> childrenDocuments = new HashSet<Document>();
 
     @Override
