@@ -58,6 +58,7 @@ public abstract class GenericJPAControllerImpl<T extends EntityImpl, S extends S
     @ResponseStatus(HttpStatus.OK)
     @Override
     public Set<T> getAll() {
+        Logger.getGlobal().warning("This is what getAll gets " + this.genericService.findAll());
         return new HashSet<>(this.genericService.findAll());
     }
 

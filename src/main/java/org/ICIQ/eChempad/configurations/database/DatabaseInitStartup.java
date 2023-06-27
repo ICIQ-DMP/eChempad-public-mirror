@@ -7,11 +7,9 @@
  */
 package org.ICIQ.eChempad.configurations.database;
 
-import org.ICIQ.eChempad.entities.SecurityId;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
-import org.ICIQ.eChempad.repositories.manualRepositories.SecurityIdRepository;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.jetbrains.annotations.NotNull;
@@ -61,16 +59,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     private ContainerService<Container, UUID> containerService;
 
     /**
-     * In order to manipulate the acl_security_id table, we need to have an entity and an associated repository to work
-     * with it programmatically. Note that this entity should not be used to initialize this table using JPA
-     * initialization, instead, it has to be initialized manually by running the schema-postgresql.sql script, which is
-     * done at the start of the application by Spring if it is configured to do so. The ACL infrastructure will not work
-     * if the initialization has been done by JPA initializations.
-     */
-    @Autowired
-    private SecurityIdRepository securityIdRepository;
-
-    /**
      * This code run after the application is completely ready but just before it starts serving requests.
      * @param event Data associated with the event of the application being ready.
      */
@@ -106,6 +94,23 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         return data.toString();
     }
 
+    private String getDataverseAPIKey()
+    {
+        StringBuilder data = new StringBuilder();
+        try {
+            File myObj = new File("src/main/resources/secrets/dataverseKey.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                data.append(myReader.nextLine());
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return data.toString();
+    }
+
     /**
      * Initializes an admin researcher with data.
      */
@@ -119,13 +124,13 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         Researcher researcher = new Researcher();
 
         researcher.setSignalsAPIKey(this.getSignalsAPIKey());
+        researcher.setSignalsAPIKey(this.getDataverseAPIKey());
 
         researcher.setAccountNonExpired(true);
         researcher.setEnabled(true);
         researcher.setCredentialsNonExpired(true);
         researcher.setPassword("chemistry");
         researcher.setUsername("eChempad@iciq.es");
-        Logger.getGlobal().warning(researcher.toString());
         researcher.setAccountNonLocked(true);
         researcher.setCreationDate(new Date());
 
@@ -139,15 +144,11 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        // Insert role ROLE_ADMIN and ROLE_USER in the db, in acl_sid
-        this.securityIdRepository.save(new SecurityId(10L,false, "ROLE_ADMIN"));
-        this.securityIdRepository.save(new SecurityId(20L, false, "ROLE_USER"));
-
         // Save of the authority is cascaded
         this.researcherService.save(researcher);
         
         // Now create some data associated with this admin user
-        this.initJournal();
+        //this.initJournal();
     }
 
     /**
