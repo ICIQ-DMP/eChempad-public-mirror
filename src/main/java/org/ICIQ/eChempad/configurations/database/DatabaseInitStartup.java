@@ -124,7 +124,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         Researcher researcher = new Researcher();
 
         researcher.setSignalsAPIKey(this.getSignalsAPIKey());
-        researcher.setSignalsAPIKey(this.getDataverseAPIKey());
+        researcher.setDataverseAPIKey(this.getDataverseAPIKey());
 
         researcher.setAccountNonExpired(true);
         researcher.setEnabled(true);
