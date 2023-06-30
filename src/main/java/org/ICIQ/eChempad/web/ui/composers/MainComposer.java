@@ -77,9 +77,6 @@ public class MainComposer extends SelectorComposer<Window> {
 		{
 			Executions.sendRedirect("/login");
 		}
-
-		// Load bootstrap classes for large layout
-		Clients.evalJavaScript("addBootstrapClasses('large');");
 	}
 
 	/**
