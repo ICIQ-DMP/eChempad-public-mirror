@@ -13,6 +13,9 @@
         <script type="text/javascript" src="/js/bootstrap.min.js"> </script>
         <script type="text/javascript" src="/js/popper.min.js"> </script>
 
+        <!-- Top navigation bar -->
+        <include mode="defer" src="~./zul/navbar.zul"/>
+
         <div style="margin: 150px 250px;">
             <grid>
                 <rows>
