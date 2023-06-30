@@ -9,6 +9,13 @@
     xsi:schemaLocation="http://www.zkoss.org/2005/zul https://www.zkoss.org/2005/zul/zul.xsd http://www.w3.org/1999/xhtml https://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd">
     <window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.composers.ProfileComposer" style="height: 100%; width:100%">
 
+        <!-- Removes padding from "webkit chrome iceblue" on chrome, aka the top body of the HTML page -->
+        <style>
+            body{
+            padding:0px;
+            }
+        </style>
+
         <script type="text/javascript" src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
         <script type="text/javascript" src="/js/bootstrap.min.js"> </script>
         <script type="text/javascript" src="/js/popper.min.js"> </script>
