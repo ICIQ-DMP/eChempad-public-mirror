@@ -39,8 +39,15 @@
         })
     </script>
 
+    <!-- Removes padding from "webkit chrome iceblue" on chrome, aka the top body of the HTML page -->
+    <style>
+        body{
+        padding:0px;
+        }
+    </style>
+
     <!-- Top navigation bar -->
-    <include mode="defer" src="~./zul/navbar.zul"/>
+    <include src="~./zul/navbar.zul"/>
 
     <borderlayout id="mainLarge" vflex="1">
 
@@ -48,7 +55,7 @@
             <include src="~./zul/toolbar.zul"/>
         </north>
 
-        <center id="treeLayout">
+        <center id="treeLayout" style="padding: 0; margin: 0;">
             <div id="treeDiv" height="100%">
                 <include src="~./zul/tree.zul"/>
             </div>
