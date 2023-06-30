@@ -68,8 +68,6 @@
             <borderlayout id="propertiesLayout">
 
 
-
-
                 <north id="propertiesNorth"  splittable="true" collapsible="false" size="50%" >
                     <div id="properties" hflex="1" vflex="1">
                         <div id="welcome" height="100%" visible="true" sclass="z-tabbox" >
@@ -138,5 +136,4 @@
         </east>
     </borderlayout>
 
-    <!-- <include src="~./zul/uploadToolbar.zul"/>  -->
 </window>
