@@ -59,7 +59,7 @@ public class AclServiceCustomImpl implements AclService{
      * authentication of SecurityContextHolder (implicit parameter) and depending on its type performs a conversion to
      * obtain the username in String format.
      */
-    public void addPermissionToUserInEntity(DataEntity entity, Permission permission) {
+    public void addPermissionToUserInEntity(Entity entity, Permission permission) {
         // Obtain principal object. It could be a normal UserDetails authentication or the String of a user if we are
         // using this function manually
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -135,12 +135,10 @@ public class AclServiceCustomImpl implements AclService{
         }
 
         // If inheriting is true then set entries inheriting and build the ACL of the parent
-        if (inheriting && entity instanceof DataEntity)
+        if (inheriting && entity instanceof DataEntity && ((DataEntity) entity).getParent() != null)
         {
             acl.setEntriesInheriting(true);
-
-            Logger.getGlobal().warning("Inheriting; type: " + ((DataEntity)entity).getParent().getType() + " id: " + ((DataEntity)entity).getParent().getId());
-
+            
             // Construct identity of parent object
             ObjectIdentity objectIdentity_parent = new ObjectIdentityImpl(((DataEntity)entity).getParent().getType(), ((DataEntity)entity).getParent().getId());
 

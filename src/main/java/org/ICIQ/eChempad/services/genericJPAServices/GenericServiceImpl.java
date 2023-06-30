@@ -24,12 +24,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,6 +88,12 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
         // If the entity is a DataEntity, set inheriting false if the parent is null, set to true otherwise. If set to
         // true, the ACL of the parent has to be recovered.
         boolean inheriting = entity instanceof DataEntity && ((DataEntity) entity).getParent() != null;
+
+        // Save all possible permission against the saved entity with the current logged user
+        @NotNull Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
+        while (iterator.hasNext()) {
+            this.aclRepository.addPermissionToUserInEntity(t, iterator.next());
+        }
 
         // Save all possible permission against the saved entity with the current logged user
         this.aclRepository.addPermissionToEntity(t, inheriting, PermissionBuilder.getFullPermissions(), null);
