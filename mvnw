@@ -344,6 +344,9 @@ if [ ! -r "${trustStore}" ]; then
   exit 1
 fi
 
+# Add -Xlint:unchecked because some classes uses unchecked operations and this flag can be used to see details.
+#JAVA_FLAGS="${JAVA_FLAGS} -Xlint:unchecked"  # This flag is not recognised
+
 # Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
 if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]; then
   echo Executed command:

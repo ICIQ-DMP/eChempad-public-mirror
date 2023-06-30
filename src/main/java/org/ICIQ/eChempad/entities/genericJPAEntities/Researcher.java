@@ -14,44 +14,33 @@
  */
 package org.ICIQ.eChempad.entities.genericJPAEntities;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.ICIQ.eChempad.configurations.converters.UUIDConverter;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 
 /**
  * Used to store information about the researcher that is using the application. It includes all relevant data
  * associated with the logged user, such as password, email, keys associated with its account, etc.
- *
+ * <p>
  * This class is a database entity, but it is also used as mould for serializing and deserializing.
  */
-@Entity
-@Table(
-        uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"id", "username"})
-})
+@javax.persistence.Entity
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Researcher.class)
-public class Researcher extends JPAEntityImpl {
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Convert(converter = UUIDConverter.class)
-    @Column(unique = true)
-    @Id
-    private UUID id;
+public class Researcher extends EntityImpl implements Entity{
 
     //TODO set a certain length for the used hashed algorithm
     @Column(length = 50, nullable = false)
@@ -79,12 +68,6 @@ public class Researcher extends JPAEntityImpl {
     // Exactly 37 characters
     @Column(length = 37, nullable = true)
     private String dataverseAPIKey;
-
-    /**
-     * Date of creation of the entity.
-     */
-    @Column(nullable = false)
-    private Date creationDate;
 
     @OneToMany(
             targetEntity = Authority.class,
@@ -121,18 +104,20 @@ public class Researcher extends JPAEntityImpl {
     @Override
     public String toString() {
         return "Researcher{" +
-                "id=" + id +
-                ", password='" + password + '\'' +
+                "password='" + password + '\'' +
                 ", username='" + username + '\'' +
                 ", accountNonExpired=" + accountNonExpired +
                 ", accountNonLocked=" + accountNonLocked +
                 ", credentialsNonExpired=" + credentialsNonExpired +
                 ", enabled=" + enabled +
                 ", signalsAPIKey='" + signalsAPIKey + '\'' +
+                ", dataverseAPIKey='" + dataverseAPIKey + '\'' +
+                ", authorities=" + authorities +
+                ", id=" + id +
                 '}';
     }
 
-    // GETTERS AND SETTERS
+// GETTERS AND SETTERS
 
     public Serializable getId() {
         return this.id;
@@ -148,7 +133,7 @@ public class Researcher extends JPAEntityImpl {
      * @return Class of the object implementing this interface.
      */
     @Override
-    public <T extends JPAEntity> Class<T> getType() {
+    public <T extends Entity> Class<T> getType() {
         return (Class<T>) Researcher.class;
     }
 
@@ -162,31 +147,6 @@ public class Researcher extends JPAEntityImpl {
         return this.getType().getName();
     }
 
-    @Override
-    public void initCreationDate() {
-        this.creationDate = new Date();
-    }
-
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public void setName(String name) {
-
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public void setDescription(String description) {
-
-    }
 
     // GETTERS AND SETTERS
 
@@ -305,11 +265,4 @@ public class Researcher extends JPAEntityImpl {
         this.dataverseAPIKey = dataverseAPIKey;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
 }

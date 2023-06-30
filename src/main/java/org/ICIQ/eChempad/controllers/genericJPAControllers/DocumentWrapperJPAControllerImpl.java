@@ -9,7 +9,7 @@ package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
 import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.configurations.wrappers.UploadFileResponse;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.DocumentWrapperService;
@@ -35,7 +35,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/document")
-public class DocumentWrapperJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> implements DocumentWrapperJPAController<DocumentWrapper, UUID> {
+public class DocumentWrapperJPAControllerImpl<T extends EntityImpl, S extends Serializable> implements DocumentWrapperJPAController<DocumentWrapper, UUID> {
 
     @Autowired
     DocumentWrapperService<DocumentWrapper, UUID> documentWrapperService;

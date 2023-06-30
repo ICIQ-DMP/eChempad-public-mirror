@@ -16,14 +16,10 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A Journal contains many Experiment and some metadata (description, name, creation date...). A journal is an entity,
@@ -39,48 +35,43 @@ import java.util.UUID;
  * @see <a href="https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148">...</a>
  * @see <a href="https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/">...</a>
  */
-@Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = "id")
-})
+@javax.persistence.Entity
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
-        defaultImpl = Journal.class)
+        defaultImpl = Container.class)
+public class Container extends EntityImpl implements DataEntity {
 
-public class Journal extends JPAEntityImpl {
-
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+    @ManyToOne(cascade={CascadeType.ALL},
+            fetch = FetchType.EAGER
     )
-    @Column(unique = true)
-    private UUID id;
+    private Container parent;
 
-    @Column(length = 1000, nullable = false)
-    private String name;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Container> childrenContainers = new HashSet<Container>();
 
-    @Column(length = 1000, nullable = false)
-    private String description;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Document> childrenDocuments = new HashSet<Document>();
+
+    @Override
+    public <T extends Entity> Class<T> getType() {
+        return (Class<T>) Container.class;
+    }
 
     /**
-     * Date of creation of the entity.
+     * Name of this {@code Document}.
      */
-    @Column(nullable = false)
-    private Date creationDate;
+    @Column(length = 1000, nullable = false)
+    protected String name;
 
-    @OneToMany(
-            targetEntity = Experiment.class,
-            mappedBy = "journal",
-            fetch = FetchType.EAGER,
-            orphanRemoval = true  // cascade = CascadeType.ALL
-    )
-    private Set<Experiment> experiments = new HashSet<>();
+    /**
+     * Description of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String description;
 
-    public Journal() {}
+    public Container() {}
 
     /**
      * Constructor
@@ -88,54 +79,26 @@ public class Journal extends JPAEntityImpl {
      *             name
      * @param description description of the content of the Journal and its Experiments.
      */
-    public Journal(String name, String description) {
+    public Container(String name, String description) {
         this.name = name;
         this.description = description;
         this.initCreationDate();
     }
 
+    @Override
+    public String toString() {
+        return "Container{" +
+                ", childrenContainers=" + childrenContainers +
+                ", childrenDocuments=" + childrenDocuments +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
     // GETTERS AND SETTERS
-
-    @Override
-    public Serializable getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(Serializable s) {
-        this.id = (UUID) s;
-    }
-
-    /**
-     * Implemented by every class to return its own type.
-     *
-     * @return Class of the object implementing this interface.
-     */
-    @Override
-    public <T extends JPAEntity> Class<T> getType() {
-        return (Class<T>) Journal.class;
-    }
-
-    /**
-     * Obtains the typeName, used by jackson to deserialize generics.
-     *
-     * @return Name of the class as string.
-     */
-    @Override
-    public String getTypeName() {
-        return this.getType().getName();
-    }
-
-    @Override
-    public void initCreationDate() {
-        this.creationDate = new Date();
-    }
-
-
-    // GETTERS, SETTERS AND TO STRINGS
-
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -143,37 +106,34 @@ public class Journal extends JPAEntityImpl {
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public Set<Experiment> getExperiments() {
-        return experiments;
+    public Container getParent() {
+        return parent;
     }
 
-    public void setExperiments(Set<Experiment> experiments) {
-        this.experiments = experiments;
+    public void setParent(Container parent) {
+        this.parent = parent;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public Set<Container> getChildrenContainers() {
+        return childrenContainers;
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setChildrenContainers(Set<Container> childrenContainers) {
+        this.childrenContainers = childrenContainers;
     }
 
-    @Override
-    public String toString() {
-        return "Journal{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", creationDate=" + creationDate +
-                ", experiments=" + experiments +
-                '}';
+    public Set<Document> getChildrenDocuments() {
+        return childrenDocuments;
+    }
+
+    public void setChildrenDocuments(Set<Document> childrenDocuments) {
+        this.childrenDocuments = childrenDocuments;
     }
 }

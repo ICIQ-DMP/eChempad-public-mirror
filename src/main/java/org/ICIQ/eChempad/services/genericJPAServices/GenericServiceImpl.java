@@ -16,7 +16,8 @@ package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.GenericRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Example;
@@ -36,7 +37,7 @@ import java.util.Optional;
 
 
 @Service
-public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Serializable> implements GenericService<T, S>{
+public abstract class GenericServiceImpl<T extends EntityImpl, S extends Serializable> implements GenericService<T, S>{
 
     /**
      * Persistence context of the class. This provides extended programmatic capabilities to access the database data.
@@ -84,11 +85,19 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
         // Save it in the database
         S1 t = genericRepository.save(entity);
 
+        // If the entity is a DataEntity, set inheriting false if the parent is null, set to true otherwise. If set to
+        // true, the ACL of the parent has to be recovered.
+        boolean inheriting = entity instanceof DataEntity && ((DataEntity) entity).getParent() != null;
+
         // Save all possible permission against the saved entity with the current logged user
-        Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
+        @NotNull Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
         while (iterator.hasNext()) {
             this.aclRepository.addPermissionToUserInEntity(t, iterator.next());
         }
+
+        // Save all possible permission against the saved entity with the current logged user
+        this.aclRepository.addPermissionToEntity(t, inheriting, PermissionBuilder.getFullPermissions(), null);
+
         return t;
     }
 
@@ -148,12 +157,6 @@ public abstract class GenericServiceImpl<T extends JPAEntityImpl, S extends Seri
         genericRepository.deleteAllInBatch();
     }
 
-    /**
-     * Returns the entity uninitialized and causing a LazyInitializationException afterwards. Use findById instead.
-     *
-     * WARNING! You are using getById which can cause a Lazy Initialization Exception if used out of session. Use
-     * getById to avoid this and load the full entity.
-     */
     public T getById(S s) {
         return this.genericRepository.getById(s);
     }

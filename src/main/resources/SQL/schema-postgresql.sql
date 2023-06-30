@@ -19,7 +19,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 CREATE TABLE IF NOT EXISTS acl_sid(
-                        id bigserial not null primary key,
+                        id bigserial not null primary key,  /* Big serial is 8 bytes */
                         principal boolean not null,
                         sid varchar(100) not null,
                         constraint unique_uk_1 unique(sid,principal)

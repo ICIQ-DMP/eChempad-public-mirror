@@ -40,12 +40,11 @@
     </script>
 
     <n:nav class="navbar navbar-expand navbar-light bg-light" style="height:60px" href="/">
-        <n:button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <n:button class="navbar-toggler" href="/" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"/>
         </n:button>
-        <n:div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <n:ul class="navbar-nav mr-auto">
-            </n:ul>
+        <n:div class="collapse navbar-collapse" id="navbarSupportedContent" href="/">
+            <n:ul class="navbar-nav mr-auto" href="/"/>
             <n:ul class="navbar-nav">
 
                 <!-- Top tab options dropdown -->

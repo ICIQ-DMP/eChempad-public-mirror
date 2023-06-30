@@ -66,4 +66,11 @@ public class UserDetailsImpl implements UserDetails{
     public Researcher getResearcher() {
         return researcher;
     }
+
+    @Override
+    public String toString() {
+        return "UserDetailsImpl{" +
+                "researcher=" + researcher +
+                '}';
+    }
 }

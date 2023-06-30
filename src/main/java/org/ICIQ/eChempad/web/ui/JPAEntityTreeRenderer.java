@@ -7,15 +7,11 @@
  */
 package org.ICIQ.eChempad.web.ui;
 
-import net.bytebuddy.build.Plugin;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.zkoss.zul.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -30,14 +26,14 @@ import java.util.logging.Logger;
  * @since 16/2/2022
  * @see <a href="https://www.zkoss.org/wiki/ZK_Developer's_Reference/MVC/Model/Tree_Model">...</a>
  */
-public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<JPAEntity>> {
-    public void render(Treeitem item, DefaultTreeNode<JPAEntity> data, int index) throws Exception {
+public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<Entity>> {
+    public void render(Treeitem item, DefaultTreeNode<Entity> data, int index) throws Exception {
         if (data == null)
         {
             Logger.getGlobal().warning("null data in renderer");
             return;
         }
-        JPAEntity fi = data.getData();
+        DataEntity fi = (DataEntity) data.getData();
         Treerow tr = new Treerow();
 
         // Append name

@@ -7,59 +7,43 @@
  */
 package org.ICIQ.eChempad.services.genericJPAServices;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.springframework.stereotype.Service;
 
 @Service("entityConversionService")
 public class EntityConversionServiceImpl implements EntityConversionService{
 
     @Override
-    public Journal parseJournal(JPAEntity jpaEntity) {
-        if (jpaEntity instanceof Journal)
+    public Container parseJournal(DataEntity entity) {
+        if (entity instanceof Container)
         {
-            return (Journal) jpaEntity;
+            return (Container) entity;
         }
 
-        Journal journal = new Journal();
-        journal.setName(jpaEntity.getName());
-        journal.setDescription(jpaEntity.getDescription());
-        journal.setId(jpaEntity.getId());
-        journal.setCreationDate(jpaEntity.getCreationDate());
+        Container container = new Container();
+        container.setName(entity.getName());
+        container.setDescription(entity.getDescription());
+        container.setId(entity.getId());
+        container.setCreationDate(entity.getCreationDate());
 
-        return journal;
+        return container;
     }
 
     @Override
-    public Experiment parseExperiment(JPAEntity jpaEntity) {
-        if (jpaEntity instanceof Experiment)
+    public Document parseDocument(DataEntity entity) {
+        if (entity instanceof Document)
         {
-            return (Experiment) jpaEntity;
-        }
-
-        Experiment experiment = new Experiment();
-        experiment.setName(jpaEntity.getName());
-        experiment.setDescription(jpaEntity.getDescription());
-        experiment.setId(jpaEntity.getId());
-        experiment.setCreationDate(jpaEntity.getCreationDate());
-
-        return experiment;
-    }
-
-    @Override
-    public Document parseDocument(JPAEntity jpaEntity) {
-        if (jpaEntity instanceof Document)
-        {
-            return (Document) jpaEntity;
+            return (Document) entity;
         }
 
         Document document = new Document();
-        document.setName(jpaEntity.getName());
-        document.setDescription(jpaEntity.getDescription());
-        document.setId(jpaEntity.getId());
-        document.setCreationDate(jpaEntity.getCreationDate());
+        document.setName(entity.getName());
+        document.setDescription(entity.getDescription());
+        document.setId(entity.getId());
+        document.setCreationDate(entity.getCreationDate());
 
         return document;
     }
