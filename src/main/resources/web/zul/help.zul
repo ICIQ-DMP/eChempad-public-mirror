@@ -1,4 +1,12 @@
 <?page title="Item details" contentType="text/html;charset=UTF-8"?>
 <window xmlns:n="native" border="none"  height="100%">
+
+    <!-- Removes padding from "webkit chrome iceblue" on chrome, aka the top body of the HTML page -->
+    <style>
+        body{
+        padding:0px;
+        }
+    </style>
+
     This is supposed to be the help
 </window>

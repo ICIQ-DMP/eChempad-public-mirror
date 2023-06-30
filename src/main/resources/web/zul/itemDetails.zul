@@ -18,7 +18,7 @@
 
 -->
 <?page title="Item details" contentType="text/html;charset=UTF-8"?>
-<window xmlns:n="native" border="none" apply="org.ICIQ.eChempad.web.ui.composers.ItemDetailsComposer"  height="100%">
+<window xmlns:n="native" border="none" apply="org.ICIQ.eChempad.web.composers.ItemDetailsComposer" height="100%">
 	<tabbox height="100%">
 	    <tabs sclass="nav nav-tabs">
 	        <tab label="Properties" tooltiptext="Double click to maximize view" zclass="nav-item" />	        		        			      

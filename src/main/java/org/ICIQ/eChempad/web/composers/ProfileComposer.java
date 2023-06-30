@@ -12,7 +12,7 @@
  * | This software is the property of ICIQ.                                            |
  * |===================================================================================|
  */
-package org.ICIQ.eChempad.web.ui.composers;
+package org.ICIQ.eChempad.web.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
