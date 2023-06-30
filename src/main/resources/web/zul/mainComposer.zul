@@ -22,7 +22,7 @@
 <?link rel="icon" type="image/x-icon" href="/img/favicon.ico"?>
 
 
-<window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.ui.composers.MainComposer" style="height: 100%; width:100%">
+<window xmlns:n="native" xmlns:w="client" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.composers.MainComposer" style="height: 100%; width:100%">
 
     <script src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
 

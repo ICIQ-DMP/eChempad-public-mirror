@@ -5,7 +5,7 @@
  * | This software is the property of ICIQ.                                            |
  * |===================================================================================|
  */
-package org.ICIQ.eChempad.web.ui;
+package org.ICIQ.eChempad.web.renderers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;

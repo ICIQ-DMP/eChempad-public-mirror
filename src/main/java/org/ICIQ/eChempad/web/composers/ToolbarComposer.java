@@ -5,7 +5,7 @@
  * | This software is the property of ICIQ.                                            |
  * |===================================================================================|
  */
-package org.ICIQ.eChempad.web.ui.composers;
+package org.ICIQ.eChempad.web.composers;
 
 import org.ICIQ.eChempad.services.SignalsImportService;
 import org.ICIQ.eChempad.web.definitions.EventNames;

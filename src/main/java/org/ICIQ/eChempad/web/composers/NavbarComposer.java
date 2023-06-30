@@ -1,9 +1,6 @@
-package org.ICIQ.eChempad.web.ui.composers;
+package org.ICIQ.eChempad.web.composers;
 
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.select.SelectorComposer;
-import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.*;
 
 public class NavbarComposer extends SelectorComposer<Window> {
