@@ -1,0 +1,58 @@
+<zk xmlns:n="native">
+    <n:nav class="navbar navbar-expand navbar-light bg-light" style="height:60px">
+        <n:button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"/>
+        </n:button>
+        <n:div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a href="/">
+                <n:image src="img/create-small-white.png"/>
+            </a>
+
+            <n:ul class="navbar-nav mr-auto"/>
+            <n:ul class="navbar-nav">
+
+                <!-- Top tab options dropdown -->
+                <n:li class="nav-item dropdown" style="padding-right: 10px;">
+                    <n:a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Options
+                    </n:a>
+                    <n:div class="dropdown-menu  dropdown-menu-right text-right" aria-labelledby="navbarDropdown" style="right:0; left:auto;">
+
+                        <n:div class="dropdown-divider d-sm-block d-md-none"/>
+                        <n:a class="dropdown-item text-left" href="/profile">
+                            Edit profile
+                            <n:i class="fas fa-user" style="margin-left: 80px"/>
+                        </n:a>
+
+
+                        <div class="dropdown-divider"/>
+
+                        <n:div class="dropdown-divider d-sm-block d-md-none"/>
+                        <n:a class="dropdown-item text-left" href="/help">
+                            Help
+                            <n:i class="fas fa-question-circle" style="margin-left: 120px"/>
+                        </n:a>
+
+
+                        <n:div class="dropdown-divider d-sm-block d-md-none"/>
+                        <n:a class="dropdown-item text-left" href="https://github.com/AleixMT/eChempad/issues">
+                            Report bug
+                            <n:i class="fa fa-exclamation-circle" style="margin-left: 80px"/>
+                        </n:a>
+
+
+                        <n:div class="dropdown-divider"/>
+
+
+                        <n:div class="dropdown-divider d-sm-block d-md-none"/>
+                        <n:a class="dropdown-item text-left" href="/logout">
+                            Logout
+                            <n:i class="fa fa-sign-out-alt" style="margin-left: 120px"/>
+                        </n:a>
+
+                    </n:div>
+                </n:li>
+            </n:ul>
+        </n:div>
+    </n:nav>
+</zk>

@@ -25,7 +25,6 @@ body{
 
 
 .navbar {
-	background-image: url("/img/create-small-white.png");
 	background-repeat: no-repeat;
 	background-position-x: 10px;
 	background-position-y: 5px;
@@ -92,7 +91,10 @@ body{
 }
 
 .search-window .z-window-content {
-	overflow-y:auto	
+	overflow-y:auto;
+
+	padding: 0;
+	margin: 0;
 }
 
 .main-small-navigation-container {
@@ -639,9 +641,11 @@ li.z-tab-selected a.nav-link {
 /* 	right: 0px; */
 /* } */
  
- .z-window-content { 
+.z-window-content {
     overflow: hidden;
-    zoom: 1;
+
+	padding: 0;
+	margin: 0;
 }
 
  .z-tree {
@@ -1085,8 +1089,10 @@ span.z-upload {
     -o-border-radius: 4px;
     -ms-border-radius: 4px;
     border-radius: 4px;
-    padding: 0px;
     background-color: #f8f9fa;
+
+	padding: 0;
+	margin: 0;
 }
 
 
@@ -1378,16 +1384,19 @@ i.z-icon-angle-right::before {
 .select-user-window .z-window-content,
 .select-group-window .z-window-content {
 	padding: 0px !important;
+	margin: 0;
 }
 
 
 .z-window-modal .z-window-content, 
 .z-messagebox-window .z-window-content {
-	padding: 0px;
+	padding: 0;
+	margin: 0;
 }
 /* .z-window-modal .z-window-content */
 .z-messagebox-window .z-window-content {
-	padding-left: 0px;
+	padding: 0;
+	margin: 0;
 }
 
 .z-window-header-move {
@@ -2450,6 +2459,8 @@ tr.downloadFileName > td:nth-child(2) > div {
 /* Multiple file upload choose button had no decorations */
 div.z-window-content > button.btn.z-button {
 	background: #dee2e6;
+	padding: 0;
+	margin: 0;
 }
 
 .z-icon-refresh::before {	
@@ -2475,5 +2486,21 @@ div.z-window-content > button.btn.z-button {
 	content: "\f002";	
 }
 
+
+/* ZK Style overwrite to remove padding */
+.z-window-noborder {
+	padding: 0;
+	margin: 0;
+}
+
+.z-window-noheader {
+	padding: 0;
+	margin: 0;
+}
+
+.z-window-embedded {
+	padding: 0;
+	margin: 0;
+}
 
 

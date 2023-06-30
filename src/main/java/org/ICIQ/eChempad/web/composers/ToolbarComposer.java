@@ -5,7 +5,7 @@
  * | This software is the property of ICIQ.                                            |
  * |===================================================================================|
  */
-package org.ICIQ.eChempad.web.ui.composers;
+package org.ICIQ.eChempad.web.composers;
 
 import org.ICIQ.eChempad.services.SignalsImportService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
@@ -70,7 +70,7 @@ public class ToolbarComposer extends SelectorComposer<Window> {
         this.initActionQueues();
     }
 
-    private void initActionQueues(){
+    private void initActionQueues() {
         this.treeQueue = EventQueues.lookup(EventQueueNames.TREE_QUEUE, EventQueues.DESKTOP, true);
     }
 
@@ -95,5 +95,11 @@ public class ToolbarComposer extends SelectorComposer<Window> {
         this.treeQueue.publish(new Event(EventNames.EXPORT_SELECTED_ENTITY_EVENT, null, null));
     }
 
-
+    /**
+     * Sends an event to the tree to reload the data model and rerender it.
+     */
+    @Listen("onClick = #refreshButton")
+    public void onRefreshButton() {
+        this.treeQueue.publish(new Event(EventNames.REFRESH_EVENT, null, null));
+    }
 }

@@ -12,9 +12,10 @@
 <zk>
     <config-name>eChempad-dev</config-name>
 
-    <client-config>
-        <debug-js>true</debug-js> <!--TODO: In production change to false -->
-    </client-config>
+    <!--TODO: In production change to false -->
+    <!-- <client-config>
+        <debug-js>true</debug-js>
+    </client-config> -->
 
     <!-- <session-config>
         <device-type>ajax</device-type>

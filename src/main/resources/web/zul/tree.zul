@@ -18,7 +18,8 @@
 
 -->
 <?page title="Report Manager" contentType="text/html;charset=UTF-8"?>
- <window id="treeWindow" apply="org.ICIQ.eChempad.web.ui.composers.TreeComposer" onClientInfo="clientInfo(event)" hflex="1" vflex="1">
+ <window id="treeWindow" apply="org.ICIQ.eChempad.web.composers.TreeComposer" onClientInfo="clientInfo(event)" hflex="1" vflex="1">
+
     <tree id="tree" sclass="navigation-tree" multiple="true" checkmark="false" context="emptyTreePopup" hflex="1" vflex="1">
     	<treecols sizable="true">
 			<treecol hflex="12" label="Name" id="nameTreeColumn" sort="none" />
