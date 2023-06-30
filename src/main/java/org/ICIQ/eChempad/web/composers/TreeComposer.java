@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.web.ui.composers;
+package org.ICIQ.eChempad.web.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
@@ -34,7 +34,7 @@ import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
-import org.ICIQ.eChempad.web.ui.JPAEntityTreeRenderer;
+import org.ICIQ.eChempad.web.renderers.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.ResourceAccessException;
