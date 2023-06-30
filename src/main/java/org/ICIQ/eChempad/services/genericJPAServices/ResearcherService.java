@@ -14,7 +14,7 @@
  */
 package org.ICIQ.eChempad.services.genericJPAServices;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 
 import java.io.Serializable;
@@ -24,7 +24,7 @@ import java.util.UUID;
  * Non-generic functions used to manipulate the in-memory data structures of the researchers. The generic calls are
  * provided in GenericServiceClass
  */
-public interface ResearcherService<T extends JPAEntityImpl, S extends Serializable> extends GenericService<Researcher, UUID> {
+public interface ResearcherService<T extends EntityImpl, S extends Serializable> extends GenericService<Researcher, UUID> {
 
     /**
      * Same as in the repository, but in this case we delegate to the repository layer

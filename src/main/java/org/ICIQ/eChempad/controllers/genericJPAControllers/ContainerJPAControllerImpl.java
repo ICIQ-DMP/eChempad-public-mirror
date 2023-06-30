@@ -14,30 +14,27 @@
  */
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
-import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.zkoss.spring.config.ZkScopesConfigurer;
 
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/journal")
-public class JournalJPAControllerImpl<T extends JPAEntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Journal, UUID> implements JournalJPAController<Journal, UUID> {
+@RequestMapping("/api/container")
+public class ContainerJPAControllerImpl<T extends EntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Container, UUID> implements ContainerJPAController<Container, UUID> {
 
     @Autowired
-    public JournalJPAControllerImpl(JournalService<Journal, UUID> journalService) {
-        super(journalService);
+    public ContainerJPAControllerImpl(ContainerService<Container, UUID> containerService) {
+        super(containerService);
     }
 
     /**
@@ -55,8 +52,8 @@ public class JournalJPAControllerImpl<T extends JPAEntityImpl, S extends Seriali
     @PreAuthorize("hasPermission(#id, 'org.ICIQ.eChempad.entities.genericJPAEntities.Journal', 'DELETE')")
     @ResponseStatus(HttpStatus.OK)
     @Override
-    public Journal remove(@PathVariable UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {
-        Optional<Journal> entity = this.genericService.findById(id);
+    public Container remove(@PathVariable UUID id) throws ResourceNotExistsException, NotEnoughAuthorityException {
+        Optional<Container> entity = this.genericService.findById(id);
         if (entity.isPresent()) {
             this.genericService.deleteById(id);
             return entity.get();

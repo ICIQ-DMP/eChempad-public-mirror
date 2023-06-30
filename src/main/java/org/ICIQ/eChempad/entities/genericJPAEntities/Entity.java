@@ -17,31 +17,32 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 import com.fasterxml.jackson.annotation.*;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
 import java.util.Date;
 
 /**
  * Used to limit the generic inheritance to entities to make them comply with this contract, which ensures the
- * possibility of manipulating its UUID.
- *
+ * possibility of manipulating its UUID for all the entities in our project.
+ * <p>
  * To use it, in a generic class that uses bounding parametrization such as Repository<T>, add inheritance to the
  * bounded parametrization in order to get access to the field UUID of an Entity, like:
  * class Repository<T extends IEntity> {
  *     ...
  * }
  * which will expose these methods for this specific entity.
- *
+ * <p>
  * Of course entities will need to comply to this specification by also defining themselves as children of this
  * interface such as:
  * class Researcher implements IEntity {
  *     ...
  * }
- *
+ * <p>
  * and implements the required methods by the interface.
+ * <p>
+ * This interface defines the contract that need to fulfill all model classes for the entities in the database.
  */
 
 
-public interface JPAEntity {
+public interface Entity {
     /**
      * Exposes and returns the UUID of an entity.
      * @return UUID of the entity.
@@ -66,7 +67,7 @@ public interface JPAEntity {
      * @return Class of the object implementing this interface.
      */
     @JsonIgnore
-    <T extends JPAEntity> Class<T> getType();
+    <T extends Entity> Class<T> getType();
 
     /**
      * Obtains the typeName, used by jackson to deserialize generics.
@@ -77,45 +78,6 @@ public interface JPAEntity {
     {
         return this.getType().getCanonicalName();
     }
-
-    /**
-     * Sets the creation date of the element. This method is needed since the fields need to be explicitly initialized
-     * outside the constructors of the entity.
-     */
-    @JsonIgnore
-    void initCreationDate();
-
-    /**
-     * Gets the name of the entity.
-     *
-     * @return Entity name.
-     */
-    @JsonIgnore
-    String getName();
-
-    /**
-     * Sets the name of an entity.
-     *
-     * @param name New name of the entity.
-     */
-    @JsonIgnore
-    void setName(String name);
-
-    /**
-     * Gets the description of an entity.
-     *
-     * @return Entity description.
-     */
-    @JsonIgnore
-    String getDescription();
-
-    /**
-     * Sets the description of an entity.
-     *
-     * @param description New description of the entity.
-     */
-    @JsonIgnore
-    void setDescription(String description);
 
     /**
      * Gets the creation of an entity.
@@ -132,4 +94,11 @@ public interface JPAEntity {
      */
     @JsonIgnore
     void setCreationDate(Date creationDate);
+
+    /**
+     * Sets the creation date of the element. This method is needed since the fields need to be explicitly initialized
+     * outside the constructors of the entity.
+     */
+    @JsonIgnore
+    void initCreationDate();
 }

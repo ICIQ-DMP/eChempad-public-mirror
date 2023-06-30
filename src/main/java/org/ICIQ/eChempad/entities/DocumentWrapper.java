@@ -9,22 +9,22 @@ package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Class used to receive the data of the addDocument request because it contains metadata at the same time as a
  * multipart file which gives a lot of troubles.
- *
+ * <p>
  * This class will contain all the fields that are present in the Document class, so they can be mapped from this class
  * to the entity class, while transforming the multipart file type into a LOB type that we will store into the DB.
  */
@@ -33,18 +33,9 @@ import java.util.logging.Logger;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = DocumentWrapper.class)
-public class DocumentWrapper extends JPAEntityImpl {
+public class DocumentWrapper extends EntityImpl implements DataEntity {
 
-    private UUID id;
-
-    private String name;
-
-    private String description;
-
-    /**
-     * Date of creation of the entity.
-     */
-    private Date creationDate;
+    private Container parent;
 
     @JsonIgnore
     private MultipartFile file;
@@ -59,6 +50,17 @@ public class DocumentWrapper extends JPAEntityImpl {
         this.initCreationDate();
     }
 
+    /**
+     * Name of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String name;
+
+    /**
+     * Description of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String description;
     public String getName() {
         return name;
     }
@@ -98,18 +100,6 @@ public class DocumentWrapper extends JPAEntityImpl {
         return MediaType.parseMediaType(Objects.requireNonNull(this.file.getContentType()));
     }
 
-
-    @Override
-    public String toString() {
-        return "DocumentWrapper{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", creationDate=" + creationDate +
-                ", file=" + file +
-                '}';
-    }
-
     /**
      * Exposes and returns the UUID of an entity.
      *
@@ -142,22 +132,17 @@ public class DocumentWrapper extends JPAEntityImpl {
      * @return Class of the object implementing this interface.
      */
     @Override
-    public <T extends JPAEntity> Class<T> getType() {
+    public <T extends Entity> Class<T> getType() {
         return (Class<T>) DocumentWrapper.class;
     }
 
     @Override
-    public void initCreationDate() {
-        this.creationDate = new Date();
+    public Container getParent() {
+        return this.parent;
     }
 
-    // GETTERS AND SETTERS
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    @Override
+    public void setParent(Container parent) {
+        this.parent = parent;
     }
 }

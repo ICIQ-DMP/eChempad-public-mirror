@@ -1,12 +1,5 @@
 /*
  * |===================================================================================|
- * | Copyright (C) 2021 - 2023 ICIQ <contact@iochem-bd.org>                            |
- * |                                                                                   |
- * | This software is the property of ICIQ.                                            |
- * |===================================================================================|
- */
-/*
- * |===================================================================================|
  * | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
  * |                                                                                   |
  * | This software is the property of ICIQ.                                            |
@@ -15,11 +8,9 @@
 package org.ICIQ.eChempad.configurations.database;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
-import org.ICIQ.eChempad.entities.SecurityId;
-import org.ICIQ.eChempad.repositories.SecurityIdRepository;
-import org.ICIQ.eChempad.services.genericJPAServices.JournalService;
+import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.ResearcherService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +21,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -60,17 +56,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      * We use our {@code JournalService} to create new example journals.
      */
     @Autowired
-    private JournalService<Journal, UUID> journalService;
-
-    /**
-     * In order to manipulate the acl_security_id table, we need to have an entity and an associated repository to work
-     * with it programmatically. Note that this entity should not be used to initialize this table using JPA
-     * initialization, instead, it has to be initialized manually by running the schema-postgresql.sql script, which is
-     * done at the start of the application by Spring if it is configured to do so. The ACL infrastructure will not work
-     * if the initialization has been done by JPA initializations.
-     */
-    @Autowired
-    private SecurityIdRepository securityIdRepository;
+    private ContainerService<Container, UUID> containerService;
 
     /**
      * This code run after the application is completely ready but just before it starts serving requests.
@@ -89,17 +75,57 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         Logger.getGlobal().info("INITIALIZING DB");
         this.initAdminResearcher();
         Logger.getGlobal().info("END INITIALIZING DB");
+    }
 
+    private String getSignalsAPIKey()
+    {
+        StringBuilder data = new StringBuilder();
+        try {
+            File myObj = new File("src/main/resources/secrets/signalsKey.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                data.append(myReader.nextLine());
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return data.toString();
+    }
+
+    private String getDataverseAPIKey()
+    {
+        StringBuilder data = new StringBuilder();
+        try {
+            File myObj = new File("src/main/resources/secrets/dataverseKey.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                data.append(myReader.nextLine());
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return data.toString();
     }
 
     /**
      * Initializes an admin researcher with data.
      */
     private void initAdminResearcher() {
+
+        // If we have the administrator already in the DB skip initialization
+        if (this.researcherService.loadUserByUsername("eChempad@iciq.es") != null)
+            return;
+
         // Init the admin user
         Researcher researcher = new Researcher();
 
-        researcher.setSignalsAPIKey("basure");
+        researcher.setSignalsAPIKey(this.getSignalsAPIKey());
+        researcher.setSignalsAPIKey(this.getDataverseAPIKey());
+
         researcher.setAccountNonExpired(true);
         researcher.setEnabled(true);
         researcher.setCredentialsNonExpired(true);
@@ -114,36 +140,29 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         researcher.setAuthorities(authorities);
 
         // If the user is not in the DB create it
-        if (this.researcherService.loadUserByUsername(researcher.getUsername()) == null)
-        {
-            // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
-            Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
+        Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
-            // Save of the authority is cascaded
-            this.researcherService.save(researcher);
-
-            // Insert role ROLE_ADMIN and ROLE_USER in the db, in acl_sid
-            this.securityIdRepository.save(new SecurityId(false, "ROLE_ADMIN"));
-            this.securityIdRepository.save(new SecurityId(false, "ROLE_USER"));
-
-            // Now create some data associated with this admin user
-            this.initJournal();
-        }
+        // Save of the authority is cascaded
+        this.researcherService.save(researcher);
+        
+        // Now create some data associated with this admin user
+        //this.initJournal();
     }
 
     /**
      * Initializes a test journal.
      */
     private void initJournal() {
-        Journal journal = new Journal();
+        Container container = new Container();
 
-        journal.setDescription("The journal of the admin");
-        journal.setName("Journal Admin");
-        journal.initCreationDate();
+        container.setDescription("The journal of the admin");
+        container.setName("Journal Admin");
+        container.initCreationDate();
 
         // Indirectly obtain the ID of the journal by saving it on the DB
-        this.journalService.save(journal);
+        this.containerService.save(container);
     }
 
     // Constructors

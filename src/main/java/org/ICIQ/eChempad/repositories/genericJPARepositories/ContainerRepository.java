@@ -14,9 +14,8 @@
  */
 package org.ICIQ.eChempad.repositories.genericJPARepositories;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Experiment;
-import org.ICIQ.eChempad.entities.genericJPAEntities.JPAEntityImpl;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Journal;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -25,7 +24,6 @@ import java.util.UUID;
 
 @Repository
 @Transactional
-public interface ExperimentRepository<T extends JPAEntityImpl, S extends Serializable> extends GenericRepository<Experiment, UUID> {
+public interface ContainerRepository<T extends EntityImpl, S extends Serializable> extends GenericRepository<Container, UUID> {
 
 }
-

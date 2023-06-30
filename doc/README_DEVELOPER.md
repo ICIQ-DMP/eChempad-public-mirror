@@ -137,7 +137,7 @@ The *acl_sid* table will be created using the schema provided via a JPA entity c
 5- Rerun the application, which now should be working (even though because of admin initialization it can have an error 
 of duplicated primary key, but if your rerun one more time everything should be working). The ACL tables from the schema,
 and the JPA tables
-(except the *acl_sid* table, which comes from IdSecurity JPAEntity JPA initialization) from the Entities are now fully 
+(except the *acl_sid* table, which comes from IdSecurity Entity JPA initialization) from the Entities are now fully 
 initialized.
 6- We can encounter one more error while initializing the app, it goes like: 
 `org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "acl_sid_pkey"` This happens
@@ -289,7 +289,7 @@ we would get a list of all the experiments:
 | *Empty* | GET | experiment | http://localhost:8081/api/experiment | Get all experiments |
 | *Empty* | GET | experiment | http://localhost:8081/api/experiment/1c9abdba-1f82-11ec-9621-0242ac130002 | Get the experiment with the ID |  
 | `{ "name": "An experiment name", "description": "Example experiment." }` | POST | experiment | http://localhost:8081/api/experiment | Add a new experiment |
-| `{ "name": "My journal", "description": "Contains many experiments." }` | PUT | journal | http://localhost:8081/api/journal/18a34472-57a3-46ee-8913-98eefcd4cf89 | Overwrites an existent journal |  
+| `{ "name": "My container", "description": "Contains many experiments." }` | PUT | container | http://localhost:8081/api/container/18a34472-57a3-46ee-8913-98eefcd4cf89 | Overwrites an existent container |  
 | *Empty* | DELETE | experiment | http://localhost:8081/api/experiment/1c9abdba-1f82-11ec-9621-0242ac130002 | Deletes the experiment with the supplied ID |
 
 You can even visit the URLs with your browser to attack the `GET` API calls, for example visiting 
@@ -481,3 +481,4 @@ For further reference, please consider the following sections:
 * [hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path](https://stackoverflow.com/questions/53199558/hibernate-mapping-exception-could-not-determine-type-for-java-nio-file-path)
 * [Field injection is not recommended and injection types in Spring Boot](https://blog.marcnuri.com/field-injection-is-not-recommended)
 * [How to ignore Null fields in Jackson](https://stackoverflow.com/questions/11757487/how-to-tell-jackson-to-ignore-a-field-during-serialization-if-its-value-is-null)
+* [Java equivalent of unsigned long long int, big serial in SQL](https://stackoverflow.com/questions/508630/java-equivalent-of-unsigned-long-long)
