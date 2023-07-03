@@ -1,0 +1,27 @@
+---
+version: "2.1"
+services:
+  echempad_app:
+    image: aleixmt/echempad:v1
+    environment:
+      - spring_profiles_active=container
+      - PUID=1001
+      - PGID=1001
+      - TZ=Etc/UTC
+    ports:
+      - "0.0.0.0:80:8081"
+    volumes:
+      - ./src/main/resources/secrets:/app/target/classes/secrets
+    restart: unless-stopped
+  postgres_db:
+    image: postgres
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Etc/UTC
+      - POSTGRES_PASSWORD=chemistry
+      - POSTGRES_USER=amarine
+      - POSTGRES_DB=eChempad
+    ports:
+      - "0.0.0.0:8080:5432"
+    restart: unless-stopped
