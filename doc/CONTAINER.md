@@ -21,3 +21,8 @@ tag echempad aleixmt/echempad`
 ```bash
 sudo docker build -t aleixmt/echempad:v1 . &&  sudo docker push aleixmt/echempad:v1 && sudo docker-compose down && sudo docker-compose up -d
 ```
+
+###### Build WAR file for deployment
+```
+mvn clean  package spring-boot:repackage
+```
