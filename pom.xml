@@ -14,7 +14,7 @@
 	<groupId>org.ICIQ</groupId>
 	<artifactId>eChempad</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>eChempad</name>
 	<description>Experimental Chemistry Electronic Pad</description>
 	<inceptionYear>2021</inceptionYear>
