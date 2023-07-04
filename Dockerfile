@@ -37,10 +37,11 @@ RUN microdnf install --nodocs -y java-1.8.0-openjdk-headless && \
     microdnf clean all
 
 # Copy the directory created in the first stage into the run container
-COPY --from=build /app/target /app/target
+RUN mkdir -p /app/target
+COPY --from=build /app/target/eChempad-1.0.war /app
 
 # Cambia la propiedad del directorio '/app/target' al usuario con id 1001
-RUN chown 1001:1001 /app/target
+RUN chown 1001:1001 /app/eChempad-1.0.war
 
 # Cambia el usuario que va a ejecutar los siguientes comandos al usuario con id 1001
 USER 1001
@@ -49,4 +50,4 @@ USER 1001
 ENV spring_profiles_active=container
 
 ENTRYPOINT ["java", \
-    "-jar", "target/eChempad-0.0.1-SNAPSHOT.war"]
+    "-jar", "eChempad-1.0.war"]
