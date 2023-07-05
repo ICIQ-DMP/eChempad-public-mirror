@@ -23,17 +23,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
  * This class contains the method
  * {@code public void onApplicationEvent(final @NotNull ApplicationReadyEvent event)}
  * which is executed after the application is "ready". That happens after all the initializations, but before
- * accepting traffic. In here we can implement ways to load data to the database at the start of the application.
+ * accepting traffic. In here we can implement ways to load data to the database at the start of the application
+ * programmatically.
  *
  * @author Institut Català d'Investigació Química (iciq.cat)
  * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
@@ -44,6 +42,11 @@ import java.util.logging.Logger;
  */
 @Component
 public class DatabaseInitStartup implements ApplicationListener<ApplicationReadyEvent> {
+
+    /**
+     * Class Logger
+     */
+    private final static Logger LOGGER = Logger.getLogger(DatabaseInitStartup.class.getName());
 
     /**
      * We use our {@code ResearcherService} to load users to check the database state in order to know if we need to
@@ -72,43 +75,61 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      */
     private void initializeDB()
     {
-        Logger.getGlobal().info("INITIALIZING DB");
+        DatabaseInitStartup.LOGGER.info("INITIALIZING DB");
         this.initAdminResearcher();
-        Logger.getGlobal().info("END INITIALIZING DB");
+        DatabaseInitStartup.LOGGER.info("END INITIALIZING DB");
     }
 
+    /**
+     * Retrieves a key if available. If not returns null. First tries reading the file keyName.txt in the secrets
+     * folder to obtain the key. If the file does not exist it tries reading from environment variable with the name
+     * keyName.
+     *
+     * @return String containing the desired key. Null if not provided both from file and environment variable.
+     */
+    private String getKey(String keyName)
+    {
+        StringBuilder data = new StringBuilder();
+        try {
+            File myObj = new File("target/classes/secrets/" + keyName + ".txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                data.append(myReader.nextLine());
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            DatabaseInitStartup.LOGGER.info(
+                    "file " + keyName + " not found, " +
+                    "trying to obtain " + keyName + " from env.");
+            // The file of the key does not exist, try from env variables
+            String value = System.getenv(keyName);
+            data.append(value);
+        }
+        return data.toString();
+    }
+
+    /**
+     * Tries to obtain the signals API key. First, tries to obtain it from file by reading the file
+     * secrets/SIGNALS_KEY.txt . If it does not exist, it tries reading the signals key from the environment from the
+     * variable SIGNALS_KEY. If it does not exist too, returns null.
+     *
+     * @return API key from signals if available from any source, null otherwise.
+     */
     private String getSignalsAPIKey()
     {
-        StringBuilder data = new StringBuilder();
-        try {
-            File myObj = new File("target/classes/secrets/signalsKey.txt");
-            Scanner myReader = new Scanner(myObj);
-            while (myReader.hasNextLine()) {
-                data.append(myReader.nextLine());
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-        return data.toString();
+        return getKey("SIGNALS_KEY");
     }
 
+    /**
+     * Tries to obtain the dataverse API key. First, tries to obtain it from file by reading the file
+     * secrets/DATAVERSE_KEY.txt . If it does not exist, it tries reading the dataverse key from the environment from
+     * the variable DATAVERSE_KEY. If it does not exist too, returns null.
+     *
+     * @return  API key from dataverse if available from any source, null otherwise.
+     */
     private String getDataverseAPIKey()
     {
-        StringBuilder data = new StringBuilder();
-        try {
-            File myObj = new File("target/classes/secrets/dataverseKey.txt");
-            Scanner myReader = new Scanner(myObj);
-            while (myReader.hasNextLine()) {
-                data.append(myReader.nextLine());
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-        return data.toString();
+        return getKey("DATAVERSE_KEY");
     }
 
     /**
