@@ -1,3 +1,5 @@
+<?import src="~./zul/browserTab.zul" directives=*?>
+
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
     xsi:schemaLocation="
