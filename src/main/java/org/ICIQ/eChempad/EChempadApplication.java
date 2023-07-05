@@ -27,14 +27,12 @@ import org.zkoss.spring.config.ZkScopesConfigurer;
 
 @Import(ZkScopesConfigurer.class)
 // @SpringBootApplication This annotation includes three others, but is not well recognized in intelliJ... Substitute
-// this annotation with the three equivalent ones so intellij does not complain about not finding beans for autowire
+// this annotation with the component scan annotation and put the packages that need to be recognized by the IDE.
 // https://stackoverflow.com/questions/26889970/intellij-incorrectly-saying-no-beans-of-type-found-for-autowired-repository
+@SpringBootApplication
 
-@Configuration
-@EnableAutoConfiguration
-@ComponentScan(basePackages = {
-		"org.ICIQ.eChempad.services"
-})
+// Scan packages for the IDEA IDE, since are not recognized automatically when using only the annotation @SpringBootApplication
+@ComponentScan(basePackages = {"org.ICIQ.eChempad.services", "org.ICIQ.eChempad.configurations"})
 // Scan packages to look for jpaRepositories interfaces where we need to inject dependencies
 @EnableJpaRepositories(basePackages = {
 		"org.ICIQ.eChempad.repositories"
