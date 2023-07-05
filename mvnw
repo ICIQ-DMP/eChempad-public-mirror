@@ -317,7 +317,6 @@ SPRINGBOOT_PROFILE="$(
   tr -d " "
   )"
 
-
 # Added to the original code the sourcing of the application-env.sh and the corresponding environment for the profile
 # that we have currently active
 # {
@@ -345,21 +344,16 @@ if [ ! -r "${trustStore}" ]; then
 fi
 
 # Add -Xlint:unchecked because some classes uses unchecked operations and this flag can be used to see details.
-#JAVA_FLAGS="${JAVA_FLAGS} -Xlint:unchecked"  # This flag is not recognised
+#JAVA_FLAGS="${JAVA_FLAGS} -Dspring.profiles.active=container"  # This flag is not recognised
 
 # Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
-if [ "${SPRINGBOOT_PROFILE}" == "test" ] || [ "${SPRINGBOOT_PROFILE}" == "dev" ]; then
-  echo Executed command:
-  echo exec "${JAVACMD}" ${JAVA_FLAGS} \
-         -Djavax.net.ssl.trustStore="${trustStore}" \
-         -Djavax.net.ssl.trustStorePassword=changeit \
-         -Dspring.profiles.active=dev \
-         ${MAVEN_OPTS} \
-         -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
-         "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
-         ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
-         "$@"
-fi
+echo Executed command:
+echo exec "${JAVACMD}" ${JAVA_FLAGS} \
+       ${MAVEN_OPTS} \
+       -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
+       "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
+       ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
+       "$@"
 
 # If there is any application listening to port 8081 (which is the one used to deploy the app) kill it.
 if lsof -ti tcp:8081 &> /dev/null; then
@@ -368,11 +362,8 @@ if lsof -ti tcp:8081 &> /dev/null; then
 fi
 
 exec "${JAVACMD}" ${JAVA_FLAGS} \
-  -Djavax.net.ssl.trustStore="${trustStore}" \
-  ${MAVEN_OPTS} \
-  -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
-  "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
-  ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
-  "$@"
-
-  #-Djavax.net.ssl.trustStorePassword=changeit \
+         ${MAVEN_OPTS} \
+         -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
+         "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
+         ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
+         "$@"

@@ -51,17 +51,10 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     /**
      * Service used to manipulate LOBs from the database. It allows creation and reading of LOBs.
      */
-    private final LobService lobService;
-
-    /**
-     * Autowired constructor.
-     *
-     * @param lobService Service to manipulate LOBs.
-     */
     @Autowired
-    public DocumentWrapperConverter(LobService lobService) {
-        this.lobService = lobService;
-    }
+    private LobService lobService;
+
+    public DocumentWrapperConverter() {}
 
     /**
      * Creates a {@code DocumentWrapper} detached instance from the data of the supplied {@code Document}.
