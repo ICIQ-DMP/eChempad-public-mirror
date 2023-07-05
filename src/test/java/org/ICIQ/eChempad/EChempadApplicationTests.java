@@ -41,8 +41,4 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class EChempadApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
 }

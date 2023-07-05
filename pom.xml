@@ -13,7 +13,7 @@
 
 	<groupId>org.ICIQ</groupId>
 	<artifactId>eChempad</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>war</packaging>
 	<name>eChempad</name>
 	<description>Experimental Chemistry Electronic Pad</description>
@@ -246,6 +246,10 @@
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

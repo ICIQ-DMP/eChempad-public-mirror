@@ -81,7 +81,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     {
         StringBuilder data = new StringBuilder();
         try {
-            File myObj = new File("src/main/resources/secrets/signalsKey.txt");
+            File myObj = new File("target/classes/secrets/signalsKey.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 data.append(myReader.nextLine());
@@ -98,7 +98,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     {
         StringBuilder data = new StringBuilder();
         try {
-            File myObj = new File("src/main/resources/secrets/dataverseKey.txt");
+            File myObj = new File("target/classes/secrets/dataverseKey.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 data.append(myReader.nextLine());
