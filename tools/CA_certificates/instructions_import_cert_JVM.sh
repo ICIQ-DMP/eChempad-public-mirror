@@ -4,6 +4,9 @@
 # Argument 1: The first argument is the path to a certificate in PEM or DER format.
 # Argument 2: The second argument has to be an alias for the new installed certificate. This alias
 # has to be undefined or it will show an error that it already exists.
+# I used this in the past because of the error "TrustAnchorsExceptions" in order to fill the trust store of java.
+# Probably you will not need it anymore, but if you see this error again, it has to be related with the trustStore being
+# empty or not found.
 
 if [ $# -ne 2 ]; then
   echo "*** - ERROR: This scripts needs 2 args, the path to a der or pem certificate, and the alias that will begiven to this certificate. Also JAVA_HOME needs to be defined as a global variable."
