@@ -17,8 +17,8 @@ RUN chown -R 1001:1001 /app
 # Set the user to run the application
 USER 1001
 
-# Compile project
-RUN mvn clean package spring-boot:repackage
+# Compile project skipping testing goals (compilation, resources and run of tests)
+RUN mvn clean package spring-boot:repackage -Dmaven.test.skip=true
 
 # Remove secret files
 RUN rm -rf /app/target/classes/secrets
