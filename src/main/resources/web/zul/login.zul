@@ -1,10 +1,9 @@
 <?import src="~./zul/browserTab.zul" directives=*?>
 
+<?page title="eChempad - Login"?>
+
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xmlns:h="http://www.w3.org/1999/xhtml"
-    xsi:schemaLocation="
-      http://www.zkoss.org/2005/zul https://www.zkoss.org/2005/zul/zul.xsd
-      http://www.w3.org/1999/xhtml https://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd">
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul https://www.zkoss.org/2005/zul/zul.xsd">
 
     <!-- Removes padding from "webkit chrome iceblue" on chrome, aka the top body of the HTML page -->
     <style>
