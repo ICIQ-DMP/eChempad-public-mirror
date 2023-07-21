@@ -46,10 +46,10 @@
     eChempad is a web application oriented to manage the entire
 data life-cycle of experiments and assays from Experimental Chemistry and related Science disciplines.
     <br />
-    <a href="https://github.com/AleixMT/eChempad"><strong>Explore the docs »</strong></a>
+    <a href="http://iciq-dmp.github.io/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://d.iciq.es">View Demo</a>
+    <a href="https://echempad.iciq.es">View Demo</a>
     ·
     <a href="https://github.com/AleixMT/eChempad/issues/new">Report Bug</a>
     ·
@@ -130,9 +130,29 @@ This section lists any major frameworks/libraries used to bootstrap the eChempad
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Check the documentation page to 
+#### Try the platform
+To get started, you will probably want to try the software from the official web page 
+**[echempad.iciq.es](http://echempad.iciq.es)**.
+eChempad executes in your browser and does not require any installation.
 
-This is how you can get a local copy up and running follow these simple steps:
+Check the [user guide](https://iciq-dmp.github.io/eChempad/User-Guide/) from the 
+[official documentation](https://iciq-dmp.github.io/) to know more. 
+
+#### Deploy and run the software locally
+The fastest way to get a copy up and running in your local machine is using *Docker* with `docker-compose`. 
+
+Assuming that you have them installed on your machine, use these commands to pull the latest version of the 
+[eChempad docker image](https://hub.docker.com/r/aleixmt/echempad) and [postgreSQL](https://hub.docker.com/_/postgres)
+to run them in containers:
+```shell
+wget https://raw.githubusercontent.com/AleixMT/eChempad/master/docker-compose.yaml
+sudo docker-compose up -d
+```
+
+Then, open a browser and navigate to the URL `localhost` and eChempad will be displayed and ready to work.
+
+Check the [user guide](https://iciq-dmp.github.io/eChempad/User-Guide/) from the
+[official documentation](https://iciq-dmp.github.io/) to know more.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
