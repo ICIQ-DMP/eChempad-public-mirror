@@ -2,14 +2,12 @@
 
 <!-- PROJECT SHIELDS -->
 [![Code quality][codacy-shield]][codacy-url]
-[![Contributors][contributors-shield]][contributors-url]
-[![Stargazers][stars-shield]][stars-url]
 [![Top language][language-shield]][language-url]
 [![GNU GPL v3 License][license-shield]][license-url]
 [![Lines of code][loc-shield]][loc-url]
 [![Number of commits since v0.1][commit-shield]][commit-url]
 [![Commit activity][activity-shield]][activity-url]
-
+[![Docker size image][docker-size-shield]][docker-size-url]
 
 
 <!-- PROJECT LOGO -->
@@ -60,8 +58,7 @@ data life-cycle of experiments and assays from Experimental Chemistry and relate
         <li><a href="#with-docker">Deploy and run the software locally with Docker</a></li>
         <li><a href="#manually">Deploy and run the software locally manually</a></li>
         <li><a href="#Learning-how-it-works">Learning how it works</a></li>
-
-Learning how it works
+        <li><a href="#set-up-a-development-environment">Set up a development environment</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -169,11 +166,14 @@ from the [official documentation](https://iciq-dmp.github.io/) to learn how to s
 <!-- USAGE EXAMPLES -->
 <!-- Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos 
 work well in this space. You may also link to more resources. -->
+
 ## Usage
 Open a browser and navigate to the URL of eChempad. The first thing you will find is the login page:
 [![Login eChempad][login-screenshot]](https://echempad.iciq.es)
 
-By default, **eChempad has an administrator user with the username `eChempad@iciq.es` and password `chemistry`**. *Do not 
+By default, **eChempad has an administrator user with the username `eChempad@iciq.es` and password `chemistry`**. 
+
+>*Do not 
 forget to change the password of the administrator user if you plan to use your eChempad instance in real scientific 
 production.* 
 
@@ -195,7 +195,7 @@ page of eChempad.
 Now, you can click the *import from Signals Button* on the left of the top bar. This will trigger the import of the 
 available resources with the previously introduced API token from Signals. This operation usually takes some minutes, so 
 you will need to have patience. While the operation is running, a loading icon will appear in the page like this:
-![Home eChempad loading data](.github/images/home_loading-screenshot.png).
+![Home eChempad loading data](.github/images/home_loading-screenshot.png)
 
 When the operation ends, the imported resources will appear in the home page. Reload the page if they do not appear. It
 may look similar to this:
@@ -266,6 +266,8 @@ Do not forget to give the project a star ⭐ on GitHub!
 
 <!-- LICENSE -->
 ## License
+![APGLv3 logo](https://www.gnu.org/graphics/agplv3-with-text-162x68.png "GNU AFFERO GENERAL PUBLIC LICENSE, Version 3")
+
 Distributed under the [GNU AFFERO GENERAL PUBLIC LICENSE, Version 3](https://www.gnu.org/licenses/agpl-3.0.en.html). 
 See [`LICENSE`](https://github.com/AleixMT/eChempad/blob/master/LICENSE) to obtain a copy of the therms of this license.
 See also [`LICENSE.md`](https://github.com/AleixMT/eChempad/blob/master/LICENSE.md) for more information about the 
@@ -368,30 +370,26 @@ application and other services related with the ICIQ digitalization.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/AleixMT/eChempad?style=for-the-badge
-[contributors-url]: https://github.com/AleixMT/eChempad/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/AleixMT/eChempad.svg?style=for-the-badge&label=Fork&maxAge=2592000  
 [forks-url]: https://github.com/AleixMT/eChempad/network/members
-[stars-shield]: https://img.shields.io/github/stars/AleixMT/eChempad?style=for-the-badge
-[stars-url]: https://github.com/AleixMT/eChempad/stargazers-red
-[license-shield]: https://img.shields.io/github/license/AleixMT/eChempad?style=for-the-badge&color=darkgreen
-[license-url]: https://github.com/AleixMT/eChempad/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/github/license/AleixMT/eChempad?style=flat-square&color=darkgreen&logo=gnu
+[license-url]: https://github.com/AleixMT/eChempad/blob/master/LICENSE.md
 [product-screenshot]: .github/images/home_full-screenshot.png
 [login-screenshot]: .github/images/login-screenshot.png
 [home-empty-screenshot]: .github/images/home_empty-screenshot.png
 
 [codacy-shield]: https://app.codacy.com/project/badge/Grade/9d77f6c73bab4a11b847d131146fc243
 [codacy-url]: https://app.codacy.com/gh/AleixMT/eChempad/dashboard
-[language-shield]: https://img.shields.io/github/languages/top/AleixMT/eChempad?style=for-the-badge&color=yellow&logo=oracle
+[language-shield]: https://img.shields.io/github/languages/top/AleixMT/eChempad?style=flat-square&color=yellow&logo=oracle
 [language-url]: https://www.java.com/es/
-[loc-shield]: https://img.shields.io/tokei/lines/gitlab/AleixMT/eChempad?style=for-the-badge
+[loc-shield]: https://img.shields.io/tokei/lines/gitlab/AleixMT/eChempad?style=flat-square&logo=github
 [loc-url]: https://github.com/AleixMT/eChempad
-[commit-shield]: https://img.shields.io/github/last-commit/AleixMT/eChempad?style=for-the-badge&color=purple
+[commit-shield]: https://img.shields.io/github/last-commit/AleixMT/eChempad/develop?style=flat-square&logo=github
 [commit-url]: https://github.com/AleixMT/eChempad/issues
-[activity-shield]: https://img.shields.io/github/commit-activity/y/AleixMT/eChempad?style=for-the-badge&color=black
+[activity-shield]: https://img.shields.io/github/commit-activity/y/AleixMT/eChempad?style=flat-square&color=black&logo=github
 [activity-url]: https://github.com/AleixMT/eChempad/graphs/commit-activity
-[stars-shield]: https://img.shields.io/github/stars/AleixMT/eChempad?style=for-the-badge&color=yellow&logo=github
-[stars-url]: https://github.com/AleixMT/eChempad/stargazers
+[docker-size-shield]: https://img.shields.io/docker/image-size/aleixmt/echempad/v1.3?style=flat-square&color=purple&logo=docker
+[docker-size-url]: https://hub.docker.com/r/aleixmt/echempad
 
 [Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-4.6.1-white?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com 
