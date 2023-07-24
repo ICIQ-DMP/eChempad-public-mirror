@@ -9,7 +9,6 @@
 [![Lines of code][loc-shield]][loc-url]
 [![Number of commits since v0.1][commit-shield]][commit-url]
 [![Commit activity][activity-shield]][activity-url]
-[![Last commit on][last-shield]][last-url]
 
 
 
@@ -17,12 +16,12 @@
 <br />
 <div align="center">
   <a href="https://iciq.cat">
-    <img src=".github/images/logo-ICIQ-horizontal-catalan.png" alt="Logo" width="80" height="80">
+    <img src=".github/images/logo-ICIQ-horizontal-catalan.png" alt="Logo">
   </a>
 
 <h6 align="center">presents</h3>
 
-<img src="src/main/resources/static/img/create-small-white.png" alt="Logo" width="80" height="80">
+<img src="src/main/resources/static/img/create-small-white.png" alt="Logo">
 <!-- 
 <h3 align="center">eChempad</h3> -->
 
@@ -56,8 +55,13 @@ data life-cycle of experiments and assays from Experimental Chemistry and relate
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#try-the-platform">Try the platform</a></li>
+        <li><a href="#deploy-and-run-the-software-locally">Deploy and run the software locally</a></li>
+        <li><a href="#with-docker">Deploy and run the software locally with Docker</a></li>
+        <li><a href="#manually">Deploy and run the software locally manually</a></li>
+        <li><a href="#Learning-how-it-works">Learning how it works</a></li>
+
+Learning how it works
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -386,8 +390,6 @@ application and other services related with the ICIQ digitalization.
 [commit-url]: https://github.com/AleixMT/eChempad/issues
 [activity-shield]: https://img.shields.io/github/commit-activity/y/AleixMT/eChempad?style=for-the-badge&color=black
 [activity-url]: https://github.com/AleixMT/eChempad/graphs/commit-activity
-[last-shield]: https://img.shields.io/github/last-commit/AleixMT/eChempad?&style=for-the-badge&color=white
-[last-url]: https://github.com/AleixMT/eChempad/commits/master
 [stars-shield]: https://img.shields.io/github/stars/AleixMT/eChempad?style=for-the-badge&color=yellow&logo=github
 [stars-url]: https://github.com/AleixMT/eChempad/stargazers
 
