@@ -1,18 +1,14 @@
 /*
- * |===================================================================================|
- * | Copyright (C) 2021 - 2023 ICIQ <contact@iochem-bd.org>                            |
- * |                                                                                   |
- * | This software is the property of ICIQ.                                            |
- * |===================================================================================|
- */
-/*
- * Create module - Create module inside the ioChem-BD software.
- * Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+ * eChempad is a suite of web services oriented to manage the entire
+ * data life-cycle of experiments and assays from Experimental
+ * Chemistry and related Science disciplines.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright (C) 2021 - present Institut Català d'Investigació Química (ICIQ)
+ *
+ * eChempad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,7 +16,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 package org.ICIQ.eChempad.web.composers;
 
