@@ -1,13 +1,4 @@
 #!/usr/bin/env bash
-#
-# |===================================================================================|
-# | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
-# |                                                                                   |
-# | This software is the property of ICIQ.                                            |
-# |===================================================================================|
-#
-
-
 ########################################################################################################################
 # -Name: scratch.sh
 # -Description: Scratches all the data from a certain user of Signals Notebooks by using its own API key.

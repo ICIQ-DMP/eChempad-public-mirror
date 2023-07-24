@@ -1,13 +1,4 @@
 #!/usr/bin/env bash
-#
-# |===================================================================================|
-# | Copyright (C) 2021 - 2022 ICIQ <contact@iochem-bd.org>                            |
-# |                                                                                   |
-# | This software is the property of ICIQ.                                            |
-# |===================================================================================|
-#
-
-
 ########################################################################################################################
 # * Name: export_experiment.sh
 # * Description: Downloads the raw resources of an experiment pointed by its eid.

@@ -2,7 +2,7 @@ eChempad is a suite of web services oriented to manage the entire
 data life-cycle of experiments and assays from Experimental
 Chemistry and related Science disciplines.
 
-Copyright (C) 2021 Institut Català d'Investigació Química (ICIQ)
+Copyright (C) 2021 - present Institut Català d'Investigació Química (ICIQ)
 
 eChempad is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
