@@ -1,0 +1,34 @@
+#DataSourceSettings#
+        #LocalDataSource: eChempad-DB-postgreSQL
+        #BEGIN#
+<data-source source="LOCAL"
+             name="eChempad-DB-postgreSQL"
+             uuid="a7391127-ce71-48e3-ad16-649d958617ee">
+    <database-info
+        product="PostgreSQL"
+        version="12.9 (Ubuntu 12.9-0ubuntu0.20.04.1)"
+        jdbc-version="4.2"
+        driver-name="PostgreSQL JDBC Driver"
+        driver-version="42.2.22"
+        dbms="POSTGRES"
+        exact-version="12.9"
+        exact-driver-version="42.2"
+    ><identifier-quote-string>&quot;</identifier-quote-string>
+    </database-info>
+    <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact"/>
+    <driver-ref>postgresql</driver-ref>
+    <synchronize>true</synchronize>
+    <remarks>Main DB of eChempad app</remarks>
+    <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+    <jdbc-url>jdbc:postgresql://localhost:5432/eChempad</jdbc-url>
+    <secret-storage>master_key</secret-storage>
+    <user-name>amarine</user-name>
+    <schema-mapping>
+        <introspection-scope>
+            <node kind="database" qname="@"><node kind="schema" qname="@"/></node>
+        </introspection-scope>
+    </schema-mapping>
+    <working-dir>$ProjectFileDir$</working-dir>
+</data-source>
+        #END#
+
