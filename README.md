@@ -89,7 +89,11 @@ enrich them with metadata, and finally publish them into [CORA RDR](https://data
 The eChempad platform appears as an answer to the digitization needs of experimental chemists at [Institut Català
 d'Investigació Química (ICIQ)](https://www.iciq.org/). This platform intends to be an analogous example of the
 successful platform for **Computational Chemistry** developed at ICIQ,
-[ioChem-BD](https://www.iochem-bd.org/index-introduction.jsp).
+[ioChem-BD](https://www.iochem-bd.org/index-introduction.jsp). 
+
+To know more about other digitalization services at ICIQ, you can check the 
+[ICIQ digitalization portal](https://d.iciq.cat) or read the 
+[ICIQ digitalization documentation](https://iciq-dmp.github.io/).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -222,6 +226,7 @@ _For more examples, please refer to the [user guide](https://iciq-dmp.github.io/
 - [x] Frontend addition with ZK
 - [x] Change backend to composite structure
 - [x] Refactored ACLs
+- [ ] Create *eChempad* logo
 - [ ] Write tests
 - [ ] Customize license plugins
 - [ ] Finish API to import / export
@@ -388,7 +393,7 @@ application and other services related with the ICIQ digitalization.
 [commit-url]: https://github.com/AleixMT/eChempad/issues
 [activity-shield]: https://img.shields.io/github/commit-activity/y/AleixMT/eChempad?style=flat-square&color=black&logo=github
 [activity-url]: https://github.com/AleixMT/eChempad/graphs/commit-activity
-[docker-size-shield]: https://img.shields.io/docker/image-size/aleixmt/echempad/v1.3?style=flat-square&color=purple&logo=docker
+[docker-size-shield]: https://img.shields.io/docker/image-size/aleixmt/echempad/latest?style=flat-square&color=purple&logo=docker
 [docker-size-url]: https://hub.docker.com/r/aleixmt/echempad
 
 [Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-4.6.1-white?style=for-the-badge&logo=bootstrap&logoColor=white
