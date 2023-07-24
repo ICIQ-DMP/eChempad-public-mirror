@@ -571,6 +571,9 @@
 						<artifactId>license-maven-plugin</artifactId>
 						<version>4.1</version>
 						<configuration>
+							<mapping>
+								<zul>XML_STYLE</zul>
+							</mapping>
 							<header>${project.basedir}/license/resources/header.txt</header>
 							<properties>
 								<owner>${project.organization.name}</owner>
@@ -582,6 +585,8 @@
 							<excludes>
 								<exclude>**/README</exclude>
 								<exclude>**/*.map</exclude>
+								<exclude>.spelling_dictionary.dic</exclude>
+								<exclude>**/cacerts</exclude>
 								<exclude>.mvn/**</exclude>
 								<exclude>.run/**</exclude>
 								<exclude>.idea/**</exclude>
