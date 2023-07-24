@@ -373,7 +373,7 @@ application and other services related with the ICIQ digitalization.
 [forks-shield]: https://img.shields.io/github/forks/AleixMT/eChempad.svg?style=for-the-badge&label=Fork&maxAge=2592000  
 [forks-url]: https://github.com/AleixMT/eChempad/network/members
 [license-shield]: https://img.shields.io/github/license/AleixMT/eChempad?style=flat-square&color=darkgreen&logo=gnu
-[license-url]: https://github.com/AleixMT/eChempad/blob/master/LICENSE.txt
+[license-url]: https://github.com/AleixMT/eChempad/blob/master/LICENSE.md
 [product-screenshot]: .github/images/home_full-screenshot.png
 [login-screenshot]: .github/images/login-screenshot.png
 [home-empty-screenshot]: .github/images/home_empty-screenshot.png
