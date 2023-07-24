@@ -574,21 +574,26 @@
 							<header>${project.basedir}/license/resources/header.txt</header>
 							<properties>
 								<owner>${project.organization.name}</owner>
-								<email>contact@iochem-bd.org</email>
+								<email>dmp@iciq.cat</email>
 								<inceptionYear>${project.inceptionYear}</inceptionYear>
 								<latestYearOfContribution>${current.year}</latestYearOfContribution>
 							</properties>
 							<!-- Exclusions from license addition -->
 							<excludes>
 								<exclude>**/README</exclude>
+								<exclude>**/*.map</exclude>
+								<exclude>.mvn/**</exclude>
+								<exclude>.run/**</exclude>
+								<exclude>.idea/**</exclude>
 								<exclude>license/**</exclude>
-								<exclude>src/log4j2.xml</exclude>
 								<exclude>target/**</exclude>
 								<exclude>src/mainComposer/resources/CA_certificates/**</exclude>
+								<exclude>src/main/resources/static/css/bootstrap.min.css</exclude>
+								<exclude>src/main/resources/static/css/font-awesome.min.css</exclude>
+								<exclude>src/main/resources/static/js/bootstrap.min.js</exclude>
+								<exclude>src/main/resources/static/js/jquery-3.3.1.min.js</exclude>
+								<exclude>src/main/resources/static/js/popper.min.js</exclude>
 							</excludes>
-							<includes>
-								<include>src/**</include>
-							</includes>
 							<useDefaultExcludes>true</useDefaultExcludes>
 							<keywords>
 								<keyword>copyright</keyword>
