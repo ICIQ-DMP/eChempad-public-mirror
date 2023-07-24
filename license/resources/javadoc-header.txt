@@ -2,5 +2,5 @@
 @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
 @author Carles Bo Jané (cbo@iciq.es)
 @author Moisés Álvarez (malvarez@iciq.es)
-@version 1.0
-@since 04/10/2022
+@version 0.2
+@since 01/02/2021
