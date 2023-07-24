@@ -60,8 +60,7 @@ data life-cycle of experiments and assays from Experimental Chemistry and relate
         <li><a href="#with-docker">Deploy and run the software locally with Docker</a></li>
         <li><a href="#manually">Deploy and run the software locally manually</a></li>
         <li><a href="#Learning-how-it-works">Learning how it works</a></li>
-
-Learning how it works
+        <li><a href="#set-up-a-development-environment">Set up a development environment</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
