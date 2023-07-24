@@ -1,6 +1,6 @@
 # Licenses inside eChempad
 
-eChempad project is released under the **GNU AFFERO GENERAL PUBLIC LICENSE, Version 3**, its full text is in the COPYING
+eChempad project is released under the **GNU AFFERO GENERAL PUBLIC LICENSE, Version 3**, its full text is in the LICENSE
 file at the root of this project and in [this webpage](https://github.com/AleixMT/eChempad/blob/master/COPYING).
 
 ![APGLv3 logo](https://www.gnu.org/graphics/agplv3-with-text-162x68.png "GNU AFFERO GENERAL PUBLIC LICENSE, Version 3")
