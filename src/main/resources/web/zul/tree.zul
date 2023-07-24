@@ -1,0 +1,83 @@
+<!--
+
+    eChempad is a suite of web services oriented to manage the entire
+    data life-cycle of experiments and assays from Experimental
+    Chemistry and related Science disciplines.
+
+    Copyright (C) 2021 - present Institut Català d'Investigació Química (ICIQ)
+
+    eChempad is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<!--
+
+    Create module - Create module inside the ioChem-BD software.
+    Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<?page title="Report Manager" contentType="text/html;charset=UTF-8"?>
+ <window id="treeWindow" apply="org.ICIQ.eChempad.web.composers.TreeComposer" onClientInfo="clientInfo(event)" hflex="1" vflex="1">
+
+    <tree id="tree" sclass="navigation-tree" multiple="true" checkmark="false" context="emptyTreePopup" hflex="1" vflex="1">
+    	<treecols sizable="true">
+			<treecol hflex="12" label="Name" id="nameTreeColumn" sort="none" />
+            <treecol hflex="15" label="Description" id="descriptionTreeColumn" sort="none"/>
+			<treecol hflex="6" label="Type" id="typeTreeColumn" sort="none"/>
+			<treecol hflex="10" label="Creation Date" id="creationDateTreeColumn" sort="none"/>
+			<treecol id="hiddenID" visible="false"/>
+			<treecol hflex="10" label="Modification Date" id="modificationDateTreeColumn" sort="none" visible="false"/>
+            <treecol hflex="min" label="Published" id="publishedTreeColumn" sort="none" tooltiptext="Published" />
+        </treecols>
+        <treechildren id="elementsChildren">        
+        </treechildren>
+    </tree>
+    
+
+	<!-- Right click menu -->
+    <menupopup id="treePopup" sclass="custom-dropdown-menu">
+		<menuitem label="Expand all" id="treeDivExpandChildElements" sclass="treeWithSingleSelection"/>
+		<menuitem label="Collapse all" id="treeDivCollapseChildElements" sclass="treeWithSingleSelection"/>
+		<menuseparator sclass="treeWithSingleSelection dropdown-divider"/>
+		
+		<menuitem label="Select child elements" id="treeDivSelectChildElements" sclass="treeWithSingleSelection"/>
+		<menuitem label="Unselect child elements" id="treeDivUnselectChildElements" sclass="treeWithSingleSelection"/>	  
+		<menuseparator  sclass="treeWithSingleSelection dropdown-divider"/>
+		
+		<menuitem label="Publish" id="treeDivPublishElements" sclass="treeWithSelection"/>
+		<menuseparator sclass="dropdown-divider treeWithSelection "/>
+			  
+		<menu label="Generate report" sclass="treeWithSelection">
+			<menupopup id="reportPopup" sclass="custom-dropdown-menu"/>
+		</menu>
+  	</menupopup>
+
+  	<menupopup id="emptyTreePopup"/>
+  	<popup id="thumbnailPopup" sclass="custom-popup">
+		<html/>
+    </popup>	  						 	
+
+</window>

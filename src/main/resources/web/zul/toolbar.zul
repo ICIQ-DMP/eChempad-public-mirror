@@ -1,0 +1,32 @@
+<!--
+
+    eChempad is a suite of web services oriented to manage the entire
+    data life-cycle of experiments and assays from Experimental
+    Chemistry and related Science disciplines.
+
+    Copyright (C) 2021 - present Institut Català d'Investigació Química (ICIQ)
+
+    eChempad is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?page title="Item details" contentType="text/html;charset=UTF-8"?>
+<window xmlns:n="native" border="none" apply="org.ICIQ.eChempad.web.composers.ToolbarComposer" height="100%">
+    <div id="treeDivCenter" height="100%">
+        <toolbar id="mainTab" height="100%">
+            <button id="refreshButton" label="Refresh" tooltiptext="Click to reconnect to server and update the page with the new content" zclass="nav-item" />
+            <button id="importSignals" label="Import from Signals" tooltiptext="Click to retrieve all the available elements from Signals Notebook" zclass="nav-item" />
+            <button id="exportDataverse" label="Export to CORA RDR" tooltiptext="Click to export all the available elements to CORA RDR Dataverse instance" zclass="nav-item" />
+        </toolbar>
+    </div>
+</window>

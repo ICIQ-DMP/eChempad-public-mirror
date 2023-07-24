@@ -1,0 +1,160 @@
+<!--
+
+    eChempad is a suite of web services oriented to manage the entire
+    data life-cycle of experiments and assays from Experimental
+    Chemistry and related Science disciplines.
+
+    Copyright (C) 2021 - present Institut Català d'Investigació Química (ICIQ)
+
+    eChempad is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<!--
+
+    Create module - Create module inside the ioChem-BD software.
+    Copyright © 2014 ioChem-BD (contact@iochem-bd.org)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<?meta name="viewport" content="width=device-width, initial-scale=1"?>
+<?import src="~./zul/browserTab.zul" directives=*?>
+<?page title="eChempad - My Data"?>
+
+<window xmlns:n="native" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.composers.MainComposer"
+        style="height: 100%; width:100%">
+
+    <script src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
+
+    <?link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css" ?>
+    <?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
+    <?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
+
+    <script src="/js/bootstrap.min.js"> </script>
+    <script src="/js/popper.min.js"> </script>
+
+    <script>
+        zk.afterMount(function()
+        {
+        jq('.z-tabs-content').addClass('nav nav-tabs');
+        jq('.nav-item-content').addClass('nav-link');
+        })
+    </script>
+
+    <!-- Removes padding from "webkit chrome iceblue" on chrome, aka the top body of the HTML page -->
+    <style>
+        body{
+        padding:0px;
+        }
+    </style>
+
+    <!-- Top navigation bar -->
+    <include src="~./zul/navbar.zul"/>
+
+    <borderlayout id="mainLarge" vflex="1">
+
+        <north id="propertiesCenter">
+            <include src="~./zul/toolbar.zul"/>
+        </north>
+
+        <center id="treeLayout" style="padding: 0; margin: 0;">
+            <div id="treeDiv" height="100%">
+                <include src="~./zul/tree.zul"/>
+            </div>
+        </center>
+
+
+        <east id="propertiesEast" splittable="true" collapsible="false" size="50%" >
+            <borderlayout id="propertiesLayout">
+
+
+                <north id="propertiesNorth"  splittable="true" collapsible="false" size="50%" >
+                    <div id="properties" hflex="1" vflex="1">
+                        <div id="welcome" height="100%" visible="true" sclass="z-tabbox" >
+                            <groupbox id="groupWelcome" closable="false"  hflex="1" vflex="1" >
+                                <div hflex="1" vflex="1">
+                                    <iframe id="newsFrame" hflex="1" vflex="1" src="/html/news.html"/>
+                                </div>
+                            </groupbox>
+                        </div>
+                        <div id="dcm" height="100%" visible="false" >
+                            <div id="dcmPanelChildren" height="100%">
+                            </div>
+                        </div>
+                        <div id="calcUpload" height="100%" visible="false">
+                            <tabbox height="100%">
+                                <tabs sclass="nav nav-tabs">
+                                    <tab label="Calculation upload" zclass="nav-item" />
+                                </tabs>
+                                <tabpanels>
+                                    <tabpanel style="overflow-y: auto;">
+                                        <div zclass="row mt-2 mr-3 mb-1 item-details-row">
+                                            <n:label class="col-md-2">Name:</n:label>
+                                            <textbox id="calcName" sclass="form-control col-md-10" />
+                                        </div>
+                                        <div sclass="row mb-1 mr-3 item-details-row">
+                                            <n:label class="col-md-2">Description:</n:label>
+                                            <textbox id="calcDescription" sclass="form-control col-md-10" readonly="false" tooltiptext="Description of the calculation"/>
+                                        </div>
+                                        <div sclass="row mb-1 mr-3 item-details-row">
+                                            <n:label class="col-md-2">Type:</n:label>
+                                            <radiogroup id="calcType" sclass="col-md-10 pl-0"/>
+                                        </div>
+
+                                        <div sclass="row mb-1 mr-3 item-details-row">
+                                            <div sclass="col-md-2 d-flex flex-column">
+                                                <n:label>Files:</n:label>
+
+                                            </div>
+                                            <div sclass="col-md-10 pl-0 mb-4">
+                                                <groupbox id="calcFiles" visible="true"  mold="3d" sclass="" contentStyle="border:0">
+                                                    <vbox id="calcFile" pack="start" sclass="calc-file-vbox" align="start" sizedByContent="true" />
+                                                </groupbox>
+                                            </div>
+                                        </div>
+
+                                        <div sclass="row mb-1 mr-3 item-details-row">
+                                            <n:label class="col-md-2"/>
+                                            <div sclass="col-md-10 pl-0">
+                                                <button id="uploadCalcBtn" sclass="btn btn-primary" label="Load Calculation"  />
+                                                <button id="resetUploadCalcBtn" sclass="btn btn-secondary" label="Reset" />
+                                            </div>
+                                        </div>
+                                    </tabpanel>
+                                </tabpanels>
+                            </tabbox>
+                        </div>
+                    </div>
+                </north>
+
+
+                <center id="itemDetails">
+                    <include src="~./zul/itemDetails.zul"/>
+                </center>
+
+            </borderlayout>
+        </east>
+    </borderlayout>
+
+</window>

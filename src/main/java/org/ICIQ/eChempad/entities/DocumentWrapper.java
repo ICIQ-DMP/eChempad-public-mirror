@@ -1,0 +1,161 @@
+/*
+ * eChempad is a suite of web services oriented to manage the entire
+ * data life-cycle of experiments and assays from Experimental
+ * Chemistry and related Science disciplines.
+ *
+ * Copyright (C) 2021 - present Institut Català d'Investigació Química (ICIQ)
+ *
+ * eChempad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+package org.ICIQ.eChempad.entities;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.Column;
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
+
+/**
+ * Class used to receive the data of the addDocument request because it contains metadata at the same time as a
+ * multipart file which gives a lot of troubles.
+ * <p>
+ * This class will contain all the fields that are present in the Document class, so they can be mapped from this class
+ * to the entity class, while transforming the multipart file type into a LOB type that we will store into the DB.
+ */
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "typeName",
+        defaultImpl = DocumentWrapper.class)
+public class DocumentWrapper extends EntityImpl implements DataEntity {
+
+    private Container parent;
+
+    @JsonIgnore
+    private MultipartFile file;
+
+    public DocumentWrapper() {
+    }
+
+    public DocumentWrapper(String name, String description, MultipartFile file) {
+        this.name = name;
+        this.description = description;
+        this.file = file;
+        this.initCreationDate();
+    }
+
+    /**
+     * Name of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String name;
+
+    /**
+     * Description of this {@code Document}.
+     */
+    @Column(length = 1000, nullable = false)
+    protected String description;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public long getSize()
+    {
+        return this.file.getSize();
+    }
+
+    public String getOriginalFilename()
+    {
+        return this.file.getOriginalFilename();
+    }
+
+    public MediaType getContentType()
+    {
+        return MediaType.parseMediaType(Objects.requireNonNull(this.file.getContentType()));
+    }
+
+    /**
+     * Exposes and returns the UUID of an entity.
+     *
+     * @return UUID of the entity.
+     */
+    @Override
+    public Serializable getId() {
+        return this.id;
+    }
+
+    /**
+     * Sets the UUID of an entity.
+     * This is a method that will have collisions with hibernate because hibernate uses the id field as a PK
+     * (Primary Key) for accessing the database. As such, this method has to be only used against entities that are
+     * not managed by hibernate.
+     * This interface is specially designed to expose this specific method of all the entities, and is specially
+     * designed to perform updates of existing entities of the database when an ID is not supplied with the received
+     * data object.
+     *
+     * @param id ID that will be set. Only usable on dettached spring boot instances
+     */
+    @Override
+    public void setId(Serializable id) {
+        this.id = (UUID) id;
+    }
+
+    /**
+     * Implemented by every class to return its own type.
+     *
+     * @return Class of the object implementing this interface.
+     */
+    @Override
+    public <T extends Entity> Class<T> getType() {
+        return (Class<T>) DocumentWrapper.class;
+    }
+
+    @Override
+    public Container getParent() {
+        return this.parent;
+    }
+
+    @Override
+    public void setParent(Container parent) {
+        this.parent = parent;
+    }
+}
