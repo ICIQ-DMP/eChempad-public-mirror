@@ -393,7 +393,7 @@ application and other services related with the ICIQ digitalization.
 [commit-url]: https://github.com/AleixMT/eChempad/issues
 [activity-shield]: https://img.shields.io/github/commit-activity/y/AleixMT/eChempad?style=flat-square&color=black&logo=github
 [activity-url]: https://github.com/AleixMT/eChempad/graphs/commit-activity
-[docker-size-shield]: https://img.shields.io/docker/image-size/aleixmt/echempad/v1.3?style=flat-square&color=purple&logo=docker
+[docker-size-shield]: https://img.shields.io/docker/image-size/aleixmt/echempad/latest?style=flat-square&color=purple&logo=docker
 [docker-size-url]: https://hub.docker.com/r/aleixmt/echempad
 
 [Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-4.6.1-white?style=for-the-badge&logo=bootstrap&logoColor=white
