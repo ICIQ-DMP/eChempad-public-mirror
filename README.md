@@ -17,12 +17,12 @@
 <br />
 <div align="center">
   <a href="https://iciq.cat">
-    <img src=".github/images/logo-ICIQ-horizontal-catalan.png" alt="Logo" width="80" height="80">
+    <img src=".github/images/logo-ICIQ-horizontal-catalan.png" alt="Logo">
   </a>
 
 <h6 align="center">presents</h3>
 
-<img src="src/main/resources/static/img/create-small-white.png" alt="Logo" width="80" height="80">
+<img src="src/main/resources/static/img/create-small-white.png" alt="Logo">
 <!-- 
 <h3 align="center">eChempad</h3> -->
 
@@ -386,8 +386,6 @@ application and other services related with the ICIQ digitalization.
 [commit-url]: https://github.com/AleixMT/eChempad/issues
 [activity-shield]: https://img.shields.io/github/commit-activity/y/AleixMT/eChempad?style=for-the-badge&color=black
 [activity-url]: https://github.com/AleixMT/eChempad/graphs/commit-activity
-[last-shield]: https://img.shields.io/github/last-commit/AleixMT/eChempad?&style=for-the-badge&color=white
-[last-url]: https://github.com/AleixMT/eChempad/commits/master
 [stars-shield]: https://img.shields.io/github/stars/AleixMT/eChempad?style=for-the-badge&color=yellow&logo=github
 [stars-url]: https://github.com/AleixMT/eChempad/stargazers
 
