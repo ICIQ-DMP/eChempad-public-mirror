@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    |===================================================================================|
-    | Copyright (C) 2021 - 2023 ICIQ <contact@iochem-bd.org>                            |
-    |                                                                                   |
-    | This software is the property of ICIQ.                                            |
-    |===================================================================================|
-
--->
 
 <zk>
     <config-name>eChempad-dev</config-name>

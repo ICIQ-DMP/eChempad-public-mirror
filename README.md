@@ -89,7 +89,11 @@ enrich them with metadata, and finally publish them into [CORA RDR](https://data
 The eChempad platform appears as an answer to the digitization needs of experimental chemists at [Institut Català
 d'Investigació Química (ICIQ)](https://www.iciq.org/). This platform intends to be an analogous example of the
 successful platform for **Computational Chemistry** developed at ICIQ,
-[ioChem-BD](https://www.iochem-bd.org/index-introduction.jsp).
+[ioChem-BD](https://www.iochem-bd.org/index-introduction.jsp). 
+
+To know more about other digitalization services at ICIQ, you can check the 
+[ICIQ digitalization portal](https://d.iciq.cat) or read the 
+[ICIQ digitalization documentation](https://iciq-dmp.github.io/).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -222,6 +226,7 @@ _For more examples, please refer to the [user guide](https://iciq-dmp.github.io/
 - [x] Frontend addition with ZK
 - [x] Change backend to composite structure
 - [x] Refactored ACLs
+- [ ] Create *eChempad* logo
 - [ ] Write tests
 - [ ] Customize license plugins
 - [ ] Finish API to import / export
