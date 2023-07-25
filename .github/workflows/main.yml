@@ -1,6 +1,16 @@
 name: Mirroring
 
-on: [push, delete]
+# Trigger only in develop.
+# We do not need to keep coherence between mirror and origin so accurately
+# To trigger job on every push / delete, change the following block with this expression on: [push, delete]
+on:
+  push:
+    branches:
+      - "develop"
+  delete:
+    branches:
+      - "develop"
+
 
 jobs:
   mirror_to_gitlab:
