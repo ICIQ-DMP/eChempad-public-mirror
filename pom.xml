@@ -35,7 +35,7 @@
 
 	<groupId>org.ICIQ</groupId>
 	<artifactId>eChempad</artifactId>
-	<version>0.4</version>
+	<version>0.5</version>
 	<packaging>war</packaging>
 	<name>eChempad</name>
 	<description>Experimental Chemistry Electronic Pad</description>
