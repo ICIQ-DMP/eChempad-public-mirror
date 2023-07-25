@@ -23,7 +23,7 @@
 version: "2.1"
 services:
   echempad_app:
-    image: aleixmt/echempad:v1.3
+    image: aleixmt/echempad:latest
     environment:
       - PUID=1001
       - PGID=1001
