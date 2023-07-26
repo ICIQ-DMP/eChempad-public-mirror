@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Download docker-compose.yml
-        run: wget https://raw.githubusercontent.com/AleixMT/eChempad/master/docker-compose.yaml -O docker-compose.yaml
+        run: wget https://raw.githubusercontent.com/AleixMT/eChempad/master/docker-compose.ci.yaml -O docker-compose.yaml
 
       - name: Stop eChempad container
         run: docker-compose down
