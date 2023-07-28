@@ -20,8 +20,12 @@
  */
 package org.ICIQ.eChempad.services;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
+
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Defines a basic contract for all the classes that import data from a third service, such as Signals.
@@ -35,6 +39,34 @@ import java.io.Serializable;
  **/
 public interface ImportService {
 
+
+    /**
+     * Reads the content that is in the root of the platform that we are reading from.
+     *
+     * @param APIKey API key used to authenticate in the platform that we are importing from.
+     * @return A list of the elements that we read.
+     */
+    List<DataEntity> readRootEntities(String APIKey);
+
+    /**
+     * Expands the children of the received DataEntity by performing CRUD requests to read the children of this entity
+     * in the origin platform. The children will be added to the DataEntity supplied by parameter. Only immediate
+     * children will be expanded so further recursive uses will be needed to read the full hierarchy from the origin
+     * platform.
+     *
+     * @param dataEntity The DataEntity that we are going to query in the origin platform for its children, which will
+     *                   be added to this parameter to return the entities of the childre.
+     * @param APIKey API key to authenticate in the platform that we are importing from.
+     */
+    void expandEntityChildren(DataEntity dataEntity, String APIKey);
+
+    /**
+     * Performs the update algorithm of the data supplied by parameter into the database of eChempad. This algorithm
+     * has to
+     *
+     * @param dataEntity
+     */
+    void importEntity(DataEntity dataEntity);
 
     /**
      * By using the supplied API key, import all available material from a third-party service, depending on the
