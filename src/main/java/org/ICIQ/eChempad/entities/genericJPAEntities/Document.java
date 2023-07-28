@@ -96,6 +96,7 @@ public class Document extends DataEntityImpl {
 
     public Document() {
         this.initCreationDate();
+        this.updateLastEditionDate();
     }
 
     public Document(String name, String description) {

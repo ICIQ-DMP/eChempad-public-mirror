@@ -62,6 +62,7 @@ public class Container extends DataEntityImpl {
 
     public Container() {
         this.initCreationDate();
+        this.updateLastEditionDate();
     }
 
     /**

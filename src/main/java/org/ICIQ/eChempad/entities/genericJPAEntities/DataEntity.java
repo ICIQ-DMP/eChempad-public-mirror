@@ -76,21 +76,140 @@ public interface DataEntity extends Entity{
      *
      * @return Date object with the creation date of the entity.
      */
-    @JsonIgnore
     Date getCreationDate();
 
     /**
-     * Sets the creation date of an entity.
-     *
-     * @param creationDate Date object with the new creation date of the entity.
+     * Sets the creation date of the element. This method is needed since the fields need to be explicitly initialized
+     * outside the constructors of the entity. This is a special method to initialize the creation date, which has to be
+     * the current time when executing this code.
      */
-    @JsonIgnore
+    void initCreationDate();
+
+    /**
+     * Sets the creation date of this DataEntity. Used to manage internally this type.
+     *
+     * @param creationDate A creation date as a Date object.
+     */
     void setCreationDate(Date creationDate);
 
     /**
-     * Sets the creation date of the element. This method is needed since the fields need to be explicitly initialized
-     * outside the constructors of the entity.
+     * Gets the last time on which this DataEntity was edited.
+     *
+     * @return The last edition date as a {@code Date} object.
      */
-    @JsonIgnore
-    void initCreationDate();
+    Date getLastEditionDate();
+
+    /**
+     * Updates the last time this {@code DataEntity} was edited with the current time.
+     */
+    void updateLastEditionDate();
+
+    /**
+     * Sets the last edition date. Used to manage internally this field.
+     *
+     * @param lastEditionDate Last edition data as a Date object.
+     */
+    void setLastEditionDate(Date lastEditionDate);
+
+    /**
+     * Gets the last time on which the data that this DataEntity corresponds to was edited in the origin platform.
+     *
+     * @return The last edition date in the origin platform as a {@code Date} object.
+     */
+    Date getOriginLastEditionDate();
+
+    /**
+     * Sets the last time this {@code DataEntity} was edited with the supplied parameter.
+     *
+     * @param originLastEditionDate The last date that this element was modified in the origin platform.
+     */
+    void setOriginLastEditionDate(Date originLastEditionDate);
+
+    /**
+     * Gets the id that identifies this resource in the original platform that it came from. If it is created in
+     * eChempad, will be null.
+     *
+     * @return It may be a String that has different codifications.
+     */
+    String getOriginId();
+
+    /**
+     * Sets the originId field, which is used to identify this resource in the original platform that ir came from.
+     *
+     * @param originId A String that will replace the data in the originId field.
+     */
+    void setOriginId(String originId);
+
+    /**
+     * Gets the origin platform. If this resource is created in eChempad it will be "eChempad".
+     *
+     * @return String that identifies the original platform.
+     */
+    String getOriginPlatform();
+
+    /**
+     * Sets the originPlatform.
+     *
+     * @param originPlatform String to identify the platform of origin of this DataEntity.
+     */
+    void setOriginPlatform(String originPlatform);
+
+    /**
+     * Gets the type that this resource has on the origin platform. If it comes from eChempad it will be null.
+     *
+     * @return The origin type as a String, it could be Journal, Document, Experiment or some other types.
+     */
+    String getOriginType();
+
+    /**
+     * Sets the type that this resource has on the origin platform.
+     *
+     * @param originType The original platform that this DataEntity came from.
+     */
+    void setOriginType(String originType);
+
+    /**
+     *     Since this is an external element that is present in Signals but we do
+     *             * not know (yet) how to compute it, this field
+     * Gets the value of digest of this element.
+     *
+     * @return The value of digest of this element. In elements coming from Signals this is a natural number.
+     */
+    String getDigest();
+
+    /**
+     * Sets the value of digest of this element.
+     *
+     * @param digest Value of digest.
+     */
+    void setDigest(String digest);
+
+    /**
+     * Gets the department that this element belongs to.
+     *
+     * @return Value of the department. It will be the surname of the group leader: Echavarren, Bo, Lopez...
+     */
+    String getDepartment();
+
+    /**
+     * Sets the department that this element belongs to.
+     *
+     * @param department Value of the department.
+     */
+    void setDepartment(String department);
+
+    /**
+     * The username that created this resource in the origin platform. It will be null for resources created at
+     * eChempad.
+     *
+     * @return The username from the origin platform, as a String. It will be an email.
+     */
+    String getOriginOwnerUsername();
+
+    /**
+     * Sets the username of this resource in the origin platform.
+     *
+     * @param originOwnerUsername The username in the origin platform. It has to be an email.
+     */
+    void setOriginOwnerUsername(String originOwnerUsername);
 }
