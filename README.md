@@ -3,12 +3,14 @@
 <!-- PROJECT SHIELDS -->
 [![Code quality][codacy-shield]][codacy-url]
 [![Top language][language-shield]][language-url]
+[![Language count][language-count-shield]][language-count-url]
 [![GNU GPL v3 License][license-shield]][license-url]
 [![Lines of code][loc-shield]][loc-url]
 [![Number of commits since v0.1][commit-shield]][commit-url]
 [![Commit activity][activity-shield]][activity-url]
 [![Docker size image][docker-size-shield]][docker-size-url]
-
+[![Repository size][repo-size-shield]][repo-size-url]
+[![Web site][website-shield]][website-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -387,7 +389,7 @@ application and other services related with the ICIQ digitalization.
 [codacy-url]: https://app.codacy.com/gh/AleixMT/eChempad/dashboard
 [language-shield]: https://img.shields.io/github/languages/top/AleixMT/eChempad?style=flat-square&color=yellow&logo=oracle
 [language-url]: https://www.java.com/es/
-[loc-shield]: https://img.shields.io/tokei/lines/gitlab/AleixMT/eChempad?style=flat-square&logo=github
+[loc-shield]: https://img.shields.io/tokei/lines/github/AleixMT/eChempad
 [loc-url]: https://github.com/AleixMT/eChempad
 [commit-shield]: https://img.shields.io/github/last-commit/AleixMT/eChempad/develop?style=flat-square&logo=github
 [commit-url]: https://github.com/AleixMT/eChempad/issues
@@ -395,6 +397,12 @@ application and other services related with the ICIQ digitalization.
 [activity-url]: https://github.com/AleixMT/eChempad/graphs/commit-activity
 [docker-size-shield]: https://img.shields.io/docker/image-size/aleixmt/echempad/latest?style=flat-square&color=purple&logo=docker
 [docker-size-url]: https://hub.docker.com/r/aleixmt/echempad
+[repo-size-shield]: https://img.shields.io/github/repo-size/AleixMT/eChempad?style=flat-square&logo=github
+[repo-size-url]: https://github.com/AleixMT/eChempad
+[language-count-shield]: https://img.shields.io/github/languages/count/AleixMT/eChempad?style=flat-square&color=red&logo=github
+[language-count-url]: https://github.com/AleixMT/eChempad
+[website-shield]: https://img.shields.io/website?url=https%3A%2F%2Ficiq.cat&link=https%3A%2F%2Ficiq.cat
+[website-url]: https://iciq.cat
 
 [Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-4.6.1-white?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com 
