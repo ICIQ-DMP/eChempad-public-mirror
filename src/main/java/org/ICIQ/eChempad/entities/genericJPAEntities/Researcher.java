@@ -104,7 +104,6 @@ public class Researcher extends EntityImpl implements Entity{
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
         this.signalsAPIKey = signalsAPIKey;
-        this.initCreationDate();
     }
 
     @Override

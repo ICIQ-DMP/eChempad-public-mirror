@@ -20,6 +20,10 @@
  */
 package org.ICIQ.eChempad.entities.genericJPAEntities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Date;
+
 /**
  * This interface extends the contract that a model class needs to fulfill in order to properly model an entity of the
  * database that is also used to store information.
@@ -66,4 +70,27 @@ public interface DataEntity extends Entity{
      * @param parent the new parent entity.
      */
     void setParent(Container parent);
+
+    /**
+     * Gets the creation of an entity.
+     *
+     * @return Date object with the creation date of the entity.
+     */
+    @JsonIgnore
+    Date getCreationDate();
+
+    /**
+     * Sets the creation date of an entity.
+     *
+     * @param creationDate Date object with the new creation date of the entity.
+     */
+    @JsonIgnore
+    void setCreationDate(Date creationDate);
+
+    /**
+     * Sets the creation date of the element. This method is needed since the fields need to be explicitly initialized
+     * outside the constructors of the entity.
+     */
+    @JsonIgnore
+    void initCreationDate();
 }
