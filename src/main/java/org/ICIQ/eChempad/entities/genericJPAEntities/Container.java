@@ -47,12 +47,7 @@ import java.util.Set;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Container.class)
-public class Container extends EntityImpl implements DataEntity {
-
-    @ManyToOne(cascade={CascadeType.ALL},
-            fetch = FetchType.EAGER
-    )
-    private Container parent;
+public class Container extends DataEntityImpl {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Container> childrenContainers = new HashSet<Container>();
@@ -64,18 +59,6 @@ public class Container extends EntityImpl implements DataEntity {
     public <T extends Entity> Class<T> getType() {
         return (Class<T>) Container.class;
     }
-
-    /**
-     * Name of this {@code Document}.
-     */
-    @Column(length = 1000, nullable = false)
-    protected String name;
-
-    /**
-     * Description of this {@code Document}.
-     */
-    @Column(length = 1000, nullable = false)
-    protected String description;
 
     public Container() {}
 
@@ -103,22 +86,6 @@ public class Container extends EntityImpl implements DataEntity {
     }
 
     // GETTERS AND SETTERS
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Container getParent() {
         return parent;
     }

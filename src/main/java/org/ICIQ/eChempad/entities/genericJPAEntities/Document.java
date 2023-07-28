@@ -46,7 +46,7 @@ import java.sql.Blob;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = Document.class)
-public class Document extends EntityImpl implements DataEntity {
+public class Document extends DataEntityImpl {
 
     /**
      * Name of the file that is stored as a BLOB in this class. It can be the original name from the file that was
@@ -72,19 +72,6 @@ public class Document extends EntityImpl implements DataEntity {
     protected long fileSize;
 
     /**
-     * Reference to the {@code Experiment} that this {@code Document} is in. It could be null, that would mean that
-     * this {@code Document} is not in any {@code Experiment}.
-     */
-    @ManyToOne(
-            fetch = FetchType.EAGER
-    )
-    @JoinColumn(
-            name = "parent_id"
-    )
-    @JsonIgnore
-    protected Container parent;
-
-    /**
      * BLOB field. The class {@code Blob} wraps an {@code InputStream] that points to the database. Notice that you need
      * to manipulate the stream in order to read it, which means that in streaming-using operations the file will not be
      * loaded entirely in memory. If we would use the approach of using an array of {@code byte}s, the files that are
@@ -106,18 +93,6 @@ public class Document extends EntityImpl implements DataEntity {
     @Lob
     @Basic(fetch = FetchType.EAGER)
     protected Blob blob;
-
-    /**
-     * Name of this {@code Document}.
-     */
-    @Column(length = 1000, nullable = false)
-    protected String name;
-
-    /**
-     * Description of this {@code Document}.
-     */
-    @Column(length = 1000, nullable = false)
-    protected String description;
 
     public Document() {}
 
@@ -150,26 +125,6 @@ public class Document extends EntityImpl implements DataEntity {
     @Override
     public <T extends Entity> Class<T> getType() {
         return (Class<T>) Document.class;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
-
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
     }
 
 // GETTERS SETTERS AND TO-STRING

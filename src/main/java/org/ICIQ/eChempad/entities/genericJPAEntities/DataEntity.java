@@ -33,46 +33,37 @@ public interface DataEntity extends Entity{
      * Returns a name for this data entity.
      * @return name of the current data entity.
      */
-    default String getName()
-    {
-        return null;
-    }
+    String getName();
 
     /**
      * Sets the name of this data entity.
      * @param name New name of the current data entity.
      */
-    default void setName(String name){}
+    void setName(String name);
 
     /**
      * Returns the description for this data entity.
      * @return Description of the current data entity.
      */
-    default String getDescription()
-    {
-        return null;
-    }
+    String getDescription();
 
     /**
      * Sets the name of this data entity.
      * @param description New description of the current data entity.
      */
-    default void setDescription(String description){}
+    void setDescription(String description);
 
     /**
      * Gets the parent entity of the current entity.
      *
      * @return the parent entity.
      */
-    default Container getParent()
-    {
-        return null;
-    }
+    Container getParent();
 
     /**
      * Sets the parent entity of the current entity.
      *
      * @param parent the new parent entity.
      */
-    default void setParent(Container parent){}
+    void setParent(Container parent);
 }
