@@ -94,12 +94,13 @@ public class Document extends DataEntityImpl {
     @Basic(fetch = FetchType.EAGER)
     protected Blob blob;
 
-    public Document() {}
+    public Document() {
+        this.initCreationDate();
+    }
 
     public Document(String name, String description) {
         this.name = name;
         this.description = description;
-        this.initCreationDate();
     }
 
 
@@ -159,13 +160,5 @@ public class Document extends DataEntityImpl {
 
     public void setBlob(Blob blob) {
         this.blob = blob;
-    }
-
-    public Container getParent() {
-        return parent;
-    }
-
-    public void setParent(Container parent) {
-        this.parent = parent;
     }
 }

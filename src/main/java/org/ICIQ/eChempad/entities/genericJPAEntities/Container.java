@@ -60,7 +60,9 @@ public class Container extends DataEntityImpl {
         return (Class<T>) Container.class;
     }
 
-    public Container() {}
+    public Container() {
+        this.initCreationDate();
+    }
 
     /**
      * Constructor

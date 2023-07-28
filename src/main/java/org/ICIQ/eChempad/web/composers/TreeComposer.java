@@ -334,12 +334,16 @@ public class TreeComposer extends SelectorComposer<Window> {
                     break;
                 }
                 case "creationDateTreeColumn": {
-                    SimpleDateFormat dateFormatter = new SimpleDateFormat();
+                    if (entity instanceof DataEntity) {
+                        SimpleDateFormat dateFormatter = new SimpleDateFormat();
 
-                    Logger.getGlobal().warning(entity.getCreationDate().toString());
-                    Logger.getGlobal().warning(dateFormatter.format(entity.getCreationDate()));
+                        Logger.getGlobal().warning(((DataEntity)entity).getCreationDate().toString());
+                        Logger.getGlobal().warning(dateFormatter.format(((DataEntity)entity).getCreationDate()));
 
-                    treecell.setLabel(dateFormatter.format(entity.getCreationDate()));
+                        treecell.setLabel(dateFormatter.format(((DataEntity)entity).getCreationDate()));
+                    } else {
+                        treecell.setLabel("");
+                    }
                     break;
                 }
                 case "hiddenID": {
