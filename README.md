@@ -12,7 +12,7 @@
 [![Repository size][repo-size-shield]][repo-size-url]
 [![Documentation web site][website-documentation-shield]][website-documentation-url]
 [![eChempad web site][website-echempad-shield]][website-echempad-url]
-[![CD pipeline][website-echempad-shield]][website-echempad-url]
+[![CD pipeline][CD-pipeline-shield]][CD-pipeline-url]
 [![Code Coverage][coverage-shield]][coverage-url]
 
 <!-- PROJECT LOGO -->
