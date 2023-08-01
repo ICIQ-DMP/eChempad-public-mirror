@@ -47,8 +47,6 @@ public class ResearcherServiceImpl<T extends EntityImpl, S extends Serializable>
 
     @Override
     public <S1 extends Researcher> S1 save(S1 entity) {
-        // Save the creation date of this entity.
-        entity.initCreationDate();
 
         // Save it in the database so the id field is set
         S1 t = genericRepository.save(entity);

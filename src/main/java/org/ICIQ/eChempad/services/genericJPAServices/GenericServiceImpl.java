@@ -85,9 +85,6 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
      * @return entity that has been saved
      */
     public <S1 extends T> S1 save(S1 entity) {
-        // Save the creation date of this entity.
-        entity.initCreationDate();
-
         // Save it in the database
         S1 t = genericRepository.save(entity);
 
