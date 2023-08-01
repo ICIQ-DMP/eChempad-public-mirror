@@ -43,5 +43,5 @@ services:
       - POSTGRES_USER=amarine
       - POSTGRES_DB=eChempad
     ports:
-      - "0.0.0.0:8080:5432"
+      - "8080:5432"
     restart: unless-stopped
