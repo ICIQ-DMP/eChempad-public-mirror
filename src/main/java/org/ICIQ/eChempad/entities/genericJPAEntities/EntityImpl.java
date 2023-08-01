@@ -78,15 +78,7 @@ public abstract class EntityImpl implements Entity {
     @Column(name = "id", nullable = false, unique = true)
     protected UUID id;
 
-    /**
-     * Date of creation of the entity.
-     */
-    @Column(nullable = false)
-    private Date creationDate;
-
-    public EntityImpl() {
-        this.initCreationDate();
-    }
+    public EntityImpl() {}
 
     /**
      * Implemented by every class to return its own type.
@@ -106,14 +98,8 @@ public abstract class EntityImpl implements Entity {
         return this.getType().getName();
     }
 
-    @Override
-    public void initCreationDate() {
-        this.creationDate = new Date();
-    }
 
     // GETTERS AND SETTERS
-
-
     @Override
     public Serializable getId() {
         return this.id;
@@ -133,15 +119,5 @@ public abstract class EntityImpl implements Entity {
     @Override
     public void setId(Serializable id) {
         this.id = (UUID) id;
-    }
-
-    @Override
-    public Date getCreationDate() {
-        return this.creationDate;
-    }
-
-    @Override
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
     }
 }

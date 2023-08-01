@@ -19,19 +19,29 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-eChempad.db.policy = create
-
-# To log the SQl queries
-eChempad.db.show-sql = true
-
-# Logging level for the relational database [TRACE, DEBUG, INFO]
-logging.level.org.hibernate.SQL = INFO
-logging.level.org.hibernate.type = INFO
-logging.level.org.springframework = INFO
-
-# To see the logging data (by default false, potentially leaked data)
-logging.level.org.springframework.web=INFO
-spring.mvc.log-request-details=true
-
-# Logging for spring security, for ZK
-logging.level.org.springframework.security.web=INFO
+---
+version: "2.1"
+services:
+  echempad_app:
+    image: aleixmt/echempad:latest
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Etc/UTC
+    ports:
+      - "0.0.0.0:8081:8081"
+    volumes:  # Mount secret files (dataverseKey.txt and signalsKey.txt)
+      - ./src/main/resources/secrets:/app/target/classes/secrets
+    restart: unless-stopped
+  postgres_db:
+    image: postgres
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Etc/UTC
+      - POSTGRES_PASSWORD=chemistry
+      - POSTGRES_USER=amarine
+      - POSTGRES_DB=eChempad
+    ports:
+      - "0.0.0.0:8080:5432"
+    restart: unless-stopped

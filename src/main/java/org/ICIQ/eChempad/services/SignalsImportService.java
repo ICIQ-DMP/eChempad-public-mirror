@@ -40,7 +40,7 @@ public interface SignalsImportService extends ImportService {
      * @param metadataJSON JSON of the entity.
      * @return Date object
      */
-    public static Date parseDateFromJSON(ObjectNode metadataJSON)
+    static Date parseDateFromJSON(ObjectNode metadataJSON)
     {
         String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("createdAt").toString().replace("\"", "");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
