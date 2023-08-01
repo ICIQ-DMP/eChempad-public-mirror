@@ -10,7 +10,10 @@
 [![Commit activity][activity-shield]][activity-url]
 [![Docker size image][docker-size-shield]][docker-size-url]
 [![Repository size][repo-size-shield]][repo-size-url]
-[![Web site][website-shield]][website-url]
+[![Documentation web site][website-documentation-shield]][website-documentation-url]
+[![eChempad web site][website-echempad-shield]][website-echempad-url]
+[![CD pipeline][website-echempad-shield]][website-echempad-url]
+[![Code Coverage][coverage-shield]][coverage-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -401,8 +404,14 @@ application and other services related with the ICIQ digitalization.
 [repo-size-url]: https://github.com/AleixMT/eChempad
 [language-count-shield]: https://img.shields.io/github/languages/count/AleixMT/eChempad?style=flat-square&color=red&logo=github
 [language-count-url]: https://github.com/AleixMT/eChempad
-[website-shield]: https://img.shields.io/website?url=https%3A%2F%2Ficiq.cat&link=https%3A%2F%2Ficiq.cat
-[website-url]: https://iciq.cat
+[website-documentation-shield]: https://img.shields.io/website?url=https%3A%2F%2Ficiq-dmp.github.io%2F&style=flat-square&logo=jekyll&label=Digitalization%20documentation%20website
+[website-documentation-url]: https://iciq-dmp.github.io/
+[website-echempad-shield]: https://img.shields.io/website?url=https%3A%2F%2Fechempad.iciq.cat%2Flogin&style=flat-square&logo=icinga&label=eChempad%20website
+[website-echempad-url]: https://echempad.iciq.cat
+[CD-pipeline-shield]: https://img.shields.io/github/actions/workflow/status/aleixmt/echempad/docker-image.yml?style=flat-square&logo=docker&label=CD%20pipeline
+[CD-pipeline-url]: https://github.com/AleixMT/eChempad/actions/workflows/docker-image.yml
+[coverage-shield]: https://img.shields.io/codecov/c/github/aleixmt/echempad/master?logo=codecov
+[coverage-url]: https://app.codecov.io/gh/AleixMT/eChempad
 
 [Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-4.6.1-white?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com 
