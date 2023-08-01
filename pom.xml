@@ -67,6 +67,7 @@
 		<jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
 		<testcontainers.version>1.18.3</testcontainers.version>
 
+		<jacoco.version>0.8.2</jacoco.version>
 		<net-sf-ehcache.version>2.10.9.2</net-sf-ehcache.version>
 		<reflections.version>0.9.10</reflections.version>
 		<!--Used by the licenses plugin-->
@@ -425,6 +426,32 @@
 			</activation>
 			<build>
 				<plugins>
+
+					<!-- JaCoCo plugin for code coverage -->
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<!-- attached to Maven test phase -->
+							<execution>
+								<id>jacoco-report</id>
+								<phase>test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+								<!-- default target/jscoco/site/* -->
+								<configuration>
+									<outputDirectory>target/jacoco-report</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 
 					<plugin>
 
