@@ -55,7 +55,6 @@ public class Authority extends EntityImpl implements GrantedAuthority{
     public Authority(String authority, Researcher researcher) {
         this.authority = authority;
         this.researcher = researcher;
-        this.initCreationDate();
     }
 
     /**
