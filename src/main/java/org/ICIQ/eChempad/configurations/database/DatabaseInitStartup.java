@@ -166,7 +166,6 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         researcher.setPassword("chemistry");
         researcher.setUsername("eChempad@iciq.es");
         researcher.setAccountNonLocked(true);
-        researcher.setCreationDate(new Date());
 
         HashSet<Authority> authorities = new HashSet<>();
         authorities.add(new Authority("ROLE_ADMIN", researcher));

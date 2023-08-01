@@ -26,6 +26,7 @@ import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
 import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
@@ -44,10 +45,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 // https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
@@ -77,6 +75,31 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
     @Autowired
     private DocumentWrapperConverter documentWrapperConverter;
+
+    @Override
+    public List<DataEntity> readRootEntities(String APIKey) {
+        return null;
+    }
+
+    @Override
+    public void expandEntityChildren(DataEntity dataEntity, String APIKey) {
+
+    }
+
+    @Override
+    public void expandEntityHierarchy(DataEntity dataEntity, String APIKey) {
+
+    }
+
+    @Override
+    public void importEntity(DataEntity dataEntity) {
+
+    }
+
+    @Override
+    public void updateEntity(DataEntity dataEntity, String APIKey) {
+
+    }
 
     public String importWorkspace(String APIKey) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();

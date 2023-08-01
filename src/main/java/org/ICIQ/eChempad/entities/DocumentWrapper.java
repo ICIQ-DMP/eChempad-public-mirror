@@ -22,10 +22,7 @@ package org.ICIQ.eChempad.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,48 +43,18 @@ import java.util.UUID;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "typeName",
         defaultImpl = DocumentWrapper.class)
-public class DocumentWrapper extends EntityImpl implements DataEntity {
-
-    private Container parent;
+public class DocumentWrapper extends DataEntityImpl implements DataEntity {
 
     @JsonIgnore
     private MultipartFile file;
 
-    public DocumentWrapper() {
-    }
+    public DocumentWrapper() {}
 
     public DocumentWrapper(String name, String description, MultipartFile file) {
         this.name = name;
         this.description = description;
         this.file = file;
         this.initCreationDate();
-    }
-
-    /**
-     * Name of this {@code Document}.
-     */
-    @Column(length = 1000, nullable = false)
-    protected String name;
-
-    /**
-     * Description of this {@code Document}.
-     */
-    @Column(length = 1000, nullable = false)
-    protected String description;
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public MultipartFile getFile() {
@@ -114,32 +81,6 @@ public class DocumentWrapper extends EntityImpl implements DataEntity {
     }
 
     /**
-     * Exposes and returns the UUID of an entity.
-     *
-     * @return UUID of the entity.
-     */
-    @Override
-    public Serializable getId() {
-        return this.id;
-    }
-
-    /**
-     * Sets the UUID of an entity.
-     * This is a method that will have collisions with hibernate because hibernate uses the id field as a PK
-     * (Primary Key) for accessing the database. As such, this method has to be only used against entities that are
-     * not managed by hibernate.
-     * This interface is specially designed to expose this specific method of all the entities, and is specially
-     * designed to perform updates of existing entities of the database when an ID is not supplied with the received
-     * data object.
-     *
-     * @param id ID that will be set. Only usable on dettached spring boot instances
-     */
-    @Override
-    public void setId(Serializable id) {
-        this.id = (UUID) id;
-    }
-
-    /**
      * Implemented by every class to return its own type.
      *
      * @return Class of the object implementing this interface.
@@ -149,13 +90,4 @@ public class DocumentWrapper extends EntityImpl implements DataEntity {
         return (Class<T>) DocumentWrapper.class;
     }
 
-    @Override
-    public Container getParent() {
-        return this.parent;
-    }
-
-    @Override
-    public void setParent(Container parent) {
-        this.parent = parent;
-    }
 }
