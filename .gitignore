@@ -224,3 +224,6 @@ secrets/*
 
 src/main/resources/secretshtmlReport
 htmlReport/
+
+# ignore secrets
+src/main/resources/secrets
