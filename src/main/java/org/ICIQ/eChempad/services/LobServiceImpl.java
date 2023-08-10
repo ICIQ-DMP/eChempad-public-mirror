@@ -32,8 +32,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.postgresql.util.PSQLException;
 
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
+import jakarta.persistence.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,8 +51,6 @@ public class LobServiceImpl implements LobService {
         Blob blob = session.getLobHelper().createBlob(content, size);
 
         session.getTransaction().commit();
-
-        session.getTransaction()
         session.close();
         return blob;
     }

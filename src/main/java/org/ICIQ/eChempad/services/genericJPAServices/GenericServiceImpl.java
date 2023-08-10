@@ -30,6 +30,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 
 @Service
@@ -164,6 +166,11 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
         return this.genericRepository.getById(s);
     }
 
+    @Override
+    public T getReferenceById(S s) {
+        return null;
+    }
+
     public <S1 extends T> List<S1> findAll(Example<S1> example) {
         return genericRepository.findAll(example);
     }
@@ -218,6 +225,11 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
 
     public <S extends T> boolean exists(Example<S> example) {
         return genericRepository.exists(example);
+    }
+
+    @Override
+    public <S extends T, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
     }
 
     @Override
