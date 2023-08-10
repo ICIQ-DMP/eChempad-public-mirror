@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.4</version>
+		<version>3.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -51,8 +51,7 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<spring-framework.version>6.0.0</spring-framework.version>
-		<!-- <spring-framework.version>5.3.9</spring-framework.version> -->
-		<springboot.version>2.5.4</springboot.version>
+		<springboot.version>${project.parent.version}</springboot.version>
 		<spring-security.version>5.7.10</spring-security.version>
 		<spring-context-support.version>5.3.9</spring-context-support.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
@@ -60,19 +59,17 @@
 		<zkspring.version>4.0.2</zkspring.version>
 		<zkmax.version>3.6.3</zkmax.version>
 		<hikari.version>4.0.3</hikari.version>
-		<hibernate-hikariCP.version>5.2.10.Final</hibernate-hikariCP.version>
+		<hibernate-hikariCP.version>6.2.7.Final</hibernate-hikariCP.version>
 		<javax-inject.version>1</javax-inject.version>
 		<ehcache.version>3.10.2</ehcache.version>
 		<threetenbp.version>1.6.4</threetenbp.version>
 		<postgresql.version>42.5.1</postgresql.version>
 		<jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
 		<testcontainers.version>1.18.3</testcontainers.version>
-
 		<jacoco.version>0.8.2</jacoco.version>
 		<net-sf-ehcache.version>2.10.9.2</net-sf-ehcache.version>
 		<reflections.version>0.9.10</reflections.version>
-		<!--Used by the licenses plugin-->
-		<license.licenseName>apache_v2</license.licenseName>
+		<license.licenseName>apache_v2</license.licenseName>  		<!--Used by the licenses plugin-->
 		<current.year>2023</current.year>
 	</properties>
 
@@ -173,6 +170,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+		<!-- to add the javax filter when upgrading to java 17-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 
 
@@ -366,7 +370,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-hikaricp</artifactId>
 			<version>${hibernate-hikariCP.version}</version>
 		</dependency>
@@ -406,6 +410,13 @@
 			<version>${spring-context-support.version}</version>
 		</dependency>
 
+		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+
 	</dependencies>
 
 
@@ -441,7 +452,7 @@
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-dependencies</artifactId>
-						<version>2.3.4.RELEASE</version>
+						<version>3.1.2</version>
 					</plugin>
 
 					<!-- Added when migrating java 8 to java 11 -->

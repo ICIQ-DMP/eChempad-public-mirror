@@ -24,7 +24,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.util.UUID;
 
