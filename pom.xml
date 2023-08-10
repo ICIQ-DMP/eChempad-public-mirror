@@ -411,11 +411,13 @@
 		</dependency>
 
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
+		<!--
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>4.0.1</version>
 		</dependency>
+		-->
 
 	</dependencies>
 
