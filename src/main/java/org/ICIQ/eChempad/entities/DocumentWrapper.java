@@ -26,7 +26,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
+import jakarta.persistence.Column;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;

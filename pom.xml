@@ -47,11 +47,11 @@
 	<!-- Internal variable definition for compilation -->
 	<properties>
 		<!-- General compilation of the project -->
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<!-- <spring-framework.version>6.0.0</spring-framework.version> -->
-		<spring-framework.version>5.3.9</spring-framework.version>
+		<spring-framework.version>6.0.0</spring-framework.version>
+		<!-- <spring-framework.version>5.3.9</spring-framework.version> -->
 		<springboot.version>2.5.4</springboot.version>
 		<spring-security.version>5.7.10</spring-security.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
@@ -396,6 +396,13 @@
 			<version>2.5.0</version>
 		</dependency>
 		-->
+
+		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
+		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
 
 	</dependencies>
 

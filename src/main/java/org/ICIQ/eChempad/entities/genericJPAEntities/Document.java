@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.ICIQ.eChempad.configurations.converters.MediaTypeConverter;
 import org.springframework.http.MediaType;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.sql.Blob;
 
 /**
@@ -40,7 +40,7 @@ import java.sql.Blob;
  * @see "DocumentWrapper"
  * @see "DocumentWrapperConverter"
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
