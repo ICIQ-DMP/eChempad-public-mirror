@@ -20,9 +20,11 @@
  */
 package org.ICIQ.eChempad.configurations.security.ACL;
 
+import org.ehcache.core.Ehcache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.ehcache.EhCacheFactoryBean;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -51,8 +53,13 @@ import java.util.Objects;
  * @since 04/10/2022
  */
 @Configuration
+@EnableCaching
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
+
+    @Autowired
+    CacheManager cacheManager;
+
 
     /**
      * Returns an instance that knows how to evaluate Spring security expressions. This instance delegates the
@@ -121,8 +128,9 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
     @Bean
     public AclCache aclCache() {
         // TODO EhCacheBasedAclCache is deprecated
-        return new EhCacheBasedAclCache(
-                aclEhCacheFactoryBean().getObject(),
+
+            return new SpringCacheBasedAclCache(
+                this.cacheManager.getCache("aclCache"),
                 permissionGrantingStrategy(),
                 aclAuthorizationStrategy()
         );
@@ -148,8 +156,8 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
      * @return Object to ease the creation of {@code AclCache}.
      */
     @Bean
-    public EhCacheManagerFactoryBean aclCacheManager() {
-        return new EhCacheManagerFactoryBean();
+    public CacheManager aclCacheManager() {
+        return this.cacheManager;
     }
 
     /**

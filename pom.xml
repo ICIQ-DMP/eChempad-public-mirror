@@ -53,7 +53,7 @@
 		<spring-framework.version>6.0.0</spring-framework.version>
 		<springboot.version>${project.parent.version}</springboot.version>
 		<spring-security.version>6.1.2</spring-security.version>
-		<spring-context-support.version>5.3.9</spring-context-support.version>
+		<spring-context-support.version>6.0.11</spring-context-support.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
 		<zk.version>8.6.0.1</zk.version>  <!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
 		<zkspring.version>4.0.2</zkspring.version>
@@ -67,8 +67,8 @@
 		<jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
 		<testcontainers.version>1.18.3</testcontainers.version>
 		<jacoco.version>0.8.2</jacoco.version>
-		<net-sf-ehcache.version>2.10.9.2</net-sf-ehcache.version>
 		<reflections.version>0.9.10</reflections.version>
+		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
 		<license.licenseName>apache_v2</license.licenseName>  		<!--Used by the licenses plugin-->
 		<current.year>2023</current.year>
 	</properties>
@@ -177,6 +177,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<!-- <scope>provided</scope> -->
+		</dependency>
+
+		<!-- Added when upgrading to java 17 to reconfigure the cache managing -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 
@@ -304,14 +311,7 @@
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 			<version>${ehcache.version}</version>
-		</dependency>
-
-		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
-		And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
-		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>${net-sf-ehcache.version}</version>
+			<classifier>jakarta</classifier>
 		</dependency>
 
 		<!-- To use zkoss in our application -->
@@ -400,7 +400,7 @@
 		<dependency>
 			<groupId>jakarta.persistence</groupId>
 			<artifactId>jakarta.persistence-api</artifactId>
-			<version>3.1.0</version>
+			<version>${jakarta.persistence-api.version}</version>
 		</dependency>
 
 		<!-- Needed when upgrade to java 17 -->
