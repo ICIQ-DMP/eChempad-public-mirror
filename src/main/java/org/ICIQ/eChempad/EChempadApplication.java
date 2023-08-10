@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.zkoss.spring.config.ZkScopesConfigurer;
@@ -42,6 +43,7 @@ import org.zkoss.spring.config.ZkScopesConfigurer;
 @EnableJpaRepositories(basePackages = {
 		"org.ICIQ.eChempad.repositories"
 })
+@EnableLoadTimeWeaving
 public class EChempadApplication {
 
 	public static void main(String[] args) {
