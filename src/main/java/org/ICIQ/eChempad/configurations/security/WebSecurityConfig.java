@@ -106,8 +106,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         String[] authenticatedPages = new String[]{"/api/**", "/profile", "/"};
 
         // you need to disable spring CSRF to make ZK AU pass security filter
-        // ZK already sends a AJAX request with a built-in CSRF token,
-        http.csrf().disable();
+        // ZK already sends a AJAX request with a built-in CSRF token, but it is recommended to have it active
+        if (! this.corsDisabled) {
+            http.csrf().disable();
+        }
 
         // Conditional activation depending on profile
         if (! this.corsDisabled) {

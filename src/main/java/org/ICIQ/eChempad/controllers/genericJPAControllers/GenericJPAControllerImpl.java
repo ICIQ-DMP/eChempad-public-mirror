@@ -95,8 +95,6 @@ public abstract class GenericJPAControllerImpl<T extends EntityImpl, S extends S
     @ResponseStatus(HttpStatus.CREATED)
     @Override
     public T add(@Validated @RequestBody T t) {
-        Logger.getGlobal().info(t.toString());
-
         return this.genericService.save(t);
     }
 
