@@ -43,7 +43,6 @@ import org.zkoss.spring.config.ZkScopesConfigurer;
 @EnableJpaRepositories(basePackages = {
 		"org.ICIQ.eChempad.repositories"
 })
-@EnableLoadTimeWeaving
 public class EChempadApplication {
 
 	public static void main(String[] args) {
