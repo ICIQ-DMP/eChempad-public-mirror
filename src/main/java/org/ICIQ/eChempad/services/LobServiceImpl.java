@@ -52,6 +52,8 @@ public class LobServiceImpl implements LobService {
         Blob blob = session.getLobHelper().createBlob(content, size);
 
         session.getTransaction().commit();
+
+        session.getTransaction()
         session.close();
         return blob;
     }
