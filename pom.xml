@@ -419,6 +419,15 @@
 		</dependency>
 		-->
 
+		<!-- Load time weaver without explicit java agent -->
+		<!--
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-instrument</artifactId>
+			<version>1.0.14</version>
+		</dependency>
+		-->
+
 	</dependencies>
 
 

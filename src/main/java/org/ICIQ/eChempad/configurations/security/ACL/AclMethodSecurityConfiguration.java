@@ -20,13 +20,13 @@
  */
 package org.ICIQ.eChempad.configurations.security.ACL;
 
-import org.ehcache.core.Ehcache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.acls.domain.*;
@@ -40,7 +40,6 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.sql.DataSource;
-import java.util.Objects;
 
 /**
  * This class contains the beans used in the manipulation of the ACL tables.
@@ -54,12 +53,14 @@ import java.util.Objects;
  */
 @Configuration
 @EnableCaching
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
-
-    @Autowired
+    
     CacheManager cacheManager;
 
+    public AclMethodSecurityConfiguration() {
+        this.cacheManager = new ConcurrentMapCacheManager();
+    }
 
     /**
      * Returns an instance that knows how to evaluate Spring security expressions. This instance delegates the
@@ -134,19 +135,6 @@ public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfigur
                 permissionGrantingStrategy(),
                 aclAuthorizationStrategy()
         );
-    }
-
-    /**
-     * Bean to provide a factory to create {@code EhCacheBasedAclCache}.
-     *
-     * @return Object that provides a method to retrieve an {@code AclCache}.
-     */
-    @Bean
-    public EhCacheFactoryBean aclEhCacheFactoryBean() {
-        EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
-        ehCacheFactoryBean.setCacheManager(Objects.requireNonNull(this.aclCacheManager().getObject()));
-        ehCacheFactoryBean.setCacheName("aclCache");
-        return ehCacheFactoryBean;
     }
 
     /**
