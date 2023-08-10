@@ -54,6 +54,7 @@
 		<!-- <spring-framework.version>5.3.9</spring-framework.version> -->
 		<springboot.version>2.5.4</springboot.version>
 		<spring-security.version>5.7.10</spring-security.version>
+		<spring-context-support.version>5.3.9</spring-context-support.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
 		<zk.version>8.6.0.1</zk.version>  <!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
 		<zkspring.version>4.0.2</zkspring.version>
@@ -203,12 +204,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
-		</dependency>
-
-		<!-- Used to control the ACL security infrastructure, if not present the ehcache is cannot be found -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
 		</dependency>
 
 		<!-- To use the MockMultipartFile -->
@@ -404,14 +399,22 @@
 			<version>3.1.0</version>
 		</dependency>
 
+		<!-- Needed when upgrade to java 17 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring-context-support.version}</version>
+		</dependency>
+
 	</dependencies>
 
 
 
 	<!--Builds and plug ins-->
 
+	<!-- Final name for the WAR artifact, so it is always the same and does not change with change of version -->
 	<build>
-		<finalName>eChempad</finalName>  <!-- Final name for the WAR artifact -->
+		<finalName>eChempad</finalName>
 		<plugins>
 
 		</plugins>
