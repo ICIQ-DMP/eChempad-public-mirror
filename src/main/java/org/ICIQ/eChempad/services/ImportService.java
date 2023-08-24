@@ -73,7 +73,7 @@ public interface ImportService {
 
     /**
      * Performs the import algorithm of the data supplied by parameter into the database of eChempad. If data is
-     * shallow, it is expanded recursively until the leafs. After that, the DataEntity gets imported to the database
+     * shallow, it is expanded recursively until the leaves. After that, the DataEntity gets imported to the database
      * with the ownership of the calling user.
      * <p>
      * If the data is not already present, the imported entities will be new in the database, so it is enough with
@@ -88,9 +88,8 @@ public interface ImportService {
     void importEntity(DataEntity dataEntity);
 
     /**
-     * Performs the update algorithm of the data supplied by parameter into the database of eChempad. This method
-     * assumes that data is not shallow. Data supplied to this algorithm has to be already in the database. In other
-     * words: the supplied DataEntity is a managed entity by Hibernate / Spring.
+     * Performs the update algorithm of the data supplied by parameter with data coming from the service that we are
+     * importing from. If data is shallow, it will be expanded with data coming from the external service.
      *
      * This method overwrites the data present in eChempad with the obtained data from the original platform by
      * appending new descendent entities in the supplied DataEntity
@@ -100,16 +99,9 @@ public interface ImportService {
      */
     void updateEntity(DataEntity dataEntity, String APIKey);
 
-
-
-
-
-
-
-
     /**
      * By using the supplied API key, import all available material from a third-party service, depending on the
-     * implementation of the class.
+     * implementation of the class. This is a greedy function to obtain all data from the origin service.
      *
      * @param APIKey Token to log into the associated third-party application.
      * @return String containing a summary of the imported elements.

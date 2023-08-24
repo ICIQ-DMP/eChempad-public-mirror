@@ -43,15 +43,39 @@ public interface SignalsImportService extends ImportService {
     static Date parseDateFromJSON(ObjectNode metadataJSON)
     {
         String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("createdAt").toString().replace("\"", "");
+        return SignalsImportService.parseDate(signalsJournalCreationDate);
+    }
+
+    /**
+     * Parses the JSON received from a Signals entity to obtain the last update date of that entity.
+     *
+     * @param metadataJSON JSON of the entity.
+     * @return Date object
+     */
+    static Date parseUpdateDateFromJSON(ObjectNode metadataJSON)
+    {
+        String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("editedAt").toString().replace("\"", "");
+        return SignalsImportService.parseDate(signalsJournalCreationDate);
+    }
+
+    /**
+     * Parses a date object from an String
+     *
+     * @param dateData String representing a date.
+     * @return Parsed object.
+     */
+    static Date parseDate(String dateData)
+    {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = null;
         try {
-            date = dateFormat.parse(signalsJournalCreationDate);
+            date = dateFormat.parse(dateData);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return date;
     }
+
 
 }

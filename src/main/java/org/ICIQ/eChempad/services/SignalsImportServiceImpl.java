@@ -25,9 +25,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
 import org.ICIQ.eChempad.entities.DocumentWrapper;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +76,62 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
     @Override
     public List<DataEntity> readRootEntities(String APIKey) {
-        return null;
+        List<DataEntity> rootEntities = new ArrayList<>();
+
+        ObjectNode rootJSON;
+        int i = 0;
+        while ((rootJSON = this.getJournalWithOffset(APIKey, i)) != null)
+        {
+            // Iterate until the data of the entity is empty
+            if (rootJSON.get("data").isEmpty())
+            {
+                break;
+            }
+            else  // If you find data parse it
+            {
+                // Create unmanaged container to save the metadata
+                Container rootEntity = new Container();
+
+                // Remove quotes and obtain the EID of this entity.
+                rootEntity.setOriginId(rootJSON.get("data").get(0).get("id").toString().replace("\"", ""));
+
+                // Parse root container name
+                rootEntity.setName(rootJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
+
+                // Parse root container description
+                rootEntity.setDescription(rootJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
+
+                // Parse root container creation date
+                rootEntity.setCreationDate(SignalsImportService.parseDateFromJSON(rootJSON));
+
+                // Parse root container last edition date in origin
+                Date lastEditionDate = SignalsImportService.parseUpdateDateFromJSON(rootJSON);
+                rootEntity.setOriginLastEditionDate(lastEditionDate);
+
+                // Set local last edition date with the last edition date in origin
+                rootEntity.setLastEditionDate(lastEditionDate);
+
+                // Set origin platform
+                rootEntity.setOriginPlatform("Signals");
+
+                // Parse digest value
+                rootEntity.setDigest(rootJSON.get("data").get(0).get("attributes").get("digest").toString().replace("\"", ""));
+
+                // Parse entity type in origin
+                rootEntity.setOriginType(rootJSON.get("data").get(0).get("attributes").get("type").toString().replace("\"", ""));
+
+                // Parse department
+                rootEntity.setDepartment(rootJSON.get("data").get(0).get("attributes").get("fields").get("Confidential").get("value").toString().replace("\"", ""));
+
+                // Username of the owner in origin
+                rootEntity.setOriginOwnerUsername(rootJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", ""));
+
+                i++;
+
+                rootEntities.add(rootEntity);
+            }
+        }
+        return rootEntities;
     }
 
     @Override
@@ -113,8 +166,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
         String APIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
 
-        // Logger.getGlobal().warning("API key: " + APIKey);
-
         this.getJournals(APIKey, stringBuilder);
         return stringBuilder.toString();
     }
@@ -144,7 +195,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         return this.importJournal(((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey(), id);
     }
 
-        @Override
+    @Override
     public String importJournal(String APIKey, Serializable id) {
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -153,7 +204,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         journalJSON = this.getJournalWithEUID(APIKey, id.toString());
 
         // Check if the journal owner email coincides with the email of the logged user, if not discard journal
-
         JsonNode includedData = journalJSON.get("included");
         JsonNode includedOwner = includedData.get(0);
         JsonNode ownerAttributes = includedOwner.get("attributes");
