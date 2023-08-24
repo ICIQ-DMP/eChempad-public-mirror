@@ -30,7 +30,7 @@ services:
       - TZ=Etc/UTC
     ports:
       - "0.0.0.0:8081:8081"
-    volumes:  # Mount secret files (dataverseKey.txt and signalsKey.txt)
+    volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
       - ./src/main/resources/secrets:/app/target/classes/secrets
     restart: unless-stopped
   postgres_db:
