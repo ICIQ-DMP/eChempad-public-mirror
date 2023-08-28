@@ -34,6 +34,7 @@ import org.ICIQ.eChempad.web.renderers.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.ResourceAccessException;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;
@@ -441,7 +442,11 @@ public class TreeComposer extends SelectorComposer<Window> {
 
         List<DefaultTreeNode<Entity>> journalNodesList = new ArrayList<DefaultTreeNode<Entity>>();
         List<Container> userContainers = this.containerService.findAll();
+        Logger.getGlobal().warning("Returned user containers " + userContainers.toString());
+
         for (Container container : userContainers) {
+
+
             // If this container is not a root container, skip
             if (container.getParent() != null) {
                 continue;
@@ -497,8 +502,10 @@ public class TreeComposer extends SelectorComposer<Window> {
     /**
      * Resets the tree model
      */
+    @NotifyChange({ "treeModel" })
     public void refreshModel() {
-        this.tree.setModel(this.createModel());
+        DefaultTreeModel<Entity> model = this.createModel();
+        this.tree.setModel(model);
     }
 
     public void refreshAllItems() {

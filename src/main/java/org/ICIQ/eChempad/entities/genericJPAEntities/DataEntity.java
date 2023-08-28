@@ -93,6 +93,20 @@ public interface DataEntity extends Entity{
     void setCreationDate(Date creationDate);
 
     /**
+     * Gets the creation date of the Data Entity in the service that it was imported from.
+     *
+     * @return The creation date of the entity in the origin of the data as a Date object.
+     */
+    Date getOriginCreationDate();
+
+    /**
+     * Sets the creation date of the Data Entity in the service that it was imported from.
+     *
+     * @param originCreationDate The creation date in the origin as a Date object.
+     */
+    void setOriginCreationDate(Date originCreationDate);
+
+    /**
      * Gets the last time on which this DataEntity was edited.
      *
      * @return The last edition date as a {@code Date} object.

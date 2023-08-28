@@ -80,11 +80,22 @@ public class Container extends DataEntityImpl {
     @Override
     public String toString() {
         return "Container{" +
-                ", childrenContainers=" + childrenContainers +
+                "childrenContainers=" + childrenContainers +
                 ", childrenDocuments=" + childrenDocuments +
-                ", id=" + id +
+                ", parent=" + parent +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", creationDate=" + creationDate +
+                ", originCreationDate=" + originCreationDate +
+                ", lastEditionDate=" + lastEditionDate +
+                ", originLastEditionDate=" + originLastEditionDate +
+                ", originId='" + originId + '\'' +
+                ", originPlatform='" + originPlatform + '\'' +
+                ", originType='" + originType + '\'' +
+                ", digest='" + digest + '\'' +
+                ", department='" + department + '\'' +
+                ", originOwnerUsername='" + originOwnerUsername + '\'' +
+                ", id=" + id +
                 '}';
     }
 

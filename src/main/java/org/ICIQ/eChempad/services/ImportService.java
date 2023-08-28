@@ -89,7 +89,7 @@ public interface ImportService {
 
     /**
      * Performs the update algorithm of the data supplied by parameter with data coming from the service that we are
-     * importing from. If data is shallow, it will be expanded with data coming from the external service.
+     * importing from.
      *
      * This method overwrites the data present in eChempad with the obtained data from the original platform by
      * appending new descendent entities in the supplied DataEntity
@@ -98,6 +98,14 @@ public interface ImportService {
      *                   if it is not completely expanded.
      */
     void updateEntity(DataEntity dataEntity, String APIKey);
+
+    /**
+     * Updates the corresponding root entity in the database with the data supplied by parameter. If it is not present
+     * it will be saved as a new element.
+     *
+     * @param dataEntity Data entity to be imported into the workspace of the user.
+     */
+    void updateRootContainer(DataEntity dataEntity, String APIKey);
 
     /**
      * By using the supplied API key, import all available material from a third-party service, depending on the
