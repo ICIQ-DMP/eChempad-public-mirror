@@ -25,12 +25,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
 import org.ICIQ.eChempad.entities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.UpdateState;
 import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +46,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -62,12 +66,17 @@ public class SignalsImportServiceImpl implements SignalsImportService {
      */
     static final boolean getOnlyOwnedResources = false;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private ContainerService<Container, UUID> containerService;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private DocumentService<Document, UUID> documentService;
-    
+
+    @Autowired
+    private DataEntityUpdateStateService dataEntityUpdateStateService;
+
     @Autowired
     private WebClient webClient;
 
@@ -102,14 +111,17 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 rootEntity.setDescription(rootJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
 
                 // Parse root container creation date
-                rootEntity.setCreationDate(SignalsImportService.parseDateFromJSON(rootJSON));
+                Date now = new Date();
+                rootEntity.setCreationDate(now);
 
-                // Parse root container last edition date in origin
-                Date lastEditionDate = SignalsImportService.parseUpdateDateFromJSON(rootJSON);
-                rootEntity.setOriginLastEditionDate(lastEditionDate);
+                // Parse root container creation date in origin
+                rootEntity.setOriginCreationDate(SignalsImportService.parseDateFromJSON(rootJSON));
 
                 // Set local last edition date with the last edition date in origin
-                rootEntity.setLastEditionDate(lastEditionDate);
+                rootEntity.setLastEditionDate(now);
+
+                // Parse root container last edition date in origin
+                rootEntity.setOriginLastEditionDate(SignalsImportService.parseUpdateDateFromJSON(rootJSON));
 
                 // Set origin platform
                 rootEntity.setOriginPlatform("Signals");
@@ -125,6 +137,8 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
                 // Username of the owner in origin
                 rootEntity.setOriginOwnerUsername(rootJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", ""));
+
+                Logger.getGlobal().warning("last edition date in read root entities " + rootEntity.getOriginLastEditionDate().toString());
 
                 i++;
 
@@ -152,6 +166,77 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     @Override
     public void updateEntity(DataEntity dataEntity, String APIKey) {
 
+
+    }
+
+    @Override
+    public void updateRootContainer(DataEntity dataEntity, String APIKey) {
+        // Create matcher for the originId
+        ExampleMatcher customExampleMatcher = ExampleMatcher.matchingAny()
+                .withMatcher("originId", ExampleMatcher.GenericPropertyMatchers.exact().caseSensitive());
+
+        /*
+         Create an empty container with the originId to match the entities with same originId from our database using
+         the "example" query method
+         */
+        Container containerExample = new Container();
+        containerExample.setOriginId(dataEntity.getOriginId());
+        Example<Container> example = Example.of(containerExample, customExampleMatcher);
+
+        // Execute query
+        List<Container> containersMatching = this.containerService.findAll(example);
+
+        Logger.getGlobal().warning("The matching container" + containersMatching);
+        // If we find a matching container
+        if (containersMatching.size() != 0)
+        {
+            // Get first occurrence (There should be only one occurrence)
+            Container containerMatching = containersMatching.get(0);
+
+            Logger.getGlobal().warning("In update container   DB origin last edition date " + containerMatching.getOriginLastEditionDate().toString() + " Importing origin last edition date " + dataEntity.getOriginLastEditionDate().toString());
+
+            UpdateState updateState = this.dataEntityUpdateStateService.compareEntities(containerMatching, dataEntity);
+
+            Logger.getGlobal().warning("state:" + updateState.toString());
+
+            if (updateState == UpdateState.UP_TO_DATE)
+            {
+                Logger.getGlobal().warning("UP TO DATE");
+
+                // If it is up-to-date, we finished the updating
+                return;
+            }
+            else if (updateState == UpdateState.ORIGIN_HAS_CHANGES)
+            {
+                // If origin has changes, replace new data with the old data using implicit update of the save method
+                /*
+                And set the primary key of the matching data entity of our db to the data entity that we are importing,
+                so Hibernate takes care of the update for us in the save method.
+                */
+                dataEntity.setId(containerMatching.getId());
+
+                // Update db entity
+                this.containerService.save((Container) dataEntity);
+            }
+            else if (updateState == UpdateState.ECHEMPAD_HAS_CHANGES)
+            {
+                // If only eChempad has changes we have finished the update.
+                return;
+            }
+            else if (updateState == UpdateState.BOTH_HAVE_CHANGES)
+            {
+                /*
+                 We need to perform the travel algorithm through all the tree to determine the state of each
+                 sub-container.
+                 */
+
+            }
+        }
+        else
+        {
+            // Save new data entity
+            this.containerService.save((Container) dataEntity);
+        }
     }
 
     public String importWorkspace(String APIKey) throws IOException {

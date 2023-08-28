@@ -95,14 +95,14 @@ public class ToolbarComposer extends SelectorComposer<Window> {
     @Listen("onClick = #importSignals")
     public void onClickImportSignalButton() throws IOException {
         // Import all visible data from Signals into eChempad workspace.
-        //this.signalsImportService.importWorkspace();
-        Logger.getGlobal().warning(((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey());
+        String currentUserAPIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
 
-        List<DataEntity> rootEntities = this.signalsImportService.readRootEntities(((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey());
+        List<DataEntity> rootEntities = this.signalsImportService.readRootEntities(currentUserAPIKey);
+        Logger.getGlobal().warning("root entities read " + rootEntities.toString());
 
         for (DataEntity dataEntity : rootEntities)
         {
-            Logger.getGlobal().warning(dataEntity.toString());
+            this.signalsImportService.updateRootContainer(dataEntity, currentUserAPIKey);
         }
 
         // Publish refresh event in order to reload the UI
