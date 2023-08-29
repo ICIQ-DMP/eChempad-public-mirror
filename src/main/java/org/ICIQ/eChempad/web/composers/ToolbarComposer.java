@@ -21,6 +21,7 @@
 package org.ICIQ.eChempad.web.composers;
 
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.services.SignalsImportService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
@@ -102,7 +103,7 @@ public class ToolbarComposer extends SelectorComposer<Window> {
 
         for (DataEntity dataEntity : rootEntities)
         {
-            this.signalsImportService.updateRootContainer(dataEntity, currentUserAPIKey);
+            this.signalsImportService.updateRootContainer((Container) dataEntity, currentUserAPIKey);
         }
 
         // Publish refresh event in order to reload the UI

@@ -82,7 +82,7 @@ public class Container extends DataEntityImpl {
         return "Container{" +
                 "childrenContainers=" + childrenContainers +
                 ", childrenDocuments=" + childrenDocuments +
-                ", parent=" + parent +
+                ", parent=" + (this.parent == null ? "null" : this.parent.getId().toString()) +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", creationDate=" + creationDate +

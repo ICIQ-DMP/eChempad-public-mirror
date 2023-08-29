@@ -21,6 +21,7 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -40,11 +41,7 @@ public interface SignalsImportService extends ImportService {
      * @param metadataJSON JSON of the entity.
      * @return Date object
      */
-    static Date parseDateFromJSON(ObjectNode metadataJSON)
-    {
-        String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("createdAt").toString().replace("\"", "");
-        return SignalsImportService.parseDate(signalsJournalCreationDate);
-    }
+    Date parseDateFromJSON(ObjectNode metadataJSON);
 
     /**
      * Parses the JSON received from a Signals entity to obtain the last update date of that entity.
@@ -52,11 +49,7 @@ public interface SignalsImportService extends ImportService {
      * @param metadataJSON JSON of the entity.
      * @return Date object
      */
-    static Date parseUpdateDateFromJSON(ObjectNode metadataJSON)
-    {
-        String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("editedAt").toString().replace("\"", "");
-        return SignalsImportService.parseDate(signalsJournalCreationDate);
-    }
+    Date parseUpdateDateFromJSON(ObjectNode metadataJSON);
 
     /**
      * Parses a date object from an String
@@ -64,18 +57,23 @@ public interface SignalsImportService extends ImportService {
      * @param dateData String representing a date.
      * @return Parsed object.
      */
-    static Date parseDate(String dateData)
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date date = null;
-        try {
-            date = dateFormat.parse(dateData);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
-    }
+    Date parseDate(String dateData);
 
+    /**
+     * Gets a child from a Container that has its origin on Signals and returns it as a JSON representing its data.
+     *
+     * @param APIKey API key used for the retrieval of the child
+     * @param pageOffset The number that identifies a certain child in the container
+     * @param container_eid An ID that identifies the container in Signals
+     * @return Returns an ObjectNode which is an in-memory representation of a JSON.
+     */
+    ObjectNode getChildFromContainer(String APIKey, int pageOffset, String container_eid);
 
+    /**
+     * Gets the JSON of a container and parses it to a Container object with the data of the JSON.
+     *
+     * @param containerJSON The in-memory JSON to parse.
+     * @return A detached instance of a Container with the data of the JSON in it.
+     */
+    Container parseContainer(ObjectNode containerJSON);
 }
