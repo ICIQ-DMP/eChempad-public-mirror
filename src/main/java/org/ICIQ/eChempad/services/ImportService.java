@@ -20,6 +20,8 @@
  */
 package org.ICIQ.eChempad.services;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 
 import javax.xml.crypto.Data;
@@ -48,16 +50,24 @@ public interface ImportService {
     List<DataEntity> readRootEntities(String APIKey);
 
     /**
+     * Updates the corresponding root entity in the database with the data supplied by parameter. If it is not present
+     * it will be saved as a new element.
+     *
+     * @param container Data entity to be imported into the workspace of the user.
+     */
+    void updateRootContainer(Container container, String APIKey);
+
+    /**
      * Expands the children of the received DataEntity by performing CRUD requests to read the children of this entity
      * in the origin platform. The children will be added to the DataEntity supplied by parameter. Only immediate
      * children will be expanded so further recursive uses will be needed to read the full hierarchy from the origin
      * platform.
      *
-     * @param dataEntity The DataEntity that we are going to query in the origin platform for its children, which will
-     *                   be added to this parameter to return the entities of the childre.
+     * @param container The Container that we are going to query in the origin platform for its children, which will
+     *                   be added to this parameter to return the entities of the children.
      * @param APIKey API key to authenticate in the platform that we are importing from.
      */
-    void expandEntityChildren(DataEntity dataEntity, String APIKey);
+    void expandEntityChildren(Container container, String APIKey);
 
     /**
      * Expands the children of the received DataEntity recursively by performing CRUD requests to read the children of
@@ -98,14 +108,6 @@ public interface ImportService {
      *                   if it is not completely expanded.
      */
     void updateEntity(DataEntity dataEntity, String APIKey);
-
-    /**
-     * Updates the corresponding root entity in the database with the data supplied by parameter. If it is not present
-     * it will be saved as a new element.
-     *
-     * @param dataEntity Data entity to be imported into the workspace of the user.
-     */
-    void updateRootContainer(DataEntity dataEntity, String APIKey);
 
     /**
      * By using the supplied API key, import all available material from a third-party service, depending on the

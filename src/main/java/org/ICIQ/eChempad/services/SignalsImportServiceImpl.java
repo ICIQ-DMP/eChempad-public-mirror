@@ -46,6 +46,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
@@ -83,6 +84,87 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     @Autowired
     private DocumentWrapperConverter documentWrapperConverter;
 
+    public Date parseDateFromJSON(ObjectNode metadataJSON)
+    {
+        String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("createdAt").toString().replace("\"", "");
+        return this.parseDate(signalsJournalCreationDate);
+    }
+
+    public Date parseUpdateDateFromJSON(ObjectNode metadataJSON)
+    {
+        String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("editedAt").toString().replace("\"", "");
+        return this.parseDate(signalsJournalCreationDate);
+    }
+
+    public Date parseDate(String dateData)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = null;
+        try {
+            date = dateFormat.parse(dateData);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public Container parseContainer(ObjectNode containerJSON)
+    {
+        // Create unmanaged container to save the metadata
+        Container rootEntity = new Container();
+
+        // Remove quotes and obtain the EID of this entity.
+        rootEntity.setOriginId(containerJSON.get("data").get(0).get("id").toString().replace("\"", ""));
+
+        // Parse root container name
+        rootEntity.setName(containerJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
+
+        // Parse root container description
+        rootEntity.setDescription(containerJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
+
+        // Parse root container creation date
+        Date now = new Date();
+        rootEntity.setCreationDate(now);
+
+        // Parse root container creation date in origin
+        rootEntity.setOriginCreationDate(this.parseDateFromJSON(containerJSON));
+
+        // Set local last edition date with the last edition date in origin
+        rootEntity.setLastEditionDate(now);
+
+        // Parse root container last edition date in origin
+        rootEntity.setOriginLastEditionDate(this.parseUpdateDateFromJSON(containerJSON));
+
+        // Set origin platform
+        rootEntity.setOriginPlatform("Signals");
+
+        // Parse digest value
+        rootEntity.setDigest(containerJSON.get("data").get(0).get("attributes").get("digest").toString().replace("\"", ""));
+
+        // Parse entity type in origin
+        rootEntity.setOriginType(containerJSON.get("data").get(0).get("attributes").get("type").toString().replace("\"", ""));
+
+        // Parse department
+        rootEntity.setDepartment(containerJSON.get("data").get(0).get("attributes").get("fields").get("Department").get("value").toString().replace("\"", ""));
+
+        // Username of the owner in origin
+        /*
+         I found out that it seems that when a journal is not owned by you, you can not get the included information
+         and because of that the common way of parsing the owner username does not work
+         */
+        if (containerJSON.get("included") == null)
+        {
+            rootEntity.setOriginOwnerUsername("unknown");
+        }
+        else
+        {
+            rootEntity.setOriginOwnerUsername(containerJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", ""));
+        }
+
+        return rootEntity;
+    }
+
     @Override
     public List<DataEntity> readRootEntities(String APIKey) {
         List<DataEntity> rootEntities = new ArrayList<>();
@@ -98,46 +180,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
             }
             else  // If you find data parse it
             {
-                // Create unmanaged container to save the metadata
-                Container rootEntity = new Container();
-
-                // Remove quotes and obtain the EID of this entity.
-                rootEntity.setOriginId(rootJSON.get("data").get(0).get("id").toString().replace("\"", ""));
-
-                // Parse root container name
-                rootEntity.setName(rootJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
-
-                // Parse root container description
-                rootEntity.setDescription(rootJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
-
-                // Parse root container creation date
-                Date now = new Date();
-                rootEntity.setCreationDate(now);
-
-                // Parse root container creation date in origin
-                rootEntity.setOriginCreationDate(SignalsImportService.parseDateFromJSON(rootJSON));
-
-                // Set local last edition date with the last edition date in origin
-                rootEntity.setLastEditionDate(now);
-
-                // Parse root container last edition date in origin
-                rootEntity.setOriginLastEditionDate(SignalsImportService.parseUpdateDateFromJSON(rootJSON));
-
-                // Set origin platform
-                rootEntity.setOriginPlatform("Signals");
-
-                // Parse digest value
-                rootEntity.setDigest(rootJSON.get("data").get(0).get("attributes").get("digest").toString().replace("\"", ""));
-
-                // Parse entity type in origin
-                rootEntity.setOriginType(rootJSON.get("data").get(0).get("attributes").get("type").toString().replace("\"", ""));
-
-                // Parse department
-                rootEntity.setDepartment(rootJSON.get("data").get(0).get("attributes").get("fields").get("Confidential").get("value").toString().replace("\"", ""));
-
-                // Username of the owner in origin
-                rootEntity.setOriginOwnerUsername(rootJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", ""));
-
+                Container rootEntity = this.parseContainer(rootJSON);
                 Logger.getGlobal().warning("last edition date in read root entities " + rootEntity.getOriginLastEditionDate().toString());
 
                 i++;
@@ -149,9 +192,44 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     }
 
     @Override
-    public void expandEntityChildren(DataEntity dataEntity, String APIKey) {
+    public void expandEntityChildren(Container dataEntity, String APIKey) {
+        // ArrayNode experiments = this.objectMapper.createArrayNode();
+        ObjectNode containerChildrenJSON;
+        int i = 0;
+        Set<Container> children = new HashSet<>();
+        while ((containerChildrenJSON = this.getChildFromContainer(APIKey, i, dataEntity.getOriginId())) != null)
+        {
+            // Iterate until the data of the entity is empty
+            if (containerChildrenJSON.get("data").isEmpty())
+            {
+                break;
+            }
+            else
+            {
+                Logger.getGlobal().warning("username" + containerChildrenJSON.toPrettyString());
 
+                // Create unmanaged container to save the metadata
+                Container signalsExperiment = this.parseContainer(containerChildrenJSON);
+                signalsExperiment.setParent(dataEntity);
+                children.add(signalsExperiment);
+
+                i++;
+            }
+        }
+        dataEntity.setChildrenContainers(children);
     }
+
+    public ObjectNode getChildFromContainer(String APIKey, int pageOffset, String container_eid)
+    {
+        return this.webClient.get()
+                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + container_eid + "/children?page[offset]=" + ((Integer) pageOffset).toString() + "&page[limit]=1&include=children%2C%20owner")
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
+    }
+
+
 
     @Override
     public void expandEntityHierarchy(DataEntity dataEntity, String APIKey) {
@@ -170,72 +248,42 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     }
 
     @Override
-    public void updateRootContainer(DataEntity dataEntity, String APIKey) {
-        // Create matcher for the originId
-        ExampleMatcher customExampleMatcher = ExampleMatcher.matchingAny()
-                .withMatcher("originId", ExampleMatcher.GenericPropertyMatchers.exact().caseSensitive());
-
-        /*
-         Create an empty container with the originId to match the entities with same originId from our database using
-         the "example" query method
-         */
-        Container containerExample = new Container();
-        containerExample.setOriginId(dataEntity.getOriginId());
-        Example<Container> example = Example.of(containerExample, customExampleMatcher);
-
-        // Execute query
-        List<Container> containersMatching = this.containerService.findAll(example);
-
-        Logger.getGlobal().warning("The matching container" + containersMatching);
-        // If we find a matching container
+    public void updateRootContainer(Container container, String APIKey) {
+        List<Container> containersMatching = this.containerService.searchByOriginId(container.getOriginId());
         if (containersMatching.size() != 0)
         {
             // Get first occurrence (There should be only one occurrence)
             Container containerMatching = containersMatching.get(0);
-
-            Logger.getGlobal().warning("In update container   DB origin last edition date " + containerMatching.getOriginLastEditionDate().toString() + " Importing origin last edition date " + dataEntity.getOriginLastEditionDate().toString());
-
-            UpdateState updateState = this.dataEntityUpdateStateService.compareEntities(containerMatching, dataEntity);
+            UpdateState updateState = this.dataEntityUpdateStateService.compareEntities(containerMatching, container);
 
             Logger.getGlobal().warning("state:" + updateState.toString());
-
-            if (updateState == UpdateState.UP_TO_DATE)
+            if (updateState == UpdateState.ORIGIN_HAS_CHANGES)
             {
-                Logger.getGlobal().warning("UP TO DATE");
-
-                // If it is up-to-date, we finished the updating
-                return;
-            }
-            else if (updateState == UpdateState.ORIGIN_HAS_CHANGES)
-            {
-                // If origin has changes, replace new data with the old data using implicit update of the save method
                 /*
-                And set the primary key of the matching data entity of our db to the data entity that we are importing,
+                Set the primary key of the matching data entity of our db to the data entity that we are importing,
                 so Hibernate takes care of the update for us in the save method.
                 */
-                dataEntity.setId(containerMatching.getId());
+                container.setId(containerMatching.getId());
 
                 // Update db entity
-                this.containerService.save((Container) dataEntity);
-            }
-            else if (updateState == UpdateState.ECHEMPAD_HAS_CHANGES)
-            {
-                // If only eChempad has changes we have finished the update.
-                return;
+                this.containerService.save((Container) container);
             }
             else if (updateState == UpdateState.BOTH_HAVE_CHANGES)
             {
                 /*
-                 We need to perform the travel algorithm through all the tree to determine the state of each
-                 sub-container.
-                 */
+                We need to perform the travel algorithm through all the tree to determine the state of each
+                sub-container.
+                */
+
 
             }
+            // updateState == UpdateState.UP_TO_DATE and updateState == UpdateState.ECHEMPAD_HAS_CHANGES do nothing
         }
-        else
+        else  // NOT_PRESENT
         {
             // Save new data entity
-            this.containerService.save((Container) dataEntity);
+            this.expandEntityChildren((Container) container, APIKey);
+            this.containerService.save((Container) container);
         }
     }
 
@@ -388,7 +436,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 signalsContainer.setDescription(signalsJournalDescription);
 
                 // Parse journal creation date
-                signalsContainer.setCreationDate(SignalsImportService.parseDateFromJSON(journalJSON));
+                signalsContainer.setCreationDate(this.parseDateFromJSON(journalJSON));
 
                 // metadata parsing (...)
                 this.containerService.save(signalsContainer);
@@ -451,7 +499,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 signalsExperiment.setDescription(signalsExperimentDescription);
 
                 // Parse experiment creation date
-                signalsExperiment.setCreationDate(SignalsImportService.parseDateFromJSON(experimentJSON));
+                signalsExperiment.setCreationDate(this.parseDateFromJSON(experimentJSON));
 
                 // metadata parsing (...)
 
@@ -515,7 +563,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 documentHelper.setDescription(documentHelperDescription);
 
                 // Parse journal creation date
-                documentHelper.setCreationDate(SignalsImportService.parseDateFromJSON(documentJSON));
+                documentHelper.setCreationDate(this.parseDateFromJSON(documentJSON));
 
                 // Parse file
                 // First we obtain the inputStream of this document, which actually corresponds to a file. We also need
