@@ -20,11 +20,9 @@
  */
 package org.ICIQ.eChempad.services;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -67,19 +65,37 @@ public interface ImportService {
      *                   be added to this parameter to return the entities of the children.
      * @param APIKey API key to authenticate in the platform that we are importing from.
      */
-    void expandEntityChildren(Container container, String APIKey);
+    void expandContainerChildren(Container container, String APIKey);
+
+    /**
+     * Expands the children of an entity. If it is a container the entity will be expanded and the function will return
+     * true, and if it is not a container (must be a document), then the function does nothing and returns false.
+     *
+     * @param entity Entity to expand using the read information from Signals.
+     * @param APIKey The API key used to authenticate the requests.
+     * @return Returns false if the supplied entity is a document and returns true if it is a container.
+     */
+    boolean expandEntityChildren(DataEntity entity, String APIKey);
+
+    /**
+     * Expands the hierarchy of a container reading data from Signals assuming it is a root container
+     * (journal / notebook).
+     *
+     * @param container A data entity that represents a root container in the importing Signals instance.
+     * @param APIKey API key used to authenticate requests.
+     */
+    void expandRootContainer(Container container, String APIKey);
 
     /**
      * Expands the children of the received DataEntity recursively by performing CRUD requests to read the children of
      * this entity in the origin platform in a recursive manner. The children and the rest of descendents will be added
      * to the DataEntity supplied by parameter. With a single call, this function adds all the data to the supplied
      * entity from the original platform.
-     *
-     * @param dataEntity The DataEntity that we are going to query in the origin platform for its children, which will
+     *  @param container The DataEntity that we are going to query in the origin platform for its children, which will
      *                   be added to this parameter to return the entities of the children.
      * @param APIKey API key to authenticate in the platform that we are importing from.
      */
-    void expandEntityHierarchy(DataEntity dataEntity, String APIKey);
+    void expandContainerHierarchy(Container container, String APIKey);
 
     /**
      * Performs the import algorithm of the data supplied by parameter into the database of eChempad. If data is
@@ -108,6 +124,7 @@ public interface ImportService {
      *                   if it is not completely expanded.
      */
     void updateEntity(DataEntity dataEntity, String APIKey);
+
 
     /**
      * By using the supplied API key, import all available material from a third-party service, depending on the

@@ -32,8 +32,6 @@ import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +40,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.zkoss.zul.A;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -133,6 +133,9 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         // Set local last edition date with the last edition date in origin
         rootEntity.setLastEditionDate(now);
 
+        // Get origin type
+        rootEntity.setOriginType(containerJSON.get("data").get(0).get("attributes").get("type").toString().replace("\"", ""));
+
         // Parse root container last edition date in origin
         rootEntity.setOriginLastEditionDate(this.parseUpdateDateFromJSON(containerJSON));
 
@@ -192,8 +195,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     }
 
     @Override
-    public void expandEntityChildren(Container dataEntity, String APIKey) {
-        // ArrayNode experiments = this.objectMapper.createArrayNode();
+    public void expandContainerChildren(Container dataEntity, String APIKey) {
         ObjectNode containerChildrenJSON;
         int i = 0;
         Set<Container> children = new HashSet<>();
@@ -206,17 +208,39 @@ public class SignalsImportServiceImpl implements SignalsImportService {
             }
             else
             {
-                Logger.getGlobal().warning("username" + containerChildrenJSON.toPrettyString());
-
                 // Create unmanaged container to save the metadata
-                Container signalsExperiment = this.parseContainer(containerChildrenJSON);
-                signalsExperiment.setParent(dataEntity);
-                children.add(signalsExperiment);
-
+                Container signalsContainer = this.parseContainer(containerChildrenJSON);
+                signalsContainer.setParent(dataEntity);
+                children.add(signalsContainer);
                 i++;
             }
         }
         dataEntity.setChildrenContainers(children);
+    }
+
+    @Override
+    public boolean expandEntityChildren(DataEntity entity, String APIKey) {
+        if (entity instanceof Document)
+        {
+            return false;
+        }
+        else
+        {
+            this.expandContainerChildren((Container) entity, APIKey);
+            return true;
+        }
+    }
+
+    @Override
+    public void expandRootContainer(Container container, String APIKey) {
+        // Expand experiment children
+        this.expandContainerChildren(container, APIKey);
+
+        // Expand documents
+        for (Container experiment : container.getChildrenContainers())
+        {
+            this.expandContainerChildren(experiment, APIKey);
+        }
     }
 
     public ObjectNode getChildFromContainer(String APIKey, int pageOffset, String container_eid)
@@ -232,7 +256,8 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
 
     @Override
-    public void expandEntityHierarchy(DataEntity dataEntity, String APIKey) {
+    public void expandContainerHierarchy(Container container, String APIKey) {
+
 
     }
 
@@ -282,7 +307,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         else  // NOT_PRESENT
         {
             // Save new data entity
-            this.expandEntityChildren((Container) container, APIKey);
+            this.expandRootContainer((Container) container, APIKey);
             this.containerService.save((Container) container);
         }
     }
