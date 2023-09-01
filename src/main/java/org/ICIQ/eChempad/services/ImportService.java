@@ -78,6 +78,15 @@ public interface ImportService {
     boolean expandEntityChildren(DataEntity entity, String APIKey);
 
     /**
+     * Expands the children of a container that has documents as children using the data read from the Signals importing
+     * service.
+     *
+     * @param container Container that we will query in the server for documents.
+     * @param APIKey API key used to authenticate the requests.
+     */
+    void expandContainerDocuments(Container container, String APIKey);
+
+    /**
      * Expands the hierarchy of a container reading data from Signals assuming it is a root container
      * (journal / notebook).
      *

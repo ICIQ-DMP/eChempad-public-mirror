@@ -65,6 +65,24 @@ public class Container extends DataEntityImpl {
         this.updateLastEditionDate();
     }
 
+    public Container(DataEntity dataEntity) {
+        this.setId(dataEntity.getId());
+        this.setCreationDate(dataEntity.getCreationDate());
+        this.setDepartment(dataEntity.getDepartment());
+        this.setDescription(dataEntity.getDescription());
+        this.setDigest(dataEntity.getDigest());
+        this.setLastEditionDate(dataEntity.getLastEditionDate());
+        this.setName(dataEntity.getName());
+        this.setOriginCreationDate(dataEntity.getOriginCreationDate());
+        this.setOriginId(dataEntity.getOriginId());
+        this.setOriginLastEditionDate(dataEntity.getOriginLastEditionDate());
+        this.setOriginOwnerUsername(dataEntity.getOriginOwnerUsername());
+        this.setOriginPlatform(dataEntity.getOriginPlatform());
+        this.setOriginCreationDate(dataEntity.getOriginCreationDate());
+        this.setOriginType(dataEntity.getOriginType());
+        this.setParent(dataEntity.getParent());
+    }
+
     /**
      * Constructor
      * @param name name used by humans to identify a certain Journal. No collision is expected from Journals with same
