@@ -61,6 +61,11 @@ public class TreeComposer extends SelectorComposer<Window> {
      */
     private EventQueue<Event> itemDetailsQueue;
 
+    /**
+     * To send the display event for documents
+     */
+    private EventQueue<Event> displayPanelQueue;
+
     // Receiving event queues
     /**
      * Events that the tree component has to attend.
@@ -188,6 +193,7 @@ public class TreeComposer extends SelectorComposer<Window> {
     private void initActionQueues() {
         this.treeQueue = EventQueues.lookup(EventQueueNames.TREE_QUEUE, EventQueues.DESKTOP, true);
         this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
+        this.displayPanelQueue = EventQueues.lookup(EventQueueNames.DISPLAY_PANEL_QUEUE, EventQueues.DESKTOP, true);
         this.treeQueue.subscribe((EventListener) event -> {
             switch (event.getName()) {
                 case EventNames.MODIFY_ENTITY_PROPERTIES_EVENT: {
@@ -496,7 +502,17 @@ public class TreeComposer extends SelectorComposer<Window> {
         // Get the children components from the selected Treerow
         Entity entity = this.parseEntityFromTreeItem(selectedItem);
 
+        // Send display event always
         this.itemDetailsQueue.publish(new Event(EventNames.DISPLAY_ENTITY_EVENT, this.treeWindow, entity));
+
+        Logger.getGlobal().warning("the entityt" + entity);
+        // Send display event if our data is a document
+        if (entity instanceof Document)
+        {
+            Logger.getGlobal().warning("entering");
+
+            this.displayPanelQueue.publish(new Event(EventNames.DISPLAY_FILE_DISPLAY_PANEL_EVENT, this.treeWindow, entity));
+        }
     }
 
     /**

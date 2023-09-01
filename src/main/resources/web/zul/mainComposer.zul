@@ -90,62 +90,7 @@
 
 
                 <north id="propertiesNorth"  splittable="true" collapsible="false" size="50%" >
-                    <div id="properties" hflex="1" vflex="1">
-                        <div id="welcome" height="100%" visible="true" sclass="z-tabbox" >
-                            <groupbox id="groupWelcome" closable="false"  hflex="1" vflex="1" >
-                                <div hflex="1" vflex="1">
-                                    <iframe id="newsFrame" hflex="1" vflex="1" src="/html/news.html"/>
-                                </div>
-                            </groupbox>
-                        </div>
-                        <div id="dcm" height="100%" visible="false" >
-                            <div id="dcmPanelChildren" height="100%">
-                            </div>
-                        </div>
-                        <div id="calcUpload" height="100%" visible="false">
-                            <tabbox height="100%">
-                                <tabs sclass="nav nav-tabs">
-                                    <tab label="Calculation upload" zclass="nav-item" />
-                                </tabs>
-                                <tabpanels>
-                                    <tabpanel style="overflow-y: auto;">
-                                        <div zclass="row mt-2 mr-3 mb-1 item-details-row">
-                                            <n:label class="col-md-2">Name:</n:label>
-                                            <textbox id="calcName" sclass="form-control col-md-10" />
-                                        </div>
-                                        <div sclass="row mb-1 mr-3 item-details-row">
-                                            <n:label class="col-md-2">Description:</n:label>
-                                            <textbox id="calcDescription" sclass="form-control col-md-10" readonly="false" tooltiptext="Description of the calculation"/>
-                                        </div>
-                                        <div sclass="row mb-1 mr-3 item-details-row">
-                                            <n:label class="col-md-2">Type:</n:label>
-                                            <radiogroup id="calcType" sclass="col-md-10 pl-0"/>
-                                        </div>
-
-                                        <div sclass="row mb-1 mr-3 item-details-row">
-                                            <div sclass="col-md-2 d-flex flex-column">
-                                                <n:label>Files:</n:label>
-
-                                            </div>
-                                            <div sclass="col-md-10 pl-0 mb-4">
-                                                <groupbox id="calcFiles" visible="true"  mold="3d" sclass="" contentStyle="border:0">
-                                                    <vbox id="calcFile" pack="start" sclass="calc-file-vbox" align="start" sizedByContent="true" />
-                                                </groupbox>
-                                            </div>
-                                        </div>
-
-                                        <div sclass="row mb-1 mr-3 item-details-row">
-                                            <n:label class="col-md-2"/>
-                                            <div sclass="col-md-10 pl-0">
-                                                <button id="uploadCalcBtn" sclass="btn btn-primary" label="Load Calculation"  />
-                                                <button id="resetUploadCalcBtn" sclass="btn btn-secondary" label="Reset" />
-                                            </div>
-                                        </div>
-                                    </tabpanel>
-                                </tabpanels>
-                            </tabbox>
-                        </div>
-                    </div>
+                    <include src="~./zul/displayPanel.zul"/>
                 </north>
 
 

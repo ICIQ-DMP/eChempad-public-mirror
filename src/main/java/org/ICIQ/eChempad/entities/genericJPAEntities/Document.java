@@ -129,7 +129,7 @@ public class Document extends DataEntityImpl {
                 "originalFilename='" + originalFilename + '\'' +
                 ", contentType=" + contentType +
                 ", fileSize=" + fileSize +
-                ", parent=" + parent.getId() +
+                ", parent=" + (this.parent == null ? "" : parent.getId()) +
                 ", blob=" + blob +
                 ", id=" + id +
                 ", name='" + name + '\'' +
