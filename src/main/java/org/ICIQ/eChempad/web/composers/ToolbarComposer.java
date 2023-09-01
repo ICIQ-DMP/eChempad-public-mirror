@@ -20,10 +20,14 @@
  */
 package org.ICIQ.eChempad.web.composers;
 
+import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.services.SignalsImportService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
@@ -36,6 +40,8 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.logging.Logger;
 
 @Scope("desktop")
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
@@ -90,7 +96,15 @@ public class ToolbarComposer extends SelectorComposer<Window> {
     @Listen("onClick = #importSignals")
     public void onClickImportSignalButton() throws IOException {
         // Import all visible data from Signals into eChempad workspace.
-        this.signalsImportService.importWorkspace();
+        String currentUserAPIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
+
+        List<DataEntity> rootEntities = this.signalsImportService.readRootEntities(currentUserAPIKey);
+        Logger.getGlobal().warning("root entities read " + rootEntities.toString());
+
+        for (DataEntity dataEntity : rootEntities)
+        {
+            this.signalsImportService.updateRootContainer((Container) dataEntity, currentUserAPIKey);
+        }
 
         // Publish refresh event in order to reload the UI
         this.treeQueue.publish(new Event(EventNames.REFRESH_EVENT, null, null));

@@ -48,13 +48,27 @@ public class DocumentWrapper extends DataEntityImpl implements DataEntity {
     @JsonIgnore
     private MultipartFile file;
 
-    public DocumentWrapper() {}
-
-    public DocumentWrapper(String name, String description, MultipartFile file) {
-        this.name = name;
-        this.description = description;
-        this.file = file;
+    public DocumentWrapper() {
+        this.updateLastEditionDate();
         this.initCreationDate();
+    }
+
+    public DocumentWrapper(Document document) {
+        this.setId(document.getId());
+        this.setCreationDate(document.getCreationDate());
+        this.setDepartment(document.getDepartment());
+        this.setDescription(document.getDescription());
+        this.setDigest(document.getDigest());
+        this.setLastEditionDate(document.getLastEditionDate());
+        this.setName(document.getName());
+        this.setOriginCreationDate(document.getOriginCreationDate());
+        this.setOriginId(document.getOriginId());
+        this.setOriginLastEditionDate(document.getOriginLastEditionDate());
+        this.setOriginOwnerUsername(document.getOriginOwnerUsername());
+        this.setOriginPlatform(document.getOriginPlatform());
+        this.setOriginCreationDate(document.getOriginCreationDate());
+        this.setOriginType(document.getOriginType());
+        this.setParent(document.getParent());
     }
 
     public MultipartFile getFile() {
