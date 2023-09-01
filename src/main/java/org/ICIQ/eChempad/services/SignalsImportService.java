@@ -21,13 +21,17 @@
 package org.ICIQ.eChempad.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.function.DoubleConsumer;
 
 
 /**
@@ -76,4 +80,41 @@ public interface SignalsImportService extends ImportService {
      * @return A detached instance of a Container with the data of the JSON in it.
      */
     Container parseContainer(ObjectNode containerJSON);
+
+    /**
+     * Gets the JSON of a document and parses it to a Document object with the data of the JSON.
+     *
+     * @param documentJSON The in-memory JSON to parse.
+     * @return A detached instance of a Document with the data of the JSON in it.
+     */
+    Document parseDocument(ObjectNode documentJSON);
+
+    /**
+     * Gets the JSON of a document and parses it to a DataEntity object with the data of the JSON. This method is used
+     * for the common part of parseDocument and parseContainer.
+     *
+     * @param dataEntityJSON The in-memory JSON to parse,
+     * @return An instance of a DataEntity with the data of the JSON in it.
+     */
+    DataEntity parseDataEntity(ObjectNode dataEntityJSON);
+
+    /**
+     * Parse file
+     * First we obtain the inputStream of this document, which actually corresponds to a file. We also need
+     * to obtain the values of the HTTP header "Content-Disposition" which looks like this in an arbitrary
+     * document export:
+     *
+     * attachment; filename="MZ7-085-DC_10%5B1%5D.zip"; filename*=utf-8''MZ7-085-DC_10%5B1%5D.zip
+     *
+     * We would need to obtain the data of the filename which is the filed with the name "filename" and in
+     * the previous example has the value "MZ7-085-DC_10%5B1%5D.zip"
+     * We also need to obtain the header Content-type which indicates the mimetype of the file we are
+     * retrieving. That will allow to know the type of file inorder to process it further.
+     * File length is not needed to be parsed since it is conserved inside the byte-stream.
+     *
+     * @param documentWrapper The document to be set with the file.
+     * @param APIKey The API key used to authenticate requests.
+     */
+    void expandDocumentFile(DocumentWrapper documentWrapper, String APIKey);
+
 }

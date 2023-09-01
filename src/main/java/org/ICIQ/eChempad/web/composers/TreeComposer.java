@@ -536,7 +536,10 @@ public class TreeComposer extends SelectorComposer<Window> {
                     })
                     .findFirst()
                     .get()
-                    .getLabel()));
+                    .getLabel()
+                    .split(" ")
+                    [0]
+            ));
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

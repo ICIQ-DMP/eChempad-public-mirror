@@ -242,4 +242,23 @@ public abstract class DataEntityImpl extends EntityImpl implements DataEntity{
     public void setOriginOwnerUsername(String originOwnerUsername) {
         this.originOwnerUsername = originOwnerUsername;
     }
+
+    public static void copyProperties(DataEntity origin, DataEntity destiny)
+    {
+        destiny.setId(origin.getId());
+        destiny.setName(origin.getName());
+        destiny.setDescription(origin.getDescription());
+        destiny.setCreationDate(origin.getCreationDate());
+        destiny.setDepartment(origin.getDepartment());
+        destiny.setDigest(origin.getDigest());
+        destiny.setLastEditionDate(origin.getLastEditionDate());
+        destiny.setOriginCreationDate(origin.getOriginCreationDate());
+        destiny.setOriginId(origin.getOriginId());
+        destiny.setOriginLastEditionDate(origin.getOriginLastEditionDate());
+        destiny.setOriginOwnerUsername(origin.getOriginOwnerUsername());
+        destiny.setOriginPlatform(origin.getOriginPlatform());
+        destiny.setOriginCreationDate(origin.getOriginCreationDate());
+        destiny.setOriginType(origin.getOriginType());
+        destiny.setParent(origin.getParent());
+    }
 }
