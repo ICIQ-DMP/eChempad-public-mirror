@@ -2,14 +2,19 @@ package org.ICIQ.eChempad.web.composers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.ICIQ.eChempad.services.LobService;
+import org.ICIQ.eChempad.services.LobServiceImpl;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
+import org.springframework.context.annotation.Scope;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
 
 import java.awt.image.RenderedImage;
@@ -19,6 +24,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
+@Scope("desktop")
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class DisplayPanelComposer extends SelectorComposer<Window> {
 
     /**
@@ -32,6 +39,8 @@ public class DisplayPanelComposer extends SelectorComposer<Window> {
      */
     private EventQueue<Event> displayPanelQueue;
 
+    @WireVariable("lobServiceImpl")
+    private LobServiceImpl lobServiceImpl;
 
     // UI COMPOSER METHODS
     /**
@@ -64,7 +73,7 @@ public class DisplayPanelComposer extends SelectorComposer<Window> {
                 {
                     Logger.getGlobal().warning("This is triggeringevent is panel");
                     Document file_data = (Document) event.getData();
-                    this.changeContent(file_data.getOriginType(), file_data.getBlob().getBinaryStream());
+                    this.changeContent(file_data.getOriginType(), this.lobServiceImpl.readBlob(file_data.getBlob()));
                     break;
                 }
                 default:
