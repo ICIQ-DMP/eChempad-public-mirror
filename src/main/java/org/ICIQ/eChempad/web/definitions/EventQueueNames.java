@@ -46,4 +46,12 @@ public class EventQueueNames {
      * modify accordingly the backend.
      */
     public static final String TREE_QUEUE = "TREE_QUEUE";
+
+    /**
+     * Queue used for the display panel component (the area of the main page where the news and the files are
+     * displayed). This will be used mainly to tell the display panel what file to display.
+     *
+     */
+    public static final String DISPLAY_PANEL_QUEUE = "DISPLAY_PANEL_QUEUE";
+
 }

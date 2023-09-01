@@ -1,0 +1,8 @@
+
+<window apply="org.ICIQ.eChempad.web.composers.DisplayPanelComposer" height="100%">
+    <div id="welcome" visible="true" sclass="z-tabbox" height="100%">
+        <div id="contentDiv" hflex="1" vflex="1">
+            <iframe id="newsFrame" hflex="1" vflex="1" src="/html/news.html"/>
+        </div>
+    </div>
+</window>

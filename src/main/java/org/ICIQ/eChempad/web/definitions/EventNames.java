@@ -71,5 +71,10 @@ public class EventNames {
      */
     public static final String EXPORT_SELECTED_ENTITY_EVENT = "EXPORT_SELECTED_ENTITY_EVENT";
 
+    /**
+     * Event that is generated in the tree and is sent to the display panel to display a new file.
+     */
+    public static final String DISPLAY_FILE_DISPLAY_PANEL_EVENT = "DISPLAY_FILE_DISPLAY_PANEL_EVENT";
+
 
 }
