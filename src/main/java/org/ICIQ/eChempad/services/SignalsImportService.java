@@ -25,13 +25,11 @@ import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
-import java.util.function.DoubleConsumer;
 
 
 /**
@@ -56,7 +54,7 @@ public interface SignalsImportService extends ImportService {
     Date parseUpdateDateFromJSON(ObjectNode metadataJSON);
 
     /**
-     * Parses a date object from an String
+     * Parses a date object from a String
      *
      * @param dateData String representing a date.
      * @return Parsed object.
@@ -103,9 +101,9 @@ public interface SignalsImportService extends ImportService {
      * First we obtain the inputStream of this document, which actually corresponds to a file. We also need
      * to obtain the values of the HTTP header "Content-Disposition" which looks like this in an arbitrary
      * document export:
-     *
+     * <p>
      * attachment; filename="MZ7-085-DC_10%5B1%5D.zip"; filename*=utf-8''MZ7-085-DC_10%5B1%5D.zip
-     *
+     * <p>
      * We would need to obtain the data of the filename which is the filed with the name "filename" and in
      * the previous example has the value "MZ7-085-DC_10%5B1%5D.zip"
      * We also need to obtain the header Content-type which indicates the mimetype of the file we are
@@ -116,5 +114,57 @@ public interface SignalsImportService extends ImportService {
      * @param APIKey The API key used to authenticate requests.
      */
     void expandDocumentFile(DocumentWrapper documentWrapper, String APIKey);
+
+    /**
+     * Performs query to retrieve the file that is stored inside a Document as a ByteArrayResource. It also reads all
+     * the headers received in the query and returns them with th receivedHeaders parameter.
+     *
+     * @param APIKey API key to authenticate requests.
+     * @param document_eid Unique identifier of the document in the Signals Service
+     * @param receivedHeaders Output parameter. It is used by the caller to store the different headers received in the
+     *                        query
+     * @return The read file as a ByteArrayResource.
+     * @throws IOException Thrown if something goes wrong during the connection.
+     */
+    ByteArrayResource exportDocumentFile(String APIKey, String document_eid, HttpHeaders receivedHeaders) throws IOException;
+
+    /**
+     * Reads a generic entity from Signals using its unique identifier in Signals
+     *
+     * @param APIKey API key to authenticate requests.
+     * @param journalEUID Identifier of the journal in Signals.
+     * @return Representation of the entity using JSON representation as ObjectNode.
+     */
+    ObjectNode getEntityWithEUID(String APIKey, String journalEUID);
+
+
+    /**
+     * Reads a single journal (root container) from Signals that is identified with a certain offset.
+     *
+     * @param APIKey APIKey used to authenticate requests to Signals
+     * @param pageOffset The number of the journal that we need to read.
+     * @return Journal in raw JSON representation.
+     */
+    ObjectNode getJournalWithOffset(String APIKey, int pageOffset);
+
+
+
+
+
+
+
+    // OLD METHODS
+    /**
+     * Reads a single document from Signals that is identified with a certain offset and is children of the experiment
+     * identified by the supplied eid.
+     *
+     * @param APIKey API key used to authenticate requests.
+     * @param pageOffset The number of documents that we need to skip before reading the document that we need.
+     * @param experiment_eid The unique identifier of that experiment in journal.
+     * @return JSON representation of the Document metadata.
+     */
+    ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid);
+
+    ObjectNode getUserData(String APIKey, int userNumber);
 
 }
