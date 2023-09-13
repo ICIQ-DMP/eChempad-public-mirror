@@ -48,12 +48,32 @@ public interface ImportService {
     List<DataEntity> readRootEntities(String APIKey);
 
     /**
-     * Updates the corresponding root entity in the database with the data supplied by parameter. If it is not present
-     * it will be saved as a new element.
+     * Updates the corresponding root entity in the database with the data supplied by parameter.
+     * - If it is not present it will be saved as a new element.
+     * - If it is present and data in eChempad has changes, ignores the update.
+     * - If it is present and data in Signals has changes, replaces the entity.
+     * - If it is present and both Signals and eChempad has changes, calls the updateEntity function recursively in each
+     *   node of the tree, performing this same algorithm. When arriving to leaf level, do nothing if both have changes.
      *
      * @param container Data entity to be imported into the workspace of the user.
      */
     void updateRootContainer(Container container, String APIKey);
+
+    /**
+     * Performs the update algorithm of the data supplied by parameter with data coming from the service that we are
+     * importing from, also supplied by parameter.
+     * <p>
+     * - If it is not present it will be saved as a new element.
+     * - If it is present and data in eChempad has changes, ignores the update.
+     * - If it is present and data in Signals has changes, replaces the entity.
+     * - If it is present and both Signals and eChempad has changes, calls the mergeEntities function recursively in
+     *   each node of the tree, performing this same algorithm. When arriving to leaf level, do nothing if both have
+     *   changes.
+     * @param parentInDatabase Data entity that is already present in the database of eChempad.
+     * @param dataEntitySignals Data entity that is in Signals. It will be expanded if necessary on each recursive call.
+     * @param APIKey Key to authenticate requests to Signals.
+     */
+    void mergeEntities(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey);
 
     /**
      * Expands the children of the received DataEntity by performing CRUD requests to read the children of this entity
@@ -121,19 +141,6 @@ public interface ImportService {
      *                   if it is not completely expanded. DataEntity is unmanaged.
      */
     void importEntity(DataEntity dataEntity);
-
-    /**
-     * Performs the update algorithm of the data supplied by parameter with data coming from the service that we are
-     * importing from.
-     *
-     * This method overwrites the data present in eChempad with the obtained data from the original platform by
-     * appending new descendent entities in the supplied DataEntity
-     *
-     * @param dataEntity Data entity to be imported into the workspace of the user. This data entity will be expanded
-     *                   if it is not completely expanded.
-     */
-    void updateEntity(DataEntity dataEntity, String APIKey);
-
 
     /**
      * By using the supplied API key, import all available material from a third-party service, depending on the

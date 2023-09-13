@@ -28,7 +28,6 @@ import org.ICIQ.eChempad.entities.UpdateState;
 import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -47,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
-// https://stackoverflow.com/questions/38705890/what-is-the-difference-between-objectnode-and-jsonnode-in-jackson
 @Service("signalsImportService")
 @ConfigurationProperties(prefix = "signals")
 public class SignalsImportServiceImpl implements SignalsImportService {
@@ -57,35 +55,40 @@ public class SignalsImportServiceImpl implements SignalsImportService {
      */
     static final String baseURL = "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0";
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    @Autowired
-    private ContainerService<Container, UUID> containerService;
+    private final ContainerService<Container, UUID> containerService;
+
+    private final DocumentService<Document, UUID> documentService;
+
+    private final DataEntityUpdateStateService dataEntityUpdateStateService;
+
+    private final WebClient webClient;
+
+    private final DocumentWrapperConverter documentWrapperConverter;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    @Autowired
-    private DocumentService<Document, UUID> documentService;
+    public SignalsImportServiceImpl(ContainerService<Container, UUID> containerService, DocumentService<Document, UUID> documentService, DataEntityUpdateStateService dataEntityUpdateStateService, WebClient webClient, DocumentWrapperConverter documentWrapperConverter) {
+        this.containerService = containerService;
+        this.documentService = documentService;
+        this.dataEntityUpdateStateService = dataEntityUpdateStateService;
+        this.webClient = webClient;
+        this.documentWrapperConverter = documentWrapperConverter;
+    }
 
-    @Autowired
-    private DataEntityUpdateStateService dataEntityUpdateStateService;
-
-    @Autowired
-    private WebClient webClient;
-
-    @Autowired
-    private DocumentWrapperConverter documentWrapperConverter;
-
+    @Override
     public Date parseDateFromJSON(ObjectNode metadataJSON)
     {
         String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("createdAt").toString().replace("\"", "");
         return this.parseDate(signalsJournalCreationDate);
     }
 
+    @Override
     public Date parseUpdateDateFromJSON(ObjectNode metadataJSON)
     {
         String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("editedAt").toString().replace("\"", "");
         return this.parseDate(signalsJournalCreationDate);
     }
 
+    @Override
     public Date parseDate(String dateData)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -99,6 +102,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         return date;
     }
 
+    @Override
     public Container parseContainer(ObjectNode containerJSON)
     {
         return new Container(this.parseDataEntity(containerJSON));
@@ -154,7 +158,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
         // Parse department
         JsonNode objectNode = dataEntityJSON.get("data").get(0).get("attributes").get("fields").get("Department");
-        // If we do not have the department field set it as unkdown
+        // If we do not have the department field set it as unknown
         if (objectNode == null)
         {
             dataEntity.setDepartment("Unknown");
@@ -180,7 +184,8 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         return dataEntity;
     }
 
-    public ByteArrayResource exportDocument(String APIKey, String document_eid, HttpHeaders receivedHeaders) throws IOException {
+    @Override
+    public ByteArrayResource exportDocumentFile(String APIKey, String document_eid, HttpHeaders receivedHeaders) throws IOException {
 
         String url = SignalsImportServiceImpl.baseURL + "/entities/" + document_eid + "/export";
 
@@ -211,16 +216,9 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         }
     }
 
-    public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
-    {
-        return this.webClient.get()
-                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + pageOffset + "&page[limit]=1&include=children%2C%20owner")
-                .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
-    }
 
+
+    @Override
     public ObjectNode getEntityWithEUID(String APIKey, String journalEUID)
     {
         return this.webClient.get()
@@ -231,16 +229,9 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 .block();
     }
 
-    public ObjectNode getUserData(String APIKey, int userNumber)
-    {
-        return this.webClient.get()
-                .uri(SignalsImportServiceImpl.baseURL + "/users/" + userNumber)
-                .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
-    }
 
+
+    @Override
     public ObjectNode getJournalWithOffset(String APIKey, int pageOffset)
     {
         return this.webClient.get()
@@ -264,7 +255,6 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     @Override
     public List<DataEntity> readRootEntities(String APIKey) {
         List<DataEntity> rootEntities = new ArrayList<>();
-
         ObjectNode rootJSON;
         int i = 0;
         while ((rootJSON = this.getJournalWithOffset(APIKey, i)) != null)
@@ -277,21 +267,20 @@ public class SignalsImportServiceImpl implements SignalsImportService {
             else  // If you find data parse it
             {
                 Container rootEntity = this.parseContainer(rootJSON);
-
                 i++;
-
                 rootEntities.add(rootEntity);
             }
         }
         return rootEntities;
     }
 
+    @Override
     public void expandDocumentFile(DocumentWrapper documentWrapper, String APIKey)
     {
         HttpHeaders receivedHeaders;
         try {
             receivedHeaders = new HttpHeaders();
-            InputStream is = this.exportDocument(APIKey, documentWrapper.getOriginId(), receivedHeaders).getInputStream();
+            InputStream is = this.exportDocumentFile(APIKey, documentWrapper.getOriginId(), receivedHeaders).getInputStream();
             MultipartFile multipartFile = new MockMultipartFile(documentWrapper.getOriginId(), receivedHeaders.getContentDisposition().getFilename(), receivedHeaders.getContentType().toString(), is);
 
             documentWrapper.setFile(multipartFile);
@@ -415,7 +404,14 @@ public class SignalsImportServiceImpl implements SignalsImportService {
 
                 // TODO
             }
-            // updateState == UpdateState.UP_TO_DATE and updateState == UpdateState.ECHEMPAD_HAS_CHANGES do nothing
+            else if (updateState == UpdateState.UP_TO_DATE)
+            {
+                Logger.getGlobal().warning("Entity is up to date, ignoring");
+            }
+            else if (updateState == UpdateState.ECHEMPAD_HAS_CHANGES)
+            {
+                Logger.getGlobal().warning("echempad has changes in the entity, ignoring import data");
+            }
         }
         else  // NOT_PRESENT
         {
@@ -425,17 +421,95 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         }
     }
 
+    @Override
+    public void mergeEntities(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey){
+        // Query database for the data entities already present that hold the last state of the data entity from Signals
+        List<? extends DataEntity> dataEntitiesMatching;
+        if (dataEntitySignals instanceof Container)
+        {
+            dataEntitiesMatching = this.containerService.searchByOriginId(dataEntitySignals.getOriginId());
+        }
+        else
+        {
+            dataEntitiesMatching = this.documentService.searchByOriginId(dataEntitySignals.getOriginId());
+        }
+
+        if (dataEntitiesMatching.size() != 0)
+        {
+            // Get first occurrence (There should be only one occurrence)
+            DataEntity dataEntity = dataEntitiesMatching.get(0);
+            UpdateState updateState = this.dataEntityUpdateStateService.compareEntities(dataEntity, dataEntitySignals);
+
+            Logger.getGlobal().warning("state:" + updateState.toString());
+            if (updateState == UpdateState.ORIGIN_HAS_CHANGES)
+            {
+                /*
+                Set the primary key of the matching data entity of our db to the data entity that we are importing,
+                so Hibernate takes care of the update for us in the save method.
+                */
+                dataEntitySignals.setId(dataEntity.getId());
+
+                // Update db entity
+                this.containerService.save((Container) dataEntitySignals);
+            }
+            else if (updateState == UpdateState.BOTH_HAVE_CHANGES)
+            {
+                /*
+                We need to perform the travel algorithm through all the tree to determine the state of each
+                sub-container.
+                */
+
+                // TODO
+            }
+            else if (updateState == UpdateState.UP_TO_DATE)
+            {
+                Logger.getGlobal().warning("Entity is up to date, ignoring");
+            }
+            else if (updateState == UpdateState.ECHEMPAD_HAS_CHANGES)
+            {
+                Logger.getGlobal().warning("echempad has changes in the entity, ignoring import data");
+            }
+        }
+        else  // NOT_PRESENT
+        {
+            // Save new data entity that is a container
+            if (dataEntitySignals instanceof Container) {
+                // Expand container with Signals data
+                this.expandContainerHierarchy((Container) dataEntitySignals, APIKey);
+                // Connect to parent
+                dataEntitySignals.setParent(parentInDatabase);
+                // Parent connect to the new subtree
+                parentInDatabase.getChildrenContainers().add((Container) dataEntitySignals);
+
+                this.containerService.save((Container) dataEntitySignals);
+            }
+            else if (dataEntitySignals instanceof Document)
+            {
+                // Build DocumentWrapper
+                DocumentWrapper documentHelper = new DocumentWrapper((Document) dataEntitySignals);
+                // Expand Document with Signals data
+                this.expandDocumentFile(documentHelper, APIKey);
+                // Connect to parent
+                documentHelper.setParent(parentInDatabase);
+                // Parent connect to the new subtree
+                parentInDatabase.getChildrenDocuments().add(documentHelper);
+
+                this.containerService.save((Container) dataEntitySignals);
+            }
+        }
+    }
+
+
 
     @Override
     public void importEntity(DataEntity dataEntity) {}
 
     @Override
-    public void updateEntity(DataEntity dataEntity, String APIKey) {}
-
     public String importWorkspace(String APIKey) {
         return null;
     }
 
+    @Override
     public String importWorkspace() {
         return null;
     }
@@ -449,4 +523,29 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     public String importJournal(Serializable id) {
         return null;
     }
+
+
+    // OLD METHODS
+    @Override
+    public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
+    {
+        return this.webClient.get()
+                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + pageOffset + "&page[limit]=1&include=children%2C%20owner")
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
+    }
+
+    @Override
+    public ObjectNode getUserData(String APIKey, int userNumber)
+    {
+        return this.webClient.get()
+                .uri(SignalsImportServiceImpl.baseURL + "/users/" + userNumber)
+                .header("x-api-key", APIKey)
+                .retrieve()
+                .bodyToMono(ObjectNode.class)
+                .block();
+    }
+
 }

@@ -50,10 +50,14 @@ public interface DataEntityUpdateStateService {
      *
      * The UpdateState will be chosen with the following algorithm:
      * - NOT_PRESENT: Returned only if the database entity is null.
-     * - UP_TO_DATE: Returned if database.modificationDate == database.creationDate && database.originModificationDate == importing.originModificationDate
-     * - ECHEMPAD_HAS_CHANGES: Returned if database.modificationDate != database.creationDate && database.originModificationDate == importing.originModificationDate
-     * - ORIGIN_HAS_CHANGES: Returned if database.modificationDate == database.creationDate && database.originModificationDate != importing.originModificationDate
-     * - BOTH_HAVE_CHANGES: Returned if database.modificationDate != database.creationDate && database.originModificationDate != importing.originModificationDate
+     * - UP_TO_DATE: Returned if database.modificationDate == database.creationDate && database.originModificationDat
+     *               == importing.originModificationDate
+     * - ECHEMPAD_HAS_CHANGES: Returned if database.modificationDate != database.creationDate &&
+     *                         database.originModificationDate == importing.originModificationDate
+     * - ORIGIN_HAS_CHANGES: Returned if database.modificationDate == database.creationDate &&
+     *                       database.originModificationDate != importing.originModificationDate
+     * - BOTH_HAVE_CHANGES: Returned if database.modificationDate != database.creationDate &&
+     *                      database.originModificationDate != importing.originModificationDate
      *
      * @param database DataEntity that most of the time will be coming from the database.
      * @param importing DataEntity that most of the time will be coming from an importation service.
