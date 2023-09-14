@@ -18,31 +18,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.services;
+package org.ICIQ.eChempad.services.importServices;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
 import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.ICIQ.eChempad.entities.UpdateState;
 import org.ICIQ.eChempad.entities.genericJPAEntities.*;
+import org.ICIQ.eChempad.services.DataEntityUpdateStateService;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -50,214 +44,36 @@ import java.util.logging.Logger;
 @ConfigurationProperties(prefix = "signals")
 public class SignalsImportServiceImpl implements SignalsImportService {
 
-    /**
-     * The base URL of the Signals API.
-     */
-    static final String baseURL = "https://iciq.signalsnotebook.perkinelmercloud.eu/api/rest/v1.0";
-
     private final ContainerService<Container, UUID> containerService;
 
     private final DocumentService<Document, UUID> documentService;
 
     private final DataEntityUpdateStateService dataEntityUpdateStateService;
 
-    private final WebClient webClient;
-
     private final DocumentWrapperConverter documentWrapperConverter;
 
+    private final SignalsAPIService signalsAPIService;
+
+    private final SignalsAPIParsingService signalsAPIParsingService;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SignalsImportServiceImpl(ContainerService<Container, UUID> containerService, DocumentService<Document, UUID> documentService, DataEntityUpdateStateService dataEntityUpdateStateService, WebClient webClient, DocumentWrapperConverter documentWrapperConverter) {
+    @Autowired
+    public SignalsImportServiceImpl(ContainerService<Container, UUID> containerService, DocumentService<Document, UUID> documentService, DataEntityUpdateStateService dataEntityUpdateStateService, DocumentWrapperConverter documentWrapperConverter, SignalsAPIService signalsAPIService, SignalsAPIParsingService signalsAPIParsingService) {
         this.containerService = containerService;
         this.documentService = documentService;
         this.dataEntityUpdateStateService = dataEntityUpdateStateService;
-        this.webClient = webClient;
         this.documentWrapperConverter = documentWrapperConverter;
+        this.signalsAPIService = signalsAPIService;
+        this.signalsAPIParsingService = signalsAPIParsingService;
     }
 
-    @Override
-    public Date parseDateFromJSON(ObjectNode metadataJSON)
-    {
-        String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("createdAt").toString().replace("\"", "");
-        return this.parseDate(signalsJournalCreationDate);
-    }
-
-    @Override
-    public Date parseUpdateDateFromJSON(ObjectNode metadataJSON)
-    {
-        String signalsJournalCreationDate = metadataJSON.get("data").get(0).get("attributes").get("editedAt").toString().replace("\"", "");
-        return this.parseDate(signalsJournalCreationDate);
-    }
-
-    @Override
-    public Date parseDate(String dateData)
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date date = null;
-        try {
-            date = dateFormat.parse(dateData);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
-    }
-
-    @Override
-    public Container parseContainer(ObjectNode containerJSON)
-    {
-        return new Container(this.parseDataEntity(containerJSON));
-    }
-
-    @Override
-    public Document parseDocument(ObjectNode documentJSON) {
-        return new Document(this.parseDataEntity(documentJSON));
-    }
-
-    @Override
-    public DataEntity parseDataEntity(ObjectNode dataEntityJSON) {
-        DataEntity dataEntity = new DataEntityImpl() {
-            @Override
-            public <T extends Entity> Class<T> getType() {
-                return (Class<T>) DataEntityImpl.class;
-            }
-        };
-
-        // Remove quotes and obtain the EID of this entity.
-        dataEntity.setOriginId(dataEntityJSON.get("data").get(0).get("id").toString().replace("\"", ""));
-
-        // Parse root container name
-        dataEntity.setName(dataEntityJSON.get("data").get(0).get("attributes").get("name").toString().replace("\"", ""));
-
-        // Parse root container description
-        dataEntity.setDescription(dataEntityJSON.get("data").get(0).get("attributes").get("description").toString().replace("\"", ""));
-
-        // Parse root container creation date
-        Date now = new Date();
-        dataEntity.setCreationDate(now);
-
-        // Parse root container creation date in origin
-        dataEntity.setOriginCreationDate(this.parseDateFromJSON(dataEntityJSON));
-
-        // Set local last edition date with the last edition date in origin
-        dataEntity.setLastEditionDate(now);
-
-        // Get origin type
-        dataEntity.setOriginType(dataEntityJSON.get("data").get(0).get("attributes").get("type").toString().replace("\"", ""));
-
-        // Parse root container last edition date in origin
-        dataEntity.setOriginLastEditionDate(this.parseUpdateDateFromJSON(dataEntityJSON));
-
-        // Set origin platform
-        dataEntity.setOriginPlatform("Signals");
-
-        // Parse digest value
-        dataEntity.setDigest(dataEntityJSON.get("data").get(0).get("attributes").get("digest").toString().replace("\"", ""));
-
-        // Parse entity type in origin
-        dataEntity.setOriginType(dataEntityJSON.get("data").get(0).get("attributes").get("type").toString().replace("\"", ""));
-
-        // Parse department
-        JsonNode objectNode = dataEntityJSON.get("data").get(0).get("attributes").get("fields").get("Department");
-        // If we do not have the department field set it as unknown
-        if (objectNode == null)
-        {
-            dataEntity.setDepartment("Unknown");
-        }
-        else
-        {
-            dataEntity.setDepartment(objectNode.get("value").toString().replace("\"", ""));
-        }
-
-        // Username of the owner in origin
-        /*
-         I found out that it seems that when a journal is not owned by you, you can not get the included information
-         and because of that the common way of parsing the owner username does not work
-         */
-        if (dataEntityJSON.get("included") == null)
-        {
-            dataEntity.setOriginOwnerUsername("Unknown");
-        }
-        else
-        {
-            dataEntity.setOriginOwnerUsername(dataEntityJSON.get("included").get(0).get("attributes").get("userName").toString().replace("\"", ""));
-        }
-        return dataEntity;
-    }
-
-    @Override
-    public ByteArrayResource exportDocumentFile(String APIKey, String document_eid, HttpHeaders receivedHeaders) throws IOException {
-
-        String url = SignalsImportServiceImpl.baseURL + "/entities/" + document_eid + "/export";
-
-        ResponseEntity<ByteArrayResource> responseEntity = this.webClient.get()
-                .uri(url)
-                .header("x-api-key", APIKey)
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .toEntity(ByteArrayResource.class)
-                .block();
-
-        // We are using the headers parameter of the function as an output parameter. But remember that in Java
-        // everything is a pointer but args in functions are read-only. So we can modify the inside of the object but
-        // not make the pointer go to another location by pointing to another object.
-        for (String headerKey: responseEntity.getHeaders().keySet())
-        {
-            receivedHeaders.put(headerKey, Objects.requireNonNull(responseEntity.getHeaders().get(headerKey)));
-        }
-
-        // In the cases where there is stored an empty file in Signals we receive a nullPointer instead of a ByteArrayResource empty
-        if (responseEntity.getBody() == null)
-        {
-            return new ByteArrayResource("".getBytes());
-        }
-        else
-        {
-            return responseEntity.getBody();
-        }
-    }
-
-
-
-    @Override
-    public ObjectNode getEntityWithEUID(String APIKey, String journalEUID)
-    {
-        return this.webClient.get()
-                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + journalEUID + "?include=owner")
-                .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
-    }
-
-
-
-    @Override
-    public ObjectNode getJournalWithOffset(String APIKey, int pageOffset)
-    {
-        return this.webClient.get()
-                .uri(SignalsImportServiceImpl.baseURL + "/entities?page[offset]=" + pageOffset + "&page[limit]=1&includeTypes=journal&include=owner") // &includeOptions=mine
-                .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
-    }
-
-    public ObjectNode getChildFromContainer(String APIKey, int pageOffset, String container_eid)
-    {
-        return this.webClient.get()
-                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + container_eid + "/children?page[offset]=" + ((Integer) pageOffset) + "&page[limit]=1&include=children%2C%20owner")
-                .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
-    }
 
     @Override
     public List<DataEntity> readRootEntities(String APIKey) {
         List<DataEntity> rootEntities = new ArrayList<>();
         ObjectNode rootJSON;
         int i = 0;
-        while ((rootJSON = this.getJournalWithOffset(APIKey, i)) != null)
+        while ((rootJSON = this.signalsAPIService.getJournalWithOffset(APIKey, i)) != null)
         {
             // Iterate until the data of the entity is empty
             if (rootJSON.get("data").isEmpty())
@@ -266,7 +82,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
             }
             else  // If you find data parse it
             {
-                Container rootEntity = this.parseContainer(rootJSON);
+                Container rootEntity = this.signalsAPIParsingService.parseContainer(rootJSON);
                 i++;
                 rootEntities.add(rootEntity);
             }
@@ -280,9 +96,8 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         HttpHeaders receivedHeaders;
         try {
             receivedHeaders = new HttpHeaders();
-            InputStream is = this.exportDocumentFile(APIKey, documentWrapper.getOriginId(), receivedHeaders).getInputStream();
-            MultipartFile multipartFile = new MockMultipartFile(documentWrapper.getOriginId(), receivedHeaders.getContentDisposition().getFilename(), receivedHeaders.getContentType().toString(), is);
-
+            InputStream is = this.signalsAPIService.exportDocumentFile(APIKey, documentWrapper.getOriginId(), receivedHeaders).getInputStream();
+            MultipartFile multipartFile = this.signalsAPIParsingService.parseDocumentExport(documentWrapper.getOriginId(), receivedHeaders, is);
             documentWrapper.setFile(multipartFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -294,7 +109,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         ObjectNode containerChildrenJSON;
         int i = 0;
         Set<Container> children = new HashSet<>();
-        while ((containerChildrenJSON = this.getChildFromContainer(APIKey, i, dataEntity.getOriginId())) != null)
+        while ((containerChildrenJSON = this.signalsAPIService.getChildFromContainer(APIKey, i, dataEntity.getOriginId())) != null)
         {
             // Iterate until the data of the entity is empty
             if (containerChildrenJSON.get("data").isEmpty())
@@ -304,7 +119,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
             else
             {
                 // Create unmanaged container to save the metadata
-                Container signalsContainer = this.parseContainer(containerChildrenJSON);
+                Container signalsContainer = this.signalsAPIParsingService.parseContainer(containerChildrenJSON);
                 signalsContainer.setParent(dataEntity);
                 children.add(signalsContainer);
                 i++;
@@ -331,19 +146,17 @@ public class SignalsImportServiceImpl implements SignalsImportService {
     {
         ObjectNode documentJSON;
         int i = 0;
-        while ((documentJSON = this.getChildFromContainer(APIKey, i, container.getOriginId())) != null)
+        while ((documentJSON = this.signalsAPIService.getChildFromContainer(APIKey, i, container.getOriginId())) != null)
         {
-            // Iterate until the data of the entity is empty
+            // Iterate until the data of7 the entity is empty
             if (documentJSON.get("data").isEmpty())
             {
                 break;
             }
             else
             {
-                Logger.getGlobal().warning(documentJSON.toPrettyString());
-
                 // Parse Signals document and put it inside a documentHelper
-                DocumentWrapper documentHelper = new DocumentWrapper(this.parseDocument(documentJSON));
+                DocumentWrapper documentHelper = new DocumentWrapper(this.signalsAPIParsingService.parseDocument(documentJSON));
 
                 this.expandDocumentFile(documentHelper, APIKey);
 
@@ -401,6 +214,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 We need to perform the travel algorithm through all the tree to determine the state of each
                 sub-container.
                 */
+
 
                 // TODO
             }
@@ -492,7 +306,7 @@ public class SignalsImportServiceImpl implements SignalsImportService {
                 // Connect to parent
                 documentHelper.setParent(parentInDatabase);
                 // Parent connect to the new subtree
-                parentInDatabase.getChildrenDocuments().add(documentHelper);
+                //parentInDatabase.getChildrenDocuments().add(documentHelper);
 
                 this.containerService.save((Container) dataEntitySignals);
             }
@@ -524,28 +338,5 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         return null;
     }
 
-
-    // OLD METHODS
-    @Override
-    public ObjectNode getDocumentFromExperiment(String APIKey, int pageOffset, String experiment_eid)
-    {
-        return this.webClient.get()
-                .uri(SignalsImportServiceImpl.baseURL + "/entities/" + experiment_eid + "/children?page[offset]=" + pageOffset + "&page[limit]=1&include=children%2C%20owner")
-                .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
-    }
-
-    @Override
-    public ObjectNode getUserData(String APIKey, int userNumber)
-    {
-        return this.webClient.get()
-                .uri(SignalsImportServiceImpl.baseURL + "/users/" + userNumber)
-                .header("x-api-key", APIKey)
-                .retrieve()
-                .bodyToMono(ObjectNode.class)
-                .block();
-    }
 
 }

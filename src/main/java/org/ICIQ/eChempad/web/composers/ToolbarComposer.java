@@ -23,7 +23,7 @@ package org.ICIQ.eChempad.web.composers;
 import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
-import org.ICIQ.eChempad.services.SignalsImportService;
+import org.ICIQ.eChempad.services.importServices.SignalsImportService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.springframework.context.annotation.Scope;
