@@ -39,10 +39,11 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service("signalsImportService")
 @ConfigurationProperties(prefix = "signals")
-public class SignalsImportServiceImpl implements SignalsImportService {
+public class SignalsImportServiceImpl extends ImportServiceImpl implements SignalsImportService {
 
     private final ContainerService<Container, UUID> containerService;
 
@@ -235,17 +236,67 @@ public class SignalsImportServiceImpl implements SignalsImportService {
         }
     }
 
+
     @Override
-    public void mergeEntities(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey){
-        // Query database for the data entities already present that hold the last state of the data entity from Signals
-        List<? extends DataEntity> dataEntitiesMatching;
-        if (dataEntitySignals instanceof Container)
-        {
-            dataEntitiesMatching = this.containerService.searchByOriginId(dataEntitySignals.getOriginId());
+    public void syncEntity(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey) {
+        /*
+        Query database for the root containers that may already be present holding the last state of the data entity
+        from Signals.
+        */
+        DataEntity matchedDataEntityInDatabase;
+        if (parentInDatabase == null) {
+            List<Container> rootContainersMatching;
+            rootContainersMatching = this.containerService.searchByOriginId(dataEntitySignals.getOriginId());
+            if (rootContainersMatching.size() != 0)
+            {
+                if (rootContainersMatching.size() == 1)
+                {
+                    matchedDataEntityInDatabase = rootContainersMatching.get(0);
+                }
+                else
+                {
+                    Logger.getGlobal().warning("WARNING: matched more than one element with origin ID " +
+                            dataEntitySignals.getOriginId());
+                }
+            }
+            else
+            {
+                // NOT_PRESENT
+                matchedDataEntityInDatabase = null;
+            }
         }
-        else
+        else  // Not a root container, query the children of the parent in DB for match
         {
-            dataEntitiesMatching = this.documentService.searchByOriginId(dataEntitySignals.getOriginId());
+            // The data entity to match is a container, query container for matches
+            if (dataEntitySignals instanceof Container)
+            {
+                Set<Container> childrenContainerFromParentInDatabase = parentInDatabase.getChildrenContainers();
+                List<Container> matchingContainers = childrenContainerFromParentInDatabase.stream().filter(
+                        (Container container) ->
+                        {
+                            return container.getOriginId().equals(dataEntitySignals.getOriginId());
+                        }
+                ).collect(Collectors.toList());
+                
+                if (rootContainersMatching.size() != 0)
+                {
+                    if (rootContainersMatching.size() == 1)
+                    {
+                        matchedDataEntityInDatabase = rootContainersMatching.get(0);
+                    }
+                    else
+                    {
+                        Logger.getGlobal().warning("WARNING: matched more than one element with origin ID " +
+                                dataEntitySignals.getOriginId());
+                    }
+                }
+                else
+                {
+                    // NOT_PRESENT
+                    matchedDataEntityInDatabase = null;
+                }
+            }
+
         }
 
         if (dataEntitiesMatching.size() != 0)
@@ -312,31 +363,4 @@ public class SignalsImportServiceImpl implements SignalsImportService {
             }
         }
     }
-
-
-
-    @Override
-    public void importEntity(DataEntity dataEntity) {}
-
-    @Override
-    public String importWorkspace(String APIKey) {
-        return null;
-    }
-
-    @Override
-    public String importWorkspace() {
-        return null;
-    }
-
-    @Override
-    public String importJournal(String APIKey, Serializable id) {
-        return null;
-    }
-
-    @Override
-    public String importJournal(Serializable id) {
-        return null;
-    }
-
-
 }
