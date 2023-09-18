@@ -144,6 +144,7 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
         dataverseDatasetMetadata.setDescription(containerToExport.getDescription());
         dataverseDatasetMetadata.setContactEmail(author.getUsername());
+
         // Subject metadata
         List<String> subjects = new ArrayList<>();
         subjects.add("Arts and Humanities");
@@ -151,6 +152,7 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         dataverseDatasetMetadata.setSubjects(subjects);
 
         // Call Dataverse API client to create dataset into the ICIQ Dataverse
+        Logger.getGlobal().warning("JSON message that is sent to server: " + dataverseDatasetMetadata);
         Identifier datasetDatabaseIdentifier = api.getDataverseOperations().createDataset(dataverseDatasetMetadata.toString(), "ICIQ");
 
         // Keep track of directory labels

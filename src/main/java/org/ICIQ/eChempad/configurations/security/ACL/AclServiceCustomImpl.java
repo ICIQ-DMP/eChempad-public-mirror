@@ -122,7 +122,7 @@ public class AclServiceCustomImpl implements AclService{
 
         // Create or update the relevant ACL
         MutableAcl acl;
-        Logger.getGlobal().warning("normal; type: " + objectIdentity.getType() + " id: " + objectIdentity.getIdentifier());
+        // Logger.getGlobal().warning("normal; type: " + objectIdentity.getType() + " id: " + objectIdentity.getIdentifier());
 
         try {
             // Logger.getGlobal().warning("The object identity is " + objectIdentity.toString());

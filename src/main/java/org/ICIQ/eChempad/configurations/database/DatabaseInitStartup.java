@@ -109,14 +109,28 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
             while (myReader.hasNextLine()) {
                 data.append(myReader.nextLine());
             }
+            DatabaseInitStartup.LOGGER.info("File target/classes/secrets/" + keyName + ".txt" + " found! Key is" +
+                    "loaded.");
             myReader.close();
         } catch (FileNotFoundException e) {
-            DatabaseInitStartup.LOGGER.info(
-                    "file " + keyName + " not found, " +
+            DatabaseInitStartup.LOGGER.warning(
+                    "File target/classes/secrets/" + keyName + ".txt not found, " +
                     "trying to obtain " + keyName + " from env.");
+
             // The file of the key does not exist, try from env variables
             String value = System.getenv(keyName);
-            data.append(value);
+
+            if (value == null)
+            {
+                DatabaseInitStartup.LOGGER.warning(
+                        "Environment property " + keyName + " not found. Key could not be loaded. Communication " +
+                                "with this third-party service will not be possible until the user loads it own key.");
+            }
+            else
+            {
+                data.append(value);
+                DatabaseInitStartup.LOGGER.info("Property " + keyName + " found!. Key is loaded.");
+            }
         }
         return data.toString();
     }
