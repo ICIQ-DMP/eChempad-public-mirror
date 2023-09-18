@@ -442,8 +442,6 @@ public class TreeComposer extends SelectorComposer<Window> {
 
         List<DefaultTreeNode<Entity>> journalNodesList = new ArrayList<DefaultTreeNode<Entity>>();
         List<Container> userContainers = this.containerService.findAll();
-        Logger.getGlobal().warning("Returned user containers " + userContainers.toString());
-
         for (Container container : userContainers) {
 
 
