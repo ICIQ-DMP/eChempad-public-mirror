@@ -144,12 +144,16 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
         dataverseDatasetMetadata.setDescription(containerToExport.getDescription());
         dataverseDatasetMetadata.setContactEmail(author.getUsername());
-
         // Subject metadata
         List<String> subjects = new ArrayList<>();
         subjects.add("Arts and Humanities");
         subjects.add("Medicine, Health and Life Sciences");
         dataverseDatasetMetadata.setSubjects(subjects);
+        // Language metadata
+        List<String> languages = new ArrayList<>();
+        subjects.add("Arts and Humanities");
+        subjects.add("Medicine, Health and Life Sciences");
+        dataverseDatasetMetadata.setLanguage(languages);
 
         // Call Dataverse API client to create dataset into the ICIQ Dataverse
         Logger.getGlobal().warning("JSON message that is sent to server: " + dataverseDatasetMetadata);
