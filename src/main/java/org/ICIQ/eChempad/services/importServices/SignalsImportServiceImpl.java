@@ -352,8 +352,11 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
                 this.expandContainerHierarchy((Container) dataEntitySignals, APIKey);
                 // Connect to parent
                 dataEntitySignals.setParent(parentInDatabase);
-                // Parent connects to the new subtree
-                parentInDatabase.getChildrenContainers().add((Container) dataEntitySignals);
+                if (parentInDatabase != null)  // Set children of parent if available
+                {
+                    // Parent connects to the new subtree
+                    parentInDatabase.getChildrenContainers().add((Container) dataEntitySignals);
+                }
                 // Save to database
                 this.containerService.save((Container) dataEntitySignals);
             }
@@ -367,8 +370,11 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
                 Document expanded = this.documentWrapperConverter.convertToDatabaseColumn(documentHelper);
                 // Connect to parent
                 expanded.setParent(parentInDatabase);
-                // Parent connects to the new subtree
-                parentInDatabase.getChildrenDocuments().add(expanded);
+                if (parentInDatabase != null)  // Set children of parent if available
+                {
+                    // Parent connects to the new subtree
+                    parentInDatabase.getChildrenDocuments().add(expanded);
+                }
                 // Save to database
                 this.documentService.save((Document) dataEntitySignals);
             }
