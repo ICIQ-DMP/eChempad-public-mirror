@@ -191,6 +191,19 @@ public class TreeComposer extends SelectorComposer<Window> {
         this.treeQueue.subscribe((EventListener) event -> {
             switch (event.getName()) {
                 case EventNames.MODIFY_ENTITY_PROPERTIES_EVENT: {
+                    Logger.getGlobal().warning(event.getData().getClass().getSimpleName().toString());
+                    if (event.getData().getClass().getSimpleName().equals("Container"))
+                    {
+                        this.containerService.save((Container) event.getData());
+                    }
+                    else if (event.getData().getClass().getSimpleName().equals("Document"))
+                    {
+                        this.documentService.save((Document) event.getData());
+                    }
+                    else
+                    {
+                        Logger.getGlobal().warning("not recognized type");
+                    }
                     this.unParseOverTreeCell((Entity) event.getData(), this.tree.getSelectedItem());
                     break;
                 }
