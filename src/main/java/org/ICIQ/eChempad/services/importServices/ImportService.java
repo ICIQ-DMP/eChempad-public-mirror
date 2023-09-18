@@ -61,6 +61,13 @@ public interface ImportService {
     void updateRootContainer(Container container, String APIKey);
 
     /**
+     * Updates the workspace of the current user.
+     *
+     * @param APIKey To authenticate requests.
+     */
+    void updateRootContainers(String APIKey);
+
+    /**
      * Expands the children of the received DataEntity by performing CRUD requests to read the children of this entity
      * in the origin platform. The children will be added to the DataEntity supplied by parameter. Only immediate
      * children will be expanded so further recursive uses will be needed to read the full hierarchy from the origin
@@ -70,7 +77,7 @@ public interface ImportService {
      *                   be added to this parameter to return the entities of the children.
      * @param APIKey API key to authenticate in the platform that we are importing from.
      */
-    void expandContainerChildren(Container container, String APIKey);
+    void expandContainerContainers(Container container, String APIKey);
 
     /**
      * Expands the children of an entity. If it is a container the entity will be expanded and the function will return
@@ -90,15 +97,6 @@ public interface ImportService {
      * @param APIKey API key used to authenticate the requests.
      */
     void expandContainerDocuments(Container container, String APIKey);
-
-    /**
-     * Expands the hierarchy of a container reading data from Signals assuming it is a root container
-     * (journal / notebook).
-     *
-     * @param container A data entity that represents a root container in the importing Signals instance.
-     * @param APIKey API key used to authenticate requests.
-     */
-    void expandRootContainer(Container container, String APIKey);
 
     /**
      * Expands the children of the received DataEntity recursively by performing CRUD requests to read the children of
@@ -131,4 +129,6 @@ public interface ImportService {
      * @param APIKey Key to authenticate requests to Signals.
      */
     void syncEntity(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey);
+
+
 }
