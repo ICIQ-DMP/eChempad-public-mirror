@@ -20,10 +20,13 @@
  */
 package org.ICIQ.eChempad.controllers;
 
-import org.ICIQ.eChempad.services.SignalsImportService;
+import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
+import org.ICIQ.eChempad.services.importServices.ImportService;
+import org.ICIQ.eChempad.services.importServices.SignalsImportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -45,40 +48,43 @@ import java.io.Serializable;
 @RequestMapping("/api/import/signals")
 public class SignalsImporterControllerImpl implements SignalsImporterController {
 
-    @Autowired
-    private SignalsImportService signalsImportService;
+    private final ImportService signalsImportService;
+
+    public SignalsImporterControllerImpl(ImportService signalsImportService) {
+        this.signalsImportService = signalsImportService;
+    }
 
     @Override
     @GetMapping(value = "/import")
     public ResponseEntity<String> importWorkspace() {
-        try {
-            return ResponseEntity.ok().body(this.signalsImportService.importWorkspace());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.ok().body("Data from this Signals account could not have been imported.");
+        String key = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getDataverseAPIKey();
+        this.signalsImportService.updateRootContainers(key);
+        return ResponseEntity.ok().body("FINISHED IMPORT");
     }
 
     @Override
     @GetMapping(value = "/importWithKey")
     public ResponseEntity<String> importWorkspace(@RequestHeader("x-api-key") String APIKey) {
-        try {
-            return ResponseEntity.ok().body(this.signalsImportService.importWorkspace(APIKey));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.ok().body("Data from this Signals account could not have been imported.");
+        this.signalsImportService.updateRootContainers(APIKey);
+        return ResponseEntity.ok().body("FINISHED IMPORT");
     }
 
     @Override
     @GetMapping(value = "/importJournal/{id}")
     public ResponseEntity<String> importJournal(@PathVariable(value = "id") Serializable eid) {
-        return ResponseEntity.ok(this.signalsImportService.importJournal(eid));
+        String key = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getDataverseAPIKey();
+        Container container = new Container();
+        container.setId(eid);
+        this.signalsImportService.updateRootContainer(container, key);
+        return ResponseEntity.ok("FINISHED IMPORT");
     }
 
     @Override
     @GetMapping(value = "/importJournalWithKey/{id}")
     public ResponseEntity<String> importJournal(@RequestHeader("x-api-key") String APIKey, @PathVariable(value = "id") Serializable eid) {
-        return ResponseEntity.ok(this.signalsImportService.importJournal(APIKey, eid));
+        Container container = new Container();
+        container.setId(eid);
+        this.signalsImportService.updateRootContainer(container, APIKey);
+        return ResponseEntity.ok("FINISHED IMPORT");
     }
 }
