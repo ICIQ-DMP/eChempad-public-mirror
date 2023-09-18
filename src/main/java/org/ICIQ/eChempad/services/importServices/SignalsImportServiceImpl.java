@@ -28,15 +28,16 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.services.DataEntityUpdateStateService;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
+import org.hibernate.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -67,7 +68,6 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
         this.signalsAPIService = signalsAPIService;
         this.signalsAPIParsingService = signalsAPIParsingService;
     }
-
 
     @Override
     public List<DataEntity> readRootEntities(String APIKey) {
@@ -106,7 +106,7 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
     }
 
     @Override
-    public void expandContainerChildren(Container dataEntity, String APIKey) {
+    public void expandContainerContainers(Container dataEntity, String APIKey) {
         ObjectNode containerChildrenJSON;
         int i = 0;
         Set<Container> children = new HashSet<>();
@@ -127,19 +127,6 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
             }
         }
         dataEntity.setChildrenContainers(children);
-    }
-
-    @Override
-    public boolean expandEntityChildren(DataEntity entity, String APIKey) {
-        if (entity instanceof Document)
-        {
-            return false;
-        }
-        else
-        {
-            this.expandContainerChildren((Container) entity, APIKey);
-            return true;
-        }
     }
 
     @Override
@@ -174,96 +161,84 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
     }
 
     @Override
-    public void expandRootContainer(Container container, String APIKey) {
-        // Expand experiment children
-        this.expandContainerChildren(container, APIKey);
-
-        // Expand documents
-        for (Container experiment : container.getChildrenContainers())
+    public boolean expandEntityChildren(DataEntity entity, String APIKey) {
+        if (entity instanceof Document)
         {
-            this.expandContainerDocuments(experiment, APIKey);
+            return false;
+        }
+        else
+        {
+            this.expandContainerContainers((Container) entity, APIKey);
+            this.expandContainerDocuments((Container) entity, APIKey);
+            return true;
         }
     }
 
     @Override
-    public void expandContainerHierarchy(Container container, String APIKey) {}
+    public void expandContainerHierarchy(Container container, String APIKey) {
+        this.expandEntityChildren(container, APIKey);
+        for (Container containerChild: container.getChildrenContainers())
+        {
+            this.expandContainerHierarchy(containerChild, APIKey);
+        }
+    }
 
     @Override
     public void updateRootContainer(Container container, String APIKey) {
-        List<Container> containersMatching = this.containerService.searchByOriginId(container.getOriginId());
-        if (containersMatching.size() != 0)
+        this.syncEntity(null, container, APIKey);
+    }
+
+    /**
+     * Flattens a list by returning the first element. This function is used statically by getSyncEntity.
+     *
+     * @param entities List of entities to flatten out.
+     * @return The DataEntity matched.
+     * @throws DuplicateKeyException Thrown exception if there is more than one match, which means there is more than
+     * one entity with the same originId.
+     */
+    private DataEntity getSyncEntityPrivateFlattenList(List<? extends DataEntity> entities) throws DuplicateKeyException
+    {
+        if (entities.size() != 0)
         {
-            // Get first occurrence (There should be only one occurrence)
-            Container containerMatching = containersMatching.get(0);
-            UpdateState updateState = this.dataEntityUpdateStateService.compareEntities(containerMatching, container);
-
-            Logger.getGlobal().warning("state:" + updateState.toString());
-            if (updateState == UpdateState.ORIGIN_HAS_CHANGES)
+            // The corresponding root container already exists in the DB
+            if (entities.size() == 1)
             {
-                /*
-                Set the primary key of the matching data entity of our db to the data entity that we are importing,
-                so Hibernate takes care of the update for us in the save method.
-                */
-                container.setId(containerMatching.getId());
-
-                // Update db entity
-                this.containerService.save(container);
+                return entities.get(0);
             }
-            else if (updateState == UpdateState.BOTH_HAVE_CHANGES)
+            else
             {
-                /*
-                We need to perform the travel algorithm through all the tree to determine the state of each
-                sub-container.
-                */
-
-
-                // TODO
-            }
-            else if (updateState == UpdateState.UP_TO_DATE)
-            {
-                Logger.getGlobal().warning("Entity is up to date, ignoring");
-            }
-            else if (updateState == UpdateState.ECHEMPAD_HAS_CHANGES)
-            {
-                Logger.getGlobal().warning("echempad has changes in the entity, ignoring import data");
+                Logger.getGlobal().warning("WARNING: matched more than one element with origin ID ");
+                throw new DuplicateKeyException("Duplicated key in origin ID");
             }
         }
-        else  // NOT_PRESENT
+        else
         {
-            // Save new data entity
-            this.expandRootContainer(container, APIKey);
-            this.containerService.save(container);
+            // The corresponding root container does not exist in the DB
+            return null;
         }
     }
 
-
-    @Override
-    public void syncEntity(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey) {
+    /**
+     * Returns the first matching entity in our database with the same originId as the supplied dataEntitySignals. This
+     * last variable is expected to be unmanaged by hibernate. Returns null if there is no match.
+     *
+     * @param parentInDatabase Parent in the database. This is the entity that we are querying for a match of its
+     *                         children.
+     * @param dataEntitySignals Data parsed from Signals not saved in the database (unmanaged)
+     * @return The managed DataEntity in our database with the same originId as the dataEntitySignals data supplied by
+     * parameter.
+     */
+    private DataEntity getSyncedEntity(Container parentInDatabase, DataEntity dataEntitySignals)
+    {
         /*
         Query database for the root containers that may already be present holding the last state of the data entity
         from Signals.
         */
-        DataEntity matchedDataEntityInDatabase;
         if (parentInDatabase == null) {
+            // No parent supplied, this is supposed to be a root container
             List<Container> rootContainersMatching;
             rootContainersMatching = this.containerService.searchByOriginId(dataEntitySignals.getOriginId());
-            if (rootContainersMatching.size() != 0)
-            {
-                if (rootContainersMatching.size() == 1)
-                {
-                    matchedDataEntityInDatabase = rootContainersMatching.get(0);
-                }
-                else
-                {
-                    Logger.getGlobal().warning("WARNING: matched more than one element with origin ID " +
-                            dataEntitySignals.getOriginId());
-                }
-            }
-            else
-            {
-                // NOT_PRESENT
-                matchedDataEntityInDatabase = null;
-            }
+            return this.getSyncEntityPrivateFlattenList(rootContainersMatching);
         }
         else  // Not a root container, query the children of the parent in DB for match
         {
@@ -277,34 +252,34 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
                             return container.getOriginId().equals(dataEntitySignals.getOriginId());
                         }
                 ).collect(Collectors.toList());
-                
-                if (rootContainersMatching.size() != 0)
-                {
-                    if (rootContainersMatching.size() == 1)
-                    {
-                        matchedDataEntityInDatabase = rootContainersMatching.get(0);
-                    }
-                    else
-                    {
-                        Logger.getGlobal().warning("WARNING: matched more than one element with origin ID " +
-                                dataEntitySignals.getOriginId());
-                    }
-                }
-                else
-                {
-                    // NOT_PRESENT
-                    matchedDataEntityInDatabase = null;
-                }
+                return this.getSyncEntityPrivateFlattenList(matchingContainers);
             }
-
+            else if (dataEntitySignals instanceof Document)
+            {
+                Set<Document> childrenDocumentFromParentInDatabase = parentInDatabase.getChildrenDocuments();
+                List<Document> matchingDocuments = childrenDocumentFromParentInDatabase.stream().filter(
+                        (Document document) ->
+                        {
+                            return document.getOriginId().equals(dataEntitySignals.getOriginId());
+                        }
+                ).collect(Collectors.toList());
+                return this.getSyncEntityPrivateFlattenList(matchingDocuments);
+            }
+            else
+            {
+                Logger.getGlobal().warning("Received unknown type in syncEntity");
+                throw new TypeMismatchException("unknown type\n");
+            }
         }
+    }
 
-        if (dataEntitiesMatching.size() != 0)
+    @Override
+    public void syncEntity(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey) {
+        DataEntity correspondingDatabaseDataEntity = this.getSyncedEntity(parentInDatabase, dataEntitySignals);
+        // Matched entity
+        if (correspondingDatabaseDataEntity != null)
         {
-            // Get first occurrence (There should be only one occurrence)
-            DataEntity dataEntity = dataEntitiesMatching.get(0);
-            UpdateState updateState = this.dataEntityUpdateStateService.compareEntities(dataEntity, dataEntitySignals);
-
+            UpdateState updateState = this.dataEntityUpdateStateService.compareEntities(correspondingDatabaseDataEntity, dataEntitySignals);
             Logger.getGlobal().warning("state:" + updateState.toString());
             if (updateState == UpdateState.ORIGIN_HAS_CHANGES)
             {
@@ -312,7 +287,7 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
                 Set the primary key of the matching data entity of our db to the data entity that we are importing,
                 so Hibernate takes care of the update for us in the save method.
                 */
-                dataEntitySignals.setId(dataEntity.getId());
+                dataEntitySignals.setId(correspondingDatabaseDataEntity.getId());
 
                 // Update db entity
                 this.containerService.save((Container) dataEntitySignals);
@@ -324,7 +299,41 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
                 sub-container.
                 */
 
-                // TODO
+                // 1 Expand children entities in dataEntitySignals
+                this.expandEntityChildren(dataEntitySignals, APIKey);
+                // 2 For each child propagate recursive call with its own parent
+                if (dataEntitySignals instanceof Container)
+                {
+                    /*
+                     If it is a container, we need to know if it is a terminal container (container that contains
+                     documents) or a regular container, which is a container that contains other containers. This is
+                     what the Signals specification tells us to do. But to give more flexibility we will check all cases
+                     at all times, so we can sync entities that do not have these limitations in its structure.
+                     */
+                    for (Document document: ((Container) dataEntitySignals).getChildrenDocuments())
+                    {
+                        // Propagate call
+                        this.syncEntity((Container) dataEntitySignals, document, APIKey);
+                    }
+                    for (Container container: ((Container) dataEntitySignals).getChildrenContainers())
+                    {
+                        // Propagate call
+                        this.syncEntity((Container) dataEntitySignals, container, APIKey);
+                    }
+                }
+                else if (dataEntitySignals instanceof Document)
+                {
+                    /*
+                     If the dataEntitySignals is a Document already present in the DB we do not need to do anything.
+                     This is actually an irreconcilable change
+                     */
+                    Logger.getGlobal().warning("In sync entity two document are found to have irreconcilable " +
+                            "changes");
+                }
+                else
+                {
+                    throw new TypeMismatchException("Received non-controlled type in sync entity");
+                }
             }
             else if (updateState == UpdateState.UP_TO_DATE)
             {
@@ -343,9 +352,9 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
                 this.expandContainerHierarchy((Container) dataEntitySignals, APIKey);
                 // Connect to parent
                 dataEntitySignals.setParent(parentInDatabase);
-                // Parent connect to the new subtree
+                // Parent connects to the new subtree
                 parentInDatabase.getChildrenContainers().add((Container) dataEntitySignals);
-
+                // Save to database
                 this.containerService.save((Container) dataEntitySignals);
             }
             else if (dataEntitySignals instanceof Document)
@@ -354,12 +363,14 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
                 DocumentWrapper documentHelper = new DocumentWrapper((Document) dataEntitySignals);
                 // Expand Document with Signals data
                 this.expandDocumentFile(documentHelper, APIKey);
+                // Convert to Document back
+                Document expanded = this.documentWrapperConverter.convertToDatabaseColumn(documentHelper);
                 // Connect to parent
-                documentHelper.setParent(parentInDatabase);
-                // Parent connect to the new subtree
-                //parentInDatabase.getChildrenDocuments().add(documentHelper);
-
-                this.containerService.save((Container) dataEntitySignals);
+                expanded.setParent(parentInDatabase);
+                // Parent connects to the new subtree
+                parentInDatabase.getChildrenDocuments().add(expanded);
+                // Save to database
+                this.documentService.save((Document) dataEntitySignals);
             }
         }
     }
