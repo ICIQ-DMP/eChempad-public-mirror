@@ -36,6 +36,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -273,12 +274,73 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
         }
     }
 
+    public Date computeLastEditionDate(DataEntity dataEntity, String APIKey)
+    {
+        return this.computeLastEditionDate(dataEntity, dataEntity.getLastEditionDate(), APIKey);
+    }
+
+    /**
+     * Receives a data entity and computes its real last edition date and returns it if it is more recent than the date
+     * received by parameter. If the entity has children, they are expanded and this same function is used to compute
+     * its last edition date. Finally, the most recent last edition date among all the children and the received
+     * parameter is what the function returns. If the received entity is a document no recursion calls are made and the
+     * returned date is the most recent date between the document and the received date.
+     *
+     * @param dataEntity DataEntity that we are querying in this recursive step.
+     * @param date Tail recursion data.
+     * @return The most recent date between the supplied date and the date of the entity or its children if present.
+     */
+    private Date computeLastEditionDate(DataEntity dataEntity, Date date, String APIKey)
+    {
+        // Choose most recent date between current entity and supplied
+        Date tail;
+        if (this.dataEntityUpdateStateService.compareDates(dataEntity.getOriginLastEditionDate(), date) > 0)
+        {
+            tail = dataEntity.getOriginLastEditionDate();
+        }
+        else
+        {
+            tail = date;
+        }
+
+        // Because of the implementation of the behaviour of the field "editedAt" in Signals, we are forced to get
+        // metadata of all tree to ensure that we are getting the last edition date. it does not matter that we have a
+        // supplied date higher than the lastEditionDate of the received entity.
+
+        // Expand children
+        this.expandEntityChildren(dataEntity, APIKey);
+
+        if (dataEntity instanceof Document)
+        {
+            // Base case, no recursive call
+            return tail;
+        }
+        else if (dataEntity instanceof Container)
+        {
+            for (DataEntity child: ((Container) dataEntity).getChildrenDocuments()) {
+                tail = this.computeLastEditionDate(child, tail, APIKey);
+            }
+
+            for (DataEntity child: ((Container) dataEntity).getChildrenContainers()) {
+                tail = this.computeLastEditionDate(child, tail, APIKey);
+            }
+        }
+        else
+        {
+            Logger.getGlobal().warning("Data entity is of unknown type " + dataEntity.getTypeName());
+        }
+        return tail;
+    }
+
     @Override
     public void syncEntity(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey) {
         DataEntity correspondingDatabaseDataEntity = this.getSyncedEntity(parentInDatabase, dataEntitySignals);
         // Matched entity
         if (correspondingDatabaseDataEntity != null)
         {
+            Logger.getGlobal().info("Computing date of " + dataEntitySignals);
+            Date lastEditionDate = this.computeLastEditionDate(dataEntitySignals, APIKey);
+            dataEntitySignals.setOriginLastEditionDate(lastEditionDate);
             UpdateState updateState = this.dataEntityUpdateStateService.compareEntities(correspondingDatabaseDataEntity, dataEntitySignals);
             Logger.getGlobal().warning("state:" + updateState.toString());
             if (updateState == UpdateState.ORIGIN_HAS_CHANGES)
