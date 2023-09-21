@@ -26,7 +26,7 @@ public class DataEntityUpdateStateServiceImpl implements DataEntityUpdateStateSe
 
     @Override
     public int compareDates(Date database, Date importing) {
-        return 0;
+        return database.compareTo(importing);
     }
 
     @Override
