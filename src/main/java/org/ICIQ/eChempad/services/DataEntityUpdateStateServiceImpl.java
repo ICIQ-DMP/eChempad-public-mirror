@@ -49,11 +49,13 @@ public class DataEntityUpdateStateServiceImpl implements DataEntityUpdateStateSe
             // Entity in Signals has not changed since its import
             if (simpleDateFormat.format(database.getOriginLastEditionDate()).equals(simpleDateFormat.format(importing.getOriginLastEditionDate())))
             {
+                Logger.getGlobal().warning("DB origin last edition date " + simpleDateFormat.format(database.getOriginLastEditionDate()) + " Importing origin last edition date " + simpleDateFormat.format(importing.getOriginLastEditionDate()));
+                Logger.getGlobal().warning("DB data: " + database);
+                Logger.getGlobal().warning("signals data: " + importing);
                 return UpdateState.UP_TO_DATE;
             }
             else
             {
-                Logger.getGlobal().warning("DB origin last edition date " + simpleDateFormat.format(database.getOriginLastEditionDate()) + " Importing origin last edition date " + simpleDateFormat.format(importing.getOriginLastEditionDate()));
                 return UpdateState.ORIGIN_HAS_CHANGES;
             }
         }
