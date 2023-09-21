@@ -78,10 +78,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	private Div itemDetailsDiv;
 
 	@Wire
-	private Label hiddenID;
-
-	@Wire
-	private Label currentSelectionTitle;
+	private Label ID;
 
 	@Wire
 	private Textbox name;
@@ -93,18 +90,6 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	private Label type;
 
 	@Wire
-	private Textbox path;
-
-	@Wire
-	private Listbox owner;
-
-	@Wire
-	private Listbox group;
-
-	@Wire
-	private Listbox permissions;
-
-	@Wire
 	private Textbox cDate;
 
 	@Wire
@@ -114,8 +99,30 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	private Textbox pDate;
 
 	@Wire
-	private Textbox conceptGroup;
-		
+	private Textbox originPlatform;
+
+	@Wire
+	private Textbox originId;
+
+	@Wire
+	private Textbox originType;
+
+	@Wire
+	private Textbox originCreationDate;
+
+	@Wire
+	private Textbox originLastEditionDate;
+
+	@Wire
+	private Textbox digest;
+
+	@Wire
+	private Textbox department;
+
+	@Wire
+	private Textbox originOwnerUsername;
+
+
 	@Wire
 	private Div operationButtonsLayout;
 
@@ -160,9 +167,8 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		this.itemDetailsRemoveButton.setDisabled(true);
 
 		// Assign default data to the item details component so the creation button has consistent data at startup
-		this.type.setValue("Journal");
 		this.cDate.setValue(new SimpleDateFormat().format(new Date()));
-		this.hiddenID.setValue(UUID.randomUUID().toString());
+		this.ID.setValue(UUID.randomUUID().toString());
 	}
 
 	/**
@@ -200,13 +206,12 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	public void displayEntityDetails(DataEntity entity)
 	{
 		// Load data into UI
-		this.hiddenID.setValue(entity.getId().toString());
+		this.ID.setValue(entity.getId().toString());
 		this.name.setValue(entity.getName());
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 		this.cDate.setValue(simpleDateFormat.format(entity.getCreationDate()));
 		this.description.setValue(entity.getDescription());
 		this.type.setValue(entity.getClass().getSimpleName());
-
 
 		// Enable delete and modification button
 		this.itemDetailsRemoveButton.setDisabled(false);
@@ -219,7 +224,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	public void clearDetails()
 	{
 		// Load data into UI
-		this.hiddenID.setValue(UUID.randomUUID().toString());
+		this.ID.setValue(UUID.randomUUID().toString());
 		this.name.setValue("");
 		this.cDate.setValue(new SimpleDateFormat().format(new Date()));
 		this.description.setValue("");
@@ -313,8 +318,8 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		entity.setName(this.name.getValue());
 		entity.setDescription(this.description.getValue());
 
-		Logger.getGlobal().warning("this.hiddenID.getId()" + this.hiddenID.getValue());
-		entity.setId(UUID.fromString(this.hiddenID.getValue()));
+		Logger.getGlobal().warning("this.hiddenID.getId()" + this.ID.getValue());
+		entity.setId(UUID.fromString(this.ID.getValue()));
 
 		return entity;
 	}
