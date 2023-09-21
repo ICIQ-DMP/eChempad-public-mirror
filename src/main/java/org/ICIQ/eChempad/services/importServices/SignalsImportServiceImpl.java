@@ -361,6 +361,7 @@ public class SignalsImportServiceImpl extends ImportServiceImpl implements Signa
                 sub-container.
                 */
 
+                Logger.getGlobal().warning("both have changes. db: " + correspondingDatabaseDataEntity.toString() + "\n signals: " + dataEntitySignals);
                 // 1 Expand children entities in dataEntitySignals
                 this.expandEntityChildren(dataEntitySignals, APIKey);
                 // 2 For each child propagate recursive call with its own parent
