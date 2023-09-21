@@ -89,6 +89,7 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     private void initializeDB()
     {
         DatabaseInitStartup.LOGGER.info("INITIALIZING DB");
+        this.initRegularResearcher();
         this.initAdminResearcher();
         DatabaseInitStartup.LOGGER.info("END INITIALIZING DB");
     }
@@ -163,39 +164,56 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
      * Initializes an admin researcher with data.
      */
     private void initAdminResearcher() {
+        List<String> authority_names = new ArrayList<>();
+        authority_names.add("ROLE_USER");
+        authority_names.add("ROLE_ADMIN");
+        Map<String, String> keys = new HashMap<>();
+        keys.put("SIGNALS_KEY", this.getDataverseAPIKey());
+        keys.put("DATAVERSE_KEY", this.getSignalsAPIKey());
 
+        this.initResearcher("eChempad@iciq.es", "chemistry", authority_names, keys);
+    }
+
+    private void initRegularResearcher()
+    {
+        List<String> authority_names = new ArrayList<>();
+        authority_names.add("ROLE_USER");
+
+        this.initResearcher("amarine@iciq.es", "iciqdmp", authority_names, new HashMap<>());
+    }
+
+    private void initResearcher(String username, String password, List<String> authority_names, Map<String, String> keys)
+    {
         // If we have the administrator already in the DB skip initialization
-        if (this.researcherService.loadUserByUsername("eChempad@iciq.es") != null)
+        if (this.researcherService.loadUserByUsername(username) != null)
             return;
 
-        // Init the admin user
+        // Init the regular user
         Researcher researcher = new Researcher();
 
-        researcher.setSignalsAPIKey(this.getSignalsAPIKey());
-        researcher.setDataverseAPIKey(this.getDataverseAPIKey());
+        researcher.setSignalsAPIKey(keys.get("SIGNALS_KEY"));
+        researcher.setDataverseAPIKey(keys.get("DATAVERSE_KEY"));
 
         researcher.setAccountNonExpired(true);
         researcher.setEnabled(true);
         researcher.setCredentialsNonExpired(true);
-        researcher.setPassword("chemistry");
-        researcher.setUsername("eChempad@iciq.es");
+        researcher.setPassword(password);
+        researcher.setUsername(username);
         researcher.setAccountNonLocked(true);
 
         HashSet<Authority> authorities = new HashSet<>();
-        authorities.add(new Authority("ROLE_ADMIN", researcher));
-        authorities.add(new Authority("ROLE_USER", researcher));
+        for (String authority_name : authority_names)
+        {
+            authorities.add(new Authority(authority_name, researcher));
+        }
         researcher.setAuthorities(authorities);
 
-        // If the user is not in the DB create it
         // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
         Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         // Save of the authority is cascaded
         this.researcherService.save(researcher);
-        
-        // Now create some data associated with this admin user
-        //this.initJournal();
     }
 
     /**

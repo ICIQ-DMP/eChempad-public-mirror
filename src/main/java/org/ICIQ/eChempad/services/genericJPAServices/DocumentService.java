@@ -22,6 +22,7 @@ package org.ICIQ.eChempad.services.genericJPAServices;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 
 import java.io.Serializable;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public interface DocumentService<T extends EntityImpl, S extends Serializable> extends GenericService<Document, UUID> {
+public interface DocumentService<T extends Entity, S extends Serializable> extends GenericService<Document, UUID> {
 
     /**
      * Adds a document to a certain experiment using the data in the document helper class and returns the new Document
