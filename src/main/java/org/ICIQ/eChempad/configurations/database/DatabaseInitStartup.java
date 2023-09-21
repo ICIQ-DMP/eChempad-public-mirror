@@ -89,8 +89,8 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     private void initializeDB()
     {
         DatabaseInitStartup.LOGGER.info("INITIALIZING DB");
-        this.initAdminResearcher();
         this.initRegularResearcher();
+        this.initAdminResearcher();
         DatabaseInitStartup.LOGGER.info("END INITIALIZING DB");
     }
 
