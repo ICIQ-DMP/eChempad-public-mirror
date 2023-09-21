@@ -51,21 +51,21 @@
 					<label id="hiddenID" value="" visible="false" />
 
 					<div sclass="row mb-1 item-details-row">
-						<n:label class="col-md-2 ">ID</n:label>
-						<label id="ID" value="" sclass="col-md-2" tooltiptext="Identifier in eChempad of this resource with a UUID"/>
+						<n:label class="col-md-2">ID</n:label>
+						<label id="ID" value="" sclass="col-md-6" tooltiptext="Identifier in eChempad of this resource with a UUID"/>
 
-						<n:label class="col-md-2 ">Type</n:label>
-						<textbox id="type" value="Container" sclass="form-control col-md-6" readonly="false" tooltiptext="Type of the selected resource. If 'create project' is pressed is the type of the new created project."/>
+						<n:label class="col-md-2">Type</n:label>
+						<textbox id="type" value="Container" sclass="form-control col-md-2" readonly="false" tooltiptext="Type of the selected resource. If 'create project' is pressed is the type of the new created project."/>
 					</div>
 
 					<div sclass="row mb-1 item-details-row">		
-						<n:label class="col-md-2 ">Name</n:label>
-			   			<textbox id="name" value="" sclass="form-control col-md-6" readonly="false" tooltiptext="Name of the selected resource. If 'create project' is pressed is the name of the new created project."/>
+						<n:label class="col-md-2">Name</n:label>
+			   			<textbox id="name" value="" sclass="form-control col-md-10" readonly="false" tooltiptext="Name of the selected resource. If 'create project' is pressed is the name of the new created project."/>
 					</div>
 
 					<div sclass="row mb-1 item-details-row">   			
-			 		    <n:label class="col-md-2 ">Description</n:label>
-				    	<textbox id="description" value="" sclass="form-control col-md-6" rows="2" readonly="false" tooltiptext="Description of the selected resource. If 'create project' is pressed, it's the description of the new project." />
+			 		    <n:label class="col-md-2">Description</n:label>
+				    	<textbox id="description" value="" sclass="form-control col-md-10" rows="2" readonly="false" tooltiptext="Description of the selected resource. If 'create project' is pressed, it's the description of the new project." />
 					</div>
 
 					<div sclass="row mb-1 item-details-row">
