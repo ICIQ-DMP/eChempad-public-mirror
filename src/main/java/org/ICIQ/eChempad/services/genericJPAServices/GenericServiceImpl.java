@@ -20,25 +20,19 @@
  */
 package org.ICIQ.eChempad.services.genericJPAServices;
 
-import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
-import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.GenericRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -183,19 +177,19 @@ public abstract class GenericServiceImpl<T extends Entity, S extends Serializabl
         genericRepository.deleteAll();
     }
 
-    public <S extends T> Optional<S> findOne(Example<S> example) {
+    public <S1 extends T> Optional<S1> findOne(Example<S1> example) {
         return genericRepository.findOne(example);
     }
 
-    public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S1 extends T> Page<S1> findAll(Example<S1> example, Pageable pageable) {
         return genericRepository.findAll(example, pageable);
     }
 
-    public <S extends T> long count(Example<S> example) {
+    public <S1 extends T> long count(Example<S1> example) {
         return genericRepository.count(example);
     }
 
-    public <S extends T> boolean exists(Example<S> example) {
+    public <S1 extends T> boolean exists(Example<S1> example) {
         return genericRepository.exists(example);
     }
 
