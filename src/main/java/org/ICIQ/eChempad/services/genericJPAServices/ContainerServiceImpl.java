@@ -42,7 +42,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service("containerService")
-public class ContainerServiceImpl<T extends EntityImpl, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
+public class ContainerServiceImpl<T extends Entity, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
 
     @Autowired
     public ContainerServiceImpl(ContainerRepository<T, S> containerRepository, AclServiceCustomImpl aclRepository) {

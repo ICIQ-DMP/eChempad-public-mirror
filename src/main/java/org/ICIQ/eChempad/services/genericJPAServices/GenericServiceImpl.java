@@ -23,6 +23,7 @@ package org.ICIQ.eChempad.services.genericJPAServices;
 import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.GenericRepository;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ import java.util.Optional;
 
 
 @Service
-public abstract class GenericServiceImpl<T extends EntityImpl, S extends Serializable> implements GenericService<T, S>{
+public abstract class GenericServiceImpl<T extends Entity, S extends Serializable> implements GenericService<T, S>{
 
     /**
      * Persistence context of the class. This provides extended programmatic capabilities to access the database data.
