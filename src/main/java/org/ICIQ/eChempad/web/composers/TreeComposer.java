@@ -27,7 +27,7 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.services.DataverseExportService;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
-import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
+import org.ICIQ.eChempad.services.EntityConversionService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.ICIQ.eChempad.web.renderers.JPAEntityTreeRenderer;
