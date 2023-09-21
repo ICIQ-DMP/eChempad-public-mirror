@@ -144,12 +144,15 @@ public class DataverseExportServiceImpl implements DataverseExportService {
         dataverseDatasetMetadata.setDatasetContactName(author.getUsername());
         dataverseDatasetMetadata.setDescription(containerToExport.getDescription());
         dataverseDatasetMetadata.setContactEmail(author.getUsername());
-
         // Subject metadata
         List<String> subjects = new ArrayList<>();
         subjects.add("Arts and Humanities");
         subjects.add("Medicine, Health and Life Sciences");
         dataverseDatasetMetadata.setSubjects(subjects);
+        // Language metadata
+        List<String> languages = new ArrayList<>();
+        languages.add("Afar");
+        dataverseDatasetMetadata.setLanguage(languages);
 
         // Call Dataverse API client to create dataset into the ICIQ Dataverse
         Logger.getGlobal().warning("JSON message that is sent to server: " + dataverseDatasetMetadata);
@@ -170,6 +173,8 @@ public class DataverseExportServiceImpl implements DataverseExportService {
                         .description(document.getDescription())
                         .directoryLabel(experiment.getName())
                         .build();
+                Logger.getGlobal().warning("The description of the doc is " + document.getDescription());
+
 
                 // TODO: when using iescofet experiments, when changing experiments a 400 error is found
                 try {
