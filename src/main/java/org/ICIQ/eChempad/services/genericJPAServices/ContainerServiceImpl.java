@@ -45,8 +45,8 @@ import java.util.logging.Logger;
 public class ContainerServiceImpl<T extends Entity, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
 
     @Autowired
-    public ContainerServiceImpl(ContainerRepository<T, S> containerRepository, AclServiceCustomImpl aclRepository) {
-        super(containerRepository, aclRepository);
+    public ContainerServiceImpl(ContainerRepository<T, S> containerRepository) {
+        super(containerRepository);
     }
 
     @Override

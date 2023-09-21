@@ -35,8 +35,8 @@ import java.util.UUID;
 public class AuthorityServiceImpl<T extends Entity, S extends Serializable> extends GenericServiceImpl<Authority, UUID> implements AuthorityService<Authority, UUID> {
 
     @Autowired
-    public AuthorityServiceImpl(AuthorityRepository<T, S> authorityRepository, AclServiceCustomImpl aclRepository) {
-        super(authorityRepository, aclRepository);
+    public AuthorityServiceImpl(AuthorityRepository<T, S> authorityRepository) {
+        super(authorityRepository);
     }
 }
 

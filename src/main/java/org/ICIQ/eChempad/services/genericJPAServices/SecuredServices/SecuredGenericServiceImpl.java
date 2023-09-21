@@ -1,28 +1,26 @@
 package org.ICIQ.eChempad.services.genericJPAServices.SecuredServices;
 
+import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
+import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Serializable> implements SecuredGenericService<T, S>{
@@ -37,9 +35,15 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
      */
     PermissionEvaluator permissionEvaluator;
 
-    public SecuredGenericServiceImpl(GenericService<T, S> genericService, PermissionEvaluator permissionEvaluator) {
+    /**
+     * The repository that performs the database manipulation regarding security and ACL state.
+     */
+    protected AclServiceCustomImpl aclService;
+
+    public SecuredGenericServiceImpl(GenericService<T, S> genericService, PermissionEvaluator permissionEvaluator, AclServiceCustomImpl aclService) {
         this.genericService = genericService;
         this.permissionEvaluator = permissionEvaluator;
+        this.aclService = aclService;
     }
 
     public SecuredGenericServiceImpl() {}
@@ -51,6 +55,7 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
 
     @Override
     public <S1 extends T> S1 save(S1 entity) {
+        S1 ret;
         if (this.genericService.existsById((S) entity.getId()))  // Exists in the db
         {
             if (this.permissionEvaluator.hasPermission(
@@ -58,7 +63,7 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
                     entity.getId(),
                     entity.getType().getCanonicalName(),
                     "WRITE")) {
-                return this.genericService.save(entity);
+                ret = this.genericService.save(entity);
             }
             else
             {
@@ -67,8 +72,25 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
         }
         else  // Does not exist, save directly
         {
-            return this.genericService.save(entity);
+            ret = this.genericService.save(entity);
         }
+
+        // Now add the permissions to this created entity
+        // If the entity is a DataEntity, set inheriting false if the parent is null, set to true otherwise. If set to
+        // true, the ACL of the parent has to be recovered.
+        boolean inheriting = entity instanceof DataEntity && ((DataEntity) entity).getParent() != null;
+
+        // Save all possible permission against the saved entity with the current logged user
+        @NotNull Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
+        while (iterator.hasNext()) {
+            this.aclService.addPermissionToUserInEntity(ret, iterator.next());
+        }
+
+        // Save all possible permission against the saved entity with the current logged user
+        // TODO: this line does not work because we do not support custom permissions, so we need to add a new row for
+        //  each permission that we want to add
+        //this.aclService.addPermissionToEntity(t, inheriting, PermissionBuilder.getFullPermissions(), null);
+        return ret;
     }
 
     @Override

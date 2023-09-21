@@ -59,17 +59,11 @@ public abstract class GenericServiceImpl<T extends Entity, S extends Serializabl
      */
     protected GenericRepository<T, S> genericRepository;
 
-    /**
-     * The repository that performs the database manipulation regarding security and ACL state.
-     */
-    protected AclServiceCustomImpl aclRepository;
-
     public GenericServiceImpl() {}
 
-    public GenericServiceImpl(GenericRepository<T, S> repository, AclServiceCustomImpl aclRepository)
+    public GenericServiceImpl(GenericRepository<T, S> repository)
     {
         this.genericRepository = repository;
-        this.aclRepository = aclRepository;
     }
 
     public Class<T> getEntityClass() {
@@ -86,23 +80,7 @@ public abstract class GenericServiceImpl<T extends Entity, S extends Serializabl
      * @return entity that has been saved
      */
     public <S1 extends T> S1 save(S1 entity) {
-        // Save it in the database
-        S1 t = genericRepository.save(entity);
-
-        // If the entity is a DataEntity, set inheriting false if the parent is null, set to true otherwise. If set to
-        // true, the ACL of the parent has to be recovered.
-        boolean inheriting = entity instanceof DataEntity && ((DataEntity) entity).getParent() != null;
-
-        // Save all possible permission against the saved entity with the current logged user
-        @NotNull Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
-        while (iterator.hasNext()) {
-            this.aclRepository.addPermissionToUserInEntity(t, iterator.next());
-        }
-
-        // Save all possible permission against the saved entity with the current logged user
-        this.aclRepository.addPermissionToEntity(t, inheriting, PermissionBuilder.getFullPermissions(), null);
-
-        return t;
+        return genericRepository.save(entity);
     }
 
     /**

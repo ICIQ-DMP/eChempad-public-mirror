@@ -1,5 +1,6 @@
 package org.ICIQ.eChempad.services.genericJPAServices.SecuredServices;
 
+import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,8 @@ import java.util.List;
 public class SecuredContainerService<T extends Container, S extends Serializable> extends SecuredGenericServiceImpl<T, S> implements SecuredGenericService<T, S>{
 
     @Autowired
-    public SecuredContainerService(@Qualifier("containerService") GenericService<T, S> genericService, PermissionEvaluator permissionEvaluator) {
-        super(genericService, permissionEvaluator);
+    public SecuredContainerService(@Qualifier("containerService") GenericService<T, S> genericService, PermissionEvaluator permissionEvaluator, AclServiceCustomImpl aclService) {
+        super(genericService, permissionEvaluator, aclService);
     }
 
     public SecuredContainerService() {
