@@ -31,6 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -86,6 +87,15 @@ public class AclServiceCustomImpl implements AclService{
         }
 
         this.addPermissionToEntity(entity,true, permission, username);
+    }
+
+    public void addPermissionsToEntity(Entity entity, boolean inheriting, Permission permission, String username)
+    {
+        Iterator<Permission> permissions = PermissionBuilder.getFullPermissionsIterator();
+        while (permissions.hasNext())
+        {
+            this.addPermissionToEntity(entity, inheriting, );
+        }
     }
 
     @Transactional

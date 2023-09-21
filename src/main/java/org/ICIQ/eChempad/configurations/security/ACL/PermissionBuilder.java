@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.CumulativePermission;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -72,7 +73,7 @@ public class PermissionBuilder{
         return this;
     }
 
-    public static Permission getFullPermissions()
+    public static Permission getFullPermission()
     {
         PermissionBuilder permissionBuilder = new PermissionBuilder();
         for (Permission p: PermissionBuilder.availablePermissions) {
@@ -80,6 +81,16 @@ public class PermissionBuilder{
         }
         return permissionBuilder.getPermission();
     }
+
+    public static List<Permission> getAllPermissions()
+    {
+        List<Permission> permissions = new ArrayList<>();
+        for (Permission p: PermissionBuilder.availablePermissions) {
+            permissions.add(p);
+        }
+        return permissions;
+    }
+
 
     /**
      * Returns an iterator over elements of type {@code T}.
