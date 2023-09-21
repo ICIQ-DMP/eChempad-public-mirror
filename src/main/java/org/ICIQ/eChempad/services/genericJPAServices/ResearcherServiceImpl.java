@@ -37,8 +37,8 @@ import java.util.UUID;
 public class ResearcherServiceImpl<T extends Entity, S extends Serializable>  extends GenericServiceImpl<Researcher, UUID> implements ResearcherService<Researcher, UUID> {
 
     @Autowired
-    public ResearcherServiceImpl(ResearcherRepository<T, S> researcherRepository, AclServiceCustomImpl aclRepository) {
-        super(researcherRepository, aclRepository);
+    public ResearcherServiceImpl(ResearcherRepository<T, S> researcherRepository) {
+        super(researcherRepository);
     }
 
     @Override
@@ -46,14 +46,6 @@ public class ResearcherServiceImpl<T extends Entity, S extends Serializable>  ex
         return ((ResearcherRepository<Researcher, UUID>) (super.genericRepository)).findByUsername(email);
     }
 
-    @Override
-    public <S1 extends Researcher> S1 save(S1 entity) {
-
-        // Save it in the database so the id field is set
-        S1 t = genericRepository.save(entity);
-
-        return t;
-    }
 }
 
 

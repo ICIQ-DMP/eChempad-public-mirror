@@ -4,6 +4,7 @@ import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Researcher;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.services.genericJPAServices.GenericService;
@@ -64,7 +65,7 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
                     entity.getType().getCanonicalName(),
                     "WRITE")) {
                 ret = this.genericService.save(entity);
-                // ACL permissions already present
+                return ret;
             }
             else
             {
@@ -81,20 +82,14 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
             // true, the ACL of the parent has to be recovered.
             boolean inheriting = entity instanceof DataEntity && ((DataEntity) entity).getParent() != null;
             // Save all possible permission against the saved entity with the current logged user
-            this.aclService.addPermissionToEntity(ret, inheriting, PermissionBuilder.getFullPermission(), null);
-        }
+            this.aclService.addPermissionsToEntity(
+                    ret,
+                    inheriting,
+                    PermissionBuilder.getAllPermissions(),
+                    ((Researcher) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 
-        // Save all possible permission against the saved entity with the current logged user
-        @NotNull Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
-        while (iterator.hasNext()) {
-            this.aclService.addPermissionToUserInEntity(ret, iterator.next());
+            return ret;
         }
-
-        // Save all possible permission against the saved entity with the current logged user
-        // TODO: this line does not work because we do not support custom permissions, so we need to add a new row for
-        //  each permission that we want to add
-        //this.aclService.addPermissionToEntity(t, inheriting, PermissionBuilder.getFullPermissions(), null);
-        return ret;
     }
 
     @Override

@@ -14,16 +14,4 @@ public class SecuredResearcherService<T extends Researcher, S extends Serializab
         return null;
     }
 
-    @Override
-    public <S1 extends Researcher> S1 save(S1 entity) {
-        S1 s1 = super.save(entity);
-
-        // Create ACL SID for the passed researcher
-        this.aclService.createAcl(new ObjectIdentityImpl(entity.getUsername(), entity.getId()));
-
-        // Save all possible permission against the saved entity with the current logged user
-        this.aclService.addPermissionToEntity(s1, true, PermissionBuilder.getFullPermission(), null);
-
-        return s1;
-    }
 }

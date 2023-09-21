@@ -52,9 +52,7 @@ public class DocumentServiceImpl<T extends Entity, S extends Serializable> exten
 
         // Set the journal of this experiment and sav experiment. Save is cascaded
         document.setParent(container);
-        Document documentDB = this.genericRepository.save(document);
-
-        return documentDB;
+        return this.genericRepository.save(document);
     }
 
 
@@ -79,5 +77,6 @@ public class DocumentServiceImpl<T extends Entity, S extends Serializable> exten
         Example<Document> example = Example.of(document, customExampleMatcher);
 
         // Execute query
-        return this.findAll(example);    }
+        return this.findAll(example);
+    }
 }

@@ -89,12 +89,11 @@ public class AclServiceCustomImpl implements AclService{
         this.addPermissionToEntity(entity,true, permission, username);
     }
 
-    public void addPermissionsToEntity(Entity entity, boolean inheriting, Permission permission, String username)
+    public void addPermissionsToEntity(Entity entity, boolean inheriting, List<Permission> permissions, String username)
     {
-        Iterator<Permission> permissions = PermissionBuilder.getFullPermissionsIterator();
-        while (permissions.hasNext())
+        for (Permission permission : permissions)
         {
-            this.addPermissionToEntity(entity, inheriting, );
+            this.addPermissionToEntity(entity, inheriting, permission, username);
         }
     }
 
