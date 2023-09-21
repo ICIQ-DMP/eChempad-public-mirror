@@ -27,7 +27,9 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.services.DataverseExportService;
 import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
-import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
+import org.ICIQ.eChempad.services.EntityConversionService;
+import org.ICIQ.eChempad.services.genericJPAServices.SecuredServices.SecuredContainerService;
+import org.ICIQ.eChempad.services.genericJPAServices.SecuredServices.SecuredDocumentService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.ICIQ.eChempad.web.renderers.JPAEntityTreeRenderer;
@@ -137,11 +139,11 @@ public class TreeComposer extends SelectorComposer<Window> {
      * a HTTP REST call. Develop a new layer of controllers that can be called programmatically and enforce security or
      * try to make work the controller layer that is already implemented programmatically.
      */
-    @WireVariable("containerService")
-    private ContainerService<Container, UUID> containerService;
+    @WireVariable("securedContainerService")
+    private SecuredContainerService<Container, UUID> containerService;
 
-    @WireVariable("documentService")
-    private DocumentService<Document, UUID> documentService;
+    @WireVariable("securedDocumentService")
+    private SecuredDocumentService<Document, UUID> documentService;
 
     @WireVariable("entityConversionService")
     private EntityConversionService entityConversionService;

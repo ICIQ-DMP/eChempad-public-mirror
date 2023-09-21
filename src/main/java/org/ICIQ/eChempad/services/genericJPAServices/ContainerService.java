@@ -36,7 +36,7 @@ import java.util.UUID;
  * Non-generic functions used to manipulate the in-memory data structures of the researchers. The generic calls are
  * provided in GenericServiceClass
  */
-public interface ContainerService<T extends EntityImpl, S extends Serializable> extends GenericService<Container, UUID> {
+public interface ContainerService<T extends Entity, S extends Serializable> extends GenericService<Container, UUID> {
 
     /**
      * Returns the children container of the container selected by the supplied UUID.

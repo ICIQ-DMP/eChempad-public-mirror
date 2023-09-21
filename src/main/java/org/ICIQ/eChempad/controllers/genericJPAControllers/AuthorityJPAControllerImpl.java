@@ -21,6 +21,7 @@
 package org.ICIQ.eChempad.controllers.genericJPAControllers;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Authority;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -36,7 +37,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/authority")
-public class AuthorityJPAControllerImpl<T extends EntityImpl, S extends Serializable> extends GenericJPAControllerImpl<Authority, UUID> implements AuthorityJPAController<Authority, UUID> {
+public class AuthorityJPAControllerImpl<T extends Entity, S extends Serializable> extends GenericJPAControllerImpl<Authority, UUID> implements AuthorityJPAController<Authority, UUID> {
 
     @Autowired
     public AuthorityJPAControllerImpl(AuthorityService<Authority, UUID> authorityService) {
