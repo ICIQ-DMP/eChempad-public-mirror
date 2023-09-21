@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -28,12 +28,12 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
     /**
      * Any service that fits the definition of generic service can be used by an inheriting class to protect it
      */
-    GenericService<T, S> genericService;
+    protected GenericService<T, S> genericService;
 
     /**
      * Custom permission evaluator used for our ACL infrastructure
      */
-    PermissionEvaluator permissionEvaluator;
+    protected PermissionEvaluator permissionEvaluator;
 
     /**
      * The repository that performs the database manipulation regarding security and ACL state.
@@ -64,6 +64,7 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
                     entity.getType().getCanonicalName(),
                     "WRITE")) {
                 ret = this.genericService.save(entity);
+                // ACL permissions already present
             }
             else
             {
@@ -73,12 +74,15 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
         else  // Does not exist, save directly
         {
             ret = this.genericService.save(entity);
+            // Create ACL SID for the passed entity
+            this.aclService.createAcl(new ObjectIdentityImpl(entity.getTypeName(), ret.getId()));
+            // Now add the permissions to this created entity
+            // If the entity is a DataEntity, set inheriting false if the parent is null, set to true otherwise. If set to
+            // true, the ACL of the parent has to be recovered.
+            boolean inheriting = entity instanceof DataEntity && ((DataEntity) entity).getParent() != null;
+            // Save all possible permission against the saved entity with the current logged user
+            this.aclService.addPermissionToEntity(ret, inheriting, PermissionBuilder.getFullPermission(), null);
         }
-
-        // Now add the permissions to this created entity
-        // If the entity is a DataEntity, set inheriting false if the parent is null, set to true otherwise. If set to
-        // true, the ACL of the parent has to be recovered.
-        boolean inheriting = entity instanceof DataEntity && ((DataEntity) entity).getParent() != null;
 
         // Save all possible permission against the saved entity with the current logged user
         @NotNull Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();

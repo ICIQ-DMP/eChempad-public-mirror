@@ -52,14 +52,6 @@ public class ResearcherServiceImpl<T extends Entity, S extends Serializable>  ex
         // Save it in the database so the id field is set
         S1 t = genericRepository.save(entity);
 
-        // Create ACL SID for the passed researcher
-        this.aclRepository.createAcl(
-                new ObjectIdentityImpl(entity.getUsername(), entity.getId())
-        );
-
-        // Save all possible permission against the saved entity with the current logged user
-        this.aclRepository.addPermissionToEntity(t, true, PermissionBuilder.getFullPermissions(), null);
-
         return t;
     }
 }
