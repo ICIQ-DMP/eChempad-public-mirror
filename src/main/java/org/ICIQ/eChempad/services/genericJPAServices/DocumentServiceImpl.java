@@ -41,8 +41,8 @@ import java.util.UUID;
 public class DocumentServiceImpl<T extends Entity, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository<T, S> documentRepository, AclServiceCustomImpl aclRepository) {
-        super(documentRepository, aclRepository);
+    public DocumentServiceImpl(DocumentRepository<T, S> documentRepository) {
+        super(documentRepository);
     }
     
     @Override
@@ -53,9 +53,6 @@ public class DocumentServiceImpl<T extends Entity, S extends Serializable> exten
         // Set the journal of this experiment and sav experiment. Save is cascaded
         document.setParent(container);
         Document documentDB = this.genericRepository.save(document);
-
-        // Add all permissions to document for the current user, and set also inheriting entries for parent experiment
-        this.aclRepository.addPermissionToEntity(documentDB, true, PermissionBuilder.getFullPermissions(), null);
 
         return documentDB;
     }
