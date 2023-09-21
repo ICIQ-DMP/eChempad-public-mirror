@@ -20,6 +20,7 @@
  */
 package org.ICIQ.eChempad.services.genericJPAServices;
 
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Example;
@@ -56,7 +57,7 @@ import java.util.Optional;
  * Contains all methods delegated to the genericRepository class and a genericRepository. This class can be extended
  * bounding an entity to an inheriting class in order to add the necessary business logic in the application.
  */
-public interface GenericService<T extends EntityImpl, S extends Serializable> extends JpaRepository<T, S> {
+public interface GenericService<T extends Entity, S extends Serializable> extends JpaRepository<T, S> {
 
     /**
      * return the entity class of this generic repository.

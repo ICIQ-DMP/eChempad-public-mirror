@@ -38,7 +38,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service("documentService")
-public class DocumentServiceImpl<T extends EntityImpl, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
+public class DocumentServiceImpl<T extends Entity, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
 
     @Autowired
     public DocumentServiceImpl(DocumentRepository<T, S> documentRepository, AclServiceCustomImpl aclRepository) {
