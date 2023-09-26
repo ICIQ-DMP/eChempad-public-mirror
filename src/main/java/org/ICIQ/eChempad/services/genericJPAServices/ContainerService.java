@@ -24,8 +24,11 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,7 +36,7 @@ import java.util.UUID;
  * Non-generic functions used to manipulate the in-memory data structures of the researchers. The generic calls are
  * provided in GenericServiceClass
  */
-public interface ContainerService<T extends EntityImpl, S extends Serializable> extends GenericService<Container, UUID> {
+public interface ContainerService<T extends Entity, S extends Serializable> extends GenericService<Container, UUID> {
 
     /**
      * Returns the children container of the container selected by the supplied UUID.
@@ -80,4 +83,12 @@ public interface ContainerService<T extends EntityImpl, S extends Serializable> 
      * @param uuid_container UUID that identifies the container.
      */
     void addEntitiesToContainer(Set<Entity> newChildren, UUID uuid_container);
+
+    /**
+     * Searches in the Database the containers that have the same originId as the supplied in the arguments.
+     *
+     * @param originId The value that containers need to have in their originId field to match the search
+     * @return The list of containers that match the search
+     */
+    List<Container> searchByOriginId(String originId);
 }

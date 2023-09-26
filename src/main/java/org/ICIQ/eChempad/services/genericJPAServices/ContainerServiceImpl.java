@@ -29,21 +29,24 @@ import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.ContainerRepository;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service("containerService")
-public class ContainerServiceImpl<T extends EntityImpl, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
+public class ContainerServiceImpl<T extends Entity, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
 
     @Autowired
-    public ContainerServiceImpl(ContainerRepository<T, S> containerRepository, AclServiceCustomImpl aclRepository) {
-        super(containerRepository, aclRepository);
+    public ContainerServiceImpl(ContainerRepository<T, S> containerRepository) {
+        super(containerRepository);
     }
 
     @Override
@@ -87,5 +90,23 @@ public class ContainerServiceImpl<T extends EntityImpl, S extends Serializable> 
     public void addEntitiesToContainer(Set<Entity> newChildren, UUID uuid_container) {
         Set<Entity> children = this.getChildren(uuid_container);
         children.addAll(newChildren);
+    }
+
+    @Override
+    public List<Container> searchByOriginId(String originId) {
+        // Create matcher for the originId
+        ExampleMatcher customExampleMatcher = ExampleMatcher.matchingAny()
+                .withMatcher("originId", ExampleMatcher.GenericPropertyMatchers.exact().caseSensitive());
+
+        /*
+         Create an empty container with the originId to match the entities with same originId from our database using
+         the "example" query method
+         */
+        Container containerExample = new Container();
+        containerExample.setOriginId(originId);
+        Example<Container> example = Example.of(containerExample, customExampleMatcher);
+
+        // Execute query
+        return this.findAll(example);
     }
 }
