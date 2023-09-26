@@ -57,7 +57,7 @@
 
 
                         <n:div class="dropdown-divider d-sm-block d-md-none"/>
-                        <n:a class="dropdown-item text-left" href="https://github.com/AleixMT/eChempad/issues">
+                        <n:a class="dropdown-item text-left" href="https://github.com/ICIQ-DMP/eChempad-public-mirror/issues">
                             Report bug
                             <n:i class="fa fa-exclamation-circle" style="margin-left: 80px"/>
                         </n:a>
