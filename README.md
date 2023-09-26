@@ -37,9 +37,9 @@ data life-cycle of experiments and assays from Experimental Chemistry and relate
     <br />
     <a href="https://echempad.iciq.es">View Demo</a>
     ·
-    <a href="https://github.com/AleixMT/eChempad/issues/new">Report Bug</a>
+    <a href="https://github.com/ICIQ-DMP/eChempad-public-mirror/issues/new">Report Bug</a>
     ·
-    <a href="https://github.com/AleixMT/eChempad/issues/new">Request Feature</a>
+    <a href="https://github.com/ICIQ-DMP/eChempad-public-mirror/issues/new">Request Feature</a>
   </p>
 </div>
 
@@ -141,7 +141,7 @@ Assuming that you have them installed on your machine, use these commands to pul
 [eChempad docker image](https://hub.docker.com/r/aleixmt/echempad) and [postgreSQL](https://hub.docker.com/_/postgres)
 to run them in containers:
 ```shell
-wget https://raw.githubusercontent.com/AleixMT/eChempad/master/docker-compose.yaml
+wget https://raw.githubusercontent.com/ICIQ-DMP/eChempad-public-mirror/master/docker-compose.yaml
 sudo docker-compose up -d
 ```
 
@@ -238,7 +238,7 @@ _For more examples, please refer to the [user guide](https://iciq-dmp.github.io/
 - [ ] Integrate API abstractions into the front-end
 - [ ] Create usage example in the readme
 
-See the [open issues](https://github.com/AleixMT/eChempad/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/ICIQ-DMP/eChempad-public-mirror/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -250,22 +250,22 @@ This is an open-source project, so any contributions are **greatly appreciated**
 the [`Developer guide`](https://iciq-dmp.github.io/eChempad/Developer-Guide/) to understand how eChempad works.
 
 If you have an issue or suggestion that would make eChempad better, please 
-[open a new issue](https://github.com/AleixMT/eChempad/issues/new) explaining your inquiry. We will try to satisfy your 
+[open a new issue](https://github.com/ICIQ-DMP/eChempad-public-mirror/issues/new) explaining your inquiry. We will try to satisfy your 
 needs as soon as possible. 
 
 If you want to make a contribution to eChempad by yourself, please 
-[open a new issue](https://github.com/AleixMT/eChempad/issues/new) so we can discuss the reach of your contribution. 
-After that, [fork the repo](https://github.com/AleixMT/eChempad/fork), implement your change and create a 
-[pull request](https://github.com/AleixMT/eChempad/compare) from your fork to the `develop` branch. We will merge your 
+[open a new issue](https://github.com/ICIQ-DMP/eChempad-public-mirror/issues/new) so we can discuss the reach of your contribution. 
+After that, [fork the repo](https://github.com/ICIQ-DMP/eChempad-public-mirror/fork), implement your change and create a 
+[pull request](https://github.com/ICIQ-DMP/eChempad-public-mirror/compare) from your fork to the `develop` branch. We will merge your 
 changes as soon as possible, so they are available in the next releases of eChempad.
 
 So, for each change that you want to do to eChempad by yourself, you will need to:
-1. [Fork the repo](https://github.com/AleixMT/eChempad/fork).
+1. [Fork the repo](https://github.com/ICIQ-DMP/eChempad-public-mirror/fork).
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
 3. Add and commit your Changes (`git add src; git commit -am 'Add some AmazingFeature'`).
 4. Push to the Branch (`git push origin feature/AmazingFeature`).
 5. Repeat steps 3 and 4 as many times as you need.
-6. [Open a pull request from your fork to the develop branch](https://github.com/AleixMT/eChempad/compare).
+6. [Open a pull request from your fork to the develop branch](https://github.com/ICIQ-DMP/eChempad-public-mirror/compare).
 7. Repeat steps 3 and 4 if further changes are required.
 
 Do not forget to give the project a star ⭐ on GitHub!
@@ -279,8 +279,8 @@ Do not forget to give the project a star ⭐ on GitHub!
 ![APGLv3 logo](https://www.gnu.org/graphics/agplv3-with-text-162x68.png "GNU AFFERO GENERAL PUBLIC LICENSE, Version 3")
 
 Distributed under the [GNU AFFERO GENERAL PUBLIC LICENSE, Version 3](https://www.gnu.org/licenses/agpl-3.0.en.html). 
-See [`LICENSE`](https://github.com/AleixMT/eChempad/blob/master/LICENSE) to obtain a copy of the therms of this license.
-See also [`LICENSE.md`](https://github.com/AleixMT/eChempad/blob/master/LICENSE.md) for more information about the 
+See [`LICENSE`](https://github.com/ICIQ-DMP/eChempad-public-mirror/blob/master/LICENSE) to obtain a copy of the therms of this license.
+See also [`LICENSE.md`](https://github.com/ICIQ-DMP/eChempad-public-mirror/blob/master/LICENSE.md) for more information about the 
 licensing state of this project.
 
 This software was developed by [Aleix Mariné-Tena](https://github.com/AleixMT) using a grant of [*Personal Técnico de
@@ -380,38 +380,38 @@ application and other services related with the ICIQ digitalization.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[forks-shield]: https://img.shields.io/github/forks/AleixMT/eChempad.svg?style=for-the-badge&label=Fork&maxAge=2592000  
-[forks-url]: https://github.com/AleixMT/eChempad/network/members
-[license-shield]: https://img.shields.io/github/license/AleixMT/eChempad?style=flat-square&color=darkgreen&logo=gnu
-[license-url]: https://github.com/AleixMT/eChempad/blob/master/LICENSE.md
+[forks-shield]: https://img.shields.io/github/forks/ICIQ-DMP/eChempad-public-mirror.svg?style=for-the-badge&label=Fork&maxAge=2592000  
+[forks-url]: https://github.com/ICIQ-DMP/eChempad-public-mirror/network/members
+[license-shield]: https://img.shields.io/github/license/ICIQ-DMP/eChempad-public-mirror?style=flat-square&color=darkgreen&logo=gnu
+[license-url]: https://github.com/ICIQ-DMP/eChempad-public-mirror/blob/master/LICENSE.md
 [product-screenshot]: .github/images/home_full-screenshot.png
 [login-screenshot]: .github/images/login-screenshot.png
 [home-empty-screenshot]: .github/images/home_empty-screenshot.png
 
 [codacy-shield]: https://app.codacy.com/project/badge/Grade/9d77f6c73bab4a11b847d131146fc243
-[codacy-url]: https://app.codacy.com/gh/AleixMT/eChempad/dashboard
-[language-shield]: https://img.shields.io/github/languages/top/AleixMT/eChempad?style=flat-square&color=yellow&logo=oracle
+[codacy-url]: https://app.codacy.com/gh/ICIQ-DMP/eChempad-public-mirror/dashboard
+[language-shield]: https://img.shields.io/github/languages/top/ICIQ-DMP/eChempad-public-mirror?style=flat-square&color=yellow&logo=oracle
 [language-url]: https://www.java.com/es/
-[loc-shield]: https://img.shields.io/tokei/lines/github/AleixMT/eChempad
-[loc-url]: https://github.com/AleixMT/eChempad
-[commit-shield]: https://img.shields.io/github/last-commit/AleixMT/eChempad/develop?style=flat-square&logo=github
-[commit-url]: https://github.com/AleixMT/eChempad/issues
-[activity-shield]: https://img.shields.io/github/commit-activity/y/AleixMT/eChempad?style=flat-square&color=black&logo=github
-[activity-url]: https://github.com/AleixMT/eChempad/graphs/commit-activity
+[loc-shield]: https://img.shields.io/tokei/lines/github/ICIQ-DMP/eChempad-public-mirror
+[loc-url]: https://github.com/ICIQ-DMP/eChempad-public-mirror
+[commit-shield]: https://img.shields.io/github/last-commit/ICIQ-DMP/eChempad-public-mirror/develop?style=flat-square&logo=github
+[commit-url]: https://github.com/ICIQ-DMP/eChempad-public-mirror/issues
+[activity-shield]: https://img.shields.io/github/commit-activity/y/ICIQ-DMP/eChempad-public-mirror?style=flat-square&color=black&logo=github
+[activity-url]: https://github.com/ICIQ-DMP/eChempad-public-mirror/graphs/commit-activity
 [docker-size-shield]: https://img.shields.io/docker/image-size/aleixmt/echempad/latest?style=flat-square&color=purple&logo=docker
 [docker-size-url]: https://hub.docker.com/r/aleixmt/echempad
-[repo-size-shield]: https://img.shields.io/github/repo-size/AleixMT/eChempad?style=flat-square&logo=github
-[repo-size-url]: https://github.com/AleixMT/eChempad
-[language-count-shield]: https://img.shields.io/github/languages/count/AleixMT/eChempad?style=flat-square&color=red&logo=github
-[language-count-url]: https://github.com/AleixMT/eChempad
+[repo-size-shield]: https://img.shields.io/github/repo-size/ICIQ-DMP/eChempad-public-mirror?style=flat-square&logo=github
+[repo-size-url]: https://github.com/ICIQ-DMP/eChempad-public-mirror
+[language-count-shield]: https://img.shields.io/github/languages/count/ICIQ-DMP/eChempad-public-mirror?style=flat-square&color=red&logo=github
+[language-count-url]: https://github.com/ICIQ-DMP/eChempad-public-mirror
 [website-documentation-shield]: https://img.shields.io/website?url=https%3A%2F%2Ficiq-dmp.github.io%2F&style=flat-square&logo=jekyll&label=Digitalization%20documentation%20website
 [website-documentation-url]: https://iciq-dmp.github.io/
 [website-echempad-shield]: https://img.shields.io/website?url=https%3A%2F%2Fechempad.iciq.cat%2Flogin&style=flat-square&logo=icinga&label=eChempad%20website
 [website-echempad-url]: https://echempad.iciq.cat
 [CD-pipeline-shield]: https://img.shields.io/github/actions/workflow/status/aleixmt/echempad/docker-image.yml?style=flat-square&logo=docker&label=CD%20pipeline
-[CD-pipeline-url]: https://github.com/AleixMT/eChempad/actions/workflows/docker-image.yml
+[CD-pipeline-url]: https://github.com/ICIQ-DMP/eChempad-public-mirror/actions/workflows/docker-image.yml
 [coverage-shield]: https://img.shields.io/codecov/c/github/aleixmt/echempad/master?logo=codecov
-[coverage-url]: https://app.codecov.io/gh/AleixMT/eChempad
+[coverage-url]: https://app.codecov.io/gh/ICIQ-DMP/eChempad-public-mirror
 
 [Bootstrap-shield]: https://img.shields.io/badge/Bootstrap-4.6.1-white?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com 
