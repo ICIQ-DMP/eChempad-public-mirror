@@ -65,6 +65,6 @@ jobs:
       - uses: pixta-dev/repository-mirroring-action@v1
         with:
           target_repo_url:
-            git@github.com:ICIQ-DMP/eChempad-public-mirror
+            git@github.com:ICIQ-DMP/eChempad-public-mirror.git
           ssh_private_key:                              # <-- use 'secrets' to pass credential information.
             ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}       # <-- the corresponding public key is also stored in github, not only gitlab, so they can use the same private token
