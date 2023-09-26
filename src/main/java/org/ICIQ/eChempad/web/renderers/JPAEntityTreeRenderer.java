@@ -56,7 +56,18 @@ public class JPAEntityTreeRenderer implements TreeitemRenderer<DefaultTreeNode<E
         tr.appendChild(new Treecell(fi.getDescription()));
 
         // Append item type
-        tr.appendChild(new Treecell(fi.getClass().getSimpleName()));
+        if (fi.getClass().getSimpleName().equals("Container"))
+        {
+            tr.appendChild(new Treecell("Container"));
+        }
+        else if (fi.getOriginType() != null)
+        {
+            tr.appendChild(new Treecell("Document (" + fi.getOriginType() + ")"));
+        }
+        else
+        {
+            tr.appendChild(new Treecell("Document "));
+        }
 
         // Append the date
         SimpleDateFormat dateFormatter = new SimpleDateFormat();

@@ -102,6 +102,17 @@ public class DataverseDatasetMetadataImpl implements DataverseDatasetMetadata{
         ((ObjectNode) this.json.with("datasetVersion").with("metadataBlocks").with("citation").withArray("fields").get(4)).set("value", array);
     }
 
+    @Override
+    public void setLanguage(List<String> languages) {
+        ArrayNode array = new ObjectMapper().createArrayNode();
+
+        for (String language : languages)
+        {
+            array.add(language);
+        }
+        ((ObjectNode) this.json.with("datasetVersion").with("metadataBlocks").with("citation").withArray("fields").get(5)).set("value", array);
+    }
+
     public void setJson(ObjectNode json) {
         this.json = json;
     }

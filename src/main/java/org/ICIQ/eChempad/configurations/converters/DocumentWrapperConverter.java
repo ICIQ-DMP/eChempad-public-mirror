@@ -21,6 +21,8 @@
 package org.ICIQ.eChempad.configurations.converters;
 
 import org.ICIQ.eChempad.entities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
+import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntityImpl;
 import org.ICIQ.eChempad.services.LobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -88,11 +90,7 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
 
         DocumentWrapper documentWrapper = new DocumentWrapper();
 
-        documentWrapper.setId(document.getId());
-        documentWrapper.setName(document.getName());
-        documentWrapper.setDescription(document.getDescription());
-        documentWrapper.setCreationDate(document.getCreationDate());
-        documentWrapper.setId(document.getId());
+        DataEntityImpl.copyProperties(document, documentWrapper);
 
         MultipartFile multipartFile = null;
         try {
@@ -119,11 +117,8 @@ public class DocumentWrapperConverter implements AttributeConverter<DocumentWrap
     public org.ICIQ.eChempad.entities.genericJPAEntities.Document convertToDatabaseColumn(DocumentWrapper documentWrapper) {
         org.ICIQ.eChempad.entities.genericJPAEntities.Document document = new org.ICIQ.eChempad.entities.genericJPAEntities.Document();
 
-        document.setId(documentWrapper.getId());
-        document.setName(documentWrapper.getName());
-        document.setDescription(documentWrapper.getDescription());
-        document.setCreationDate(documentWrapper.getCreationDate());
-        document.setId(documentWrapper.getId());
+        DataEntityImpl.copyProperties(documentWrapper, document);
+
         document.setContentType(documentWrapper.getContentType());
         document.setFileSize(documentWrapper.getSize());
         document.setOriginalFilename(documentWrapper.getOriginalFilename());

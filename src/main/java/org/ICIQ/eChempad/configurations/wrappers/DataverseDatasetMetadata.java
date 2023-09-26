@@ -37,4 +37,6 @@ public interface DataverseDatasetMetadata {
     void setDescription(String description);
 
     void setSubjects(List<String> categories);
+
+    void setLanguage(List<String> languages);
 }

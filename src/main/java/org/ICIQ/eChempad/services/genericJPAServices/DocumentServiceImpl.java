@@ -27,18 +27,22 @@ import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 @Service("documentService")
-public class DocumentServiceImpl<T extends EntityImpl, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
+public class DocumentServiceImpl<T extends Entity, S extends Serializable> extends GenericServiceImpl<Document, UUID> implements DocumentService<Document, UUID> {
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository<T, S> documentRepository, AclServiceCustomImpl aclRepository) {
-        super(documentRepository, aclRepository);
+    public DocumentServiceImpl(DocumentRepository<T, S> documentRepository) {
+        super(documentRepository);
     }
     
     @Override
@@ -48,12 +52,7 @@ public class DocumentServiceImpl<T extends EntityImpl, S extends Serializable> e
 
         // Set the journal of this experiment and sav experiment. Save is cascaded
         document.setParent(container);
-        Document documentDB = this.genericRepository.save(document);
-
-        // Add all permissions to document for the current user, and set also inheriting entries for parent experiment
-        this.aclRepository.addPermissionToEntity(documentDB, true, PermissionBuilder.getFullPermissions(), null);
-
-        return documentDB;
+        return this.genericRepository.save(document);
     }
 
 
@@ -63,4 +62,21 @@ public class DocumentServiceImpl<T extends EntityImpl, S extends Serializable> e
         return super.entityManager.find(Container.class, container_uuid).getChildrenDocuments();
     }
 
+    @Override
+    public List<Document> searchByOriginId(String originId) {
+        // Create matcher for the originId
+        ExampleMatcher customExampleMatcher = ExampleMatcher.matchingAny()
+                .withMatcher("originId", ExampleMatcher.GenericPropertyMatchers.exact().caseSensitive());
+
+        /*
+         Create an empty container with the originId to match the entities with same originId from our database using
+         the "example" query method
+         */
+        Document document = new Document();
+        document.setOriginId(originId);
+        Example<Document> example = Example.of(document, customExampleMatcher);
+
+        // Execute query
+        return this.findAll(example);
+    }
 }
