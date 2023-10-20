@@ -32,7 +32,7 @@ public class CasSecuredApplication {
     public ServiceProperties serviceProperties() {
         Logger.getGlobal().info("service properties");
         ServiceProperties serviceProperties = new ServiceProperties();
-        serviceProperties.setService("http://localhost:8900/login/cas");
+        serviceProperties.setService("http://localhost:8081/login/cas");
         serviceProperties.setSendRenew(false);
         return serviceProperties;
     }
@@ -52,7 +52,7 @@ public class CasSecuredApplication {
         provider.setUserDetailsService(
                 s -> new User("casuser", "Mellon", true, true, true, true,
                         AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
-        provider.setKey("CAS_PROVIDER_LOCALHOST_8900");
+        provider.setKey("CAS_PROVIDER_LOCALHOST_8081");
         return provider;
     }
 
