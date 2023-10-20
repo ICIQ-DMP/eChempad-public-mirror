@@ -168,8 +168,8 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         authority_names.add("ROLE_USER");
         authority_names.add("ROLE_ADMIN");
         Map<String, String> keys = new HashMap<>();
-        keys.put("SIGNALS_KEY", this.getDataverseAPIKey());
-        keys.put("DATAVERSE_KEY", this.getSignalsAPIKey());
+        keys.put("SIGNALS_KEY", this.getSignalsAPIKey());
+        keys.put("DATAVERSE_KEY", this.getDataverseAPIKey());
 
         this.initResearcher("eChempad@iciq.es", "chemistry", authority_names, keys);
     }
