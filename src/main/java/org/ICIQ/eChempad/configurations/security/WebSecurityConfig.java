@@ -20,12 +20,15 @@
  */
 package org.ICIQ.eChempad.configurations.security;
 
+import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
+import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -143,7 +146,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .mvcMatchers(anonymousPages).permitAll()
                     // Only allow authenticated users in the ZK main page and in the API endpoints
                     .mvcMatchers(authenticatedPages).hasRole("USER")
-                    // Any other requests has to be authenticated too
+                    // Any other requests have to be authenticated too
                     .anyRequest().authenticated()
 
                 // Creates the http form login in the default URL /login· The first parameter is a string corresponding
@@ -157,7 +160,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .logout()
                     .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login");  // After logout, redirect to login page
+                    .logoutSuccessUrl("/login")  // After logout, redirect to login page
+
+                // Integration with CAS
+                .and()
+                .exceptionHandling().authenticationEntryPoint(new CasAuthenticationEntryPoint())
+                .and()
+                .addFilterBefore(new SingleSignOutFilter(), CasAuthenticationFilter.class);
+
     }
 
 
