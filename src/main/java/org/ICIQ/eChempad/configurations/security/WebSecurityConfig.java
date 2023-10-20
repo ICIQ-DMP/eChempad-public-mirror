@@ -80,6 +80,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     /**
+     * To integrate CAS with its entrypoint (service login url)
+     */
+    @Autowired
+    private CasAuthenticationEntryPoint casAuthenticationEntryPoint;
+
+    /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
      * Allow only authenticated users to access the API.
      *
@@ -118,8 +124,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         http
+                // Integration with CAS
+                .authorizeRequests()
+                //.antMatchers("/login").authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(this.casAuthenticationEntryPoint)
+                .and()
+                .addFilterBefore(new SingleSignOutFilter(), CasAuthenticationFilter.class)
+
                 .headers().frameOptions().sameOrigin() // X-Frame-Options = SAMEORIGIN
 
+                // API endpoints protection
                 .and()
                     .authorizeRequests()
                     .antMatchers("/api/authority").authenticated()
@@ -146,8 +161,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .mvcMatchers(anonymousPages).permitAll()
                     // Only allow authenticated users in the ZK main page and in the API endpoints
                     .mvcMatchers(authenticatedPages).hasRole("USER")
-                    // Any other requests have to be authenticated too
-                    .anyRequest().authenticated()
+
 
                 // Creates the http form login in the default URL /login· The first parameter is a string corresponding
                 // to the URL where we will map the login form
@@ -157,16 +171,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .defaultSuccessUrl("/")  // Successful redirect URL after login is root page
 
                 // Creates a logout form
+
                 .and()
                     .logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/login")  // After logout, redirect to login page
 
-                // Integration with CAS
-                .and()
-                .exceptionHandling().authenticationEntryPoint(new CasAuthenticationEntryPoint())
-                .and()
-                .addFilterBefore(new SingleSignOutFilter(), CasAuthenticationFilter.class);
+
+                // Any other requests have to be authenticated too
+                .and().authorizeRequests().anyRequest().authenticated();
 
     }
 
