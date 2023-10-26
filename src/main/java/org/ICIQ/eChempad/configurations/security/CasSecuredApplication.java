@@ -12,23 +12,15 @@ import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.logging.Logger;
-
-import static org.springframework.security.cas.ServiceProperties.DEFAULT_CAS_ARTIFACT_PARAMETER;
+import java.util.Collections;
 
 @Component
 public class CasSecuredApplication {
@@ -39,7 +31,7 @@ public class CasSecuredApplication {
     // login
     @Bean
     public AuthenticationManager authenticationManager(CasAuthenticationProvider casAuthenticationProvider) {
-        return new ProviderManager(Arrays.asList(casAuthenticationProvider));
+        return new ProviderManager(Collections.singletonList(casAuthenticationProvider));
     }
 
     @Bean
@@ -54,7 +46,7 @@ public class CasSecuredApplication {
     @Bean
     public ServiceProperties serviceProperties() {
         ServiceProperties serviceProperties = new ServiceProperties();
-        serviceProperties.setService("http://echempad.iciq.es:8081/login/cas");
+        serviceProperties.setService("https://echempad.iciq.es:8081/login/cas");
         serviceProperties.setSendRenew(false);
         //serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
         return serviceProperties;
@@ -86,7 +78,6 @@ public class CasSecuredApplication {
     {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
-        // TODO: this url needs to be parametrized for developer / production mode
         casAuthenticationEntryPoint.setLoginUrl("https://echempad-cas.iciq.es:8443/cas/login");
         return casAuthenticationEntryPoint;
 
