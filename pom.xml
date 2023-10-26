@@ -382,6 +382,11 @@
 			<artifactId>spring-security-cas</artifactId>
 			<version>${spring-security-cas.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jasig.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>3.6.4</version>
+		</dependency>
 
 	</dependencies>
 
