@@ -73,6 +73,9 @@
 		<!--Used by the licenses plugin-->
 		<license.licenseName>apache_v2</license.licenseName>
 		<current.year>2023</current.year>
+		<!-- CAS -->
+		<org.jasig.cas.client.core.version>3.6.4</org.jasig.cas.client.core.version>
+		<org.jasig.cas.client.springboot.version>3.6.4</org.jasig.cas.client.springboot.version>
 	</properties>
 
 	<!--Licenses -->
@@ -382,10 +385,19 @@
 			<artifactId>spring-security-cas</artifactId>
 			<version>${spring-security-cas.version}</version>
 		</dependency>
+
+		<!-- Cas client  -->
 		<dependency>
 			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
-			<version>3.6.4</version>
+			<version>${org.jasig.cas.client.core.version}</version>
+		</dependency>
+
+		<!-- CAS client support for spring boot -->
+		<dependency>
+			<groupId>org.jasig.cas.client</groupId>
+			<artifactId>cas-client-support-springboot</artifactId>
+			<version>${org.jasig.cas.client.springboot.version}</version>
 		</dependency>
 
 	</dependencies>
