@@ -54,7 +54,7 @@ public class CasSecuredApplication {
     @Bean
     public ServiceProperties serviceProperties() {
         ServiceProperties serviceProperties = new ServiceProperties();
-        serviceProperties.setService("http://localhost:8081/login/cas");
+        serviceProperties.setService("http://eChempad.iciq.es:8081/login/cas");
         serviceProperties.setSendRenew(false);
         //serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
         return serviceProperties;
@@ -62,7 +62,7 @@ public class CasSecuredApplication {
 
     @Bean
     public TicketValidator ticketValidator() {
-        return new Cas30ServiceTicketValidator("https://localhost:8443/cas");
+        return new Cas30ServiceTicketValidator("https://eChempad-cas.iciq.es:8443/cas");
     }
 
     @Bean
@@ -82,13 +82,12 @@ public class CasSecuredApplication {
 
     @Bean
     @Primary
-    @Autowired
     public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
     {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
         // TODO: this url needs to be parametrized for developer / production mode
-        casAuthenticationEntryPoint.setLoginUrl("https://localhost:8443/cas/login");
+        casAuthenticationEntryPoint.setLoginUrl("https://eChempad-cas.iciq.es:8443/cas/login");
         return casAuthenticationEntryPoint;
 
     }
@@ -111,7 +110,7 @@ public class CasSecuredApplication {
     @Autowired
     public LogoutFilter logoutFilter(SecurityContextLogoutHandler securityContextLogoutHandler) {
         LogoutFilter logoutFilter = new LogoutFilter(
-                "https://localhost:8443/cas/logout",
+                "https://eChempad-cas.iciq.es:8443/cas/logout",
                 securityContextLogoutHandler);
         logoutFilter.setFilterProcessesUrl("/logout/cas");
         return logoutFilter;
@@ -120,7 +119,7 @@ public class CasSecuredApplication {
     @Bean
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-        singleSignOutFilter.setLogoutCallbackPath("https://localhost:8443/cas");
+        singleSignOutFilter.setLogoutCallbackPath("https://eChempad-cas.iciq.es:8443/cas");
         singleSignOutFilter.setIgnoreInitConfiguration(true);
         return singleSignOutFilter;
     }
