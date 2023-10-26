@@ -1,9 +1,11 @@
 package org.ICIQ.eChempad.configurations.security;
 
+import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.cas.ServiceProperties;
@@ -17,6 +19,9 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +36,7 @@ public class CasSecuredApplication {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
+    // login
     @Bean
     public AuthenticationManager authenticationManager(CasAuthenticationProvider casAuthenticationProvider) {
         return new ProviderManager(Arrays.asList(casAuthenticationProvider));
@@ -50,7 +56,7 @@ public class CasSecuredApplication {
         ServiceProperties serviceProperties = new ServiceProperties();
         serviceProperties.setService("http://localhost:8081/login/cas");
         serviceProperties.setSendRenew(false);
-        serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
+        //serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
         return serviceProperties;
     }
 
@@ -66,18 +72,18 @@ public class CasSecuredApplication {
         CasAuthenticationProvider provider = new CasAuthenticationProvider();
         provider.setServiceProperties(serviceProperties);
         provider.setTicketValidator(ticketValidator);
+
+        // Static login
         //provider.setUserDetailsService(s -> new User("casuser", "Mellon", true, true, true, true, AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
         provider.setUserDetailsService(this.userDetailsService);
-
-        //provider.setAuthenticationUserDetailsService(authenticationUserDetailsService());
-
         provider.setKey("CAS_PROVIDER_LOCALHOST_8081");
         return provider;
     }
 
     @Bean
+    @Primary
     @Autowired
-    public CasAuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
+    public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
     {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
@@ -93,5 +99,39 @@ public class CasSecuredApplication {
         serviceWrapper.setUserDetailsService(this.userDetailsService);
         return serviceWrapper;
     }
+
+    // logout
+
+    @Bean
+    public SecurityContextLogoutHandler securityContextLogoutHandler() {
+        return new SecurityContextLogoutHandler();
+    }
+
+    @Bean
+    @Autowired
+    public LogoutFilter logoutFilter(SecurityContextLogoutHandler securityContextLogoutHandler) {
+        LogoutFilter logoutFilter = new LogoutFilter(
+                "https://localhost:8443/cas/logout",
+                securityContextLogoutHandler);
+        logoutFilter.setFilterProcessesUrl("/logout/cas");
+        return logoutFilter;
+    }
+
+    @Bean
+    public SingleSignOutFilter singleSignOutFilter() {
+        SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
+        singleSignOutFilter.setLogoutCallbackPath("https://localhost:8443/cas");
+        singleSignOutFilter.setIgnoreInitConfiguration(true);
+        return singleSignOutFilter;
+    }
+
+    /*
+    @EventListener
+    public SingleSignOutHttpSessionListener singleSignOutHttpSessionListener(
+            HttpSessionEvent event) {
+        return new SingleSignOutHttpSessionListener();
+    }
+    */
+
 
 }
