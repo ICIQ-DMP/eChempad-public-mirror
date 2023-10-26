@@ -231,7 +231,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
-        return new ProviderManager(Arrays.asList(authenticationProvider));
+        return new ProviderManager(Collections.singletonList(authenticationProvider));
     }
 
     /**
