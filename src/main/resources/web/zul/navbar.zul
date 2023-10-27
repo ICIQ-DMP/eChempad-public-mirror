@@ -67,7 +67,8 @@
 
 
                         <n:div class="dropdown-divider d-sm-block d-md-none"/>
-                        <n:a class="dropdown-item text-left" href="/logout">
+                        <!-- TODO: parametrize -->
+                        <n:a class="dropdown-item text-left" href="https://echempad-cas.iciq.es:8443/logout">
                             Logout
                             <n:i class="fa fa-sign-out-alt" style="margin-left: 120px"/>
                         </n:a>
