@@ -35,6 +35,10 @@
 # ----------------------------------------------------------------------------
 
 clear  # Clean screen when running this script because it outputs a lot of things
+
+# Uncomment line to activate debug
+MVNW_VERBOSE=true
+
 if [ -z "$MAVEN_SKIP_RC" ] ; then
 
   if [ -f /etc/mavenrc ] ; then
@@ -330,9 +334,9 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  /etc/default/cacerts
 # *  "${JAVA_HOME}/jre/lib/security/cacerts"
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
-# "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts" <-- The static one that we have stored in the repo
-trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/tools/CA_certificates/cacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
-trustStore="${trustStores[5]}"
+# "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" <-- The static one that we have stored in the repo
+trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
+trustStore="${trustStores[3]}"
 echo "Using truststore ${trustStore}"
 
 if [ ! -f "${trustStore}" ]; then
@@ -342,6 +346,18 @@ fi
 if [ ! -r "${trustStore}" ]; then
   echo "ERROR: The trust store ${trustStore} can not be read"
   exit 1
+fi
+
+# Check size of the maven-wrapper.jar
+# Sometimes, if we can not verify the identity of the issuer's authority from the server we will download 0 KB, which +
+# obviously means that we did not download the jar at all and the next step will fail inevitably.
+if [ ! -f "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" ]; then
+  echo "ERROR: the maven wrapper jar does not exist"
+fi
+
+if [ ! -s "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" ]; then
+  echo "ERROR: the maven wrapper jar is empty, probably error with certificates. Delete"
+  echo "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar and execute mvnw again to trigger its download"
 fi
 
 # Add -Xlint:unchecked because some classes uses unchecked operations and this flag can be used to see details.
