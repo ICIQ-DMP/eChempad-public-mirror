@@ -38,7 +38,7 @@
 The project has no dependencies.
 <#else>
 
-The following is a list of all Java third-party dependencies used inside the ioChem-BD project, grouped by their license type.
+The following is a list of all Java third-party dependencies used inside the EcHEMPAD project, grouped by their license type.
 You can review each one on SPDX webpage at https://spdx.org/licenses.
 
 The full text for each listed license can be found in './third-party' folder.
