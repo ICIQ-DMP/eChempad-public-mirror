@@ -33,17 +33,21 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+	<packaging>war</packaging>
+
+	<!-- Project metadata -->
 	<groupId>org.ICIQ</groupId>
 	<artifactId>eChempad</artifactId>
 	<version>0.11</version>
-	<packaging>war</packaging>
 	<name>eChempad</name>
 	<description>Experimental Chemistry Electronic Pad</description>
 	<inceptionYear>2021</inceptionYear>
+	<url>https://eChempad.iciq.es</url>
 	<organization>
 		<name>ICIQ</name>
 		<url>https://www.iciq.org/</url>
 	</organization>
+
 	<!-- Internal variable definition for compilation -->
 	<properties>
 		<!-- General compilation of the project -->
@@ -87,7 +91,6 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
-
 
 	<!-- This is needed to be able to import directly a github repository, which we need to import the Dataverse Java
 	API Wrapper  -->
@@ -400,6 +403,24 @@
 			<version>${org.jasig.cas.client.springboot.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>license-maven-plugin</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
+		<!-- To provide a valid implementation of Log4j2 -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.22.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.22.1</version>
+		</dependency>
+
 	</dependencies>
 
 
@@ -429,44 +450,30 @@
 			</activation>
 			<build>
 				<plugins>
-
-					<!-- JaCoCo plugin for code coverage -->
 					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<!-- attached to Maven test phase -->
-							<execution>
-								<id>jacoco-report</id>
-								<phase>test</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-								<!-- default target/jscoco/site/* -->
-								<configuration>
-									<outputDirectory>target/jacoco-report</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>2.0.0</version>
+						<version>2.4.0</version>
 						<executions>
 							<execution>
-								<id>group-third-party-licenses-markdown</id>
+								<id>download-third-party-license-text</id>
 								<phase>generate-resources</phase>
 								<goals>
-									<goal>aggregate-add-third-party</goal>
+									<goal>download-licenses</goal>
+								</goals>
+								<configuration>
+									<verbose>true</verbose>
+									<errorRemedy>ignore</errorRemedy>
+									<cleanLicensesOutputDirectory>true</cleanLicensesOutputDirectory>
+									<licensesOutputDirectory>${project.basedir}/license/third-party</licensesOutputDirectory>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>aggregate-add-third-party-markdown</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>add-third-party</goal>
 								</goals>
 								<configuration>
 									<verbose>true</verbose>
@@ -477,127 +484,86 @@
 									<thirdPartyFilename>THIRD-PARTY.md</thirdPartyFilename>
 									<fileTemplate>${project.basedir}/license/resources/third-party-file-groupByMultiLicense-markdown.ftl</fileTemplate>
 									<useMissingFile>true</useMissingFile>
-									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
+									<missingFile>${project.basedir}/license/resources/LICENSES_3RD_PARTY.properties</missingFile>
 									<licenseMerges>
-										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version
-											2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software
-											License, Version 2.0|The Apache License, Version 2.0|Apache License Version
-											2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software
-											License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License
-											V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache
-											2.0|Apache Software License,
-											Version2.0|https://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT
-											Terms|apache license, version 2.0 - license-2.0|apache license 2.0 -
-											license-2.0</licenseMerge>
-										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
-										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
-										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
-										<licenseMerge>CDDL-1.0|CDDL 1.0|Common Development and Distribution License (CDDL)|Common Development and Distribution License (CDDL) v1.0|COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0|CDDL, v1.0|CDDL 1.0 license|CDDL License|Common Development and Distribution License|Common Development and Distribution License (CDDL)# Generated by org.codehaus.mojo.license.AddThirdPartyMojo|CDDL</licenseMerge>
-										<licenseMerge>CDDL-1.1</licenseMerge>
-										<licenseMerge>CDDL-1.1 + GPL-2.0|Dual license consisting of the CDDL v1.1 and GPL v2</licenseMerge>
-										<licenseMerge>CDDL-1.0 + GPL-2.0-with-classpath-exception|CDDL + GPLv2 with classpath exception|CDDL/GPLv2+CE|CDDL, GPLv2+CE|CDDL, GPL-2.0-with-classpath-exception</licenseMerge>
-										<licenseMerge>CDDL-1.1 + GPL-2.0-with-classpath-exception|CDDL 1.1, GPL-2.0-with-classpath-exception</licenseMerge>
-										<licenseMerge>CC-BY-SA-3.0|Creative Commons 3.0 BY-SA</licenseMerge>
-										<licenseMerge>GPL-2.0-with-classpath-exception|GPL2 w/ CPE|GNU General Public License, version 2 (GPL2), with the classpath exception|GNU General Public License, Version 2 with the Classpath Exception|GPLv2+CE</licenseMerge>
-										<licenseMerge>GPL-2.0-with-foss-exception|The GNU General Public License, v2 with FOSS exception</licenseMerge>
-										<licenseMerge>EPL-1.0|Eclipse Public License|Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0|EPL 1.0 license|Eclipse Public License (EPL), Version 1.0|Eclipse Public License, Version 1.0</licenseMerge>
-										<licenseMerge>EPL-2.0|Eclipse Public License (EPL) 2.0</licenseMerge>
-										<licenseMerge>CPL-1.0|Common Public License Version 1.0</licenseMerge>
-										<licenseMerge>LGPL-2.1-or-later|GNU Lesser General Public License (LGPL)|GNU Lesser General Public License (LGPL), Version 2.1|GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1|GNU Lesser General Public License|GNU Lesser Public License|GNU Lesser General Public License, Version 2.1|Lesser General Public License (LGPL) v2.1|LGPL 2.1|LGPL 2.1 license|LGPL, v2.1 or later|LGPL|GNU Lesser General Public License Version 2.1, February 1999|Lesser General Public License (LGPL) v 2.1|The GNU Lesser General Public License, Version 2.1</licenseMerge>
-										<licenseMerge>LGPL-3.0|LGPL 3.0 license|GNU LESSER GENERAL PUBLIC LICENSE, Version 3|GNU Lesser General Public License v3|GNU Lessor/Library Public License, Version 3.0|GNU LESSER GENERAL PUBLIC LICENSE 3.0</licenseMerge>
-										<licenseMerge>GPL-1.0-only|GNU General Public Library</licenseMerge>
-										<licenseMerge>GPL-2.0|GNU General Public License v2.0</licenseMerge>
-										<licenseMerge>GPL-3.0-only|GNU Public License, Version 3.0|GNU General Public License v3</licenseMerge>
-										<licenseMerge>MIT|MIT License|The MIT License|MIT LICENSE|The MIT License (MIT)|MIT license|the mit license - mit|the mit license - license|mit license - mit-license</licenseMerge>
-										<licenseMerge>Bouncy Castle|Bouncy Castle Licence</licenseMerge>
-										<licenseMerge>MPL-1.0|Mozilla Public License</licenseMerge>
-										<licenseMerge>MPL-1.1|Mozilla Public License version 1.1|Mozilla Public License 1.1 (MPL 1.1)|MPL 1.1</licenseMerge>
-										<licenseMerge>MPL-2.0|Mozilla Public License Version 2.0</licenseMerge>
-										<licenseMerge>MPL-2.0 + EPL-1.0|MPL 2.0, and EPL 1.0</licenseMerge>
-										<licenseMerge>Public Domain|Public domain, Sun Microsoystems|WTFPL|Public Domain, The New BSD License</licenseMerge>
-										<licenseMerge>PostgreSQL License|The PostgreSQL License</licenseMerge>
-										<licenseMerge>SAX-PD|The SAX License</licenseMerge>
-										<licenseMerge>W3C|The W3C License</licenseMerge>
-										<licenseMerge>HSQLDB|HSQLDB License, a BSD open source license</licenseMerge>
-										<licenseMerge>ICU|ICU License</licenseMerge>
+										<licenseMerge>
+											Apache-2.0
+											|Apache License 2.0
+											|The Apache Software License, Version 2.0
+											|The Apache License, Version 2.0
+											|Apache License, Version 2.0
+											|Apache Public License 2.0
+											|Apache 2
+											|Apache License
+											|ASF 2.0
+											|Apache 2.0
+											|GWT Terms
+											|Apache License, version 2.0
+										</licenseMerge>
+										<licenseMerge>
+											BSD License
+											|BSD
+										</licenseMerge>
+										<licenseMerge>
+											BSD 3
+											|BSD-3-Clause
+											|BSD License 3
+											|BSD License 2.0
+											|BSD 3-clause
+											|BSD 3-clause New License
+											|New BSD license
+										</licenseMerge>
+										<licenseMerge>
+											CC0
+											|COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+										</licenseMerge>
+										<licenseMerge>
+											CDDL-1.1
+										</licenseMerge>
+										<licenseMerge>
+											GPL2 w/ CPE
+										</licenseMerge>
+										<licenseMerge>
+											Eclipse Public License 1.0
+											|Eclipse Public License - v 1.0
+											|Eclipse Public License, Version 1.0
+										</licenseMerge>
+										<licenseMerge>
+											Eclipse Public License v2.0
+											|Eclipse Public License - v 2.0
+										</licenseMerge>
+										<licenseMerge>
+											LGPL-2.1-or-later
+											|GNU Lesser General Public License|GNU Lesser Public License
+											|LGPL 2.1
+											|The GNU Lesser General Public License, Version 2.1
+										</licenseMerge>
+										<licenseMerge>
+											GNU LESSER GENERAL PUBLIC LICENSE, Version 3
+											|LGPL 3.0
+											|Lesser General Public License (LGPL) v 3.0
+											|The GNU Lesser General Public License, Version 3.0
+										</licenseMerge>
+										<licenseMerge>
+											MIT License
+											|The MIT License
+										</licenseMerge>
+										<licenseMerge>
+											MPL 1.1
+										</licenseMerge>
+										<licenseMerge>
+											Public Domain
+											|WTFPL
+										</licenseMerge>
+										<licenseMerge>
+											ICU License
+										</licenseMerge>
 									</licenseMerges>
 								</configuration>
 							</execution>
-							<execution>
-								<id>group-third-party-licenses-text</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>aggregate-add-third-party</goal>
-								</goals>
-								<configuration>
-									<verbose>true</verbose>
-									<inceptionYear>${project.inceptionYear}</inceptionYear>
-									<organizationName>${project.organization.name}</organizationName>
-									<projectName>${project.name}</projectName>
-									<outputDirectory>${project.basedir}/license</outputDirectory>
-									<fileTemplate>${project.basedir}/license/resources/third-party-file-groupByMultiLicense.ftl</fileTemplate>
-									<useMissingFile>true</useMissingFile>
-									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
-									<licenseMerges>
-										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version
-											2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software
-											License, Version 2.0|The Apache License, Version 2.0|Apache License Version
-											2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software
-											License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License
-											V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache
-											2.0|Apache Software License,
-											Version2.0|https://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT
-											Terms|apache license, version 2.0 - license-2.0|apache license 2.0 -
-											license-2.0</licenseMerge>
-										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
-										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
-										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
-										<licenseMerge>CDDL-1.0|CDDL 1.0|Common Development and Distribution License (CDDL)|Common Development and Distribution License (CDDL) v1.0|COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0|CDDL, v1.0|CDDL 1.0 license|CDDL License|Common Development and Distribution License|Common Development and Distribution License (CDDL)# Generated by org.codehaus.mojo.license.AddThirdPartyMojo|CDDL</licenseMerge>
-										<licenseMerge>CDDL-1.1</licenseMerge>
-										<licenseMerge>CDDL-1.1 + GPL-2.0|Dual license consisting of the CDDL v1.1 and GPL v2</licenseMerge>
-										<licenseMerge>CDDL-1.0 + GPL-2.0-with-classpath-exception|CDDL + GPLv2 with classpath exception|CDDL/GPLv2+CE|CDDL, GPLv2+CE|CDDL, GPL-2.0-with-classpath-exception</licenseMerge>
-										<licenseMerge>CDDL-1.1 + GPL-2.0-with-classpath-exception|CDDL 1.1, GPL-2.0-with-classpath-exception</licenseMerge>
-										<licenseMerge>CC-BY-SA-3.0|Creative Commons 3.0 BY-SA</licenseMerge>
-										<licenseMerge>GPL-2.0-with-classpath-exception|GPL2 w/ CPE|GNU General Public License, version 2 (GPL2), with the classpath exception|GNU General Public License, Version 2 with the Classpath Exception|GPLv2+CE</licenseMerge>
-										<licenseMerge>GPL-2.0-with-foss-exception|The GNU General Public License, v2 with FOSS exception</licenseMerge>
-										<licenseMerge>EPL-1.0|Eclipse Public License|Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0|EPL 1.0 license|Eclipse Public License (EPL), Version 1.0|Eclipse Public License, Version 1.0</licenseMerge>
-										<licenseMerge>EPL-2.0|Eclipse Public License (EPL) 2.0</licenseMerge>
-										<licenseMerge>CPL-1.0|Common Public License Version 1.0</licenseMerge>
-										<licenseMerge>LGPL-2.1-or-later|GNU Lesser General Public License (LGPL)|GNU Lesser General Pub lic License (LGPL), Version 2.1|GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1|GNU Lesser General Public License|GNU Lesser Public License|GNU Lesser General Public License, Version 2.1|Lesser General Public License (LGPL) v2.1|LGPL 2.1|LGPL 2.1 license|LGPL, v2.1 or later|LGPL|GNU Lesser General Public License Version 2.1, February 1999|Lesser General Public License (LGPL) v 2.1|The GNU Lesser General Public License, Version 2.1</licenseMerge>
-										<licenseMerge>LGPL-3.0|LGPL 3.0 license|GNU LESSER GENERAL PUBLIC LICENSE, Version 3|GNU Lesser General Public License v3|GNU Lessor/Library Public License, Version 3.0|GNU LESSER GENERAL PUBLIC LICENSE 3.0</licenseMerge>
-										<licenseMerge>GPL-1.0-only|GNU General Public Library</licenseMerge>
-										<licenseMerge>GPL-2.0|GNU General Public License v2.0</licenseMerge>
-										<licenseMerge>GPL-3.0-only|GNU Public License, Version 3.0|GNU General Public License v3</licenseMerge>
-										<licenseMerge>MIT|MIT License|The MIT License|MIT LICENSE|The MIT License (MIT)|MIT license|the mit license - mit|the mit license - license|mit license - mit-license</licenseMerge>
-										<licenseMerge>Bouncy Castle|Bouncy Castle Licence</licenseMerge>
-										<licenseMerge>MPL-1.0|Mozilla Public License</licenseMerge>
-										<licenseMerge>MPL-1.1|Mozilla Public License version 1.1|Mozilla Public License 1.1 (MPL 1.1)|MPL 1.1</licenseMerge>
-										<licenseMerge>MPL-2.0|Mozilla Public License Version 2.0</licenseMerge>
-										<licenseMerge>MPL-2.0 + EPL-1.0|MPL 2.0, and EPL 1.0</licenseMerge>
-										<licenseMerge>Public Domain|Public domain, Sun Microsoystems|WTFPL|Public Domain, The New BSD License</licenseMerge>
-										<licenseMerge>PostgreSQL License|The PostgreSQL License</licenseMerge>
-										<licenseMerge>SAX-PD|The SAX License</licenseMerge>
-										<licenseMerge>W3C|The W3C License</licenseMerge>
-										<licenseMerge>HSQLDB|HSQLDB License, a BSD open source license</licenseMerge>
-										<licenseMerge>ICU|ICU License</licenseMerge>
-									</licenseMerges>
-								</configuration>
-							</execution>
-							<execution>
-								<id>download-third-party-license-text</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>download-licenses</goal>
-								</goals>
-								<configuration>
-									<errorRemedy>ignore</errorRemedy>
-									<cleanLicensesOutputDirectory>true</cleanLicensesOutputDirectory>
-									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
-									<licensesOutputDirectory>${project.basedir}/license/third-party</licensesOutputDirectory>
-								</configuration>
-							</execution>
+
+
+
 						</executions>
 					</plugin>
 
@@ -618,11 +584,10 @@
 
 			<build>
 				<plugins>
-
 					<plugin>
 						<groupId>com.mycila</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>4.1</version>
+						<version>4.3</version>
 						<configuration>
 							<mapping>
 								<zul>XML_STYLE</zul>
