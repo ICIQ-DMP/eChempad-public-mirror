@@ -33,17 +33,21 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+	<packaging>war</packaging>
+
+	<!-- Project metadata -->
 	<groupId>org.ICIQ</groupId>
 	<artifactId>eChempad</artifactId>
 	<version>0.11</version>
-	<packaging>war</packaging>
 	<name>eChempad</name>
 	<description>Experimental Chemistry Electronic Pad</description>
 	<inceptionYear>2021</inceptionYear>
+	<url>https://eChempad.iciq.es</url>
 	<organization>
 		<name>ICIQ</name>
 		<url>https://www.iciq.org/</url>
 	</organization>
+
 	<!-- Internal variable definition for compilation -->
 	<properties>
 		<!-- General compilation of the project -->
@@ -84,7 +88,6 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
-
 
 	<!-- This is needed to be able to import directly a github repository, which we need to import the Dataverse Java
 	API Wrapper  -->
@@ -376,6 +379,11 @@
 			<version>${hibernate-hikariCP.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>license-maven-plugin</artifactId>
+			<version>2.4.0</version>
+		</dependency>
 	</dependencies>
 
 
@@ -406,37 +414,11 @@
 			<build>
 				<plugins>
 
-					<!-- JaCoCo plugin for code coverage -->
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<!-- attached to Maven test phase -->
-							<execution>
-								<id>jacoco-report</id>
-								<phase>test</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-								<!-- default target/jscoco/site/* -->
-								<configuration>
-									<outputDirectory>target/jacoco-report</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
 					<plugin>
 
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>2.0.0</version>
+						<version>2.4.0</version>
 						<executions>
 							<execution>
 								<id>group-third-party-licenses-markdown</id>
@@ -594,11 +576,10 @@
 
 			<build>
 				<plugins>
-
 					<plugin>
 						<groupId>com.mycila</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>4.1</version>
+						<version>4.3</version>
 						<configuration>
 							<mapping>
 								<zul>XML_STYLE</zul>
