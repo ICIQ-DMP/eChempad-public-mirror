@@ -45,9 +45,42 @@ dt:hover > .headerlink, p:hover > .headerlink, td:hover > .headerlink, h1:hover 
     window.addEventListener('DOMContentLoaded', (event) => {
         new PagefindUI({ element: "#pagefind-search" });
     });
+    var pageTitle = 'Licenses';
+    if(pageTitle === '404'){
+      window.addEventListener('DOMContentLoaded', (event) => {
+          new PagefindUI({ element: "#page-404-search" });
+      });
+    }
   </script>
+  
 
-<!-- https://www.apache.org/licenses/LICENSE-2.0 -->
+<!-- https://www.apache.org/licenses/LICENSE-2.0 -->  <!-- Matomo -->
+  <script>
+    var pageTitle = 'Licenses';
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before
+"trackPageView" */
+    /* We explicitly disable cookie tracking to avoid privacy issues */
+    _paq.push(['disableCookies']);
+    if(pageTitle === '404'){
+      /* Track 404 page hits */
+      _paq.push(['setDocumentTitle',  '404/URL = ' +  encodeURIComponent(document.location.pathname+document.location.search) + '/From = ' + encodeURIComponent(document.referrer)]);
+    }
+    /* Measure a visit to flink.apache.org and nightlies.apache.org/flink
+as the same visit */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="//analytics.apache.org/";
+      _paq.push(['setTrackerUrl', u+'matomo.php']);
+      _paq.push(['setSiteId', '37']);
+      var d=document, g=d.createElement('script'),
+s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+
 </head>
 
 <body >
@@ -57,6 +90,7 @@ dt:hover > .headerlink, p:hover > .headerlink, td:hover > .headerlink, h1:hover 
 		<a href="#maincontent">Skip to Main Content</a>
 	</div>
     <nav class="navbar navbar-inverse navbar-fixed-top mainmenu">
+      
       <div class="container">
         <div class="navbar-header">
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#mainnav-collapse">
@@ -67,6 +101,16 @@ dt:hover > .headerlink, p:hover > .headerlink, td:hover > .headerlink, h1:hover 
           </button>
         </div>
         <div class="collapse navbar-collapse" id="mainnav-collapse">
+          <div class="upper-nav">
+            <div class="header-social-icons">
+              <a target="_blank" href="https://infra.apache.org/slack.html"><img src="/images/slack-icon.svg" alt="slack icon"></a>
+              <a target="_blank" href="https://github.com/apache"><img src="/images/github-mark-white.svg" alt="github icon"></a>
+              <a target="_blank" href="https://www.linkedin.com/company/the-apache-software-foundation/"><img src="/images/linkedin-icon.png" alt="linkedIn icon"></a>
+              <a target="_blank" href="https://www.youtube.com/c/TheApacheFoundation"><img src="/images/youtube-icon.svg" alt="youtube icon"></a>
+              <a target="_blank" href="https://twitter.com/TheASF"><img src="/images/x-icon.svg" alt="X icon"></a>
+            </div>
+            <a href="/foundation/sponsorship" class="btn btn-default" onclick="_paq.push(['trackEvent', 'click', 'SponsorASF Button']);">Sponsor the ASF</a>
+          </div>
           <ul class="nav navbar-nav navbar-justified">
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Community&nbsp;<span class="caret"></span></a>
@@ -106,7 +150,6 @@ dt:hover > .headerlink, p:hover > .headerlink, td:hover > .headerlink, h1:hover 
                 <li><a href="/foundation/how-it-works">How the ASF Works</a></li>
                 <li><a href="/theapacheway/">The Apache Way</a></li>
                 <li><a href="/legal/">Legal &amp; Trademark</a></li>
-                <li><a href="/foundation/marks/">Trademark Policy</a></li>
                 <li><a href="/licenses">Licenses</a></li>
                 <li><a href="/foundation/glossary">Glossary</a></li>
                 <li><a href="/foundation/faq">FAQ</a></li>
@@ -131,6 +174,7 @@ dt:hover > .headerlink, p:hover > .headerlink, td:hover > .headerlink, h1:hover 
               <ul class="dropdown-menu" role="menu">
                 <li><a href="/foundation/">About</a></li>
                 <li><a href="/foundation/sponsors">Our Sponsors</a></li>
+		<li><a href="/foundation/sponsorship">Corporate Sponsorship</a></li>
                 <li><a href="/foundation/individual-supporters">Individual Supporters</a></li>
                 <li><a href="/foundation/leadership">Leadership</a></li>
                 <li><a href="/foundation/members">Members</a></li>
@@ -142,8 +186,8 @@ dt:hover > .headerlink, p:hover > .headerlink, td:hover > .headerlink, h1:hover 
             
            
             
-            <li class="dropdown hidden-xs">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="glyphicon glyphicon-search"
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown" role="button"><span class="glyphicon glyphicon-search"
                   aria-hidden="true"></span><span class="sr-only">Search</span></a>
               <ul class="dropdown-menu search-form" role="search">
                 <li>
@@ -308,7 +352,6 @@ Agreements</a> page.</p>
             <li><a href="/foundation/how-it-works">How the ASF Works</a></li>
             <li><a href="/theapacheway/">The Apache Way</a></li>
             <li><a href="/legal/">Legal &amp; Trademark</a></li>
-            <li><a href="/foundation/marks/">Trademark Policy</a></li>
             <li><a href="/licenses">Licenses</a></li>
             <li><a href="/foundation/glossary">Glossary</a></li>
             <li><a href="/foundation/faq">FAQ</a></li>
@@ -335,6 +378,7 @@ Agreements</a> page.</p>
           <ul class="list-unstyled white" role="menu">
             <li><a href="/foundation/">About</a></li>
             <li><a href="/foundation/sponsors">Our Sponsors</a></li>
+	    <li><a href="/foundation/sponsorship">Corporate Sponsorship</a></li>
             <li><a href="/foundation/individual-supporters">Individual Supporters</a></li>
             <li><a href="/foundation/leadership">Leadership</a></li>
             <li><a href="/foundation/members">Members</a></li>
@@ -350,7 +394,7 @@ Agreements</a> page.</p>
       <hr class="col-lg-12 hr-white" />
       <div class="row">
         <div class="col-lg-12">
-          <p class="text-center">Copyright &#169; 2023 The Apache Software Foundation, Licensed under the <a class="white" href="/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+          <p class="text-center">Copyright &#169; 2024 The Apache Software Foundation, Licensed under the <a class="white" href="/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
           <p class="text-center">Apache and the Apache feather logo are trademarks of The Apache Software Foundation. </p>
         </div>
       </div>
@@ -365,15 +409,15 @@ Agreements</a> page.</p>
   <script src="/js/slideshow.js"></script>
   <script>
     (function($){
-    $(document).ready(function(){
-    $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    $(this).parent().siblings().removeClass('open');
-    $(this).parent().toggleClass('open');
-    console.log('WOrked');
-    });
-    });
+      $(document).ready(function(){
+        $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          $(this).parent().siblings().removeClass('open');
+          $(this).parent().toggleClass('open');
+          console.log('WOrked');
+        });
+      });
     })(jQuery);
   </script>
 </body>
