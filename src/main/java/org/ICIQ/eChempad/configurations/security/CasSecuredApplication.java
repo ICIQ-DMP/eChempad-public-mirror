@@ -1,17 +1,12 @@
 package org.ICIQ.eChempad.configurations.security;
 
-import org.jasig.cas.client.session.SingleSignOutFilter;
-import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
-import org.jasig.cas.client.validation.TicketValidator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.cas.ServiceProperties;
-import org.springframework.security.cas.authentication.CasAuthenticationProvider;
-import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
-import org.springframework.security.cas.web.CasAuthenticationFilter;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
@@ -22,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
+/*
 @Component
 public class CasSecuredApplication {
 
@@ -115,13 +111,16 @@ public class CasSecuredApplication {
         return singleSignOutFilter;
     }
 
-    /*
+
     @EventListener
     public SingleSignOutHttpSessionListener singleSignOutHttpSessionListener(
             HttpSessionEvent event) {
         return new SingleSignOutHttpSessionListener();
     }
-    */
+
+
+
 
 
 }
+*/

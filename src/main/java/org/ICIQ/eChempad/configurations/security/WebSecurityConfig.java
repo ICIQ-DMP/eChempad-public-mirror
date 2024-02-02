@@ -20,7 +20,6 @@
  */
 package org.ICIQ.eChempad.configurations.security;
 
-import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +29,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.cas.ServiceProperties;
-import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -100,8 +97,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * For CAS authentication
      */
-    @Autowired
-    private CasAuthenticationFilter casAuthenticationFilter;
+    //@Autowired
+    //private CasAuthenticationFilter casAuthenticationFilter;
 
     /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
@@ -142,7 +139,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         http
-                .addFilter(this.casAuthenticationFilter)
+                //.addFilter(this.casAuthenticationFilter)
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated*/
                     .httpBasic()
