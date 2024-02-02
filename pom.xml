@@ -382,26 +382,27 @@
 			<version>${hibernate-hikariCP.version}</version>
 		</dependency>
 
-		<!-- To use (integrate) a CAS service -->
-		<dependency>
+		<!-- To use (integrate) a CAS service. Currently activating this dependency increases the startup time by
+		     5 minutes-->
+		<!--<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-cas</artifactId>
 			<version>${spring-security-cas.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- Cas client  -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
 			<version>${org.jasig.cas.client.core.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- CAS client support for spring boot -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-support-springboot</artifactId>
 			<version>${org.jasig.cas.client.springboot.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.codehaus.mojo</groupId>
@@ -437,9 +438,10 @@
 
 	<!--Profiles -->
 
-	<profiles>
+
+	<!--<profiles> -->
 		<!--  This profile should ONLY be active when user specifies -Dthird.party.licenses=true on command-line.  -->
-		<!--  This profile will build "LICENSE-3RD-PARTY.txt" file, grouping all third party licenses  -->
+		<!--  This profile will build "LICENSE-3RD-PARTY.txt" file, grouping all third party licenses  --> <!--
 		<profile>
 			<id>third-party-license-file-build</id>
 			<activation>
@@ -569,9 +571,9 @@
 
 				</plugins>
 			</build>
-		</profile>
+		</profile> -->
 		<!--  This profile should ONLY be active when user specifies -Dattach.license.header=true on command-line.  -->
-		<!--  This profile will add license headers to all source files  -->
+		<!--  This profile will add license headers to all source files  --><!--
 		<profile>
 
 			<id>license-header-attach</id>
@@ -599,7 +601,6 @@
 								<inceptionYear>${project.inceptionYear}</inceptionYear>
 								<latestYearOfContribution>${current.year}</latestYearOfContribution>
 							</properties>
-							<!-- Exclusions from license addition -->
 							<excludes>
 								<exclude>**/README</exclude>
 								<exclude>src/main/resources/secrets/**</exclude>
@@ -636,5 +637,5 @@
 				</plugins>
 			</build>
 		</profile>
-	</profiles>
+	</profiles>-->
 </project>

@@ -24,9 +24,9 @@
       </pattern>
     </extension>
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.ICIQ.eChempad.EChempadApplication" />
+    <option name="VM_PARAMETERS" value="-noverify" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-    <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/.customizer/bin/jdk11" />
-    <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+    <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/.customizer/bin/jdk17" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

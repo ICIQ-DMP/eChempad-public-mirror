@@ -369,7 +369,7 @@ if [ ! -s "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" ]; then
 fi
 
 # Add -Xlint:unchecked because some classes uses unchecked operations and this flag can be used to see details.
-JAVA_FLAGS="${JAVA_FLAGS} -Djava.library.path=/lib/x86_64-linux-gnu"
+#JAVA_FLAGS="${JAVA_FLAGS}"  # -Dsun.rmi.transport.tcp.maxConnectionThreads=0
 
 # Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
 echo Executed command:
