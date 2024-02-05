@@ -20,4 +20,4 @@
 #
 
 export MAVEN_FLAGS+=""
-export JAVA_FLAGS="${JAVA_FLAGS} -Djavax.net.debug=ssl -Djavax.net.ssl.trustStore=${MAVEN_PROJECTBASEDIR}/src/main/resources/security/jssecacerts -Djavax.net.ssl.trustStorePassword=changeit"
+#export JAVA_FLAGS="${JAVA_FLAGS} -Djavax.net.debug=ssl -Djavax.net.ssl.trustStore=${MAVEN_PROJECTBASEDIR}/src/main/resources/security/jssecacerts -Djavax.net.ssl.trustStorePassword=changeit"

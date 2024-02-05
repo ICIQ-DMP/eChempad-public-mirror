@@ -54,29 +54,36 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<spring-framework.version>6.0.0</spring-framework.version>
+		<!-- Spring -->
+		<spring-framework.version>6.1.3</spring-framework.version>
 		<springboot.version>${project.parent.version}</springboot.version>
 		<spring-security.version>6.1.2</spring-security.version>
 		<spring-context-support.version>6.0.11</spring-context-support.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
 		<spring-security-cas.version>5.8.8</spring-security-cas.version>
 		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
-		<zk.version>8.6.0.1</zk.version>
+		<zk.version>9.6.0.2</zk.version>
 		<zkspring.version>4.0.2</zkspring.version>
 		<zkmax.version>3.6.3</zkmax.version>
-		<hikari.version>4.0.3</hikari.version>
+		<hikari.version>5.0.1</hikari.version>
 		<hibernate-hikariCP.version>6.2.7.Final</hibernate-hikariCP.version>
 		<javax-inject.version>1</javax-inject.version>
 		<ehcache.version>3.10.2</ehcache.version>
-		<threetenbp.version>1.6.4</threetenbp.version>
-		<postgresql.version>42.5.1</postgresql.version>
-		<jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
+		<threetenbp.version>1.6.5</threetenbp.version>
+		<postgresql.version>42.5.4</postgresql.version>
+		<jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
 		<testcontainers.version>1.18.3</testcontainers.version>
 		<jacoco.version>0.8.2</jacoco.version>
-		<reflections.version>0.9.10</reflections.version>
+		<reflections.version>0.10.2</reflections.version>
 		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
-		<license.licenseName>apache_v2</license.licenseName>  		<!--Used by the licenses plugin-->
+		<license.licenseName>apache_v2</license.licenseName>
+		<apache-log4j.version>2.22.1</apache-log4j.version>
+		<commons-login.version>1.2</commons-login.version>
+		<!--Used by the licenses plugin-->
+		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
+
 		<current.year>2023</current.year>
+
 		<!-- CAS -->
 		<org.jasig.cas.client.core.version>3.6.4</org.jasig.cas.client.core.version>
 		<org.jasig.cas.client.springboot.version>3.6.4</org.jasig.cas.client.springboot.version>
@@ -113,12 +120,7 @@
 
 
 	<dependencies>
-		<!-- Spring Boot Starters -->
-
-		<!-- Java persistence API, uses
-		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
-		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
- hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
+		<!-- SPRING BOOT STARTERS -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -145,7 +147,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
-			<version>${springboot.version}</version>
 		</dependency>
 
 		<!-- Added with the project initialization, it is for using web page tools in the project -->
@@ -159,7 +160,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-			<version>${springboot.version}</version>
 		</dependency>
 
 		<!-- Allows the use of the WebClient class, used to perform REST operations as a client. Used to communicate with Signals API-->
@@ -184,14 +184,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<!-- <scope>provided</scope> -->
 		</dependency>
 
 		<!-- Added when upgrading to java 17 to reconfigure the cache managing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
-			<version>${springboot.version}</version>
 		</dependency>
 
 
@@ -201,21 +199,18 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-acl</artifactId>
-			<version>${spring-security.version}</version>
 		</dependency>
 
 		<!-- Used to control the ACL security infrastructure -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>${spring-security.version}</version>
 		</dependency>
 
 		<!-- Used to control login / logout with ZK -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>${spring-security.version}</version>
 		</dependency>
 
 		<!-- Allows the creation of our own properties in application.properties file -->
@@ -231,6 +226,143 @@
 			<artifactId>spring-test</artifactId>
 		</dependency>
 
+		<!-- Used to integrate ZK with Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<!-- Used to integrate ZK with Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<!-- Added to configure load time weaving -->
+		<!--<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument</artifactId>
+		</dependency>-->
+
+
+
+		<!-- ZK -->
+
+		<!-- To use zkoss in our application -->
+		<dependency>
+			<groupId>org.zkoss.zkspringboot</groupId>
+			<artifactId>zkspringboot-starter</artifactId>
+			<type>pom</type>
+			<version>${zkspringboot-starter.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkplus</artifactId>
+			<version>${zk.version}</version>
+			<exclusions>
+				<exclusion>  <!-- Exclude log4j to avoid duplicate artifacts in the classpath -->
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-core</artifactId>
+			<version>${zkspring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-security</artifactId>
+			<version>${zkspring.version}</version>
+		</dependency>
+
+		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons-login.version}</version>
+		</dependency>
+
+		<!-- CAS -->
+		<!-- To use (integrate) a CAS service. Currently activating this dependency increases the startup time by
+     5 minutes-->
+		<!--<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-cas</artifactId>
+			<version>${spring-security-cas.version}</version>
+		</dependency>-->
+
+		<!-- Cas client  -->
+		<!--<dependency>
+			<groupId>org.jasig.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>${org.jasig.cas.client.core.version}</version>
+		</dependency>-->
+
+		<!-- CAS client support for spring boot -->
+		<!--<dependency>
+			<groupId>org.jasig.cas.client</groupId>
+			<artifactId>cas-client-support-springboot</artifactId>
+			<version>${org.jasig.cas.client.springboot.version}</version>
+		</dependency>-->
+
+
+
+		<!-- INTEGRATION WITH JAVA 17 -->
+		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
+And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>${ehcache.version}</version>
+			<classifier>jakarta</classifier>
+		</dependency>
+
+		<!-- To use the reflections' library, which is used in the code of iochem-bd
+		https://mvnrepository.com/artifact/org.reflections/reflections -->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${reflections.version}</version>
+		</dependency>
+
+		<!-- To use the @Inject annotation -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>${javax-inject.version}</version>
+		</dependency>
+
+		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikari.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-hikaricp</artifactId>
+			<version>${hibernate-hikariCP.version}</version>
+		</dependency>
+
+		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
+		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>${jakarta.persistence-api.version}</version>
+		</dependency>
+
+
+
+
+
+
+
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
@@ -244,39 +376,13 @@
 		</dependency>
 
 
-		<!-- Used to integrate ZK with Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring-framework.version}</version>
-		</dependency>
 
-		<!-- Used to integrate ZK with Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring-framework.version}</version>
-		</dependency>
-
-		<!-- Added to configure load time weaving -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-instrument</artifactId>
-			<version>6.0.11</version>
-		</dependency>
-
-		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
 
 		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<version>2.2</version>
+			<version>3.3.0</version>
 		</dependency>
 
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
@@ -320,129 +426,30 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
-		And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
-		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>${ehcache.version}</version>
-			<classifier>jakarta</classifier>
-		</dependency>
-
-		<!-- To use zkoss in our application -->
-		<dependency>
-			<groupId>org.zkoss.zkspringboot</groupId>
-			<artifactId>zkspringboot-starter</artifactId>
-			<type>pom</type>
-			<version>${zkspringboot-starter.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkplus</artifactId>
-			<version>${zk.version}</version>
-			<exclusions>
-				<exclusion>  <!-- Exclude log4j to avoid duplicate artifacts in the classpath -->
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-core</artifactId>
-			<version>${zkspring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-security</artifactId>
-			<version>${zkspring.version}</version>
-		</dependency>
-
-		<!-- To use the reflections' library, which is used in the code of iochem-bd
-		https://mvnrepository.com/artifact/org.reflections/reflections -->
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>${reflections.version}</version>
-		</dependency>
-
-
-		<!-- To use the @Inject annotation -->
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>${javax-inject.version}</version>
-		</dependency>
-
-		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${hikari.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-hikaricp</artifactId>
-			<version>${hibernate-hikariCP.version}</version>
-		</dependency>
-
-		<!-- To use (integrate) a CAS service. Currently activating this dependency increases the startup time by
-		     5 minutes-->
-		<!--<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-cas</artifactId>
-			<version>${spring-security-cas.version}</version>
-		</dependency>-->
-
-		<!-- Cas client  -->
-		<!--<dependency>
-			<groupId>org.jasig.cas.client</groupId>
-			<artifactId>cas-client-core</artifactId>
-			<version>${org.jasig.cas.client.core.version}</version>
-		</dependency>-->
-
-		<!-- CAS client support for spring boot -->
-		<!--<dependency>
-			<groupId>org.jasig.cas.client</groupId>
-			<artifactId>cas-client-support-springboot</artifactId>
-			<version>${org.jasig.cas.client.springboot.version}</version>
-		</dependency>-->
-
 		<dependency>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>license-maven-plugin</artifactId>
-			<version>2.4.0</version>
+			<version>${license-maven-plugin.version}</version>
 		</dependency>
 
 		<!-- To provide a valid implementation of Log4j2 -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-			<version>2.22.1</version>
+			<version>${apache-log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.22.1</version>
-		</dependency>
-
-		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
-		<dependency>
-			<groupId>jakarta.persistence</groupId>
-			<artifactId>jakarta.persistence-api</artifactId>
-			<version>${jakarta.persistence-api.version}</version>
+			<version>${apache-log4j.version}</version>
 		</dependency>
 
 		<!-- Needed when upgrade to java 17 -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<version>${spring-context-support.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
 		<!--
@@ -472,7 +479,6 @@
 	<build>
 		<finalName>eChempad</finalName>
 		<plugins>
-			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -484,7 +490,6 @@
 					</argLine>
 				</configuration>
 			</plugin>
-			-->
 		</plugins>
 	</build>
 
@@ -505,18 +510,12 @@
 			</activation>
 			<build>
 				<plugins>
-					<!-- Added when migrating java 8 to java 11 to upgrade spring boot dependencies -->
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-dependencies</artifactId>
-						<version>3.1.2</version>
-					</plugin>
 
 					<!-- Added when migrating java 8 to java 11 -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>
-						<version>3.8.1</version>
+						<version>3.12.1</version>
 						<configuration>
 							<source>17</source>
 							<target>17</target>
