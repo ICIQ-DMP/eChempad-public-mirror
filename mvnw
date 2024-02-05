@@ -369,15 +369,15 @@ if [ ! -s "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" ]; then
 fi
 
 # Add -Xlint:unchecked because some classes uses unchecked operations and this flag can be used to see details.
-#JAVA_FLAGS="${JAVA_FLAGS}"  # -Dsun.rmi.transport.tcp.maxConnectionThreads=0
+#JAVA_FLAGS="-javaagent:/home/aleixmt/.m2/repository/org/springframework/spring-instrument/6.0.11/spring-instrument-6.0.11.jar ${JAVA_FLAGS}"  # -Dsun.rmi.transport.tcp.maxConnectionThreads=0
 
-       #"-javaagent:/home/aleixmt/.m2/repository/org/springframework/spring-instrument/6.0.11/spring-instrument-6.0.11.jar"
+       #       "--add-opens" "java.base/java.lang=ALL-UNNAMED" \
+       #        "-javaagent:/home/aleixmt/.m2/repository/org/springframework/spring-instrument/6.0.11/spring-instrument-6.0.11.jar" \
 # Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
 echo Executed command:
 echo exec "${JAVACMD}" ${JAVA_FLAGS} \
        ${MAVEN_OPTS} \
        -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
-       "--add-opens" "java.base/java.lang=ALL-UNNAMED" \
        "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
        ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
        "$@"
@@ -392,7 +392,5 @@ exec "${JAVACMD}" ${JAVA_FLAGS} \
          ${MAVEN_OPTS} \
          -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
          "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
-         "--add-opens" "java.base/java.lang=ALL-UNNAMED" \
-         "-javaagent:/home/aleixmt/.m2/repository/org/springframework/spring-instrument/6.0.11/spring-instrument-6.0.11.jar" \
          ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
          "$@"
