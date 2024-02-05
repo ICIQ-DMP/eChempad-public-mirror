@@ -68,7 +68,7 @@
 		<hikari.version>5.0.1</hikari.version>
 		<hibernate-hikariCP.version>6.2.7.Final</hibernate-hikariCP.version>
 		<javax-inject.version>1</javax-inject.version>
-		<ehcache.version>3.10.2</ehcache.version>
+		<ehcache.version>3.10.6</ehcache.version>
 		<threetenbp.version>1.6.5</threetenbp.version>
 		<postgresql.version>42.5.4</postgresql.version>
 		<jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
@@ -87,6 +87,7 @@
 		<!-- CAS -->
 		<org.jasig.cas.client.core.version>3.6.4</org.jasig.cas.client.core.version>
 		<org.jasig.cas.client.springboot.version>3.6.4</org.jasig.cas.client.springboot.version>
+		<javax-servlet.version>4.0.1</javax-servlet.version>
 	</properties>
 
 	<!--Licenses -->
@@ -310,6 +311,12 @@
 			<version>${org.jasig.cas.client.springboot.version}</version>
 		</dependency>
 
+		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax-servlet.version}</version>
+		</dependency>
 
 
 		<!-- INTEGRATION WITH JAVA 17 -->
@@ -357,12 +364,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<version>${jakarta.persistence-api.version}</version>
 		</dependency>
 
-
-
-
-
-
-
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
@@ -374,9 +375,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<artifactId>jdbc</artifactId>
 			<version>${testcontainers.version}</version>
 		</dependency>
-
-
-
 
 		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
 		<dependency>
@@ -451,14 +449,7 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<version>${spring-context-support.version}</version>
 		</dependency>-->
 
-		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
-		<!--
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-		-->
+
 
 		<!-- Load time weaver without explicit java agent -->
 		<!--
