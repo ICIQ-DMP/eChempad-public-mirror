@@ -44,42 +44,49 @@ public abstract class DataEntityImpl extends EntityImpl implements DataEntity{
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(nullable = false)
-    private Date creationDate;
+    protected Date creationDate;
+
+    /**
+     * Date of creation of the entity in the origin.
+     */
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(nullable = false)
+    protected Date originCreationDate;
 
     /**
      * Date of last edition of this Entity.
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(nullable = false)
-    private Date lastEditionDate;
+    protected Date lastEditionDate;
 
     /**
      * Date of last edition of the data that this Entity corresponds to in the origin platform.
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(nullable = false)
-    private Date originLastEditionDate;
+    protected Date originLastEditionDate;
 
     /**
      * The String that identifies this DataEntity in the originPlatform. It could be encoded in many ways.
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(length = 1000)
-    private String originId;
+    protected String originId;
 
     /**
      * The String that identifies the platform that this DataEntity is coming from. It can be eChempad or Signals
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(length = 1000)
-    private String originPlatform;
+    protected String originPlatform;
 
     /**
      * The String that reflects the type of the original element. It can be Experiment, Journal, Document...
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(length = 1000)
-    private String originType;
+    protected String originType;
 
     /**
      * The String that stores the digest value of the data that this entity comes from. It can be encoded differently
@@ -87,7 +94,7 @@ public abstract class DataEntityImpl extends EntityImpl implements DataEntity{
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(length = 100)
-    private String digest;
+    protected String digest;
 
     /**
      * The String that stores the membership of this DataEntity. It is the surname of the group leader. Bo, Echavarren,
@@ -95,7 +102,7 @@ public abstract class DataEntityImpl extends EntityImpl implements DataEntity{
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(length = 100)
-    private String department;
+    protected String department;
 
     /**
      * The String that stores the username of the user that created the data that this DataEntity corresponds to in the
@@ -103,7 +110,7 @@ public abstract class DataEntityImpl extends EntityImpl implements DataEntity{
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(length = 100)
-    private String originOwnerUsername;
+    protected String originOwnerUsername;
 
     public void initCreationDate() {
         this.creationDate = new Date();
@@ -146,6 +153,14 @@ public abstract class DataEntityImpl extends EntityImpl implements DataEntity{
     @Override
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public Date getOriginCreationDate() {
+        return originCreationDate;
+    }
+
+    public void setOriginCreationDate(Date originCreationDate) {
+        this.originCreationDate = originCreationDate;
     }
 
     @Override
@@ -226,5 +241,24 @@ public abstract class DataEntityImpl extends EntityImpl implements DataEntity{
     @Override
     public void setOriginOwnerUsername(String originOwnerUsername) {
         this.originOwnerUsername = originOwnerUsername;
+    }
+
+    public static void copyProperties(DataEntity origin, DataEntity destiny)
+    {
+        destiny.setId(origin.getId());
+        destiny.setName(origin.getName());
+        destiny.setDescription(origin.getDescription());
+        destiny.setCreationDate(origin.getCreationDate());
+        destiny.setDepartment(origin.getDepartment());
+        destiny.setDigest(origin.getDigest());
+        destiny.setLastEditionDate(origin.getLastEditionDate());
+        destiny.setOriginCreationDate(origin.getOriginCreationDate());
+        destiny.setOriginId(origin.getOriginId());
+        destiny.setOriginLastEditionDate(origin.getOriginLastEditionDate());
+        destiny.setOriginOwnerUsername(origin.getOriginOwnerUsername());
+        destiny.setOriginPlatform(origin.getOriginPlatform());
+        destiny.setOriginCreationDate(origin.getOriginCreationDate());
+        destiny.setOriginType(origin.getOriginType());
+        destiny.setParent(origin.getParent());
     }
 }

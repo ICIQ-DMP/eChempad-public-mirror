@@ -20,10 +20,12 @@
  */
 package org.ICIQ.eChempad.web.composers;
 
-import org.ICIQ.eChempad.services.SignalsImportService;
+import org.ICIQ.eChempad.configurations.wrappers.UserDetailsImpl;
+import org.ICIQ.eChempad.services.importServices.ImportService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
@@ -68,7 +70,7 @@ public class ToolbarComposer extends SelectorComposer<Window> {
      * Service to connect to Signals using the API key of the current user to retrieve all available data
      */
     @WireVariable("signalsImportService")
-    private SignalsImportService signalsImportService;
+    private ImportService importService;
 
     /**
      * De-facto constructor for composer components.
@@ -90,8 +92,9 @@ public class ToolbarComposer extends SelectorComposer<Window> {
     @Listen("onClick = #importSignals")
     public void onClickImportSignalButton() throws IOException {
         // Import all visible data from Signals into eChempad workspace.
-        this.signalsImportService.importWorkspace();
-
+        String currentUserAPIKey = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getResearcher().getSignalsAPIKey();
+        // Update all containers with external data
+        this.importService.updateRootContainers(currentUserAPIKey);
         // Publish refresh event in order to reload the UI
         this.treeQueue.publish(new Event(EventNames.REFRESH_EVENT, null, null));
     }

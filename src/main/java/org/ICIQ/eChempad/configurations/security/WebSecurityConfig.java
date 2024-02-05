@@ -26,17 +26,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -76,6 +82,24 @@ public class WebSecurityConfig {
     private UserDetailsService userDetailsService;
 
     /**
+     * To integrate CAS with its entrypoint (service login url)
+     */
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
+
+    /**
+     * For CAS integration
+     */
+    @Autowired
+    private AuthenticationProvider authenticationProvider;
+
+    /**
+     * For CAS authentication
+     */
+    //@Autowired
+    //private CasAuthenticationFilter casAuthenticationFilter;
+
+    /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
      * Allow only authenticated users to access the API.
      *
@@ -98,7 +122,7 @@ public class WebSecurityConfig {
         String removeDesktopRegex = "/zkau\\?dtid=.*&cmd_0=rmDesktop&.*";
 
         // Anonymous accessible pages
-        String[] anonymousPages = new String[]{"/login","/logout", "/timeout", "/help", "/exit"};
+        String[] anonymousPages = new String[]{"/logout", "/timeout", "/help", "/exit"};
 
         // Pages that need authentication: CRUD API & ZK page
         String[] authenticatedPages = new String[]{"/api/**", "/profile", "/"};
@@ -115,8 +139,20 @@ public class WebSecurityConfig {
         }
 
         http
-                .headers().frameOptions().sameOrigin() // X-Frame-Options = SAMEORIGIN
+                //.addFilter(this.casAuthenticationFilter)
+                // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
+                // will show a 401 unauthenticated*/
+                    .httpBasic()
+                    .authenticationEntryPoint(this.authenticationEntryPoint)
+                .and()
+                    .logout()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .and()
+                    .headers()
+                    .frameOptions()
+                    .sameOrigin() // X-Frame-Options = SAMEORIGIN
 
+                // API endpoints protection
                 .and()
                     .authorizeRequests()
                     .requestMatchers("/api/authority").authenticated()
@@ -125,11 +161,6 @@ public class WebSecurityConfig {
                     .requestMatchers("/api/experiment").authenticated()
                     .requestMatchers("/api/document").authenticated()
                     .requestMatchers("/api/**").authenticated()
-
-                // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
-                // will show a 401 unauthenticated*/
-                .and()
-                    .httpBasic()
 
                 // For the GUI with ZKoss
                 .and()
@@ -146,18 +177,12 @@ public class WebSecurityConfig {
                     // Any other requests has to be authenticated too
                     .anyRequest().authenticated()
 
-                // Creates the http form login in the default URL /login· The first parameter is a string corresponding
-                // to the URL where we will map the login form
+                // Any other requests have to be authenticated too
                 .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/")  // Successful redirect URL after login is root page
+                    .authorizeRequests()
+                    .anyRequest()
+                    .authenticated();
 
-                // Creates a logout form
-                .and()
-                    .logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login");  // After logout, redirect to login page
     }
 
 
@@ -181,9 +206,15 @@ public class WebSecurityConfig {
                     .userDetailsService(this.userDetailsService)
                     // Provide the password encoder used to store password in the database
                     .passwordEncoder(WebSecurityConfig.passwordEncoder())
-                .and();
+
+                .and()
+                    // CAS authentication provider
+                    .authenticationProvider(this.authenticationProvider);
     }
 
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return new ProviderManager(Collections.singletonList(authenticationProvider));
+    }
 
     /**
      * Bean that returns the password encoder used for hashing passwords.
