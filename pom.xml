@@ -492,9 +492,9 @@
 	<!--Profiles -->
 
 
-	<!--<profiles> -->
+	<profiles>
 		<!--  This profile should ONLY be active when user specifies -Dthird.party.licenses=true on command-line.  -->
-		<!--  This profile will build "LICENSE-3RD-PARTY.txt" file, grouping all third party licenses  --> <!--
+		<!--  This profile will build "LICENSE-3RD-PARTY.txt" file, grouping all third party licenses  -->
 		<profile>
 			<id>third-party-license-file-build</id>
 			<activation>
@@ -505,8 +505,6 @@
 			</activation>
 			<build>
 				<plugins>
-<<<<<<< HEAD
-
 					<!-- Added when migrating java 8 to java 11 to upgrade spring boot dependencies -->
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
@@ -551,8 +549,6 @@
 						</executions>
 					</plugin>
 
-=======
->>>>>>> 306609182dbb1efb28ca9e7c8c12db4622005b0a
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
@@ -672,9 +668,9 @@
 
 				</plugins>
 			</build>
-		</profile> -->
+		</profile>
 		<!--  This profile should ONLY be active when user specifies -Dattach.license.header=true on command-line.  -->
-		<!--  This profile will add license headers to all source files  --><!--
+		<!--  This profile will add license headers to all source files  -->
 		<profile>
 
 			<id>license-header-attach</id>
@@ -738,5 +734,5 @@
 				</plugins>
 			</build>
 		</profile>
-	</profiles>-->
+	</profiles>
 </project>
