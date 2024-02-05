@@ -26,12 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class UIControllerImpl implements UIController {
 
-    @GetMapping("/login")
-    @Override
-    public String login() {
-        return "login";
-    }
-
     @GetMapping("/exit")
     @Override
     public String exit() {

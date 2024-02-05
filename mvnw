@@ -35,6 +35,10 @@
 # ----------------------------------------------------------------------------
 
 clear  # Clean screen when running this script because it outputs a lot of things
+
+# Uncomment line to activate debug
+MVNW_VERBOSE=true
+
 if [ -z "$MAVEN_SKIP_RC" ] ; then
 
   if [ -f /etc/mavenrc ] ; then
@@ -200,6 +204,10 @@ if [ -z "$BASE_DIR" ]; then
   exit 1;
 fi
 
+# Define path for the certificate used to recognize maven issuer certificate
+MVNW_CERT_PATH="${BASE_DIR}/.mvn/repo.maven.apache.org.cer"
+
+
 ##########################################################################################
 # Extension to allow automatically downloading the maven-wrapper.jar from Maven-central
 # This allows using the maven wrapper in projects that prohibit checking in binary data.
@@ -234,9 +242,10 @@ else
           echo "Found wget ... using wget"
         fi
         if [ -z "$MVNW_USERNAME" ] || [ -z "$MVNW_PASSWORD" ]; then
-            wget "$jarUrl" -O "$wrapperJarPath"
+            echo wget --ca-certificate "${MVNW_CERT_PATH}" "$jarUrl" -O "$wrapperJarPath"
+            wget --ca-certificate "${MVNW_CERT_PATH}" "$jarUrl" -O "$wrapperJarPath"
         else
-            wget --http-user=$MVNW_USERNAME --http-password=$MVNW_PASSWORD "$jarUrl" -O "$wrapperJarPath"
+            wget --ca-certificate "${MVNW_CERT_PATH}" --http-user=$MVNW_USERNAME --http-password=$MVNW_PASSWORD "$jarUrl" -O "$wrapperJarPath"
         fi
     elif command -v curl > /dev/null; then
         if [ "$MVNW_VERBOSE" = true ]; then
@@ -281,7 +290,7 @@ fi
 
 export MAVEN_PROJECTBASEDIR=${MAVEN_BASEDIR:-"$BASE_DIR"}
 if [ "$MVNW_VERBOSE" = true ]; then
-  echo $MAVEN_PROJECTBASEDIR
+  echo Base dir: $MAVEN_PROJECTBASEDIR
 fi
 MAVEN_OPTS="$(concat_lines "$MAVEN_PROJECTBASEDIR/.mvn/jvm.config") $MAVEN_OPTS"
 
@@ -309,6 +318,7 @@ WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
 # Obtain full path to the folder that contains this script
 MAVEN_WRAPPER_DIR="$(dirname "$(realpath "$0")")"
+
 # Obtain application profile
 SPRINGBOOT_PROFILE="$(
   cat "${MAVEN_WRAPPER_DIR}/src/main/resources/application.properties" |
@@ -330,9 +340,10 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  /etc/default/cacerts
 # *  "${JAVA_HOME}/jre/lib/security/cacerts"
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
-# "${MAVEN_WRAPPER_DIR}/src/main/resources/CA_certificates/cacerts" <-- The static one that we have stored in the repo
-trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/tools/CA_certificates/cacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
-trustStore="${trustStores[5]}"
+# "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" <-- The static one that we have stored in the repo
+trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
+trustStore="${trustStores[3]}"
+echo "Using truststore ${trustStore}"
 
 if [ ! -f "${trustStore}" ]; then
   echo "ERROR: The trust store ${trustStore} is not a valid or existent file"
@@ -343,8 +354,22 @@ if [ ! -r "${trustStore}" ]; then
   exit 1
 fi
 
+# Check size of the maven-wrapper.jar
+# Sometimes, if we can not verify the identity of the issuer's authority from the server we will download 0 KB, which +
+# obviously means that we did not download the jar at all and the next step will fail inevitably.
+if [ ! -f "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" ]; then
+  echo "ERROR: the maven wrapper jar does not exist"
+  exit 1
+fi
+
+if [ ! -s "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" ]; then
+  echo "ERROR: the maven wrapper jar is empty, probably error with certificates. Delete"
+  echo "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar and execute mvnw again to trigger its download"
+  exit 1
+fi
+
 # Add -Xlint:unchecked because some classes uses unchecked operations and this flag can be used to see details.
-#JAVA_FLAGS="${JAVA_FLAGS} -Dspring.profiles.active=container"  # This flag is not recognised
+#JAVA_FLAGS="${JAVA_FLAGS}"  # -Dsun.rmi.transport.tcp.maxConnectionThreads=0
 
 # Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
 echo Executed command:

@@ -21,6 +21,7 @@
 package org.ICIQ.eChempad.services;
 
 import org.ICIQ.eChempad.entities.DocumentWrapper;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -31,7 +32,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-public interface DocumentWrapperService<T extends EntityImpl, S extends Serializable> extends GenericService<DocumentWrapper, UUID> {
+public interface DocumentWrapperService<T extends Entity, S extends Serializable> extends GenericService<DocumentWrapper, UUID> {
 
 
     /**

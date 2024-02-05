@@ -41,7 +41,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class DocumentWrapperServiceImpl<T extends EntityImpl, S extends Serializable> implements DocumentWrapperService<DocumentWrapper, UUID> {
+public class DocumentWrapperServiceImpl<T extends Entity, S extends Serializable> implements DocumentWrapperService<DocumentWrapper, UUID> {
 
     private final DocumentService<T, S> documentService;
     private final DocumentWrapperConverter documentWrapperConverter;
