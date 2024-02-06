@@ -29,6 +29,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -96,8 +97,14 @@ public class WebSecurityConfig {
     /**
      * For CAS authentication
      */
-    //@Autowired
-    //private CasAuthenticationFilter casAuthenticationFilter;
+    @Autowired
+    private CasAuthenticationFilter casAuthenticationFilter;
+
+    /**
+     * For CAS authentication
+     */
+    @Autowired
+    private CasAuthenticationFilter casAuthenticationFilter;
 
     /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
@@ -137,6 +144,11 @@ public class WebSecurityConfig {
         if (! this.corsDisabled) {
             http.cors().disable();
         }
+        http.authorizeRequests().antMatchers( "/secured", "/login").authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
+                .and()
+                .addFilterBefore(singleSignOutFilter, CasAuthenticationFilter.class)
 
         http
                 //.addFilter(this.casAuthenticationFilter)
@@ -151,6 +163,11 @@ public class WebSecurityConfig {
                     .headers()
                     .frameOptions()
                     .sameOrigin() // X-Frame-Options = SAMEORIGIN
+                .and()
+                    .exceptionHandling()
+                    .authenticationEntryPoint(this.authenticationEntryPoint)
+                .and()
+                    .addFilterBefore(this.singleSignOutFilter, CasAuthenticationFilter.class)
 
                 // API endpoints protection
                 .and()

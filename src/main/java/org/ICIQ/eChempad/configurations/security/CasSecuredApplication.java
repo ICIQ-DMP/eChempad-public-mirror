@@ -61,6 +61,7 @@ public class CasSecuredApplication {
     }
 
     @Bean
+    @Primary
     public CasAuthenticationProvider casAuthenticationProvider(
             TicketValidator ticketValidator,
             ServiceProperties serviceProperties,
