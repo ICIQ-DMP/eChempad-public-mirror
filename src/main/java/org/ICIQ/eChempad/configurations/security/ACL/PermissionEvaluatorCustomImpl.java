@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 
 @Component
+public
 class PermissionEvaluatorCustomImpl implements PermissionEvaluator {
 
     final

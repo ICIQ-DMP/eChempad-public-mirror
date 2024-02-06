@@ -20,8 +20,11 @@
  */
 package org.ICIQ.eChempad.configurations.database;
 
+import org.ICIQ.eChempad.configurations.security.ACL.PermissionEvaluatorCustomImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -30,9 +33,18 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.acls.domain.*;
+import org.springframework.security.acls.jdbc.BasicLookupStrategy;
+import org.springframework.security.acls.jdbc.JdbcMutableAclService;
+import org.springframework.security.acls.jdbc.LookupStrategy;
+import org.springframework.security.acls.model.AclCache;
+import org.springframework.security.acls.model.PermissionGrantingStrategy;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -56,7 +68,6 @@ import java.util.logging.Logger;
 @Component
 @Configuration
 public class DatabaseAccessBeans {
-
     /**
      * Class that contains all the relevant data for the configuration of the Database.
      */
@@ -77,6 +88,113 @@ public class DatabaseAccessBeans {
         dataSource.setUsername(this.dbAccessConfigurationInstance.getUsername());
         dataSource.setPassword(this.dbAccessConfigurationInstance.getPassword());
         return dataSource;
+    }
+
+    /**
+     * Returns an instance that knows how to evaluate Spring security expressions. This instance delegates the
+     * evaluation of permissions to {@code PermissionEvaluatorCustomImpl} which comes preconfigured by Spring out of the
+     * box.
+     * @return Spring security expression evaluator custom for our ACL needs.
+     */
+    @Bean
+    public MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+
+        expressionHandler.setPermissionEvaluator(new PermissionEvaluatorCustomImpl(this.aclService(this.dataSource())));
+        return expressionHandler;
+    }
+
+    /**
+     * Tuned ACL service to use UUID as object identity by invoking the {@code setClassIdentityQuery},
+     * {@code setAclClassIdSupported} and {@code setSidIdentityQuery} methods of the {@code AclService}. This is used in
+     * order to use UUIDs in the ACL classes.
+     *
+     * @see <a href="https://github.com/spring-projects/spring-security/issues/7978">...</a>
+     * @param dataSource Autowired default Datasource (postgreSQL)
+     * @return A JdbcMutableService which implements the mutability of the ACL objects
+     */
+    @Bean
+    @Autowired
+    public JdbcMutableAclService aclService(DataSource dataSource) {
+        JdbcMutableAclService jdbcMutableAclService = new JdbcMutableAclService(dataSource, this.lookupStrategy(dataSource), this.aclCache());
+
+        jdbcMutableAclService.setAclClassIdSupported(true);
+
+        jdbcMutableAclService.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
+        jdbcMutableAclService.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
+
+        return jdbcMutableAclService;
+    }
+
+    /**
+     * To provide a {@code PermissionGrantingStrategy}, which is a component needed by the ACL infrastructure.
+     *
+     * @return Object that performs permission granting.
+     */
+    @Bean
+    public PermissionGrantingStrategy permissionGrantingStrategy() {
+        return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
+    }
+
+    /**
+     * Bean to provide an optimized way to retrieve ACLs, using the ACL cache.
+     * This class also has a little tuning for using UUID as identity of objects. This occurs when calling the
+     * {@code setAclClassIdSupported} in the {@code LookupStrategy} object that we return.
+     *
+     * @param dataSource Object abstracting the database.
+     * @return Object that provides an optimized way to retrieve ACL entries.
+     * @see <a href="https://github.com/spring-projects/spring-security/issues/7978">...</a>
+     */
+    @Bean
+    public LookupStrategy lookupStrategy(DataSource dataSource) {
+        BasicLookupStrategy lookupStrategy = new BasicLookupStrategy(
+                dataSource,
+                this.aclCache(),
+                this.aclAuthorizationStrategy(),
+                new ConsoleAuditLogger()
+        );
+
+        lookupStrategy.setAclClassIdSupported(true);
+        return lookupStrategy;
+    }
+
+    /**
+     * Authorization strategy to authorize changes in the ACL tables.
+     *
+     * @return Object that performs authorizations.
+     */
+    @Bean
+    public AclAuthorizationStrategy aclAuthorizationStrategy() {
+        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    }
+
+    /**
+     * Cache implementation, which is needed by the ACL infrastructure in order to retrieve ACL entries in an efficient
+     * way. In our case we provide an implementation with {@code EhCacheBasedAclCache} which is deprecated.
+     *
+     * @return An object to manipulate a cache of ACLs.
+     */
+    @Bean
+    public AclCache aclCache() {
+        // TODO EhCacheBasedAclCache is deprecated
+
+        return new SpringCacheBasedAclCache(
+                this.cacheManager().getCache("aclCache"),
+                permissionGrantingStrategy(),
+                aclAuthorizationStrategy()
+        );
+    }
+
+    /**
+     * Bean to provide an {@code EhCacheManagerFactoryBean}, which is basically a factory class to create
+     * {@code AclCache}.
+     *
+     * @return Object to ease the creation of {@code AclCache}.
+     */
+    @Bean
+    public ConcurrentMapCacheManager cacheManager()
+    {
+        return new ConcurrentMapCacheManager();
     }
 
     /**

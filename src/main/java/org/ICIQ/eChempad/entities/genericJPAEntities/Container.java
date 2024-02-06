@@ -23,7 +23,7 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,7 +41,7 @@ import java.util.Set;
  * @see <a href="https://stackoverflow.com/questions/45086957/how-to-generate-an-auto-uuid-using-hibernate-on-spring-boot/45087148">...</a>
  * @see <a href="https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/">...</a>
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.EXISTING_PROPERTY,

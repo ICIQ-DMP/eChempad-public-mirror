@@ -28,7 +28,7 @@ import org.ICIQ.eChempad.configurations.converters.UUIDConverter;
 import org.ICIQ.eChempad.entities.DocumentWrapper;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -49,7 +49,7 @@ import java.util.UUID;
  * are allowed into this "typeName" field and what is the correspondence to entity classes.
   */
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")

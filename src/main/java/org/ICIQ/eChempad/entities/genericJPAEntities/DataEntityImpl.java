@@ -3,10 +3,10 @@ package org.ICIQ.eChempad.entities.genericJPAEntities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")

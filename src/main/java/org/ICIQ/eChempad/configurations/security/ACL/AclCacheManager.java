@@ -18,18 +18,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.repositories.genericJPARepositories;
+package org.ICIQ.eChempad.configurations.security.ACL;
 
-import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
-import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
-import org.springframework.stereotype.Repository;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 
-import jakarta.transaction.Transactional;
-import java.io.Serializable;
-import java.util.UUID;
+/**
+ * This class contains the beans used in the manipulation of the ACL tables.
+ *
+ * @author Institut Català d'Investigació Química (iciq.cat)
+ * @author Aleix Mariné-Tena (amarine@iciq.es, github.com/AleixMT)
+ * @author Carles Bo Jané (cbo@iciq.es)
+ * @author Moisés Álvarez (malvarez@iciq.es)
+ * @version 1.0
+ * @since 04/10/2022
+ */
+@Configuration
+@EnableCaching
+public class AclCacheManager{
 
-@Repository
-@Transactional
-public interface DocumentRepository<T extends Entity, S extends Serializable> extends GenericRepository<Document, UUID> {
 }

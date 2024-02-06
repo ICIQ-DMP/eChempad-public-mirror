@@ -21,7 +21,7 @@
 package org.ICIQ.eChempad.controllers.UIControllers;
 
 /**
- * Defines the operations that a login controller should have. These operations define URL endpoints that a client can
+ * Defines the operations that a UI controller should have. These operations define URL endpoints that a client can
  * attack in order to return the corresponding ZK page, using view resolver.
  *
  * @author Institut Català d'Investigació Química (iciq.cat)
@@ -32,13 +32,6 @@ package org.ICIQ.eChempad.controllers.UIControllers;
  * @since 1/3/2022
  */
 public interface UIController {
-
-    /**
-     * Returns the needed information to access the login form.
-     *
-     * @return the {@code String} that needs to be put after the base URL to access the login form.
-     */
-    String login();
 
     /**
      * Returns the needed information to access the exit page.
