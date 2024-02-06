@@ -23,6 +23,8 @@ package org.ICIQ.eChempad;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
+import jakarta.servlet.ServletException;
+
 public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override

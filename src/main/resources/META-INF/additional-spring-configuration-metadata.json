@@ -38,7 +38,7 @@
     {
       "name": "eChempad.db.dialect",
       "type": "java.lang.String",
-      "description": "Dialect for the database"
+      "description": "Dialect for the database."
     },
     {
       "name": "eChempad.db.driver",
@@ -53,11 +53,16 @@
     {
       "name": "eChempad.db.policy",
       "type": "java.lang.String",
-      "description": "Initialization mode for automatic JPA tables"
+      "description": "Initialization mode for automatic JPA tables."
     },
     {
       "name": "eChempad.db.show-sql",
       "type": "java.lang.String",
       "description": "Description for eChempad.db.show-sql."
+    },
+    {
+      "name": "zk.view-automapping-enabled",
+      "type": "java.lang.String",
+      "description": "Used in the UI controller, to automap zul templates to the first parameter of GET requests."
     }
   ] }

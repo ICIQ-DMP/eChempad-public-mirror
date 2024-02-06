@@ -26,18 +26,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -56,7 +61,7 @@ import java.util.Collections;
  */
 @EnableWebSecurity
 @Configuration
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
     /**
      * Sets the state of the CSRF protection
@@ -77,6 +82,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     /**
+     * To integrate CAS with its entrypoint (service login url)
+     */
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
+
+    /**
+     * For CAS integration
+     */
+    @Autowired
+    private AuthenticationProvider authenticationProvider;
+
+    /**
+     * For CAS authentication
+     */
+    //@Autowired
+    //private CasAuthenticationFilter casAuthenticationFilter;
+
+    /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
      * Allow only authenticated users to access the API.
      *
@@ -87,7 +110,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param http HTTP security class. Can be used to configure a lot of different parameters regarding HTTP security.
      * @throws Exception Any type of exception that occurs during the HTTP configuration
      */
-    @Override
     protected void configure(@NotNull HttpSecurity http) throws Exception {
 
         // ZUL files regexp execution time
@@ -100,14 +122,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         String removeDesktopRegex = "/zkau\\?dtid=.*&cmd_0=rmDesktop&.*";
 
         // Anonymous accessible pages
-        String[] anonymousPages = new String[]{"/login","/logout", "/timeout", "/help", "/exit"};
+        String[] anonymousPages = new String[]{"/logout", "/timeout", "/help", "/exit"};
 
         // Pages that need authentication: CRUD API & ZK page
         String[] authenticatedPages = new String[]{"/api/**", "/profile", "/"};
 
         // you need to disable spring CSRF to make ZK AU pass security filter
-        // ZK already sends a AJAX request with a built-in CSRF token,
-        http.csrf().disable();
+        // ZK already sends a AJAX request with a built-in CSRF token, but it is recommended to have it active
+        if (! this.corsDisabled) {
+            http.csrf().disable();
+        }
 
         // Conditional activation depending on profile
         if (! this.corsDisabled) {
@@ -115,49 +139,50 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         http
-                .headers().frameOptions().sameOrigin() // X-Frame-Options = SAMEORIGIN
-
-                .and()
-                    .authorizeRequests()
-                    .antMatchers("/api/authority").authenticated()
-                    .antMatchers("/api/researcher").authenticated()
-                    .antMatchers("/api/journal").authenticated()
-                    .antMatchers("/api/experiment").authenticated()
-                    .antMatchers("/api/document").authenticated()
-                    .antMatchers("/api/**").authenticated()
-
+                //.addFilter(this.casAuthenticationFilter)
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated*/
-                .and()
                     .httpBasic()
+                    .authenticationEntryPoint(this.authenticationEntryPoint)
+                .and()
+                    .logout()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .and()
+                    .headers()
+                    .frameOptions()
+                    .sameOrigin() // X-Frame-Options = SAMEORIGIN
+
+                // API endpoints protection
+                .and()
+                    .authorizeRequests()
+                    .requestMatchers("/api/authority").authenticated()
+                    .requestMatchers("/api/researcher").authenticated()
+                    .requestMatchers("/api/journal").authenticated()
+                    .requestMatchers("/api/experiment").authenticated()
+                    .requestMatchers("/api/document").authenticated()
+                    .requestMatchers("/api/**").authenticated()
 
                 // For the GUI with ZKoss
                 .and()
                 .authorizeRequests()
-                    .antMatchers(zulFiles).denyAll()  // Block direct access to zul files
-                    .antMatchers(HttpMethod.GET, zkResources).permitAll()  // Allow ZK resources
-                    .regexMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
+                    .requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
+                    .requestMatchers(HttpMethod.GET, zkResources).permitAll()  // Allow ZK resources
+                    .requestMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
                     // Allow desktop cleanup from ZATS
                     .requestMatchers(req -> "rmDesktop".equals(req.getParameter("cmd_0"))).permitAll()
                     // Allow unauthenticated access to log in, log out, exit, help, report bug...
-                    .mvcMatchers(anonymousPages).permitAll()
+                    .requestMatchers(anonymousPages).permitAll()
                     // Only allow authenticated users in the ZK main page and in the API endpoints
-                    .mvcMatchers(authenticatedPages).hasRole("USER")
+                    .requestMatchers(authenticatedPages).hasRole("USER")
                     // Any other requests has to be authenticated too
                     .anyRequest().authenticated()
 
-                // Creates the http form login in the default URL /login· The first parameter is a string corresponding
-                // to the URL where we will map the login form
+                // Any other requests have to be authenticated too
                 .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/")  // Successful redirect URL after login is root page
+                    .authorizeRequests()
+                    .anyRequest()
+                    .authenticated();
 
-                // Creates a logout form
-                .and()
-                    .logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login");  // After logout, redirect to login page
     }
 
 
@@ -181,9 +206,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .userDetailsService(this.userDetailsService)
                     // Provide the password encoder used to store password in the database
                     .passwordEncoder(WebSecurityConfig.passwordEncoder())
-                .and();
+
+                .and()
+                    // CAS authentication provider
+                    .authenticationProvider(this.authenticationProvider);
     }
 
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return new ProviderManager(Collections.singletonList(authenticationProvider));
+    }
 
     /**
      * Bean that returns the password encoder used for hashing passwords.
