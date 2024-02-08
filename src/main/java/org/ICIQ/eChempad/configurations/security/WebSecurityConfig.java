@@ -101,12 +101,6 @@ public class WebSecurityConfig {
     private CasAuthenticationFilter casAuthenticationFilter;
 
     /**
-     * For CAS authentication
-     */
-    @Autowired
-    private CasAuthenticationFilter casAuthenticationFilter;
-
-    /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
      * Allow only authenticated users to access the API.
      *
@@ -144,12 +138,6 @@ public class WebSecurityConfig {
         if (! this.corsDisabled) {
             http.cors().disable();
         }
-        http.authorizeRequests().antMatchers( "/secured", "/login").authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-                .and()
-                .addFilterBefore(singleSignOutFilter, CasAuthenticationFilter.class)
-
         http
                 //.addFilter(this.casAuthenticationFilter)
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
@@ -166,8 +154,6 @@ public class WebSecurityConfig {
                 .and()
                     .exceptionHandling()
                     .authenticationEntryPoint(this.authenticationEntryPoint)
-                .and()
-                    .addFilterBefore(this.singleSignOutFilter, CasAuthenticationFilter.class)
 
                 // API endpoints protection
                 .and()
@@ -198,7 +184,9 @@ public class WebSecurityConfig {
                 .and()
                     .authorizeRequests()
                     .anyRequest()
-                    .authenticated();
+                    .authenticated()
+                .and()
+                .addFilterBefore(this.casAuthenticationFilter, CasAuthenticationFilter.class);
 
     }
 
