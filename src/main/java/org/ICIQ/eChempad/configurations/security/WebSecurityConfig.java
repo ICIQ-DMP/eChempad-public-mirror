@@ -31,12 +31,17 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.cors.CorsConfiguration;
@@ -60,8 +65,9 @@ import java.util.Collections;
  * @version 1.0
  * @since 1/3/2023
  */
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
 
     /**
@@ -111,19 +117,20 @@ public class WebSecurityConfig {
      * @param http HTTP security class. Can be used to configure a lot of different parameters regarding HTTP security.
      * @throws Exception Any type of exception that occurs during the HTTP configuration
      */
-    protected void configure(@NotNull HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         // ZUL files regexp execution time
-        String zulFiles = "/zkau/web/**/*.zul";
+        String zulFiles = "/zkau/web/*/*.zul";
 
         // Web files regexp execution time
-        String[] zkResources = {"/zkau/web/**/js/**", "/zkau/web/**/zul/css/**", "/zkau/web/**/img/**"};
+        String[] zkResources = {"/zkau/web/*/js/**", "/zkau/web/*/zul/css/**", "/zkau/web/*/img/**"};
 
         // Allow desktop cleanup after logout or when reloading login page
         String removeDesktopRegex = "/zkau\\?dtid=.*&cmd_0=rmDesktop&.*";
 
         // Anonymous accessible pages
-        String[] anonymousPages = new String[]{"/logout", "/timeout", "/help", "/exit"};
+        String[] anonymousPages = new String[]{"/logout", "/timeout", "/help", "/exit", "/login"};
 
         // Pages that need authentication: CRUD API & ZK page
         String[] authenticatedPages = new String[]{"/api/**", "/profile", "/"};
@@ -138,7 +145,11 @@ public class WebSecurityConfig {
         if (! this.corsDisabled) {
             http.cors().disable();
         }
+
         http
+                .requestCache((cache) -> cache
+                        .requestCache(new NullRequestCache())
+                )
                 .addFilter(this.casAuthenticationFilter)
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated*/
@@ -180,6 +191,8 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated();
+
+        return http.build();
     }
 
     /**
@@ -193,7 +206,7 @@ public class WebSecurityConfig {
      * @param authenticationBuilder Object instance used to build authentication objects.
      * @throws Exception Any type of exception
      */
-    @Autowired
+    /*@Autowired
     @Transactional
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
@@ -206,19 +219,25 @@ public class WebSecurityConfig {
                 .and()
                     // CAS authentication provider
                     .authenticationProvider(this.authenticationProvider);
-    }
+    }*/
 
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return new ProviderManager(Collections.singletonList(this.authenticationProvider));
-    }
+    /*@Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailService)
+            throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(this.passwordEncoder())
+                .and()
+                .build();
+    }*/
 
     /**
      * Bean that returns the password encoder used for hashing passwords.
      *
      * @return Returns an instance of encode, which can be used by accessing to encode(String) method
      */
-    @Bean()
-    public static PasswordEncoder passwordEncoder()
+    @Bean
+    public PasswordEncoder passwordEncoder()
     {
         return NoOpPasswordEncoder.getInstance();  // TODO: In production change to a safe password encoder
         //return new BCryptPasswordEncoder();
