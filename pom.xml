@@ -289,8 +289,7 @@
 		</dependency>
 
 		<!-- CAS -->
-		<!-- To use (integrate) a CAS service. Currently activating this dependency increases the startup time by
-     5 minutes-->
+		<!-- To use (integrate) a CAS service -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-cas</artifactId>

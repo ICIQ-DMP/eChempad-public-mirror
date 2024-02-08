@@ -182,7 +182,6 @@ public class WebSecurityConfig {
                 .authenticated();
     }
 
-
     /**
      * Configures the authentication. Currently, it is done simply by providing a {@code UserDetailsService}, which
      * uses the database to get user information username and password
@@ -210,7 +209,7 @@ public class WebSecurityConfig {
     }
 
     protected AuthenticationManager authenticationManager() throws Exception {
-        return new ProviderManager(Collections.singletonList(authenticationProvider));
+        return new ProviderManager(Collections.singletonList(this.authenticationProvider));
     }
 
     /**

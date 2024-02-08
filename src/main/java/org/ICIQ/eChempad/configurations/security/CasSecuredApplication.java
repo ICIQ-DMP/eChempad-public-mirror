@@ -38,6 +38,7 @@ public class CasSecuredApplication {
     }
 
     @Bean
+    @Primary
     public CasAuthenticationFilter casAuthenticationFilter(
             ServiceProperties serviceProperties, AuthenticationManager authenticationManager) throws Exception {
         CasAuthenticationFilter filter = new CasAuthenticationFilter();
