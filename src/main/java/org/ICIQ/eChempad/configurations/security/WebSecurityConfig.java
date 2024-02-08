@@ -139,55 +139,47 @@ public class WebSecurityConfig {
             http.cors().disable();
         }
         http
-                //.addFilter(this.casAuthenticationFilter)
+                .addFilter(this.casAuthenticationFilter)
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated*/
-                    .httpBasic()
-                    .authenticationEntryPoint(this.authenticationEntryPoint)
+                .httpBasic()
+                .authenticationEntryPoint(this.authenticationEntryPoint)
                 .and()
-                    .logout()
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .and()
-                    .headers()
-                    .frameOptions()
-                    .sameOrigin() // X-Frame-Options = SAMEORIGIN
-                .and()
-                    .exceptionHandling()
-                    .authenticationEntryPoint(this.authenticationEntryPoint)
+                .headers()
+                .frameOptions()
+                .sameOrigin() // X-Frame-Options = SAMEORIGIN
 
                 // API endpoints protection
                 .and()
-                    .authorizeRequests()
-                    .requestMatchers("/api/authority").authenticated()
-                    .requestMatchers("/api/researcher").authenticated()
-                    .requestMatchers("/api/journal").authenticated()
-                    .requestMatchers("/api/experiment").authenticated()
-                    .requestMatchers("/api/document").authenticated()
-                    .requestMatchers("/api/**").authenticated()
+                .authorizeRequests()
+                .requestMatchers("/api/authority").authenticated()
+                .requestMatchers("/api/researcher").authenticated()
+                .requestMatchers("/api/journal").authenticated()
+                .requestMatchers("/api/experiment").authenticated()
+                .requestMatchers("/api/document").authenticated()
+                .requestMatchers("/api/**").authenticated()
 
                 // For the GUI with ZKoss
                 .and()
                 .authorizeRequests()
-                    .requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
-                    .requestMatchers(HttpMethod.GET, zkResources).permitAll()  // Allow ZK resources
-                    .requestMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
-                    // Allow desktop cleanup from ZATS
-                    .requestMatchers(req -> "rmDesktop".equals(req.getParameter("cmd_0"))).permitAll()
-                    // Allow unauthenticated access to log in, log out, exit, help, report bug...
-                    .requestMatchers(anonymousPages).permitAll()
-                    // Only allow authenticated users in the ZK main page and in the API endpoints
-                    .requestMatchers(authenticatedPages).hasRole("USER")
-                    // Any other requests has to be authenticated too
-                    .anyRequest().authenticated()
+                .requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
+                .requestMatchers(HttpMethod.GET, zkResources).permitAll()  // Allow ZK resources
+                .requestMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
+                // Allow desktop cleanup from ZATS
+                .requestMatchers(req -> "rmDesktop".equals(req.getParameter("cmd_0"))).permitAll()
+                // Allow unauthenticated access to log in, log out, exit, help, report bug...
+                .requestMatchers(anonymousPages).permitAll()
+                // Only allow authenticated users in the ZK main page and in the API endpoints
+                .requestMatchers(authenticatedPages).hasRole("USER")
 
                 // Any other requests have to be authenticated too
                 .and()
-                    .authorizeRequests()
-                    .anyRequest()
-                    .authenticated()
-                .and()
-                .addFilterBefore(this.casAuthenticationFilter, CasAuthenticationFilter.class);
-
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated();
     }
 
 
