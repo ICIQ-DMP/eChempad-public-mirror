@@ -1,0 +1,69 @@
+<!--
+
+    eChempad is a suite of web services oriented to manage the entire
+    data life-cycle of experiments and assays from Experimental
+    Chemistry and related Science disciplines.
+
+    Copyright (C) 2021 - present Institut Català d'Investigació Química (ICIQ)
+
+    eChempad is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?meta name="viewport" content="width=device-width, initial-scale=1"?>
+<?link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
+<?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
+
+<?import src="~./zul/browserTab.zul" directives=*?>
+<?page title="eChempad - Profile"?>
+
+
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.zkoss.org/2005/zul"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul https://www.zkoss.org/2005/zul/zul.xsd">
+    <window id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.composers.ProfileComposer"
+            style="height: 100%; width:100%">
+
+        <!-- Removes padding from "webkit chrome iceblue" on chrome, aka the top body of the HTML page -->
+        <style>
+            body{
+            padding:0px;
+            }
+        </style>
+
+        <script type="text/javascript" src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
+        <script type="text/javascript" src="/js/bootstrap.min.js"> </script>
+        <script type="text/javascript" src="/js/popper.min.js"> </script>
+
+        <!-- Top navigation bar -->
+        <include mode="defer" src="~./zul/navbar.zul"/>
+
+        <div style="margin: 150px 250px;">
+            <grid>
+                <rows>
+                    <row>User: <textbox id="username" type="email" name="username"/></row>
+                    <row>Password: <textbox id="password" type="password" name="password"/></row>
+                    <row>Signals API Token: <textbox id="signalsToken" type="password" name="Signals API Key"/></row>
+                    <row>Dataverse API Token: <textbox id="dataverseToken" type="password" name="Dataverse API Key"/></row>
+                    <row spans="2">
+                        <hbox>
+                            <button id="resetButton" type="reset" label="Reset" />
+                            <button id="submitButton" type="submit" label="Submit" />
+                        </hbox>
+                    </row>
+                </rows>
+            </grid>
+        </div>
+    </window>
+</zk>
