@@ -160,11 +160,11 @@ public class WebSecurityConfig {
                 // ZK config
                 .authorizeHttpRequests((requests) ->
                     requests
-                            .requestMatchers(new AntPathRequestMatcher(zulFiles)).denyAll()
-                            .requestMatchers(new AntPathRequestMatcher(zkResources[0], "GET")).permitAll()
-                            .requestMatchers(new AntPathRequestMatcher(zkResources[1], "GET")).permitAll()
-                            .requestMatchers(new AntPathRequestMatcher(zkResources[2], "GET")).permitAll()
-                            .requestMatchers(new RegexRequestMatcher(removeDesktopRegex, "GET")).permitAll()
+                            .requestMatchers(AntPathRequestMatcher.antMatcher(zulFiles)).denyAll()
+                            .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, zkResources[0])).permitAll()
+                            .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, zkResources[1])).permitAll()
+                            .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, zkResources[2])).permitAll()
+                            .requestMatchers(RegexRequestMatcher.regexMatcher(HttpMethod.GET, removeDesktopRegex)).permitAll()
                             .requestMatchers(request -> "rmDesktop".equals(request.getParameter("cmd_0"))).permitAll()
                             .requestMatchers(
                                     mvc.pattern(anonymousPages[0])
