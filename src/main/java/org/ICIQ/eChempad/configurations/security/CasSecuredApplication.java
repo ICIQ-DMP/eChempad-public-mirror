@@ -2,40 +2,34 @@ package org.ICIQ.eChempad.configurations.security;
 
 
 import jakarta.servlet.http.HttpSessionEvent;
-import org.jasig.cas.client.boot.configuration.EnableCasClient;
-import org.jasig.cas.client.session.SingleSignOutFilter;
-import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
-import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
-import org.jasig.cas.client.validation.TicketValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apereo.cas.client.session.SingleSignOutFilter;
+import org.apereo.cas.client.session.SingleSignOutHttpSessionListener;
+import org.apereo.cas.client.validation.Cas30ServiceTicketValidator;
+import org.apereo.cas.client.validation.TicketValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
-
 import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Collections;
 
 
 @Configuration
-@EnableCasClient
 public class CasSecuredApplication {
 
     @Bean
@@ -43,13 +37,13 @@ public class CasSecuredApplication {
         return new MvcRequestMatcher.Builder(introspector);
     }
 
-    /*@Bean
+    @Bean
     @Primary
     public AuthenticationManager authenticationManager(CasAuthenticationProvider casAuthenticationProvider) {
         return new ProviderManager(Collections.singletonList(casAuthenticationProvider));
-    }*/
+    }
 
-    /*@Bean
+    @Bean
     @Primary
     public CasAuthenticationFilter casAuthenticationFilter(
             ServiceProperties serviceProperties, AuthenticationManager authenticationManager) throws Exception {
@@ -57,7 +51,7 @@ public class CasSecuredApplication {
         filter.setServiceProperties(serviceProperties);
         filter.setAuthenticationManager(authenticationManager);
         return filter;
-    }*/
+    }
 
     @Bean
     public ServiceProperties serviceProperties() {

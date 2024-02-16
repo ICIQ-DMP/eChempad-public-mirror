@@ -296,18 +296,18 @@
 		</dependency>
 
 		<!-- Cas client  -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.apereo.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
 			<version>${org.apereo.cas.client.core.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- CAS client support for spring boot -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.apereo.cas.client</groupId>
 			<artifactId>cas-client-support-springboot</artifactId>
 			<version>${org.apereo.cas.client.springboot.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
 		<dependency>
