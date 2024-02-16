@@ -2,12 +2,14 @@ package org.ICIQ.eChempad.configurations.security;
 
 
 import jakarta.servlet.http.HttpSessionEvent;
+import org.jasig.cas.client.boot.configuration.EnableCasClient;
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,34 +20,44 @@ import org.springframework.security.cas.authentication.CasAuthenticationProvider
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Collections;
 
 
-@Component
+@Configuration
+@EnableCasClient
 public class CasSecuredApplication {
 
-    // login
     @Bean
-    public AuthenticationManager authenticationManager(CasAuthenticationProvider casAuthenticationProvider) {
-        return new ProviderManager(Collections.singletonList(casAuthenticationProvider));
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
     }
 
-    @Bean
+    /*@Bean
+    @Primary
+    public AuthenticationManager authenticationManager(CasAuthenticationProvider casAuthenticationProvider) {
+        return new ProviderManager(Collections.singletonList(casAuthenticationProvider));
+    }*/
+
+    /*@Bean
     @Primary
     public CasAuthenticationFilter casAuthenticationFilter(
             ServiceProperties serviceProperties, AuthenticationManager authenticationManager) throws Exception {
         CasAuthenticationFilter filter = new CasAuthenticationFilter();
-        filter.setAuthenticationManager(authenticationManager);
         filter.setServiceProperties(serviceProperties);
+        filter.setAuthenticationManager(authenticationManager);
         return filter;
-    }
+    }*/
 
     @Bean
     public ServiceProperties serviceProperties() {
@@ -54,6 +66,17 @@ public class CasSecuredApplication {
         serviceProperties.setSendRenew(false);
         //serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
         return serviceProperties;
+    }
+
+    @Bean
+    @Primary
+    public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
+    {
+        CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
+        casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
+        casAuthenticationEntryPoint.setLoginUrl("https://echempad-cas.iciq.es:8443/cas/login");
+        return casAuthenticationEntryPoint;
+
     }
 
     @Bean
@@ -69,24 +92,15 @@ public class CasSecuredApplication {
             UserDetailsServiceImpl userDetailsService) {
         CasAuthenticationProvider provider = new CasAuthenticationProvider();
         provider.setServiceProperties(serviceProperties);
-        provider.setTicketValidator(ticketValidator);
+        provider.setTicketValidator((org.apereo.cas.client.validation.TicketValidator) ticketValidator);
 
         // Static login
+        // TODO parametrize in production
         //provider.setUserDetailsService(s -> new User("casuser", "Mellon", true, true, true, true, AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
+
         provider.setUserDetailsService(userDetailsService);
         provider.setKey("CAS_PROVIDER_LOCALHOST_8081");
         return provider;
-    }
-
-    @Bean
-    @Primary
-    public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
-    {
-        CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-        casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
-        casAuthenticationEntryPoint.setLoginUrl("https://echempad-cas.iciq.es:8443/cas/login");
-        return casAuthenticationEntryPoint;
-
     }
 
     @Bean

@@ -20,35 +20,35 @@
  */
 package org.ICIQ.eChempad.configurations.security;
 
-import org.jetbrains.annotations.NotNull;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -107,6 +107,12 @@ public class WebSecurityConfig {
     private CasAuthenticationFilter casAuthenticationFilter;
 
     /**
+     * To be able to build mvc matchers
+     */
+    @Autowired
+    MvcRequestMatcher.Builder mvc;
+
+    /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
      * Allow only authenticated users to access the API.
      *
@@ -118,7 +124,7 @@ public class WebSecurityConfig {
      * @throws Exception Any type of exception that occurs during the HTTP configuration
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
 
         // ZUL files regexp execution time
         String zulFiles = "/zkau/web/*/*.zul";
@@ -137,22 +143,48 @@ public class WebSecurityConfig {
 
         // you need to disable spring CSRF to make ZK AU pass security filter
         // ZK already sends a AJAX request with a built-in CSRF token, but it is recommended to have it active
-        if (! this.corsDisabled) {
+        /*if (! this.corsDisabled) {
             http.csrf().disable();
         }
 
         // Conditional activation depending on profile
         if (! this.corsDisabled) {
             http.cors().disable();
-        }
+        }*/
 
+        http
+                // CAS
+                //.addFilter(this.casAuthenticationFilter)
+                .httpBasic((httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.authenticationEntryPoint(this.authenticationEntryPoint)))
+
+                // ZK config
+                .authorizeHttpRequests((requests) ->
+                    requests
+                            .requestMatchers(new AntPathRequestMatcher(zulFiles)).denyAll()
+                            .requestMatchers(new AntPathRequestMatcher(zkResources[0], "GET")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher(zkResources[1], "GET")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher(zkResources[2], "GET")).permitAll()
+                            .requestMatchers(new RegexRequestMatcher(removeDesktopRegex, "GET")).permitAll()
+                            .requestMatchers(request -> "rmDesktop".equals(request.getParameter("cmd_0"))).permitAll()
+                            .requestMatchers(
+                                    mvc.pattern(anonymousPages[0])
+                                    , mvc.pattern(anonymousPages[1])
+                                    , mvc.pattern(anonymousPages[2])
+                                    , mvc.pattern(anonymousPages[3])
+                                    , mvc.pattern(anonymousPages[4])
+                            ).permitAll()
+                            .requestMatchers(mvc.pattern(authenticatedPages[0]), mvc.pattern(authenticatedPages[1]), mvc.pattern(authenticatedPages[2])).hasRole("USER")
+                )
+                // Rest of requests
+                .authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
+        /*
         http
                 .requestCache((cache) -> cache
                         .requestCache(new NullRequestCache())
                 )
                 .addFilter(this.casAuthenticationFilter)
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
-                // will show a 401 unauthenticated*/
+                // will show a 401 unauthenticated
                 .httpBasic()
                 .authenticationEntryPoint(this.authenticationEntryPoint)
                 .and()
@@ -191,7 +223,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated();
-
+                */
         return http.build();
     }
 
@@ -210,22 +242,26 @@ public class WebSecurityConfig {
     @Transactional
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
-        authenticationBuilder
-                    // Provide the service to retrieve user details
+        authenticationBuilder.userDetailsService(((T) this.authenticationProvider));
+                
+                .authenticationProvider()// Provide the service to retrieve user details
                     .userDetailsService(this.userDetailsService)
                     // Provide the password encoder used to store password in the database
-                    .passwordEncoder(WebSecurityConfig.passwordEncoder())
+                    .passwordEncoder(this.passwordEncoder())
+                .
+                .
 
                 .and()
                     // CAS authentication provider
-                    .authenticationProvider(this.authenticationProvider);
-    }*/
-
+                    .authenticationProvider();
+    }
+*/
     /*@Bean
+    @Primary
     public AuthenticationManager authenticationManager(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailService)
             throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
+                .userDetailsService(userDetailService)
                 .passwordEncoder(this.passwordEncoder())
                 .and()
                 .build();

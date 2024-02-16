@@ -85,8 +85,8 @@
 		<current.year>2023</current.year>
 
 		<!-- CAS -->
-		<org.jasig.cas.client.core.version>3.6.4</org.jasig.cas.client.core.version>
-		<org.jasig.cas.client.springboot.version>3.6.4</org.jasig.cas.client.springboot.version>
+		<org.apereo.cas.client.core.version>4.0.4</org.apereo.cas.client.core.version>
+		<org.apereo.cas.client.springboot.version>4.0.4</org.apereo.cas.client.springboot.version>
 		<javax-servlet.version>4.0.1</javax-servlet.version>
 	</properties>
 
@@ -293,21 +293,20 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-cas</artifactId>
-			<version>${spring-security-cas.version}</version>
 		</dependency>
 
 		<!-- Cas client  -->
 		<dependency>
-			<groupId>org.jasig.cas.client</groupId>
+			<groupId>org.apereo.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
-			<version>${org.jasig.cas.client.core.version}</version>
+			<version>${org.apereo.cas.client.core.version}</version>
 		</dependency>
 
 		<!-- CAS client support for spring boot -->
 		<dependency>
-			<groupId>org.jasig.cas.client</groupId>
+			<groupId>org.apereo.cas.client</groupId>
 			<artifactId>cas-client-support-springboot</artifactId>
-			<version>${org.jasig.cas.client.springboot.version}</version>
+			<version>${org.apereo.cas.client.springboot.version}</version>
 		</dependency>
 
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
