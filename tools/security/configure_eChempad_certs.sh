@@ -135,7 +135,7 @@ keytool -genkey -noprompt \
   -keystore "${ECHEMPAD_PATH}/src/main/resources/security/keystore" \
   -storepass changeit \
   -keypass changeit \
-  -ext san=dns:echempad.iciq.es
+  -ext san=dns:echempad.iciq.es,ip:127.0.0.1
 
 # 2 Extracts eChempad certificate from keystore
 keytool -export -noprompt \
@@ -155,7 +155,7 @@ keytool -genkey -noprompt \
   -keystore "${ECHEMPADCAS_PATH}/etc/cas/thekeystore" \
   -storepass changeit \
   -keypass changeit \
-  -ext san=dns:echempad-cas.iciq.es
+  -ext san=dns:echempad-cas.iciq.es,ip:127.0.0.1
 
 # 4 Extracts eChempad CAS certificate from keystore
 keytool -export -noprompt \
