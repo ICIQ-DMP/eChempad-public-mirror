@@ -340,7 +340,7 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  /etc/default/cacerts
 # *  "${JAVA_HOME}/jre/lib/security/cacerts"
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
-# "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" <-- The static one that we have stored in the repo
+# "${MAVEN_WRAPPER_DIR}/src/main/resources/security/truststore" <-- The static one that we have stored in the repo
 trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
 trustStore="${trustStores[3]}"
 echo "Using truststore ${trustStore}"
@@ -376,6 +376,7 @@ fi
 # Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
 echo Executed command:
 echo exec "${JAVACMD}" ${JAVA_FLAGS} \
+      -Djavax.net.debug=all \
        ${MAVEN_OPTS} \
        -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
        "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
@@ -389,6 +390,7 @@ if lsof -ti tcp:8081 &> /dev/null; then
 fi
 
 exec "${JAVACMD}" ${JAVA_FLAGS} \
+         -Djavax.net.debug=all \
          ${MAVEN_OPTS} \
          -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
          "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \

@@ -1,4 +1,4 @@
-#
+#!/bin/env bash
 # eChempad is a suite of web services oriented to manage the entire
 # data life-cycle of experiments and assays from Experimental
 # Chemistry and related Science disciplines.
@@ -33,7 +33,7 @@
 
 
 if [ $# -ne 2 ]; then
-  echo "*** - ERROR: This scripts needs 2 args, the path to a der or pem certificate, and the alias that will begiven to this certificate. Also JAVA_HOME needs to be defined as a global variable."
+  echo "*** - ERROR: This scripts needs 2 args, the path to a der or pem certificate, and the alias that will be given to this certificate. Also JAVA_HOME needs to be defined as a global variable."
   exit 2
 fi
 
