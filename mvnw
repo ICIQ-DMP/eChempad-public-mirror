@@ -341,7 +341,7 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  "${JAVA_HOME}/jre/lib/security/cacerts"
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
 # "${MAVEN_WRAPPER_DIR}/src/main/resources/security/truststore" <-- The static one that we have stored in the repo
-trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
+trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/security/truststore" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
 trustStore="${trustStores[3]}"
 echo "Using truststore ${trustStore}"
 

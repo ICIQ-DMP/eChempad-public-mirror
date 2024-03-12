@@ -45,7 +45,7 @@
 # Steps:
 #   1.- Creates a new keystore with the eChempad certificate into ${ECHEMPAD_PATH}/src/main/resources/security/keystore
 #   2.- Extracts the certificate into ${ECHEMPAD_PATH}/tools/security/eChempad.crt
-#   3.- Creates a new keystore with the eChempad-CAS certificate into ${ECHEMPADCAS_PATH}/etc/cas/keystore
+#   3.- Creates a new keystore with the eChempad-CAS certificate into ${ECHEMPADCAS_PATH}/etc/cas/thekeystore
 #   4.- Extracts the certificate into ${ECHEMPADCAS_PATH}/etc/cas/cas.crt
 #   5.- Gets eChempad-CAS certificate from ${ECHEMPADCAS_PATH}/etc/cas/cas.crt and creates a truststore for
 #       eChempad in ${ECHEMPAD_PATH}/src/main/resources/security/truststore
@@ -146,21 +146,21 @@ keytool -export -noprompt \
   -alias eChempad
 
 # 3 Creates a new keystore with the eChempad-CAS certificate
-rm -f "${ECHEMPADCAS_PATH}/etc/cas/keystore"
+rm -f "${ECHEMPADCAS_PATH}/etc/cas/thekeystore"
 keytool -genkey -noprompt \
   -alias eChempad-CAS \
   -dname "CN=echempad-cas.iciq.es, OU=TCC, O=ICIQ, L=Tarragona, S=Spain, C=ES" \
   -keyalg RSA \
   -validity 999 \
-  -keystore "${ECHEMPADCAS_PATH}/etc/cas/keystore" \
+  -keystore "${ECHEMPADCAS_PATH}/etc/cas/thekeystore" \
   -storepass changeit \
   -keypass changeit \
-  -ext san=dns:echempad.iciq.es
+  -ext san=dns:echempad-cas.iciq.es
 
 # 4 Extracts eChempad CAS certificate from keystore
 keytool -export -noprompt \
   -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
-  -keystore "${ECHEMPADCAS_PATH}/etc/cas/keystore" \
+  -keystore "${ECHEMPADCAS_PATH}/etc/cas/thekeystore" \
   -storepass changeit \
   -keypass changeit \
   -alias eChempad-CAS
