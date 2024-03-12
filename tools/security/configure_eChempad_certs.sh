@@ -126,6 +126,7 @@ set_echempad_path
 set_echempadcas_path
 
 # 1 Creates a new keystore with the eChempad certificate with no prompt
+rm -f "${ECHEMPAD_PATH}/src/main/resources/security/keystore"
 keytool -genkey -noprompt \
   -alias eChempad \
   -dname "CN=echempad.iciq.es, OU=TCC, O=ICIQ, L=Tarragona, S=Spain, C=ES" \
@@ -137,12 +138,15 @@ keytool -genkey -noprompt \
   -ext san=dns:echempad.iciq.es
 
 # 2 Extracts eChempad certificate from keystore
-keytool -export \
+keytool -export -noprompt \
   -file "${ECHEMPAD_PATH}/tools/security/eChempad.crt" \
   -keystore "${ECHEMPAD_PATH}/src/main/resources/security/keystore" \
+  -storepass changeit \
+  -keypass changeit \
   -alias eChempad
 
 # 3 Creates a new keystore with the eChempad-CAS certificate
+rm -f "${ECHEMPADCAS_PATH}/etc/cas/keystore"
 keytool -genkey -noprompt \
   -alias eChempad-CAS \
   -dname "CN=echempad-cas.iciq.es, OU=TCC, O=ICIQ, L=Tarragona, S=Spain, C=ES" \
@@ -154,19 +158,27 @@ keytool -genkey -noprompt \
   -ext san=dns:echempad.iciq.es
 
 # 4 Extracts eChempad CAS certificate from keystore
-keytool -export \
+keytool -export -noprompt \
   -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
   -keystore "${ECHEMPADCAS_PATH}/etc/cas/keystore" \
+  -storepass changeit \
+  -keypass changeit \
   -alias eChempad-CAS
 
 # 5 Create trust store for eChempad CAS and import eChempad certificate.
-keytool -import \
+rm -f "${ECHEMPADCAS_PATH}/etc/cas/truststore"
+keytool -import -noprompt \
   -file "${ECHEMPAD_PATH}/tools/security/eChempad.crt" \
+  -keystore "${ECHEMPADCAS_PATH}/etc/cas/truststore" \
+  -storepass changeit \
+  -keypass changeit \
   -alias eChempad \
-  -keystore "${ECHEMPADCAS_PATH}/etc/cas/truststore"
 
 # 6 Create trust store for eChempad and import eChempad CAS certificate.
-keytool -import \
+rm -f "${ECHEMPAD_PATH}/src/main/resources/security/truststore"
+keytool -import -noprompt \
   -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
+  -keystore "${ECHEMPAD_PATH}/src/main/resources/security/truststore" \
+  -storepass changeit \
+  -keypass changeit \
   -alias eChempad-CAS \
-  -keystore "${ECHEMPAD_PATH}/src/main/resources/security/truststore"
