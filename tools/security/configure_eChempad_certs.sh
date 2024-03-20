@@ -172,7 +172,7 @@ keytool -import -noprompt \
   -keystore "${ECHEMPADCAS_PATH}/etc/cas/truststore" \
   -storepass changeit \
   -keypass changeit \
-  -alias eChempad \
+  -alias eChempad
 
 # 6 Create trust store for eChempad and import eChempad CAS certificate.
 rm -f "${ECHEMPAD_PATH}/src/main/resources/security/truststore"
@@ -181,4 +181,19 @@ keytool -import -noprompt \
   -keystore "${ECHEMPAD_PATH}/src/main/resources/security/truststore" \
   -storepass changeit \
   -keypass changeit \
-  -alias eChempad-CAS \
+  -alias eChempad-CAS
+
+# (optional) with previous steps echempad and cas do not trust each other. Import both certs to JAVA_HOME trust store.
+keytool -import -noprompt \
+   -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
+   -keystore "${JAVA_HOME}/lib/security/cacerts" \
+   -storepass changeit \
+   -keypass changeit \
+   -alias eChempad-CAS
+
+keytool -import -noprompt \
+   -file "${ECHEMPAD_PATH}/tools/security/eChempad.crt" \
+   -keystore "${JAVA_HOME}/lib/security/cacerts" \
+   -storepass changeit \
+   -keypass changeit \
+   -alias eChempad
