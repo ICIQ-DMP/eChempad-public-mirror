@@ -1,4 +1,4 @@
-#
+#!/bin/env bash
 # eChempad is a suite of web services oriented to manage the entire
 # data life-cycle of experiments and assays from Experimental
 # Chemistry and related Science disciplines.
