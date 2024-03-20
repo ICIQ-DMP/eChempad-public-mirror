@@ -29,11 +29,22 @@
 # Probably you will not need it anymore, but if you see this error again, it has to be related with the trustStore being
 # empty or not found.
 
-#/bin/bash $HOME/Escritorio/eChempad/tools/CA_certificates/instructions_import_cert_JVM.sh  $HOME/Escritorio/eChempad/src/main/resources/security/eChempad.crt eChempad
+# Instructions to import
+#/bin/bash $HOME/Desktop/eChempad/tools/CA_certificates/instructions_import_cert_JVM.sh  $HOME/Desktop/eChempad/src/main/resources/security/eChempad.crt eChempad
+#/bin/bash $HOME/Desktop/eChempad/tools/CA_certificates/instructions_import_cert_JVM.sh  $HOME/Desktop/eChempad-CAS/etc/cas/cas.crt eChempad-CAS
 
+# import echempad cert into echempad keystore
+# "${JAVA_HOME}/bin/keytool" -importcert -noprompt -alias "eChempad" -keystore "${HOME}/Desktop/eChempad/src/main/resources/security/keystore" -storepass "changeit" -file "${HOME}/Desktop/eChempad/src/main/resources/security/eChempad.crt"
+# Import cas cert into cas keystore
+# "${JAVA_HOME}/bin/keytool" -importcert -noprompt -alias "eChempad-CAS" -keystore "${HOME}/Desktop/eChempad-CAS/etc/cas/keystore" -storepass "changeit" -file "${HOME}/Desktop/eChempad-CAS/etc/cas/cas.crt"
+# Import echempad cert into cas keystore
+# "${JAVA_HOME}/bin/keytool" -importcert -noprompt -alias "eChempad" -keystore "${HOME}/Desktop/eChempad-CAS/etc/cas/keystore" -storepass "changeit" -file "${HOME}/Desktop/eChempad/src/main/resources/security/eChempad.crt"
+# Import cas cert into echempad keystore
+# "${JAVA_HOME}/bin/keytool" -importcert -noprompt -alias "eChempad-CAS" -keystore "${HOME}/Desktop/eChempad/src/main/resources/security/keystore" -storepass "changeit" -file "${HOME}/Desktop/eChempad-CAS/etc/cas/cas.crt"
 
 if [ $# -ne 2 ]; then
-  echo "*** - ERROR: This scripts needs 2 args, the path to a der or pem certificate, and the alias that will begiven to this certificate. Also JAVA_HOME needs to be defined as a global variable."
+  echo "*** - ERROR: This scripts needs 2 args, the path to a der or pem certificate, and the alias that will be given
+  to this certificate. Also JAVA_HOME needs to be defined as a global variable."
   exit 2
 fi
 
