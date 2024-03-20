@@ -139,7 +139,7 @@ keytool -genkey -noprompt \
 
 # 2 Extracts eChempad certificate from keystore
 keytool -export -noprompt \
-  -file "${ECHEMPAD_PATH}/tools/security/eChempad.crt" \
+  -file "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" \
   -keystore "${ECHEMPAD_PATH}/src/main/resources/security/keystore" \
   -storepass changeit \
   -keypass changeit \
@@ -168,7 +168,7 @@ keytool -export -noprompt \
 # 5 Create trust store for eChempad CAS and import eChempad certificate.
 rm -f "${ECHEMPADCAS_PATH}/etc/cas/truststore"
 keytool -import -noprompt \
-  -file "${ECHEMPAD_PATH}/tools/security/eChempad.crt" \
+  -file "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" \
   -keystore "${ECHEMPADCAS_PATH}/etc/cas/truststore" \
   -storepass changeit \
   -keypass changeit \
@@ -184,16 +184,27 @@ keytool -import -noprompt \
   -alias eChempad-CAS
 
 # (optional) with previous steps echempad and cas do not trust each other. Import both certs to JAVA_HOME trust store.
-keytool -import -noprompt \
-   -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
-   -keystore "${JAVA_HOME}/lib/security/cacerts" \
-   -storepass changeit \
-   -keypass changeit \
-   -alias eChempad-CAS
 
-keytool -import -noprompt \
-   -file "${ECHEMPAD_PATH}/tools/security/eChempad.crt" \
-   -keystore "${JAVA_HOME}/lib/security/cacerts" \
-   -storepass changeit \
-   -keypass changeit \
-   -alias eChempad
+if "${JAVA_HOME}/bin/keytool" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit" -list -alias "eChempad" &>/dev/null; then
+  echo "*** - INFO: Certificate eChempad present in ${JAVA_HOME}/lib/security/cacerts, removing and reinstalling"
+  "${JAVA_HOME}/bin/keytool" -delete -alias "eChempad" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
+
+  keytool -import -noprompt \
+     -file "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" \
+     -keystore "${JAVA_HOME}/lib/security/cacerts" \
+     -storepass changeit \
+     -keypass changeit \
+     -alias eChempad
+fi
+
+if "${JAVA_HOME}/bin/keytool" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit" -list -alias "eChempad-CAS" &>/dev/null; then
+  echo "*** - INFO: Certificate eChempad-CAS present in ${JAVA_HOME}/lib/security/cacerts, removing and reinstalling"
+  "${JAVA_HOME}/bin/keytool" -delete -alias "eChempad-CAS" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
+
+  keytool -import -noprompt \
+     -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
+     -keystore "${JAVA_HOME}/lib/security/cacerts" \
+     -storepass changeit \
+     -keypass changeit \
+     -alias eChempad-CAS
+fi
