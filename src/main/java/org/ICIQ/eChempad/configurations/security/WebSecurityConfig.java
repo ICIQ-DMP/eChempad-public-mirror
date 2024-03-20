@@ -125,7 +125,6 @@ public class WebSecurityConfig {
      */
     @Bean
     public SecurityFilterChain configure(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-
         // ZUL files regexp execution time
         String zulFiles = "/zkau/web/*/*.zul";
 
@@ -143,19 +142,26 @@ public class WebSecurityConfig {
 
         // you need to disable spring CSRF to make ZK AU pass security filter
         // ZK already sends a AJAX request with a built-in CSRF token, but it is recommended to have it active
-        /*if (! this.corsDisabled) {
+        if (! this.corsDisabled) {
             http.csrf().disable();
         }
 
         // Conditional activation depending on profile
         if (! this.corsDisabled) {
             http.cors().disable();
-        }*/
+        }
 
         http
                 // CAS
-                //.addFilter(this.casAuthenticationFilter)
+                .addFilter(this.casAuthenticationFilter)
                 .httpBasic((httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.authenticationEntryPoint(this.authenticationEntryPoint)))
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .and()
+                .headers()
+                .frameOptions()
+                .sameOrigin() // X-Frame-Options = SAMEORIGIN
+                .and()
 
                 // ZK config
                 .authorizeHttpRequests((requests) ->
@@ -167,16 +173,18 @@ public class WebSecurityConfig {
                             .requestMatchers(RegexRequestMatcher.regexMatcher(HttpMethod.GET, removeDesktopRegex)).permitAll()
                             .requestMatchers(request -> "rmDesktop".equals(request.getParameter("cmd_0"))).permitAll()
                             .requestMatchers(
-                                    mvc.pattern(anonymousPages[0])
-                                    , mvc.pattern(anonymousPages[1])
-                                    , mvc.pattern(anonymousPages[2])
-                                    , mvc.pattern(anonymousPages[3])
-                                    , mvc.pattern(anonymousPages[4])
+                                    mvc.pattern(HttpMethod.GET, anonymousPages[0])
+                                    , mvc.pattern(HttpMethod.GET, anonymousPages[1])
+                                    , mvc.pattern(HttpMethod.GET, anonymousPages[2])
+                                    , mvc.pattern(HttpMethod.GET, anonymousPages[3])
+                                    , mvc.pattern(HttpMethod.GET, anonymousPages[4])
                             ).permitAll()
-                            .requestMatchers(mvc.pattern(authenticatedPages[0]), mvc.pattern(authenticatedPages[1]), mvc.pattern(authenticatedPages[2])).hasRole("USER")
+                            .requestMatchers(mvc.pattern(HttpMethod.GET, authenticatedPages[0]), mvc.pattern(HttpMethod.GET, authenticatedPages[1]), mvc.pattern(HttpMethod.GET, authenticatedPages[2])).hasRole("USER")
                 )
                 // Rest of requests
                 .authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
+
+
         /*
         http
                 .requestCache((cache) -> cache
@@ -242,20 +250,12 @@ public class WebSecurityConfig {
     @Transactional
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
-        authenticationBuilder.userDetailsService(((T) this.authenticationProvider));
-                
-                .authenticationProvider()// Provide the service to retrieve user details
-                    .userDetailsService(this.userDetailsService)
-                    // Provide the password encoder used to store password in the database
-                    .passwordEncoder(this.passwordEncoder())
-                .
-                .
-
+        authenticationBuilder.userDetailsService(this.userDetailsService)
+                .passwordEncoder(this.passwordEncoder())
                 .and()
-                    // CAS authentication provider
-                    .authenticationProvider();
-    }
-*/
+                .authenticationProvider(this.authenticationProvider);
+    }*/
+
     /*@Bean
     @Primary
     public AuthenticationManager authenticationManager(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailService)

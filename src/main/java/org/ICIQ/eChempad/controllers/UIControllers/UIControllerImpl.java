@@ -22,6 +22,7 @@ package org.ICIQ.eChempad.controllers.UIControllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class UIControllerImpl implements UIController {
@@ -44,11 +45,11 @@ public class UIControllerImpl implements UIController {
         return "main";
     }
 
-    @GetMapping("/help")
+    /*@GetMapping("/help")
     @Override
     public String help() {
         return "help";
-    }
+    }*/
 
     @GetMapping("/profile")
     @Override

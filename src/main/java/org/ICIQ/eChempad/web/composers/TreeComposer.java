@@ -54,7 +54,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Scope("desktop")
-@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+//@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class TreeComposer extends SelectorComposer<Window> {
 
     // Sending event queues

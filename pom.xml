@@ -177,12 +177,6 @@
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
-		<!-- to add the javax filter when upgrading to java 17-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-		</dependency>
-
 		<!-- Added when upgrading to java 17 to reconfigure the cache managing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -235,14 +229,6 @@
 			<artifactId>spring-context</artifactId>
 		</dependency>
 
-		<!-- Added to configure load time weaving -->
-		<!--<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-instrument</artifactId>
-		</dependency>-->
-
-
-
 		<!-- ZK -->
 
 		<!-- To use zkoss in our application -->
@@ -253,12 +239,12 @@
 			<version>${zkspringboot-starter.version}</version>
 		</dependency>
 
-		<dependency>
+		<!--<dependency>
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zkplus</artifactId>
 			<version>${zk.version}</version>
 			<exclusions>
-				<exclusion>  <!-- Exclude log4j to avoid duplicate artifacts in the classpath -->
+				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-jdk14</artifactId>
 				</exclusion>
@@ -275,7 +261,7 @@
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zkspring-security</artifactId>
 			<version>${zkspring.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
 		<dependency>
@@ -291,27 +277,12 @@
 			<artifactId>spring-security-cas</artifactId>
 		</dependency>
 
-		<!-- Cas client  -->
-		<!--<dependency>
-			<groupId>org.apereo.cas.client</groupId>
-			<artifactId>cas-client-core</artifactId>
-			<version>${org.apereo.cas.client.core.version}</version>
-		</dependency>-->
-
-		<!-- CAS client support for spring boot -->
-		<!--<dependency>
-			<groupId>org.apereo.cas.client</groupId>
-			<artifactId>cas-client-support-springboot</artifactId>
-			<version>${org.apereo.cas.client.springboot.version}</version>
-		</dependency>-->
-
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax-servlet.version}</version>
 		</dependency>
-
 
 		<!-- INTEGRATION WITH JAVA 17 -->
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
@@ -436,24 +407,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<version>${apache-log4j.version}</version>
 		</dependency>
 
-		<!-- Needed when upgrade to java 17 -->
-		<!--<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring-context-support.version}</version>
-		</dependency>-->
-
-
-
-		<!-- Load time weaver without explicit java agent -->
-		<!--
-		<dependency>
-			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-instrument</artifactId>
-			<version>1.0.14</version>
-		</dependency>
-		-->
-
 	</dependencies>
 
 
@@ -463,19 +416,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 	<!-- Final name for the WAR artifact, so it is always the same and does not change with change of version -->
 	<build>
 		<finalName>eChempad</finalName>
-		<!--<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0</version>
-				<configuration>
-					<argLine>
-						-add-opens=java.base/java.lang=ALL-UNNAMED
-						-add-opens=java.base/java.util=ALL-UNNAMED
-					</argLine>
-				</configuration>
-			</plugin>
-		</plugins>-->
 	</build>
 
 

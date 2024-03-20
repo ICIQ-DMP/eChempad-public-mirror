@@ -376,7 +376,7 @@ fi
 # Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
 echo Executed command:
 echo exec "${JAVACMD}" ${JAVA_FLAGS} \
-      -Djavax.net.debug=all \
+      -Djavax.net.debug=ssl:handshake:verbose:keymanager:trustmanager -Djava.security.debug=access:stack \
        ${MAVEN_OPTS} \
        -classpath "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" \
        "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
