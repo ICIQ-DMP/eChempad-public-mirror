@@ -24,10 +24,39 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class UIControllerImpl implements UIController {
+    @Override
+    public String exit() {
+        return null;
+    }
 
-    @GetMapping("/exit")
+    @Override
+    public String timeout() {
+        return null;
+    }
+
+    @Override
+    public String main() {
+        return null;
+    }
+
+    @Override
+    public String help() {
+        return null;
+    }
+
+    @Override
+    public String profile() {
+        return null;
+    }
+
+    @Override
+    public String login() {
+        return null;
+    }
+
+    /*@GetMapping("/exit")
     @Override
     public String exit() {
         return "exit";
@@ -45,11 +74,11 @@ public class UIControllerImpl implements UIController {
         return "main";
     }
 
-    /*@GetMapping("/help")
+    @GetMapping("/help")
     @Override
     public String help() {
         return "help";
-    }*/
+    }
 
     @GetMapping("/profile")
     @Override
@@ -61,5 +90,7 @@ public class UIControllerImpl implements UIController {
     @Override
     public String login() {
         return "login";
-    }
+    }*/
+
+
 }

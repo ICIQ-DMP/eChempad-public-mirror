@@ -32,6 +32,7 @@ import java.util.Collections;
 @Configuration
 public class CasSecuredApplication {
 
+    /*
     @Bean
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
@@ -134,4 +135,6 @@ public class CasSecuredApplication {
             HttpSessionEvent event) {
         return new SingleSignOutHttpSessionListener();
     }
+    */
+
 }

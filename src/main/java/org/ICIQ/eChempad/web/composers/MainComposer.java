@@ -68,10 +68,7 @@ public class MainComposer extends SelectorComposer<Window> {
 		super.doAfterCompose(comp);
 
 		// If not authenticated redirect to login page
-		if (! this.isUserAuthenticated())
-		{
-			Executions.sendRedirect("/login");
-		}
+		//if (! this.isUserAuthenticated()) {Executions.sendRedirect("/login");}
 	}
 
 	/**

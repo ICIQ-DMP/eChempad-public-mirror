@@ -65,9 +65,9 @@ import java.util.Collections;
  * @version 1.0
  * @since 1/3/2023
  */
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+//@Configuration
+//@EnableWebSecurity
+//@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
 
     /**
@@ -91,26 +91,26 @@ public class WebSecurityConfig {
     /**
      * To integrate CAS with its entrypoint (service login url)
      */
-    @Autowired
-    private AuthenticationEntryPoint authenticationEntryPoint;
+    //@Autowired
+    //private AuthenticationEntryPoint authenticationEntryPoint;
 
     /**
      * For CAS integration
      */
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
+    //@Autowired
+    //private AuthenticationProvider authenticationProvider;
 
     /**
      * For CAS authentication
      */
-    @Autowired
-    private CasAuthenticationFilter casAuthenticationFilter;
+    //@Autowired
+    //private CasAuthenticationFilter casAuthenticationFilter;
 
     /**
      * To be able to build mvc matchers
      */
-    @Autowired
-    MvcRequestMatcher.Builder mvc;
+    //@Autowired
+    //MvcRequestMatcher.Builder mvc;
 
     /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
@@ -151,7 +151,7 @@ public class WebSecurityConfig {
             http.cors().disable();
         }
 
-        http
+        /*http
                 // CAS
                 .addFilter(this.casAuthenticationFilter)
                 .httpBasic((httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.authenticationEntryPoint(this.authenticationEntryPoint)))
@@ -184,7 +184,7 @@ public class WebSecurityConfig {
                 // Rest of requests
                 .authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
 
-
+*/
         /*
         http
                 .requestCache((cache) -> cache
