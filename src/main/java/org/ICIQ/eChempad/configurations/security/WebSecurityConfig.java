@@ -65,9 +65,9 @@ import java.util.Collections;
  * @version 1.0
  * @since 1/3/2023
  */
-//@Configuration
-//@EnableWebSecurity
-//@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
 
     /**
@@ -109,8 +109,8 @@ public class WebSecurityConfig {
     /**
      * To be able to build mvc matchers
      */
-    //@Autowired
-    //MvcRequestMatcher.Builder mvc;
+    @Autowired
+    MvcRequestMatcher.Builder mvc;
 
     /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
@@ -151,19 +151,19 @@ public class WebSecurityConfig {
             http.cors().disable();
         }
 
-        /*http
+        http
                 // CAS
-                .addFilter(this.casAuthenticationFilter)
-                .httpBasic((httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.authenticationEntryPoint(this.authenticationEntryPoint)))
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                //.addFilter(this.casAuthenticationFilter)
+                .httpBasic()
                 .and()
                 .headers()
                 .frameOptions()
                 .sameOrigin() // X-Frame-Options = SAMEORIGIN
-                .and()
+                ;
+
 
                 // ZK config
+                http
                 .authorizeHttpRequests((requests) ->
                     requests
                             .requestMatchers(AntPathRequestMatcher.antMatcher(zulFiles)).denyAll()
@@ -181,10 +181,9 @@ public class WebSecurityConfig {
                             ).permitAll()
                             .requestMatchers(mvc.pattern(HttpMethod.GET, authenticatedPages[0]), mvc.pattern(HttpMethod.GET, authenticatedPages[1]), mvc.pattern(HttpMethod.GET, authenticatedPages[2])).hasRole("USER")
                 )
-                // Rest of requests
-                .authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
 
-*/
+
+
         /*
         http
                 .requestCache((cache) -> cache
@@ -202,10 +201,11 @@ public class WebSecurityConfig {
                 .headers()
                 .frameOptions()
                 .sameOrigin() // X-Frame-Options = SAMEORIGIN
+                */
+
 
                 // API endpoints protection
-                .and()
-                .authorizeRequests()
+                .authorizeHttpRequests()
                 .requestMatchers("/api/authority").authenticated()
                 .requestMatchers("/api/researcher").authenticated()
                 .requestMatchers("/api/journal").authenticated()
@@ -215,7 +215,7 @@ public class WebSecurityConfig {
 
                 // For the GUI with ZKoss
                 .and()
-                .authorizeRequests()
+                .authorizeHttpRequests()
                 .requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
                 .requestMatchers(HttpMethod.GET, zkResources).permitAll()  // Allow ZK resources
                 .requestMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
@@ -226,12 +226,10 @@ public class WebSecurityConfig {
                 // Only allow authenticated users in the ZK main page and in the API endpoints
                 .requestMatchers(authenticatedPages).hasRole("USER")
 
-                // Any other requests have to be authenticated too
+                // Rest of requests
                 .and()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated();
-                */
+                .authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
+
         return http.build();
     }
 
