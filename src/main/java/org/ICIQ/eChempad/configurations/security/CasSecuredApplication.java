@@ -17,6 +17,8 @@ import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
@@ -36,13 +38,26 @@ public class CasSecuredApplication {
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
     }
-    /*
+
+
 
     @Bean
     @Primary
     public AuthenticationManager authenticationManager(CasAuthenticationProvider casAuthenticationProvider) {
         return new ProviderManager(Collections.singletonList(casAuthenticationProvider));
     }
+
+    /*
+    @Bean
+    @Primary
+    public AuthenticationManager authenticationManager(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailService)
+            throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailService)
+                .passwordEncoder(this.passwordEncoder())
+                .and()
+                .build();
+    }*/
 
     @Bean
     @Primary
@@ -135,6 +150,6 @@ public class CasSecuredApplication {
             HttpSessionEvent event) {
         return new SingleSignOutHttpSessionListener();
     }
-    */
+
 
 }

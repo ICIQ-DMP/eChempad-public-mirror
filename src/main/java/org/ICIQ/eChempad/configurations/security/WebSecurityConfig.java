@@ -91,20 +91,20 @@ public class WebSecurityConfig {
     /**
      * To integrate CAS with its entrypoint (service login url)
      */
-    //@Autowired
-    //private AuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
 
     /**
      * For CAS integration
      */
-    //@Autowired
-    //private AuthenticationProvider authenticationProvider;
+    @Autowired
+    private AuthenticationProvider authenticationProvider;
 
     /**
      * For CAS authentication
      */
-    //@Autowired
-    //private CasAuthenticationFilter casAuthenticationFilter;
+    @Autowired
+    private CasAuthenticationFilter casAuthenticationFilter;
 
     /**
      * To be able to build mvc matchers
@@ -151,6 +151,7 @@ public class WebSecurityConfig {
             http.cors().disable();
         }
 
+/*
         http
                 // CAS
                 //.addFilter(this.casAuthenticationFilter)
@@ -160,8 +161,10 @@ public class WebSecurityConfig {
                 .frameOptions()
                 .sameOrigin() // X-Frame-Options = SAMEORIGIN
                 ;
+*/
 
 
+/*
                 // ZK config
                 http
                 .authorizeHttpRequests((requests) ->
@@ -181,10 +184,10 @@ public class WebSecurityConfig {
                             ).permitAll()
                             .requestMatchers(mvc.pattern(HttpMethod.GET, authenticatedPages[0]), mvc.pattern(HttpMethod.GET, authenticatedPages[1]), mvc.pattern(HttpMethod.GET, authenticatedPages[2])).hasRole("USER")
                 )
+*/
 
 
 
-        /*
         http
                 .requestCache((cache) -> cache
                         .requestCache(new NullRequestCache())
@@ -200,11 +203,12 @@ public class WebSecurityConfig {
                 .and()
                 .headers()
                 .frameOptions()
-                .sameOrigin() // X-Frame-Options = SAMEORIGIN
-                */
+                .sameOrigin(); // X-Frame-Options = SAMEORIGIN
+
 
 
                 // API endpoints protection
+        http
                 .authorizeHttpRequests()
                 .requestMatchers("/api/authority").authenticated()
                 .requestMatchers("/api/researcher").authenticated()
@@ -224,7 +228,7 @@ public class WebSecurityConfig {
                 // Allow unauthenticated access to log in, log out, exit, help, report bug...
                 .requestMatchers(anonymousPages).permitAll()
                 // Only allow authenticated users in the ZK main page and in the API endpoints
-                .requestMatchers(authenticatedPages).hasRole("USER")
+                .requestMatchers(authenticatedPages).permitAll() //.hasRole("USER")
 
                 // Rest of requests
                 .and()
@@ -244,7 +248,7 @@ public class WebSecurityConfig {
      * @param authenticationBuilder Object instance used to build authentication objects.
      * @throws Exception Any type of exception
      */
-    /*@Autowired
+    @Autowired
     @Transactional
     public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
     {
@@ -252,18 +256,9 @@ public class WebSecurityConfig {
                 .passwordEncoder(this.passwordEncoder())
                 .and()
                 .authenticationProvider(this.authenticationProvider);
-    }*/
+    }
 
-    /*@Bean
-    @Primary
-    public AuthenticationManager authenticationManager(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailService)
-            throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailService)
-                .passwordEncoder(this.passwordEncoder())
-                .and()
-                .build();
-    }*/
+
 
     /**
      * Bean that returns the password encoder used for hashing passwords.

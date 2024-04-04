@@ -54,13 +54,17 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<current.year>2023</current.year>
+
 		<!-- Spring -->
 		<springboot.version>${project.parent.version}</springboot.version>
 		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
+
 		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
-		<zk.version>9.6.0.2</zk.version>
+		<zk.version>8.6.0.1</zk.version>
 		<zkspring.version>4.0.2</zkspring.version>
 		<zkmax.version>3.6.3</zkmax.version>
+
 		<hikari.version>5.0.1</hikari.version>
 		<hibernate-hikariCP.version>6.2.7.Final</hibernate-hikariCP.version>
 		<javax-inject.version>1</javax-inject.version>
@@ -78,7 +82,6 @@
 		<!--Used by the licenses plugin-->
 		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
 
-		<current.year>2023</current.year>
 
 		<!-- CAS -->
 		<org.apereo.cas.client.core.version>4.0.4</org.apereo.cas.client.core.version>
@@ -245,29 +248,31 @@
 			<version>${zkspringboot-starter.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkplus</artifactId>
-			<version>${zk.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-<!--
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-core</artifactId>
-			<version>${zkspring.version}</version>
-		</dependency>
+		<!--
 
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-security</artifactId>
-			<version>${zkspring.version}</version>
-		</dependency>
+<dependency>
+    <groupId>org.zkoss.zk</groupId>
+    <artifactId>zkplus</artifactId>
+    <version>${zk.version}</version>
+    <exclusions>
+        <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+
+<dependency>
+    <groupId>org.zkoss.zk</groupId>
+    <artifactId>zkspring-core</artifactId>
+    <version>${zkspring.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.zkoss.zk</groupId>
+    <artifactId>zkspring-security</artifactId>
+    <version>${zkspring.version}</version>
+</dependency>
 -->
 		
 		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
