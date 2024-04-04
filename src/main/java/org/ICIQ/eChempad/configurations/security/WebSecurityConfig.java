@@ -20,25 +20,40 @@
  */
 package org.ICIQ.eChempad.configurations.security;
 
+import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.transaction.Transactional;
+import org.apereo.cas.client.session.SingleSignOutFilter;
+import org.apereo.cas.client.session.SingleSignOutHttpSessionListener;
+import org.apereo.cas.client.validation.Cas30ServiceTicketValidator;
+import org.apereo.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.cas.ServiceProperties;
+import org.springframework.security.cas.authentication.CasAuthenticationProvider;
+import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -89,30 +104,6 @@ public class WebSecurityConfig {
     private UserDetailsService userDetailsService;
 
     /**
-     * To integrate CAS with its entrypoint (service login url)
-     */
-    @Autowired
-    private AuthenticationEntryPoint authenticationEntryPoint;
-
-    /**
-     * For CAS integration
-     */
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
-
-    /**
-     * For CAS authentication
-     */
-    @Autowired
-    private CasAuthenticationFilter casAuthenticationFilter;
-
-    /**
-     * To be able to build mvc matchers
-     */
-    @Autowired
-    MvcRequestMatcher.Builder mvc;
-
-    /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
      * Allow only authenticated users to access the API.
      *
@@ -124,7 +115,7 @@ public class WebSecurityConfig {
      * @throws Exception Any type of exception that occurs during the HTTP configuration
      */
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http, MvcRequestMatcher.Builder mvc, AuthenticationEntryPoint casAuthenticationEntryPoint, CasAuthenticationFilter casAuthenticationFilter) throws Exception {
         // ZUL files regexp execution time
         String zulFiles = "/zkau/web/*/*.zul";
 
@@ -192,11 +183,11 @@ public class WebSecurityConfig {
                 .requestCache((cache) -> cache
                         .requestCache(new NullRequestCache())
                 )
-                .addFilter(this.casAuthenticationFilter)
+                .addFilter(casAuthenticationFilter)
                 // allows the basic HTTP authentication. If the user cannot be authenticated using HTTP auth headers it
                 // will show a 401 unauthenticated
                 .httpBasic()
-                .authenticationEntryPoint(this.authenticationEntryPoint)
+                .authenticationEntryPoint(casAuthenticationEntryPoint)
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -237,6 +228,7 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+
     /**
      * Configures the authentication. Currently, it is done simply by providing a {@code UserDetailsService}, which
      * uses the database to get user information username and password
@@ -248,15 +240,17 @@ public class WebSecurityConfig {
      * @param authenticationBuilder Object instance used to build authentication objects.
      * @throws Exception Any type of exception
      */
+    /*
     @Autowired
     @Transactional
-    public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder) throws Exception
+    public void configureGlobal(AuthenticationManagerBuilder authenticationBuilder, AuthenticationProvider authenticationProvider) throws Exception
     {
         authenticationBuilder.userDetailsService(this.userDetailsService)
                 .passwordEncoder(this.passwordEncoder())
                 .and()
-                .authenticationProvider(this.authenticationProvider);
+                .authenticationProvider(authenticationProvider);
     }
+     */
 
 
 
@@ -284,5 +278,120 @@ public class WebSecurityConfig {
         return source;
     }
 
+    @Bean
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
+    }
 
+
+    // CAS config
+    @Bean
+    @Primary
+    public AuthenticationManager authenticationManager(CasAuthenticationProvider casAuthenticationProvider) {
+        return new ProviderManager(Collections.singletonList(casAuthenticationProvider));
+    }
+
+    /*
+    @Bean
+    @Primary
+    public AuthenticationManager authenticationManager(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailService)
+            throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailService)
+                .passwordEncoder(this.passwordEncoder())
+                .and()
+                .build();
+    }*/
+
+    @Bean
+    @Primary
+    public CasAuthenticationFilter casAuthenticationFilter(
+            ServiceProperties serviceProperties, AuthenticationManager authenticationManager) throws Exception {
+        CasAuthenticationFilter filter = new CasAuthenticationFilter();
+        filter.setServiceProperties(serviceProperties);
+        filter.setAuthenticationManager(authenticationManager);
+        return filter;
+    }
+
+    @Bean
+    public ServiceProperties serviceProperties() {
+        ServiceProperties serviceProperties = new ServiceProperties();
+        serviceProperties.setService("https://echempad.iciq.es:8081/login/cas");
+        serviceProperties.setSendRenew(false);
+        //serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
+        return serviceProperties;
+    }
+
+    @Bean
+    @Primary
+    public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
+    {
+        CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
+        casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
+        casAuthenticationEntryPoint.setLoginUrl("https://echempad-cas.iciq.es:8443/cas/login");
+        return casAuthenticationEntryPoint;
+
+    }
+
+    @Bean
+    public TicketValidator ticketValidator() {
+        return new Cas30ServiceTicketValidator("https://echempad-cas.iciq.es:8443/cas");
+    }
+
+    @Bean
+    @Primary
+    public CasAuthenticationProvider casAuthenticationProvider(
+            TicketValidator ticketValidator,
+            ServiceProperties serviceProperties,
+            UserDetailsServiceImpl userDetailsService) {
+        CasAuthenticationProvider provider = new CasAuthenticationProvider();
+        provider.setServiceProperties(serviceProperties);
+        provider.setTicketValidator((org.apereo.cas.client.validation.TicketValidator) ticketValidator);
+
+        // Static login
+        // TODO parametrize in production
+        //provider.setUserDetailsService(s -> new User("casuser", "Mellon", true, true, true, true, AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
+
+        provider.setUserDetailsService(userDetailsService);
+        provider.setKey("CAS_PROVIDER_LOCALHOST_8081");
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationUserDetailsService<Authentication> authenticationUserDetailsService(UserDetailsServiceImpl userDetailsService) {
+        UserDetailsByNameServiceWrapper<Authentication> serviceWrapper = new UserDetailsByNameServiceWrapper<>();
+        serviceWrapper.setUserDetailsService(userDetailsService);
+        return serviceWrapper;
+    }
+
+    // logout
+
+    @Bean
+    public SecurityContextLogoutHandler securityContextLogoutHandler() {
+        return new SecurityContextLogoutHandler();
+    }
+
+    @Bean
+    public LogoutFilter logoutFilter(SecurityContextLogoutHandler securityContextLogoutHandler) {
+        LogoutFilter logoutFilter = new LogoutFilter(
+                "https://echempad-cas.iciq.es:8443/cas/logout",
+                securityContextLogoutHandler);
+        logoutFilter.setFilterProcessesUrl("/logout/cas");
+        return logoutFilter;
+    }
+
+    @Bean
+    public SingleSignOutFilter singleSignOutFilter() {
+        SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
+        singleSignOutFilter.setLogoutCallbackPath("https://echempad-cas.iciq.es:8443/cas");
+        singleSignOutFilter.setIgnoreInitConfiguration(true);
+        return singleSignOutFilter;
+    }
+
+
+    @EventListener
+    public SingleSignOutHttpSessionListener singleSignOutHttpSessionListener(
+            HttpSessionEvent event) {
+        return new SingleSignOutHttpSessionListener();
+    }
 }
