@@ -58,13 +58,14 @@
 
 		<!-- Spring -->
 		<springboot.version>${project.parent.version}</springboot.version>
-		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
 
 		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
 		<zk.version>8.6.0.1</zk.version>
 		<zkspring.version>4.0.2</zkspring.version>
 		<zkmax.version>3.6.3</zkmax.version>
+		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
 
+		<cglib.version>3.3.0</cglib.version>
 		<hikari.version>5.0.1</hikari.version>
 		<hibernate-hikariCP.version>6.2.7.Final</hibernate-hikariCP.version>
 		<javax-inject.version>1</javax-inject.version>
@@ -248,32 +249,29 @@
 			<version>${zkspringboot-starter.version}</version>
 		</dependency>
 
-		<!--
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkplus</artifactId>
+			<version>${zk.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
-<dependency>
-    <groupId>org.zkoss.zk</groupId>
-    <artifactId>zkplus</artifactId>
-    <version>${zk.version}</version>
-    <exclusions>
-        <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-core</artifactId>
+			<version>${zkspring.version}</version>
+		</dependency>
 
-<dependency>
-    <groupId>org.zkoss.zk</groupId>
-    <artifactId>zkspring-core</artifactId>
-    <version>${zkspring.version}</version>
-</dependency>
-
-<dependency>
-    <groupId>org.zkoss.zk</groupId>
-    <artifactId>zkspring-security</artifactId>
-    <version>${zkspring.version}</version>
-</dependency>
--->
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-security</artifactId>
+			<version>${zkspring.version}</version>
+		</dependency>
 		
 		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
 		<dependency>
@@ -357,7 +355,7 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<version>3.3.0</version>
+			<version>${cglib.version}</version>
 		</dependency>
 
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
@@ -452,11 +450,11 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>
-						<!--<version>3.12.1</version>
+						<version>3.12.1</version>
 						<configuration>
 							<source>17</source>
 							<target>17</target>
-						</configuration>-->
+						</configuration>
 					</plugin>
 
 					<!-- JaCoCo plugin for code coverage -->

@@ -66,6 +66,8 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Collections;
 
+import static org.springframework.security.cas.ServiceProperties.DEFAULT_CAS_ARTIFACT_PARAMETER;
+
 /**
  * This class is the most important security orchestrator. It defines what URL endpoints are accessible under what
  * circumstances and configures security mechanisms such as CSRF and CORS.
@@ -207,6 +209,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/experiment").authenticated()
                 .requestMatchers("/api/document").authenticated()
                 .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/help").authenticated()
 
                 // For the GUI with ZKoss
                 .and()
@@ -219,7 +222,7 @@ public class WebSecurityConfig {
                 // Allow unauthenticated access to log in, log out, exit, help, report bug...
                 .requestMatchers(anonymousPages).permitAll()
                 // Only allow authenticated users in the ZK main page and in the API endpoints
-                .requestMatchers(authenticatedPages).permitAll() //.hasRole("USER")
+                .requestMatchers(authenticatedPages).authenticated() //.hasRole("USER")
 
                 // Rest of requests
                 .and()
@@ -285,13 +288,15 @@ public class WebSecurityConfig {
 
 
     // CAS config
-    @Bean
+    /*@Bean
     @Primary
     public AuthenticationManager authenticationManager(CasAuthenticationProvider casAuthenticationProvider) {
         return new ProviderManager(Collections.singletonList(casAuthenticationProvider));
     }
+    */
 
-    /*
+
+
     @Bean
     @Primary
     public AuthenticationManager authenticationManager(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailService)
@@ -301,7 +306,7 @@ public class WebSecurityConfig {
                 .passwordEncoder(this.passwordEncoder())
                 .and()
                 .build();
-    }*/
+    }
 
     @Bean
     @Primary
@@ -318,7 +323,7 @@ public class WebSecurityConfig {
         ServiceProperties serviceProperties = new ServiceProperties();
         serviceProperties.setService("https://echempad.iciq.es:8081/login/cas");
         serviceProperties.setSendRenew(false);
-        //serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
+        serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
         return serviceProperties;
     }
 
