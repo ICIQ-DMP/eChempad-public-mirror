@@ -67,4 +67,13 @@ public interface UIController {
      * @return The required ZK view as a {@code String}.
      */
     String profile();
+
+
+    /**
+    * Returns the needed information to access the login form.
+    *
+    * @return the {@code String} that needs to be put after the base URL to access the login form.
+    */
+    String login();
+
 }

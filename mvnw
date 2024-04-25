@@ -340,8 +340,8 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  /etc/default/cacerts
 # *  "${JAVA_HOME}/jre/lib/security/cacerts"
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
-# "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" <-- The static one that we have stored in the repo
-trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/security/jssecacerts" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
+# "${MAVEN_WRAPPER_DIR}/src/main/resources/security/truststore" <-- The static one that we have stored in the repo
+trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/security/truststore" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
 trustStore="${trustStores[3]}"
 echo "Using truststore ${trustStore}"
 
@@ -374,6 +374,9 @@ fi
        #       "--add-opens" "java.base/java.lang=ALL-UNNAMED" \
        #        "-javaagent:/home/aleixmt/.m2/repository/org/springframework/spring-instrument/6.0.11/spring-instrument-6.0.11.jar" \
 # Dspring.profiles.active=dev is a think recommended by ZK, so you can hot change thinks in the frontend
+
+#JAVA_FLAGS+="-Djavax.net.debug=ssl:handshake:verbose:keymanager:trustmanager -Djava.security.debug=access:stack"
+
 echo Executed command:
 echo exec "${JAVACMD}" ${JAVA_FLAGS} \
        ${MAVEN_OPTS} \

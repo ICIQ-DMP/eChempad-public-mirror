@@ -33,7 +33,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<!-- Project metadata -->
 	<groupId>org.ICIQ</groupId>
@@ -54,17 +54,17 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<current.year>2023</current.year>
+
 		<!-- Spring -->
-		<spring-framework.version>6.1.3</spring-framework.version>
 		<springboot.version>${project.parent.version}</springboot.version>
-		<spring-security.version>6.1.2</spring-security.version>
-		<spring-context-support.version>6.0.11</spring-context-support.version>
-		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
-		<spring-security-cas.version>5.8.8</spring-security-cas.version>
-		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
-		<zk.version>9.6.0.2</zk.version>
-		<zkspring.version>4.0.2</zkspring.version>
-		<zkmax.version>3.6.3</zkmax.version>
+
+		<!-- ZK version: ZK 9.6.0.2-jakarta CE -->
+
+		<zkspringboot-autoconfig.version>3.2.1</zkspringboot-autoconfig.version>
+		<zk.version>9.6.0.2-jakarta</zk.version>
+
+		<cglib.version>3.3.0</cglib.version>
 		<hikari.version>5.0.1</hikari.version>
 		<hibernate-hikariCP.version>6.2.7.Final</hibernate-hikariCP.version>
 		<javax-inject.version>1</javax-inject.version>
@@ -82,11 +82,10 @@
 		<!--Used by the licenses plugin-->
 		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
 
-		<current.year>2023</current.year>
 
 		<!-- CAS -->
-		<org.jasig.cas.client.core.version>3.6.4</org.jasig.cas.client.core.version>
-		<org.jasig.cas.client.springboot.version>3.6.4</org.jasig.cas.client.springboot.version>
+		<org.apereo.cas.client.core.version>4.0.4</org.apereo.cas.client.core.version>
+		<org.apereo.cas.client.springboot.version>4.0.4</org.apereo.cas.client.springboot.version>
 		<javax-servlet.version>4.0.1</javax-servlet.version>
 	</properties>
 
@@ -127,6 +126,12 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
+		<!-- Actuator, for debugging. TODO activate only in dev -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -156,6 +161,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!--  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->
 		<!-- By default, filters everything out, so we need to configure it -->
 		<dependency>
@@ -179,12 +191,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
-
-		<!-- to add the javax filter when upgrading to java 17-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
 
 		<!-- Added when upgrading to java 17 to reconfigure the cache managing -->
@@ -239,47 +245,82 @@
 			<artifactId>spring-context</artifactId>
 		</dependency>
 
-		<!-- Added to configure load time weaving -->
-		<!--<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-instrument</artifactId>
-		</dependency>-->
-
-
-
 		<!-- ZK -->
 
-		<!-- To use zkoss in our application -->
+		<!-- ZK in spring boot project autoconfig -->
 		<dependency>
 			<groupId>org.zkoss.zkspringboot</groupId>
-			<artifactId>zkspringboot-starter</artifactId>
-			<type>pom</type>
-			<version>${zkspringboot-starter.version}</version>
+			<artifactId>zkspringboot-autoconfig</artifactId>
+			<version>${zkspringboot-autoconfig.version}</version>
 		</dependency>
 
+		<!-- Contains all the basic components of ZK -->
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zkplus</artifactId>
 			<version>${zk.version}</version>
 			<exclusions>
-				<exclusion>  <!-- Exclude log4j to avoid duplicate artifacts in the classpath -->
+				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-jdk14</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 
+		<!--
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>
 			<artifactId>zkspring-core</artifactId>
-			<version>${zkspring.version}</version>
+			<version>${zk.version}</version>
+		</dependency>-->
+
+		<!--
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-security</artifactId>
+			<version>${zk.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-security</artifactId>
-			<version>${zkspring.version}</version>
+			<artifactId>zkbind</artifactId>
+			<version>${zk.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zul</artifactId>
+			<version>${zk.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zhtml</artifactId>
+			<version>${zk.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.common</groupId>
+			<artifactId>zcommon</artifactId>
+			<version>${zk.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+-->
 
 		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
 		<dependency>
@@ -289,26 +330,10 @@
 		</dependency>
 
 		<!-- CAS -->
-		<!-- To use (integrate) a CAS service. Currently activating this dependency increases the startup time by
-     5 minutes-->
+		<!-- To use (integrate) a CAS service -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-cas</artifactId>
-			<version>${spring-security-cas.version}</version>
-		</dependency>
-
-		<!-- Cas client  -->
-		<dependency>
-			<groupId>org.jasig.cas.client</groupId>
-			<artifactId>cas-client-core</artifactId>
-			<version>${org.jasig.cas.client.core.version}</version>
-		</dependency>
-
-		<!-- CAS client support for spring boot -->
-		<dependency>
-			<groupId>org.jasig.cas.client</groupId>
-			<artifactId>cas-client-support-springboot</artifactId>
-			<version>${org.jasig.cas.client.springboot.version}</version>
 		</dependency>
 
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
@@ -317,7 +342,6 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax-servlet.version}</version>
 		</dependency>
-
 
 		<!-- INTEGRATION WITH JAVA 17 -->
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
@@ -380,7 +404,7 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<version>3.3.0</version>
+			<version>${cglib.version}</version>
 		</dependency>
 
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
@@ -442,24 +466,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<version>${apache-log4j.version}</version>
 		</dependency>
 
-		<!-- Needed when upgrade to java 17 -->
-		<!--<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring-context-support.version}</version>
-		</dependency>-->
-
-
-
-		<!-- Load time weaver without explicit java agent -->
-		<!--
-		<dependency>
-			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-instrument</artifactId>
-			<version>1.0.14</version>
-		</dependency>
-		-->
-
 	</dependencies>
 
 
@@ -469,19 +475,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 	<!-- Final name for the WAR artifact, so it is always the same and does not change with change of version -->
 	<build>
 		<finalName>eChempad</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0</version>
-				<configuration>
-					<argLine>
-						-add-opens=java.base/java.lang=ALL-UNNAMED
-						-add-opens=java.base/java.util=ALL-UNNAMED
-					</argLine>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 
