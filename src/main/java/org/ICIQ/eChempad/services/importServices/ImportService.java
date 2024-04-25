@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.ICIQ.eChempad.services;
+package org.ICIQ.eChempad.services.importServices;
 
 import org.ICIQ.eChempad.entities.genericJPAEntities.Container;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
@@ -48,12 +48,24 @@ public interface ImportService {
     List<DataEntity> readRootEntities(String APIKey);
 
     /**
-     * Updates the corresponding root entity in the database with the data supplied by parameter. If it is not present
-     * it will be saved as a new element.
+     * Updates the corresponding root entity in the database with the data supplied by parameter.
+     * - If it is not present it will be saved as a new element.
+     * - If it is present and data in eChempad has changes, ignores the update.
+     * - If it is present and data in Signals has changes, replaces the entity.
+     * - If it is present and both Signals and eChempad has changes, calls the updateEntity function recursively in each
+     *   node of the tree, performing this same algorithm. When arriving to leaf level, do nothing if both have changes.
      *
-     * @param container Data entity to be imported into the workspace of the user.
+     * @param container Data entity to be imported into the workspace of the user. This entity is expected to be
+     *                  unmanaged by hibernate (not saved in the db).
      */
     void updateRootContainer(Container container, String APIKey);
+
+    /**
+     * Updates the workspace of the current user.
+     *
+     * @param APIKey To authenticate requests.
+     */
+    void updateRootContainers(String APIKey);
 
     /**
      * Expands the children of the received DataEntity by performing CRUD requests to read the children of this entity
@@ -65,7 +77,7 @@ public interface ImportService {
      *                   be added to this parameter to return the entities of the children.
      * @param APIKey API key to authenticate in the platform that we are importing from.
      */
-    void expandContainerChildren(Container container, String APIKey);
+    void expandContainerContainers(Container container, String APIKey);
 
     /**
      * Expands the children of an entity. If it is a container the entity will be expanded and the function will return
@@ -87,15 +99,6 @@ public interface ImportService {
     void expandContainerDocuments(Container container, String APIKey);
 
     /**
-     * Expands the hierarchy of a container reading data from Signals assuming it is a root container
-     * (journal / notebook).
-     *
-     * @param container A data entity that represents a root container in the importing Signals instance.
-     * @param APIKey API key used to authenticate requests.
-     */
-    void expandRootContainer(Container container, String APIKey);
-
-    /**
      * Expands the children of the received DataEntity recursively by performing CRUD requests to read the children of
      * this entity in the origin platform in a recursive manner. The children and the rest of descendents will be added
      * to the DataEntity supplied by parameter. With a single call, this function adds all the data to the supplied
@@ -107,69 +110,25 @@ public interface ImportService {
     void expandContainerHierarchy(Container container, String APIKey);
 
     /**
-     * Performs the import algorithm of the data supplied by parameter into the database of eChempad. If data is
-     * shallow, it is expanded recursively until the leaves. After that, the DataEntity gets imported to the database
-     * with the ownership of the calling user.
+     * Receives an unmanaged DataEntity that can be a Document or Container and performs recursion with minimal queries
+     * and API requests to get only the necessary data to update the corresponding entity in our database. To know if
+     * there is a corresponding entity, we will query the parent for its children. This will work for all branches of
+     * the tree, but not for the root containers, which will be signaled as so receiving null in the parent. In this
+     * case we will search a possible matching entity by querying the service directly.
      * <p>
-     * If the data is not already present, the imported entities will be new in the database, so it is enough with
-     * saving the supplied entity and its descendants. If the data is already in the database, an update algorithm will
-     * be executed.
-     * <p>
-     * This method assumes that the supplied DataEntity is not managed by Spring / Hibernate.
-     *
-     * @param dataEntity Data entity to be imported into the workspace of the user. This data entity will be expanded
-     *                   if it is not completely expanded. DataEntity is unmanaged.
+     * - If it is not present it will be saved as a new element.
+     * - If it is present and data in eChempad has changes, ignores the update.
+     * - If it is present and data in Signals has changes, replaces the entity.
+     * - If it is present and both Signals and eChempad has changes, calls the mergeEntities function recursively in
+     *   each node of the tree, performing this same algorithm. When arriving to leaf level, do nothing if both have
+     *   changes.
+     * @param parentInDatabase Container entity that is already present in the database of eChempad. Is the parent of
+     *                         the corresponding entity in our db to the supplied by parameter.
+     * @param dataEntitySignals Data entity that is in Signals. It will be expanded only if necessary on each recursive
+     *                          call. This entity is expected to be unmanaged.
+     * @param APIKey Key to authenticate requests to Signals.
      */
-    void importEntity(DataEntity dataEntity);
-
-    /**
-     * Performs the update algorithm of the data supplied by parameter with data coming from the service that we are
-     * importing from.
-     *
-     * This method overwrites the data present in eChempad with the obtained data from the original platform by
-     * appending new descendent entities in the supplied DataEntity
-     *
-     * @param dataEntity Data entity to be imported into the workspace of the user. This data entity will be expanded
-     *                   if it is not completely expanded.
-     */
-    void updateEntity(DataEntity dataEntity, String APIKey);
+    void syncEntity(Container parentInDatabase, DataEntity dataEntitySignals, String APIKey);
 
 
-    /**
-     * By using the supplied API key, import all available material from a third-party service, depending on the
-     * implementation of the class. This is a greedy function to obtain all data from the origin service.
-     *
-     * @param APIKey Token to log into the associated third-party application.
-     * @return String containing a summary of the imported elements.
-     * @throws IOException Thrown due to any type of connection problem.
-     */
-    String importWorkspace(String APIKey) throws IOException;
-
-    /**
-     * By using the available API keys from the currently logged user if available, import all available material from
-     * a third-party service, depending on the implementation of the class.
-     *
-     * @return String containing a summary of the imported elements.
-     * @throws IOException Thrown due to any type of connection problem.
-     */
-    String importWorkspace() throws IOException;
-
-    /**
-     * By using the supplied API key, import the selected journal from a third-party service, depending on the
-     * implementation of the class.
-     *
-     * @param APIKey Contains a token to log into the associated third-party application.
-     * @param id Identifies the journal to import from the third-party service.
-     * @return String containing a summary of the imported elements.
-     */
-    String importJournal(String APIKey, Serializable id);
-
-    /**
-     * By using the available API keys from the currently logged user if available, import all available material from
-     * a third-party service, depending on the implementation of the class.
-     *
-     * @param id Contains an identifier in the "other" repository for the journal that we want to import.
-     * @return String containing a summary of the imported elements.
-     */
-    String importJournal(Serializable id);
 }

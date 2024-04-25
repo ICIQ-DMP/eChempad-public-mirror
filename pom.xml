@@ -29,50 +29,64 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.4</version>
+		<version>3.2.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+	<packaging>jar</packaging>
+
+	<!-- Project metadata -->
 	<groupId>org.ICIQ</groupId>
 	<artifactId>eChempad</artifactId>
-	<version>0.8</version>
-	<packaging>war</packaging>
+	<version>0.11</version>
 	<name>eChempad</name>
 	<description>Experimental Chemistry Electronic Pad</description>
 	<inceptionYear>2021</inceptionYear>
+	<url>https://eChempad.iciq.es</url>
 	<organization>
 		<name>ICIQ</name>
 		<url>https://www.iciq.org/</url>
 	</organization>
+
 	<!-- Internal variable definition for compilation -->
 	<properties>
 		<!-- General compilation of the project -->
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<spring-framework.version>5.3.9</spring-framework.version>
-		<springboot.version>2.5.4</springboot.version>
-		<spring-security.version>5.7.3</spring-security.version>
-		<zkspringboot-starter.version>1.0.4</zkspringboot-starter.version>
-		<!-- ZK version: ZK 8.6.0.1 CE (build: 2018112010) -->
-		<zk.version>8.6.0.1</zk.version>
-		<zkspring.version>4.0.2</zkspring.version>
-		<zkmax.version>3.6.3</zkmax.version>
-		<hikari.version>4.0.3</hikari.version>
-		<hibernate-hikariCP.version>5.2.10.Final</hibernate-hikariCP.version>
-		<javax-inject.version>1</javax-inject.version>
-		<ehcache.version>3.10.2</ehcache.version>
-		<threetenbp.version>1.6.4</threetenbp.version>
-		<postgresql.version>42.5.1</postgresql.version>
-		<jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
-		<testcontainers.version>1.18.3</testcontainers.version>
-
-		<jacoco.version>0.8.2</jacoco.version>
-		<net-sf-ehcache.version>2.10.9.2</net-sf-ehcache.version>
-		<reflections.version>0.9.10</reflections.version>
-		<!--Used by the licenses plugin-->
-		<license.licenseName>apache_v2</license.licenseName>
 		<current.year>2023</current.year>
+
+		<!-- Spring -->
+		<springboot.version>${project.parent.version}</springboot.version>
+
+		<!-- ZK version: ZK 9.6.0.2-jakarta CE -->
+
+		<zkspringboot-autoconfig.version>3.2.1</zkspringboot-autoconfig.version>
+		<zk.version>9.6.0.2-jakarta</zk.version>
+
+		<cglib.version>3.3.0</cglib.version>
+		<hikari.version>5.0.1</hikari.version>
+		<hibernate-hikariCP.version>6.2.7.Final</hibernate-hikariCP.version>
+		<javax-inject.version>1</javax-inject.version>
+		<ehcache.version>3.10.6</ehcache.version>
+		<threetenbp.version>1.6.5</threetenbp.version>
+		<postgresql.version>42.5.4</postgresql.version>
+		<jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
+		<testcontainers.version>1.18.3</testcontainers.version>
+		<jacoco.version>0.8.2</jacoco.version>
+		<reflections.version>0.10.2</reflections.version>
+		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
+		<license.licenseName>apache_v2</license.licenseName>
+		<apache-log4j.version>2.22.1</apache-log4j.version>
+		<commons-login.version>1.2</commons-login.version>
+		<!--Used by the licenses plugin-->
+		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
+
+
+		<!-- CAS -->
+		<org.apereo.cas.client.core.version>4.0.4</org.apereo.cas.client.core.version>
+		<org.apereo.cas.client.springboot.version>4.0.4</org.apereo.cas.client.springboot.version>
+		<javax-servlet.version>4.0.1</javax-servlet.version>
 	</properties>
 
 	<!--Licenses -->
@@ -84,7 +98,6 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
-
 
 	<!-- This is needed to be able to import directly a github repository, which we need to import the Dataverse Java
 	API Wrapper  -->
@@ -107,15 +120,16 @@
 
 
 	<dependencies>
-		<!-- Spring Boot Starters -->
-
-		<!-- Java persistence API, uses
-		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
-		<!-- To import hibernate, which is used to achieve transparent persistence to a Database. Higher versions of
- hibernate are written as org.hibernate.orm, but are not compatible with JRE 8  -->
+		<!-- SPRING BOOT STARTERS -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- Actuator, for debugging. TODO activate only in dev -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
@@ -139,7 +153,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
-			<version>${springboot.version}</version>
 		</dependency>
 
 		<!-- Added with the project initialization, it is for using web page tools in the project -->
@@ -148,12 +161,18 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!--  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Allows the usage of filters that will filter out the requests that our controllers are receiving -->
 		<!-- By default, filters everything out, so we need to configure it -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-			<version>${springboot.version}</version>
 		</dependency>
 
 		<!-- Allows the use of the WebClient class, used to perform REST operations as a client. Used to communicate with Signals API-->
@@ -174,6 +193,12 @@
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
+		<!-- Added when upgrading to java 17 to reconfigure the cache managing -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
 
 		<!-- Spring -->
 
@@ -181,21 +206,18 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-acl</artifactId>
-			<version>${spring-security.version}</version>
 		</dependency>
 
 		<!-- Used to control the ACL security infrastructure -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>${spring-security.version}</version>
 		</dependency>
 
 		<!-- Used to control login / logout with ZK -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>${spring-security.version}</version>
 		</dependency>
 
 		<!-- Allows the creation of our own properties in application.properties file -->
@@ -205,16 +227,165 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Used to control the ACL security infrastructure, if not present the ehcache is cannot be found -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-		</dependency>
-
 		<!-- To use the MockMultipartFile -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+		</dependency>
+
+		<!-- Used to integrate ZK with Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<!-- Used to integrate ZK with Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<!-- ZK -->
+
+		<!-- ZK in spring boot project autoconfig -->
+		<dependency>
+			<groupId>org.zkoss.zkspringboot</groupId>
+			<artifactId>zkspringboot-autoconfig</artifactId>
+			<version>${zkspringboot-autoconfig.version}</version>
+		</dependency>
+
+		<!-- Contains all the basic components of ZK -->
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkplus</artifactId>
+			<version>${zk.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!--
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-core</artifactId>
+			<version>${zk.version}</version>
+		</dependency>-->
+
+		<!--
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkspring-security</artifactId>
+			<version>${zk.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zkbind</artifactId>
+			<version>${zk.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zul</artifactId>
+			<version>${zk.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.zk</groupId>
+			<artifactId>zhtml</artifactId>
+			<version>${zk.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zkoss.common</groupId>
+			<artifactId>zcommon</artifactId>
+			<version>${zk.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+-->
+
+		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons-login.version}</version>
+		</dependency>
+
+		<!-- CAS -->
+		<!-- To use (integrate) a CAS service -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-cas</artifactId>
+		</dependency>
+
+		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax-servlet.version}</version>
+		</dependency>
+
+		<!-- INTEGRATION WITH JAVA 17 -->
+		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
+And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>${ehcache.version}</version>
+			<classifier>jakarta</classifier>
+		</dependency>
+
+		<!-- To use the reflections' library, which is used in the code of iochem-bd
+		https://mvnrepository.com/artifact/org.reflections/reflections -->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${reflections.version}</version>
+		</dependency>
+
+		<!-- To use the @Inject annotation -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>${javax-inject.version}</version>
+		</dependency>
+
+		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikari.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-hikaricp</artifactId>
+			<version>${hibernate-hikariCP.version}</version>
+		</dependency>
+
+		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
+		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>${jakarta.persistence-api.version}</version>
 		</dependency>
 
 		<dependency>
@@ -229,33 +400,11 @@
 			<version>${testcontainers.version}</version>
 		</dependency>
 
-
-		<!-- Used to integrate ZK with Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring-framework.version}</version>
-		</dependency>
-
-		<!-- Used to integrate ZK with Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring-framework.version}</version>
-		</dependency>
-
-		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-
 		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<version>2.2</version>
+			<version>${cglib.version}</version>
 		</dependency>
 
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
@@ -299,81 +448,22 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
-		And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
 		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>${ehcache.version}</version>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>license-maven-plugin</artifactId>
+			<version>${license-maven-plugin.version}</version>
 		</dependency>
 
-		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
-		And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
+		<!-- To provide a valid implementation of Log4j2 -->
 		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>${net-sf-ehcache.version}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${apache-log4j.version}</version>
 		</dependency>
-
-		<!-- To use zkoss in our application -->
 		<dependency>
-			<groupId>org.zkoss.zkspringboot</groupId>
-			<artifactId>zkspringboot-starter</artifactId>
-			<type>pom</type>
-			<version>${zkspringboot-starter.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkplus</artifactId>
-			<version>${zk.version}</version>
-			<exclusions>
-				<exclusion>  <!-- Exclude log4j to avoid duplicate artifacts in the classpath -->
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-core</artifactId>
-			<version>${zkspring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-security</artifactId>
-			<version>${zkspring.version}</version>
-		</dependency>
-
-		<!-- To use the reflections' library, which is used in the code of iochem-bd
-		https://mvnrepository.com/artifact/org.reflections/reflections -->
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>${reflections.version}</version>
-		</dependency>
-
-
-		<!-- To use the @Inject annotation -->
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>${javax-inject.version}</version>
-		</dependency>
-
-		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${hikari.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-hikaricp</artifactId>
-			<version>${hibernate-hikariCP.version}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${apache-log4j.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -382,23 +472,14 @@
 
 	<!--Builds and plug ins-->
 
+	<!-- Final name for the WAR artifact, so it is always the same and does not change with change of version -->
 	<build>
-		<finalName>eChempad</finalName>  <!-- Final name for the WAR artifact -->
-		<plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                </configuration>
-            </plugin>
-        </plugins>
+		<finalName>eChempad</finalName>
 	</build>
 
 
 	<!--Profiles -->
+
 
 	<profiles>
 		<!--  This profile should ONLY be active when user specifies -Dthird.party.licenses=true on command-line.  -->
@@ -413,6 +494,17 @@
 			</activation>
 			<build>
 				<plugins>
+
+					<!-- Added when migrating java 8 to java 11 -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.12.1</version>
+						<configuration>
+							<source>17</source>
+							<target>17</target>
+						</configuration>
+					</plugin>
 
 					<!-- JaCoCo plugin for code coverage -->
 					<plugin>
@@ -441,16 +533,29 @@
 					</plugin>
 
 					<plugin>
-
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>2.0.0</version>
+						<version>2.4.0</version>
 						<executions>
 							<execution>
-								<id>group-third-party-licenses-markdown</id>
+								<id>download-third-party-license-text</id>
 								<phase>generate-resources</phase>
 								<goals>
-									<goal>aggregate-add-third-party</goal>
+									<goal>download-licenses</goal>
+								</goals>
+								<configuration>
+									<verbose>true</verbose>
+									<errorRemedy>ignore</errorRemedy>
+									<cleanLicensesOutputDirectory>true</cleanLicensesOutputDirectory>
+									<licensesOutputDirectory>${project.basedir}/license/third-party</licensesOutputDirectory>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>aggregate-add-third-party-markdown</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>add-third-party</goal>
 								</goals>
 								<configuration>
 									<verbose>true</verbose>
@@ -461,127 +566,86 @@
 									<thirdPartyFilename>THIRD-PARTY.md</thirdPartyFilename>
 									<fileTemplate>${project.basedir}/license/resources/third-party-file-groupByMultiLicense-markdown.ftl</fileTemplate>
 									<useMissingFile>true</useMissingFile>
-									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
+									<missingFile>${project.basedir}/license/resources/LICENSES_3RD_PARTY.properties</missingFile>
 									<licenseMerges>
-										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version
-											2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software
-											License, Version 2.0|The Apache License, Version 2.0|Apache License Version
-											2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software
-											License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License
-											V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache
-											2.0|Apache Software License,
-											Version2.0|https://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT
-											Terms|apache license, version 2.0 - license-2.0|apache license 2.0 -
-											license-2.0</licenseMerge>
-										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
-										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
-										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
-										<licenseMerge>CDDL-1.0|CDDL 1.0|Common Development and Distribution License (CDDL)|Common Development and Distribution License (CDDL) v1.0|COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0|CDDL, v1.0|CDDL 1.0 license|CDDL License|Common Development and Distribution License|Common Development and Distribution License (CDDL)# Generated by org.codehaus.mojo.license.AddThirdPartyMojo|CDDL</licenseMerge>
-										<licenseMerge>CDDL-1.1</licenseMerge>
-										<licenseMerge>CDDL-1.1 + GPL-2.0|Dual license consisting of the CDDL v1.1 and GPL v2</licenseMerge>
-										<licenseMerge>CDDL-1.0 + GPL-2.0-with-classpath-exception|CDDL + GPLv2 with classpath exception|CDDL/GPLv2+CE|CDDL, GPLv2+CE|CDDL, GPL-2.0-with-classpath-exception</licenseMerge>
-										<licenseMerge>CDDL-1.1 + GPL-2.0-with-classpath-exception|CDDL 1.1, GPL-2.0-with-classpath-exception</licenseMerge>
-										<licenseMerge>CC-BY-SA-3.0|Creative Commons 3.0 BY-SA</licenseMerge>
-										<licenseMerge>GPL-2.0-with-classpath-exception|GPL2 w/ CPE|GNU General Public License, version 2 (GPL2), with the classpath exception|GNU General Public License, Version 2 with the Classpath Exception|GPLv2+CE</licenseMerge>
-										<licenseMerge>GPL-2.0-with-foss-exception|The GNU General Public License, v2 with FOSS exception</licenseMerge>
-										<licenseMerge>EPL-1.0|Eclipse Public License|Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0|EPL 1.0 license|Eclipse Public License (EPL), Version 1.0|Eclipse Public License, Version 1.0</licenseMerge>
-										<licenseMerge>EPL-2.0|Eclipse Public License (EPL) 2.0</licenseMerge>
-										<licenseMerge>CPL-1.0|Common Public License Version 1.0</licenseMerge>
-										<licenseMerge>LGPL-2.1-or-later|GNU Lesser General Public License (LGPL)|GNU Lesser General Public License (LGPL), Version 2.1|GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1|GNU Lesser General Public License|GNU Lesser Public License|GNU Lesser General Public License, Version 2.1|Lesser General Public License (LGPL) v2.1|LGPL 2.1|LGPL 2.1 license|LGPL, v2.1 or later|LGPL|GNU Lesser General Public License Version 2.1, February 1999|Lesser General Public License (LGPL) v 2.1|The GNU Lesser General Public License, Version 2.1</licenseMerge>
-										<licenseMerge>LGPL-3.0|LGPL 3.0 license|GNU LESSER GENERAL PUBLIC LICENSE, Version 3|GNU Lesser General Public License v3|GNU Lessor/Library Public License, Version 3.0|GNU LESSER GENERAL PUBLIC LICENSE 3.0</licenseMerge>
-										<licenseMerge>GPL-1.0-only|GNU General Public Library</licenseMerge>
-										<licenseMerge>GPL-2.0|GNU General Public License v2.0</licenseMerge>
-										<licenseMerge>GPL-3.0-only|GNU Public License, Version 3.0|GNU General Public License v3</licenseMerge>
-										<licenseMerge>MIT|MIT License|The MIT License|MIT LICENSE|The MIT License (MIT)|MIT license|the mit license - mit|the mit license - license|mit license - mit-license</licenseMerge>
-										<licenseMerge>Bouncy Castle|Bouncy Castle Licence</licenseMerge>
-										<licenseMerge>MPL-1.0|Mozilla Public License</licenseMerge>
-										<licenseMerge>MPL-1.1|Mozilla Public License version 1.1|Mozilla Public License 1.1 (MPL 1.1)|MPL 1.1</licenseMerge>
-										<licenseMerge>MPL-2.0|Mozilla Public License Version 2.0</licenseMerge>
-										<licenseMerge>MPL-2.0 + EPL-1.0|MPL 2.0, and EPL 1.0</licenseMerge>
-										<licenseMerge>Public Domain|Public domain, Sun Microsoystems|WTFPL|Public Domain, The New BSD License</licenseMerge>
-										<licenseMerge>PostgreSQL License|The PostgreSQL License</licenseMerge>
-										<licenseMerge>SAX-PD|The SAX License</licenseMerge>
-										<licenseMerge>W3C|The W3C License</licenseMerge>
-										<licenseMerge>HSQLDB|HSQLDB License, a BSD open source license</licenseMerge>
-										<licenseMerge>ICU|ICU License</licenseMerge>
+										<licenseMerge>
+											Apache-2.0
+											|Apache License 2.0
+											|The Apache Software License, Version 2.0
+											|The Apache License, Version 2.0
+											|Apache License, Version 2.0
+											|Apache Public License 2.0
+											|Apache 2
+											|Apache License
+											|ASF 2.0
+											|Apache 2.0
+											|GWT Terms
+											|Apache License, version 2.0
+										</licenseMerge>
+										<licenseMerge>
+											BSD License
+											|BSD
+										</licenseMerge>
+										<licenseMerge>
+											BSD 3
+											|BSD-3-Clause
+											|BSD License 3
+											|BSD License 2.0
+											|BSD 3-clause
+											|BSD 3-clause New License
+											|New BSD license
+										</licenseMerge>
+										<licenseMerge>
+											CC0
+											|COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+										</licenseMerge>
+										<licenseMerge>
+											CDDL-1.1
+										</licenseMerge>
+										<licenseMerge>
+											GPL2 w/ CPE
+										</licenseMerge>
+										<licenseMerge>
+											Eclipse Public License 1.0
+											|Eclipse Public License - v 1.0
+											|Eclipse Public License, Version 1.0
+										</licenseMerge>
+										<licenseMerge>
+											Eclipse Public License v2.0
+											|Eclipse Public License - v 2.0
+										</licenseMerge>
+										<licenseMerge>
+											LGPL-2.1-or-later
+											|GNU Lesser General Public License|GNU Lesser Public License
+											|LGPL 2.1
+											|The GNU Lesser General Public License, Version 2.1
+										</licenseMerge>
+										<licenseMerge>
+											GNU LESSER GENERAL PUBLIC LICENSE, Version 3
+											|LGPL 3.0
+											|Lesser General Public License (LGPL) v 3.0
+											|The GNU Lesser General Public License, Version 3.0
+										</licenseMerge>
+										<licenseMerge>
+											MIT License
+											|The MIT License
+										</licenseMerge>
+										<licenseMerge>
+											MPL 1.1
+										</licenseMerge>
+										<licenseMerge>
+											Public Domain
+											|WTFPL
+										</licenseMerge>
+										<licenseMerge>
+											ICU License
+										</licenseMerge>
 									</licenseMerges>
 								</configuration>
 							</execution>
-							<execution>
-								<id>group-third-party-licenses-text</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>aggregate-add-third-party</goal>
-								</goals>
-								<configuration>
-									<verbose>true</verbose>
-									<inceptionYear>${project.inceptionYear}</inceptionYear>
-									<organizationName>${project.organization.name}</organizationName>
-									<projectName>${project.name}</projectName>
-									<outputDirectory>${project.basedir}/license</outputDirectory>
-									<fileTemplate>${project.basedir}/license/resources/third-party-file-groupByMultiLicense.ftl</fileTemplate>
-									<useMissingFile>true</useMissingFile>
-									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
-									<licenseMerges>
-										<licenseMerge>AGPL-3.0-or-later|GNU Affero General Public License</licenseMerge>
-										<licenseMerge>Apache-2.0|Apache License 2.0|Apache Software License, Version
-											2.0|Apache License, version 2.0|Apache Software Licenses|The Apache Software
-											License, Version 2.0|The Apache License, Version 2.0|Apache License Version
-											2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache Software
-											License - Version 2.0|Apache 2.0 License|Apache 2.0 license|Apache License
-											V2.0|Apache 2|Apache License|Apache|Apache License v2|ASF 2.0|Apache
-											2.0|Apache Software License,
-											Version2.0|https://ant-contrib.sourceforge.net/tasks/LICENSE.txt|GWT
-											Terms|apache license, version 2.0 - license-2.0|apache license 2.0 -
-											license-2.0</licenseMerge>
-										<licenseMerge>BSD-4-Clause|BSD License|The BSD License|BSD licence|BSD license|BSD|BSD-style license</licenseMerge>
-										<licenseMerge>BSD-4-Clause|DuraSpace BSD License|DuraSpace Sourcecode License</licenseMerge>
-										<licenseMerge>BSD-3-Clause|BSD License 2.0|BSD 3-clause|BSD 3-clause New License|New BSD License|New BSD license|Revised BSD License|BSD style modified by Coverity|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
-										<licenseMerge>CDDL-1.0|CDDL 1.0|Common Development and Distribution License (CDDL)|Common Development and Distribution License (CDDL) v1.0|COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0|CDDL, v1.0|CDDL 1.0 license|CDDL License|Common Development and Distribution License|Common Development and Distribution License (CDDL)# Generated by org.codehaus.mojo.license.AddThirdPartyMojo|CDDL</licenseMerge>
-										<licenseMerge>CDDL-1.1</licenseMerge>
-										<licenseMerge>CDDL-1.1 + GPL-2.0|Dual license consisting of the CDDL v1.1 and GPL v2</licenseMerge>
-										<licenseMerge>CDDL-1.0 + GPL-2.0-with-classpath-exception|CDDL + GPLv2 with classpath exception|CDDL/GPLv2+CE|CDDL, GPLv2+CE|CDDL, GPL-2.0-with-classpath-exception</licenseMerge>
-										<licenseMerge>CDDL-1.1 + GPL-2.0-with-classpath-exception|CDDL 1.1, GPL-2.0-with-classpath-exception</licenseMerge>
-										<licenseMerge>CC-BY-SA-3.0|Creative Commons 3.0 BY-SA</licenseMerge>
-										<licenseMerge>GPL-2.0-with-classpath-exception|GPL2 w/ CPE|GNU General Public License, version 2 (GPL2), with the classpath exception|GNU General Public License, Version 2 with the Classpath Exception|GPLv2+CE</licenseMerge>
-										<licenseMerge>GPL-2.0-with-foss-exception|The GNU General Public License, v2 with FOSS exception</licenseMerge>
-										<licenseMerge>EPL-1.0|Eclipse Public License|Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0|EPL 1.0 license|Eclipse Public License (EPL), Version 1.0|Eclipse Public License, Version 1.0</licenseMerge>
-										<licenseMerge>EPL-2.0|Eclipse Public License (EPL) 2.0</licenseMerge>
-										<licenseMerge>CPL-1.0|Common Public License Version 1.0</licenseMerge>
-										<licenseMerge>LGPL-2.1-or-later|GNU Lesser General Public License (LGPL)|GNU Lesser General Pub lic License (LGPL), Version 2.1|GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1|GNU Lesser General Public License|GNU Lesser Public License|GNU Lesser General Public License, Version 2.1|Lesser General Public License (LGPL) v2.1|LGPL 2.1|LGPL 2.1 license|LGPL, v2.1 or later|LGPL|GNU Lesser General Public License Version 2.1, February 1999|Lesser General Public License (LGPL) v 2.1|The GNU Lesser General Public License, Version 2.1</licenseMerge>
-										<licenseMerge>LGPL-3.0|LGPL 3.0 license|GNU LESSER GENERAL PUBLIC LICENSE, Version 3|GNU Lesser General Public License v3|GNU Lessor/Library Public License, Version 3.0|GNU LESSER GENERAL PUBLIC LICENSE 3.0</licenseMerge>
-										<licenseMerge>GPL-1.0-only|GNU General Public Library</licenseMerge>
-										<licenseMerge>GPL-2.0|GNU General Public License v2.0</licenseMerge>
-										<licenseMerge>GPL-3.0-only|GNU Public License, Version 3.0|GNU General Public License v3</licenseMerge>
-										<licenseMerge>MIT|MIT License|The MIT License|MIT LICENSE|The MIT License (MIT)|MIT license|the mit license - mit|the mit license - license|mit license - mit-license</licenseMerge>
-										<licenseMerge>Bouncy Castle|Bouncy Castle Licence</licenseMerge>
-										<licenseMerge>MPL-1.0|Mozilla Public License</licenseMerge>
-										<licenseMerge>MPL-1.1|Mozilla Public License version 1.1|Mozilla Public License 1.1 (MPL 1.1)|MPL 1.1</licenseMerge>
-										<licenseMerge>MPL-2.0|Mozilla Public License Version 2.0</licenseMerge>
-										<licenseMerge>MPL-2.0 + EPL-1.0|MPL 2.0, and EPL 1.0</licenseMerge>
-										<licenseMerge>Public Domain|Public domain, Sun Microsoystems|WTFPL|Public Domain, The New BSD License</licenseMerge>
-										<licenseMerge>PostgreSQL License|The PostgreSQL License</licenseMerge>
-										<licenseMerge>SAX-PD|The SAX License</licenseMerge>
-										<licenseMerge>W3C|The W3C License</licenseMerge>
-										<licenseMerge>HSQLDB|HSQLDB License, a BSD open source license</licenseMerge>
-										<licenseMerge>ICU|ICU License</licenseMerge>
-									</licenseMerges>
-								</configuration>
-							</execution>
-							<execution>
-								<id>download-third-party-license-text</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>download-licenses</goal>
-								</goals>
-								<configuration>
-									<errorRemedy>ignore</errorRemedy>
-									<cleanLicensesOutputDirectory>true</cleanLicensesOutputDirectory>
-									<missingFile>${project.basedir}/license/resources/LICENSES_THIRD_PARTY.properties</missingFile>
-									<licensesOutputDirectory>${project.basedir}/license/third-party</licensesOutputDirectory>
-								</configuration>
-							</execution>
+
+
+
 						</executions>
 					</plugin>
 
@@ -602,11 +666,10 @@
 
 			<build>
 				<plugins>
-
 					<plugin>
 						<groupId>com.mycila</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>4.1</version>
+						<version>4.3</version>
 						<configuration>
 							<mapping>
 								<zul>XML_STYLE</zul>
@@ -618,7 +681,6 @@
 								<inceptionYear>${project.inceptionYear}</inceptionYear>
 								<latestYearOfContribution>${current.year}</latestYearOfContribution>
 							</properties>
-							<!-- Exclusions from license addition -->
 							<excludes>
 								<exclude>**/README</exclude>
 								<exclude>src/main/resources/secrets/**</exclude>

@@ -21,11 +21,9 @@
 
 -->
 <?import src="~./zul/browserTab.zul" directives=*?>
+<?page title="eChempad - Hello"?>
 
-<?page title="eChempad - Login"?>
-
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul https://www.zkoss.org/2005/zul/zul.xsd">
+<window xmlns:n="native" border="none"  height="100%">
 
     <!-- Removes padding from "webkit chrome iceblue" on chrome, aka the top body of the HTML page -->
     <style>
@@ -34,22 +32,5 @@
         }
     </style>
 
-    <div style="margin: 150px 250px;">
-        <!-- Do form post against /login, authentication is controlled by Spring Boot -->
-        <html:form id="loginForm" action="/login" method="POST" xmlns:html="native">
-            <grid>
-                <rows>
-                    <row>User: <textbox id="u" type="text" name="username"/></row>  <!-- Parameter called username has to exist -->
-                    <row>Password: <textbox id="p" type="password" name="password"/></row>  <!-- Parameter called password has to exist -->
-                    <row spans="2">
-                        <hbox>
-                            <button type="reset" label="Reset" />
-                            <button type="submit" label="Submit" />
-                        </hbox>
-                    </row>
-                </rows>
-            </grid>
-        </html:form>
-
-    </div>
-</zk>
+    This is supposed to be a hello page
+</window>

@@ -25,22 +25,20 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.services.DataverseExportService;
-import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
-import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
-import org.ICIQ.eChempad.services.genericJPAServices.EntityConversionService;
+import org.ICIQ.eChempad.services.EntityConversionService;
+import org.ICIQ.eChempad.services.genericJPAServices.SecuredServices.SecuredContainerService;
+import org.ICIQ.eChempad.services.genericJPAServices.SecuredServices.SecuredDocumentService;
 import org.ICIQ.eChempad.web.definitions.EventNames;
 import org.ICIQ.eChempad.web.definitions.EventQueueNames;
 import org.ICIQ.eChempad.web.renderers.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.ResourceAccessException;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
@@ -52,7 +50,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Scope("desktop")
-@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+//@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class TreeComposer extends SelectorComposer<Window> {
 
     // Sending event queues
@@ -142,11 +140,11 @@ public class TreeComposer extends SelectorComposer<Window> {
      * a HTTP REST call. Develop a new layer of controllers that can be called programmatically and enforce security or
      * try to make work the controller layer that is already implemented programmatically.
      */
-    @WireVariable("containerService")
-    private ContainerService<Container, UUID> containerService;
+    @WireVariable("securedContainerService")
+    private SecuredContainerService<Container, UUID> containerService;
 
-    @WireVariable("documentService")
-    private DocumentService<Document, UUID> documentService;
+    @WireVariable("securedDocumentService")
+    private SecuredDocumentService<Document, UUID> documentService;
 
     @WireVariable("entityConversionService")
     private EntityConversionService entityConversionService;
@@ -168,7 +166,7 @@ public class TreeComposer extends SelectorComposer<Window> {
         this.initActionQueues();
 
         // Sets the data to the tree
-        this.refreshModel();
+        //this.refreshModel();
         // Sets how we want to display the data (look JPAEntityTreeRenderer)
         this.tree.setItemRenderer(new JPAEntityTreeRenderer());
     }
@@ -197,6 +195,19 @@ public class TreeComposer extends SelectorComposer<Window> {
         this.treeQueue.subscribe((EventListener) event -> {
             switch (event.getName()) {
                 case EventNames.MODIFY_ENTITY_PROPERTIES_EVENT: {
+                    Logger.getGlobal().warning(event.getData().getClass().getSimpleName().toString());
+                    if (event.getData().getClass().getSimpleName().equals("Container"))
+                    {
+                        this.containerService.save((Container) event.getData());
+                    }
+                    else if (event.getData().getClass().getSimpleName().equals("Document"))
+                    {
+                        this.documentService.save((Document) event.getData());
+                    }
+                    else
+                    {
+                        Logger.getGlobal().warning("not recognized type");
+                    }
                     this.unParseOverTreeCell((Entity) event.getData(), this.tree.getSelectedItem());
                     break;
                 }
@@ -263,7 +274,7 @@ public class TreeComposer extends SelectorComposer<Window> {
                     break;
                 }
                 case EventNames.REFRESH_EVENT: {
-                    this.refreshModel();
+                    //this.refreshModel();
 
                     break;
                 }
@@ -448,8 +459,6 @@ public class TreeComposer extends SelectorComposer<Window> {
 
         List<DefaultTreeNode<Entity>> journalNodesList = new ArrayList<DefaultTreeNode<Entity>>();
         List<Container> userContainers = this.containerService.findAll();
-        Logger.getGlobal().warning("Returned user containers " + userContainers.toString());
-
         for (Container container : userContainers) {
 
 
@@ -518,11 +527,13 @@ public class TreeComposer extends SelectorComposer<Window> {
     /**
      * Resets the tree model
      */
+    /*
+    DELETED when refactored the zkspring boot package
     @NotifyChange({ "treeModel" })
     public void refreshModel() {
         DefaultTreeModel<Entity> model = this.createModel();
         this.tree.setModel(model);
-    }
+    }*/
 
     public void refreshAllItems() {
         List<Component> components = this.tree.getChildren();

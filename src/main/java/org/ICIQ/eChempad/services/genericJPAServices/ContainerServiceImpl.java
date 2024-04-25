@@ -33,7 +33,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -42,11 +42,11 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service("containerService")
-public class ContainerServiceImpl<T extends EntityImpl, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
+public class ContainerServiceImpl<T extends Entity, S extends Serializable> extends GenericServiceImpl<Container, UUID> implements ContainerService<Container, UUID> {
 
     @Autowired
-    public ContainerServiceImpl(ContainerRepository<T, S> containerRepository, AclServiceCustomImpl aclRepository) {
-        super(containerRepository, aclRepository);
+    public ContainerServiceImpl(ContainerRepository<T, S> containerRepository) {
+        super(containerRepository);
     }
 
     @Override

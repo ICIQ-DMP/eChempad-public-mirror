@@ -31,6 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -88,6 +89,14 @@ public class AclServiceCustomImpl implements AclService{
         this.addPermissionToEntity(entity,true, permission, username);
     }
 
+    public void addPermissionsToEntity(Entity entity, boolean inheriting, List<Permission> permissions, String username)
+    {
+        for (Permission permission : permissions)
+        {
+            this.addPermissionToEntity(entity, inheriting, permission, username);
+        }
+    }
+
     @Transactional
     public void addPermissionToEntity(Entity entity, boolean inheriting, Permission permission, String username)
     {
@@ -122,7 +131,7 @@ public class AclServiceCustomImpl implements AclService{
 
         // Create or update the relevant ACL
         MutableAcl acl;
-        Logger.getGlobal().warning("normal; type: " + objectIdentity.getType() + " id: " + objectIdentity.getIdentifier());
+        // Logger.getGlobal().warning("normal; type: " + objectIdentity.getType() + " id: " + objectIdentity.getIdentifier());
 
         try {
             // Logger.getGlobal().warning("The object identity is " + objectIdentity.toString());

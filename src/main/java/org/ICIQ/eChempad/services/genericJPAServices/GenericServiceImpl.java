@@ -20,30 +20,27 @@
  */
 package org.ICIQ.eChempad.services.genericJPAServices;
 
-import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
-import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
-import org.ICIQ.eChempad.entities.genericJPAEntities.EntityImpl;
+import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.repositories.genericJPARepositories.GenericRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.acls.model.Permission;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceContextType;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 
 @Service
-public abstract class GenericServiceImpl<T extends EntityImpl, S extends Serializable> implements GenericService<T, S>{
+public abstract class GenericServiceImpl<T extends Entity, S extends Serializable> implements GenericService<T, S>{
 
     /**
      * Persistence context of the class. This provides extended programmatic capabilities to access the database data.
@@ -58,17 +55,11 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
      */
     protected GenericRepository<T, S> genericRepository;
 
-    /**
-     * The repository that performs the database manipulation regarding security and ACL state.
-     */
-    protected AclServiceCustomImpl aclRepository;
-
     public GenericServiceImpl() {}
 
-    public GenericServiceImpl(GenericRepository<T, S> repository, AclServiceCustomImpl aclRepository)
+    public GenericServiceImpl(GenericRepository<T, S> repository)
     {
         this.genericRepository = repository;
-        this.aclRepository = aclRepository;
     }
 
     public Class<T> getEntityClass() {
@@ -85,23 +76,7 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
      * @return entity that has been saved
      */
     public <S1 extends T> S1 save(S1 entity) {
-        // Save it in the database
-        S1 t = genericRepository.save(entity);
-
-        // If the entity is a DataEntity, set inheriting false if the parent is null, set to true otherwise. If set to
-        // true, the ACL of the parent has to be recovered.
-        boolean inheriting = entity instanceof DataEntity && ((DataEntity) entity).getParent() != null;
-
-        // Save all possible permission against the saved entity with the current logged user
-        @NotNull Iterator<Permission> iterator = PermissionBuilder.getFullPermissionsIterator();
-        while (iterator.hasNext()) {
-            this.aclRepository.addPermissionToUserInEntity(t, iterator.next());
-        }
-
-        // Save all possible permission against the saved entity with the current logged user
-        this.aclRepository.addPermissionToEntity(t, inheriting, PermissionBuilder.getFullPermissions(), null);
-
-        return t;
+        return genericRepository.save(entity);
     }
 
     /**
@@ -164,6 +139,11 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
         return this.genericRepository.getById(s);
     }
 
+    @Override
+    public T getReferenceById(S s) {
+        return null;
+    }
+
     public <S1 extends T> List<S1> findAll(Example<S1> example) {
         return genericRepository.findAll(example);
     }
@@ -204,20 +184,25 @@ public abstract class GenericServiceImpl<T extends EntityImpl, S extends Seriali
         genericRepository.deleteAll();
     }
 
-    public <S extends T> Optional<S> findOne(Example<S> example) {
+    public <S1 extends T> Optional<S1> findOne(Example<S1> example) {
         return genericRepository.findOne(example);
     }
 
-    public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S1 extends T> Page<S1> findAll(Example<S1> example, Pageable pageable) {
         return genericRepository.findAll(example, pageable);
     }
 
-    public <S extends T> long count(Example<S> example) {
+    public <S1 extends T> long count(Example<S1> example) {
         return genericRepository.count(example);
     }
 
-    public <S extends T> boolean exists(Example<S> example) {
+    public <S1 extends T> boolean exists(Example<S1> example) {
         return genericRepository.exists(example);
+    }
+
+    @Override
+    public <S extends T, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
     }
 
     @Override

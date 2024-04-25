@@ -31,15 +31,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.*;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class DocumentWrapperServiceImpl<T extends EntityImpl, S extends Serializable> implements DocumentWrapperService<DocumentWrapper, UUID> {
+public class DocumentWrapperServiceImpl<T extends Entity, S extends Serializable> implements DocumentWrapperService<DocumentWrapper, UUID> {
 
     private final DocumentService<T, S> documentService;
     private final DocumentWrapperConverter documentWrapperConverter;
@@ -175,6 +177,11 @@ public class DocumentWrapperServiceImpl<T extends EntityImpl, S extends Serializ
     @Override
     public DocumentWrapper getById(UUID uuid) {
         return this.documentWrapperConverter.convertToEntityAttribute(this.documentService.getById(uuid));
+    }
+
+    @Override
+    public DocumentWrapper getReferenceById(UUID uuid) {
+        return this.documentWrapperConverter.convertToEntityAttribute(this.documentService.getReferenceById(uuid));
     }
 
     @Override
@@ -316,6 +323,11 @@ public class DocumentWrapperServiceImpl<T extends EntityImpl, S extends Serializ
     @Override
     public <S extends DocumentWrapper> boolean exists(Example<S> example) {
         return this.documentService.exists(Example.of(this.documentWrapperConverter.convertToDatabaseColumn(example.getProbe())));
+    }
+
+    @Override
+    public <S extends DocumentWrapper, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
     }
 
     @Override
