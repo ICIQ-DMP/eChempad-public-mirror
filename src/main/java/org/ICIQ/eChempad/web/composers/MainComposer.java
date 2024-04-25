@@ -68,21 +68,19 @@ public class MainComposer extends SelectorComposer<Window> {
 		super.doAfterCompose(comp);
 
 		// If not authenticated redirect to login page
-		if (! this.isUserAuthenticated())
-		{
-			Executions.sendRedirect("/login");
-		}
+		//if (! this.isUserAuthenticated()) {Executions.sendRedirect("/login");}
 	}
 
 	/**
-	 * Returns true if a user is authenticated and false if the authentication is anonymous.
-	 *
-	 * @return Boolean depending on the state of authentication.
-	 */
+	* Returns true if a user is authenticated and false if the authentication is anonymous.
+	*
+	* @return Boolean depending on the state of authentication.
+	*/
 	public boolean isUserAuthenticated()
 	{
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return !(authentication instanceof AnonymousAuthenticationToken);
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			return !(authentication instanceof AnonymousAuthenticationToken);
 	}
 }
+
 

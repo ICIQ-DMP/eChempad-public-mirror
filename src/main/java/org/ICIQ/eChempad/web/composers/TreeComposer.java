@@ -25,8 +25,6 @@ import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Document;
 import org.ICIQ.eChempad.entities.genericJPAEntities.Entity;
 import org.ICIQ.eChempad.services.DataverseExportService;
-import org.ICIQ.eChempad.services.genericJPAServices.ContainerService;
-import org.ICIQ.eChempad.services.genericJPAServices.DocumentService;
 import org.ICIQ.eChempad.services.EntityConversionService;
 import org.ICIQ.eChempad.services.genericJPAServices.SecuredServices.SecuredContainerService;
 import org.ICIQ.eChempad.services.genericJPAServices.SecuredServices.SecuredDocumentService;
@@ -36,13 +34,11 @@ import org.ICIQ.eChempad.web.renderers.JPAEntityTreeRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.ResourceAccessException;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
@@ -54,7 +50,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Scope("desktop")
-@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+//@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class TreeComposer extends SelectorComposer<Window> {
 
     // Sending event queues
@@ -165,7 +161,7 @@ public class TreeComposer extends SelectorComposer<Window> {
         this.initActionQueues();
 
         // Sets the data to the tree
-        this.refreshModel();
+        //this.refreshModel();
         // Sets how we want to display the data (look JPAEntityTreeRenderer)
         this.tree.setItemRenderer(new JPAEntityTreeRenderer());
     }
@@ -272,7 +268,7 @@ public class TreeComposer extends SelectorComposer<Window> {
                     break;
                 }
                 case EventNames.REFRESH_EVENT: {
-                    this.refreshModel();
+                    //this.refreshModel();
 
                     break;
                 }
@@ -515,11 +511,13 @@ public class TreeComposer extends SelectorComposer<Window> {
     /**
      * Resets the tree model
      */
+    /*
+    DELETED when refactored the zkspring boot package
     @NotifyChange({ "treeModel" })
     public void refreshModel() {
         DefaultTreeModel<Entity> model = this.createModel();
         this.tree.setModel(model);
-    }
+    }*/
 
     public void refreshAllItems() {
         List<Component> components = this.tree.getChildren();

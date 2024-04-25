@@ -13,15 +13,15 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Serializable> implements SecuredGenericService<T, S>{
@@ -145,8 +145,17 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
         }
     }
 
-
     // NOT IMPLEMENTED METHODS
+
+    @Override
+    public <s extends T, R> @NotNull R findBy(@NotNull Example<s> example, @NotNull Function<FluentQuery.FetchableFluentQuery<s>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public @NotNull T getReferenceById(@NotNull S s) {
+        return null;
+    }
 
     @Override
     public List<T> findAll(Sort sort) {
@@ -199,11 +208,9 @@ public abstract class SecuredGenericServiceImpl<T extends Entity, S extends Seri
     }
 
     @Override
-    public T getOne(S s) {
+    public @NotNull T getOne(@NotNull S s) {
         return null;
     }
-
-
 
     @Override
     public <S1 extends T> List<S1> findAll(Example<S1> example) {

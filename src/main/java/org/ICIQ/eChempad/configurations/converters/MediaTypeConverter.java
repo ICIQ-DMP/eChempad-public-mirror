@@ -22,8 +22,8 @@ package org.ICIQ.eChempad.configurations.converters;
 
 import org.springframework.http.MediaType;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import java.util.logging.Logger;
 
 /**
