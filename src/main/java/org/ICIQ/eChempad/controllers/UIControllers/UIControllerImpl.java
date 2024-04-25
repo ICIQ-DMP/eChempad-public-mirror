@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/*
 @RestController
+
 public class UIControllerImpl implements UIController {
     @RequestMapping("/exit")
     @Override
@@ -63,3 +65,4 @@ public class UIControllerImpl implements UIController {
         return "login";
     }
 }
+ */

@@ -157,8 +157,9 @@ public class WebSecurityConfig {
 */
 
 
-/*
+
                 // ZK config
+                /*
                 http
                 .authorizeHttpRequests((requests) ->
                     requests
@@ -176,8 +177,10 @@ public class WebSecurityConfig {
                                     , mvc.pattern(HttpMethod.GET, anonymousPages[4])
                             ).permitAll()
                             .requestMatchers(mvc.pattern(HttpMethod.GET, authenticatedPages[0]), mvc.pattern(HttpMethod.GET, authenticatedPages[1]), mvc.pattern(HttpMethod.GET, authenticatedPages[2])).hasRole("USER")
-                )
-*/
+                );
+
+                 */
+
 
 
 
@@ -202,31 +205,38 @@ public class WebSecurityConfig {
 
                 // API endpoints protection
         http
-                .authorizeHttpRequests()
+                .authorizeRequests()
                 .requestMatchers("/api/authority").authenticated()
                 .requestMatchers("/api/researcher").authenticated()
                 .requestMatchers("/api/journal").authenticated()
                 .requestMatchers("/api/experiment").authenticated()
                 .requestMatchers("/api/document").authenticated()
                 .requestMatchers("/api/**").authenticated()
-                .requestMatchers("/help").authenticated()
+                .requestMatchers("/help").authenticated();
 
-                // For the GUI with ZKoss
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
+        http.csrf().disable();
+
+        http
+                .authorizeRequests()
+              //  .requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
                 .requestMatchers(HttpMethod.GET, zkResources).permitAll()  // Allow ZK resources
                 .requestMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
                 // Allow desktop cleanup from ZATS
                 .requestMatchers(req -> "rmDesktop".equals(req.getParameter("cmd_0"))).permitAll()
+
                 // Allow unauthenticated access to log in, log out, exit, help, report bug...
                 .requestMatchers(anonymousPages).permitAll()
                 // Only allow authenticated users in the ZK main page and in the API endpoints
-                .requestMatchers(authenticatedPages).authenticated() //.hasRole("USER")
+                .requestMatchers(authenticatedPages).hasRole("USER")
+                //.and()
+                //.formLogin()
+                //.loginPage("/login").defaultSuccessUrl("/mainComposer")
+                .and()
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/")
 
                 // Rest of requests
                 .and()
-                .authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
+                .authorizeRequests((requests) -> requests.anyRequest().authenticated());
 
         return http.build();
     }
