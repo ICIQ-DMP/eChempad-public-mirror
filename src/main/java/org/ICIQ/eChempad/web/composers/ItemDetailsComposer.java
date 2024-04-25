@@ -42,14 +42,11 @@ import java.util.logging.Logger;
 
 
 /**
- * This is a custom controller, which in ZK is called a composer. To implement it, extend SelectorComposer and bound
- * the type of component that you want to control with this class.
- * <p>
  * This class is used to answer all the events that are fired from the ZK UI programmatically from Java instead of
  * javascript, which is the usual way to control HTML elements.
  *
  * It also contains all the properties that we can control from the Java side annotated with the @wire annotation.
- * Modifying properties of those @wired objects will modify the properties of hte HTML components in the UI.
+ * Modifying properties of those @wired objects will modify the properties of the HTML components in the UI.
  *
  * This class controls the events and manages the UI component of the item details, which is a panel with many text
  * boxes and labels to display information of the elements selected from the tree.
