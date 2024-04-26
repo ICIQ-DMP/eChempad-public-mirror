@@ -43,6 +43,7 @@ RUN mvn clean package spring-boot:repackage -Dmaven.test.skip=true
 
 # Remove secret files
 RUN rm -rf /app/target/classes/secrets
+
 # Create mountpoint for secrets
 RUN mkdir -p /app/src/main/resources/secrets
 
