@@ -27,7 +27,7 @@
         </n:button>
         <n:div class="collapse navbar-collapse" id="navbarSupportedContent">
             <a href="/">
-                <n:image src="img/create-small-white.png"/>
+                <n:image src="/img/create-small-white.png"/>
             </a>
 
             <n:ul class="navbar-nav mr-auto"/>
@@ -41,7 +41,7 @@
                     <n:div class="dropdown-menu  dropdown-menu-right text-right" aria-labelledby="navbarDropdown" style="right:0; left:auto;">
 
                         <n:div class="dropdown-divider d-sm-block d-md-none"/>
-                        <n:a class="dropdown-item text-left" href="/profile">
+                        <n:a class="dropdown-item text-left" href="/zkau/web/zul/profile.zul">
                             Edit profile
                             <n:i class="fas fa-user" style="margin-left: 80px"/>
                         </n:a>
