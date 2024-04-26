@@ -21,7 +21,7 @@
 
 -->
 <?import src="~./zul/browserTab.zul" directives=*?>
-<?page title="eChempad - Hello"?>
+<?page title="eChempad - About"?>
 
 <window xmlns:n="native" border="none"  height="100%">
 
@@ -32,5 +32,5 @@
         }
     </style>
 
-    This is supposed to be a hello page
+    This is supposed to be the about page
 </window>

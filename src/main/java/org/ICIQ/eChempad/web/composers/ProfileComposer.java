@@ -37,7 +37,7 @@ import java.util.UUID;
 /**
  * This class controls the JS / zul components of the profile page. This page is used to update and view your user data.
  */
-//@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class ProfileComposer extends SelectorComposer<Window> {
 
     /**
