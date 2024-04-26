@@ -492,8 +492,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			</activation>
 			<build>
 				<plugins>
-
-					<!-- Added when migrating java 8 to java 11 -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>

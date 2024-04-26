@@ -49,35 +49,26 @@
 	    	<tabpanel style="padding-left: 1em; padding-right: 1em;  overflow-y: auto;">
 	    		<div sclass="mt-2" id="itemDetailsDiv" style="overflow-x: hidden; overflow-y: auto;">
 					<label id="hiddenID" value="" visible="false" />
-					
+
+					<div sclass="row mb-1 item-details-row">
+						<n:label class="col-md-2">ID</n:label>
+						<label id="ID" value="" sclass="col-md-6" tooltiptext="Identifier in eChempad of this resource with a UUID"/>
+
+						<n:label class="col-md-2">Type</n:label>
+						<textbox id="type" value="Container" sclass="form-control col-md-2" readonly="false" tooltiptext="Type of the selected resource. If 'create project' is pressed is the type of the new created project."/>
+					</div>
+
 					<div sclass="row mb-1 item-details-row">		
-						<n:label class="col-md-2 ">Name</n:label>
-			   			<textbox id="name" value="" sclass="form-control col-md-6" readonly="false" tooltiptext="Name of the selected resource. If 'create project' is pressed is the name of the new created project."/>
-			   			
-			   			<n:label class="col-md-2 ">Type</n:label>
-			   			<label id="type" value="Journal" sclass="col-md-2 " />
+						<n:label class="col-md-2">Name</n:label>
+			   			<textbox id="name" value="" sclass="form-control col-md-10" readonly="false" tooltiptext="Name of the selected resource. If 'create project' is pressed is the name of the new created project."/>
 					</div>
+
 					<div sclass="row mb-1 item-details-row">   			
-			 		    <n:label class="col-md-2 ">Description</n:label>
-				    	<textbox id="description" value="" sclass="form-control col-md-6" rows="2" readonly="false" tooltiptext="Description of the selected resource. If 'create project' is pressed, it's the description of the new project." />
+			 		    <n:label class="col-md-2">Description</n:label>
+				    	<textbox id="description" value="" sclass="form-control col-md-10" rows="2" readonly="false" tooltiptext="Description of the selected resource. If 'create project' is pressed, it's the description of the new project." />
 					</div>
-					<div sclass="row mb-1 item-details-row">					
-						<n:label class="col-md-2 ">Owner</n:label>
-						<listbox id="owner" rows="1" sclass="custom-select col-md-2" mold="select"  disabled="true" tooltiptext="When a resource is selected it shows the owner. Not used as a value in the project creation." />
-											                                  
-			            <n:label class="col-md-2 ">Group</n:label>
-			            <listbox id="group" rows="1" sclass="custom-select col-md-2" mold="select" tooltiptext="When a resource is selected it shows the group. Not used as a value in the project creation." />
-			               
-			            <n:label class="col-md-2 ">Permissions</n:label>            			               
-						<listbox id="permissions" rows="1" mold="select" sclass="custom-select col-md-2" tooltiptext="When a resource is selected it shows its access permissions of it. Not used as a value in the project creation. When 'modify' is pressed, it's used as a value to changed.">								
-			                <listitem label="rw----" value="rw----"/>
-			                <listitem label="rwr---" value="rwr---" selected="true"/>
-			                <listitem label="rwrw--" value="rwrw--" />
-			                <listitem label="rwrwr-" value="rwrwr-" />
-			                <listitem label="rwrwrw" value="rwrwrw" />
-			            </listbox>
-					</div>					
-					<div sclass="row mb-4 item-details-row">
+
+					<div sclass="row mb-1 item-details-row">
 						<n:label class="col-md-2 ">Creation date</n:label>
 			            <textbox id="cDate" value="" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Creation date of the resource. Cannot be set to any value." tabbable="false"/>
 			            
@@ -87,7 +78,37 @@
 			            <n:label class="col-md-2 ">Pub. date</n:label>
 			            <textbox id="pDate" value="" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Publication date of the resource. Cannot be set to any value." tabbable="false"/>
 					</div>
-								
+
+					<div sclass="row mb-1 item-details-row">
+						<n:label class="col-md-2 ">Origin platform</n:label>
+						<textbox id="originPlatform" value="eChempad" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Platform that this data was obtained from. Cannot be set to any value." tabbable="false"/>
+
+						<n:label class="col-md-2 ">Origin ID</n:label>
+						<textbox id="originId" value="-" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Identifier of this entity in the original platform that this entity was obtained from. Cannot be set to any value." tabbable="false"/>
+
+						<n:label class="col-md-2 ">Origin type</n:label>
+						<textbox id="originType" value="" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Type of the entity in the original platform that this entity was obtained from. Cannot be set to any value." tabbable="false"/>
+					</div>
+
+					<div sclass="row mb-1 item-details-row">
+						<n:label class="col-md-2 ">Origin creation date</n:label>
+						<textbox id="originCreationDate" value="-" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Creation date of this entity in the original platform that this entity was obtained from. Cannot be set to any value." tabbable="false"/>
+
+						<n:label class="col-md-2 ">Origin mod. date</n:label>
+						<textbox id="originLastEditionDate" value="-" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Last edition date of this entity in the original platform that this entity was obtained from. Cannot be set to any value." tabbable="false"/>
+
+						<n:label class="col-md-2 ">Origin digest value</n:label>
+						<textbox id="digest" value="-" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Digest value of the entity in the original platform that this entity was obtained from. Cannot be set to any value." tabbable="false"/>
+					</div>
+
+					<div sclass="row mb-1 item-details-row">
+						<n:label class="col-md-2 ">Department</n:label>
+						<textbox id="department" value="-" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="Department of this entity in the original platform that this entity was obtained from. Cannot be set to any value." tabbable="false"/>
+
+						<n:label class="col-md-2 ">Origin owner username</n:label>
+						<textbox id="originOwnerUsername" value="-" sclass="form-control col-md-2 col-xs-10" readonly="true" tooltiptext="username of the owner of this entity in the original platform that this entity was obtained from. Cannot be set to any value." tabbable="false"/>
+					</div>
+
 					<div id="operationButtonsLayout" sclass="row item-details-row">
 						<div sclass="col-md-2 col-sm-12 d-none d-md-block"></div>
 						<div sclass="col-md-10 offset-md-2 col-sm-12 ml-0 pl-0">							
