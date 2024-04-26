@@ -83,7 +83,6 @@ public class DatabaseAccessBeans {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-        dataSource.setDriverClassName(this.dbAccessConfigurationInstance.getDriver());
         dataSource.setUrl(this.dbAccessConfigurationInstance.getUrl());
         dataSource.setUsername(this.dbAccessConfigurationInstance.getUsername());
         dataSource.setPassword(this.dbAccessConfigurationInstance.getPassword());
@@ -250,9 +249,6 @@ public class DatabaseAccessBeans {
     public Properties hibernateProperties()
     {
         Properties hibernateProperties = new Properties();
-
-        // Configures the used database dialect. This allows Hibernate to create SQL queries that are optimized for the used database.
-        hibernateProperties.put("hibernate.dialect", this.dbAccessConfigurationInstance.getDialect());
 
         // If the value of this property is true, Hibernate writes all SQL statements to the console.
         hibernateProperties.put("hibernate.show_sql", this.dbAccessConfigurationInstance.isShowSQL());
