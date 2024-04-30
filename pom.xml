@@ -33,7 +33,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<!-- Project metadata -->
 	<groupId>org.ICIQ</groupId>

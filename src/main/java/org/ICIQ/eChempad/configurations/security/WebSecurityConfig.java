@@ -122,13 +122,16 @@ public class WebSecurityConfig {
         String zulFiles = "/zkau/web/*/*.zul";
 
         // Web files regexp execution time
-        String[] zkResources = {"/zkau/web/*/js/**", "/zkau/web/*/zul/css/**", "/zkau/web/*/img/**"};
+        String[] zkResources = {"/zkau/web/*/js/**", "/zkau/web/*/css/**", "/zkau/web/*/img/**"};
 
         // Allow desktop cleanup after logout or when reloading login page
         String removeDesktopRegex = "/zkau\\?dtid=.*&cmd_0=rmDesktop&.*";
 
         // Anonymous accessible pages
-        String[] anonymousPages = new String[]{"/logout", "/timeout", "/help", "/exit", "/login"};
+        String[] anonymousPages = new String[]{
+                "/zkau/web/zul/help.zul",
+                "/zkau/web/zul/about.zul",
+                "/logout", "/timeout", "/exit", "/login"};
 
         // Pages that need authentication: CRUD API & ZK page
         String[] authenticatedPages = new String[]{"/api/**", "/profile", "/"};
@@ -211,8 +214,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/journal").authenticated()
                 .requestMatchers("/api/experiment").authenticated()
                 .requestMatchers("/api/document").authenticated()
-                .requestMatchers("/api/**").authenticated()
-                .requestMatchers("/help").authenticated();
+                .requestMatchers("/api/**").authenticated();
 
         http.csrf().disable();
 

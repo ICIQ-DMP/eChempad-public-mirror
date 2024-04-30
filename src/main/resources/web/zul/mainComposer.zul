@@ -45,12 +45,12 @@
 <window xmlns:n="native" id="mainWindow" border="none" apply="org.ICIQ.eChempad.web.composers.MainComposer"
         style="height: 100%; width:100%">
 
-    <script src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
 
     <?link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css" ?>
     <?link rel="stylesheet" type="text/css" href="/css/bootstrap-create.css"?>
     <?link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"?>
 
+    <script src="/js/jquery-3.3.1.min.js"> </script>   <!-- jQuery must be included before Bootstrap's JavaScript. -->
     <script src="/js/bootstrap.min.js"> </script>
     <script src="/js/popper.min.js"> </script>
 

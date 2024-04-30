@@ -23,46 +23,45 @@ package org.ICIQ.eChempad.controllers.UIControllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
-@RestController
 
+@Controller
 public class UIControllerImpl implements UIController {
-    @RequestMapping("/exit")
+    @GetMapping(value = "/exit")
     @Override
     public String exit() {
         return "exit";
     }
 
-    @RequestMapping("/timeout")
+    @GetMapping("/timeout")
     @Override
     public String timeout() {
         return "timeout";
     }
 
-    @RequestMapping("/main")
+    @GetMapping("/main")
     @Override
     public String main() {
         return "main";
     }
 
-    @RequestMapping("/help")
+    @GetMapping("/help")
     @Override
     public String help() {
         return "help";
     }
 
-    @RequestMapping("/profile")
+    @GetMapping("/profile")
     @Override
     public String profile() {
         return "profile";
     }
 
-    @RequestMapping("/login")
+    @GetMapping("/login")
     @Override
     public String login() {
         return "login";
     }
 }
- */
