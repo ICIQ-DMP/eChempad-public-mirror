@@ -58,10 +58,4 @@ public class UIControllerImpl implements UIController {
     public String profile() {
         return "profile";
     }
-
-    @GetMapping("/login")
-    @Override
-    public String login() {
-        return "login";
-    }
 }

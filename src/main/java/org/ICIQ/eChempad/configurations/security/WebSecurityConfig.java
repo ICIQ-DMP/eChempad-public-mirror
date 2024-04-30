@@ -119,7 +119,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http, MvcRequestMatcher.Builder mvc, AuthenticationEntryPoint casAuthenticationEntryPoint, CasAuthenticationFilter casAuthenticationFilter) throws Exception {
         // ZUL files regexp execution time
-        String zulFiles = "/zkau/web/*/*.zul";
+        String zulFiles = "/zkau/web/zul/*.zul";
 
         // Web files regexp execution time
         String[] zkResources = {"/zkau/web/*/js/**", "/zkau/web/*/css/**", "/zkau/web/*/img/**"};
@@ -129,8 +129,8 @@ public class WebSecurityConfig {
 
         // Anonymous accessible pages
         String[] anonymousPages = new String[]{
-                "/zkau/web/zul/help.zul",
-                "/zkau/web/zul/about.zul",
+                "/help",
+                "/about",
                 "/logout", "/timeout", "/exit", "/login"};
 
         // Pages that need authentication: CRUD API & ZK page
@@ -197,6 +197,7 @@ public class WebSecurityConfig {
                 .httpBasic()
                 .authenticationEntryPoint(casAuthenticationEntryPoint)
                 .and()
+                .addFilterBefore(this.singleSignOutFilter(), CasAuthenticationFilter.class)
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .and()
@@ -220,7 +221,7 @@ public class WebSecurityConfig {
 
         http
                 .authorizeRequests()
-              //  .requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
+                //.requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
                 .requestMatchers(HttpMethod.GET, zkResources).permitAll()  // Allow ZK resources
                 .requestMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
                 // Allow desktop cleanup from ZATS
@@ -232,7 +233,7 @@ public class WebSecurityConfig {
                 .requestMatchers(authenticatedPages).hasRole("USER")
                 //.and()
                 //.formLogin()
-                //.loginPage("/login").defaultSuccessUrl("/mainComposer")
+                //.loginPage("https://echempad-cas.iciq.es:8443/cas/login").defaultSuccessUrl("/main")
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/")
 
@@ -364,10 +365,6 @@ public class WebSecurityConfig {
         CasAuthenticationProvider provider = new CasAuthenticationProvider();
         provider.setServiceProperties(serviceProperties);
         provider.setTicketValidator((org.apereo.cas.client.validation.TicketValidator) ticketValidator);
-
-        // Static login
-        // TODO parametrize in production
-        //provider.setUserDetailsService(s -> new User("casuser", "Mellon", true, true, true, true, AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
 
         provider.setUserDetailsService(userDetailsService);
         provider.setKey("CAS_PROVIDER_LOCALHOST_8081");
