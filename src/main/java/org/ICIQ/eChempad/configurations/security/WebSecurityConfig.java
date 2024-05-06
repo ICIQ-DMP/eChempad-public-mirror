@@ -20,6 +20,8 @@
  */
 package org.ICIQ.eChempad.configurations.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.transaction.Transactional;
 import org.apereo.cas.client.session.SingleSignOutFilter;
@@ -45,6 +47,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,19 +55,23 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Collections;
+import java.util.logging.Logger;
 
 import static org.springframework.security.cas.ServiceProperties.DEFAULT_CAS_ARTIFACT_PARAMETER;
 
@@ -146,6 +153,7 @@ public class WebSecurityConfig {
         if (! this.corsDisabled) {
             http.cors().disable();
         }
+
 
 /*
         http
@@ -378,7 +386,36 @@ public class WebSecurityConfig {
         return serviceWrapper;
     }
 
-    // logout
+
+    // LOGOUT
+
+    /*
+    /**
+     * logout() method to handle the local logout. On success, it’ll redirect us to a page with a link for single logout
+     *
+     * @param request
+     * @param response
+     * @param logoutHandler
+     * @return
+     */
+
+    @GetMapping("/logout")
+    public String logout(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            SecurityContextLogoutHandler logoutHandler) {
+        Authentication auth = SecurityContextHolder
+                .getContext().getAuthentication();
+        logoutHandler.logout(request, response, auth );
+        new CookieClearingLogoutHandler(
+                AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY)
+                .logout(request, response, auth);
+
+        Logger.getGlobal().warning("aaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n\n\n" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+        return "auth/logout";
+    }
 
     @Bean
     public SecurityContextLogoutHandler securityContextLogoutHandler() {
@@ -386,10 +423,10 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public LogoutFilter logoutFilter(SecurityContextLogoutHandler securityContextLogoutHandler) {
+    public LogoutFilter logoutFilter() {
         LogoutFilter logoutFilter = new LogoutFilter(
-                "https://echempad-cas.iciq.es:8443/cas/logout",
-                securityContextLogoutHandler);
+                "https://echempad-cas.iciq.es:8443/logout",
+                this.securityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl("/logout/cas");
         return logoutFilter;
     }
@@ -397,7 +434,8 @@ public class WebSecurityConfig {
     @Bean
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-        singleSignOutFilter.setLogoutCallbackPath("https://echempad-cas.iciq.es:8443/cas");
+        //singleSignOutFilter. setCasServerUrlPrefix("https://echempad-cas.iciq.es:8443");
+        singleSignOutFilter.setLogoutCallbackPath("/exit/cas");
         singleSignOutFilter.setIgnoreInitConfiguration(true);
         return singleSignOutFilter;
     }
