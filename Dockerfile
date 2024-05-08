@@ -69,7 +69,7 @@ RUN chown 1001:1001 /app/eChempad.war
 USER 1001
 
 # Set the application profile in order to change the config of DB location
-ENV spring_profiles_active=container
+# ENV spring_profiles_active=container
 
 ENTRYPOINT ["java", \
     "-jar", "eChempad.war"]

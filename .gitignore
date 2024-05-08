@@ -227,3 +227,4 @@ htmlReport/
 
 # ignore secrets
 src/main/resources/secrets
+src/main/resources/secrets.properties

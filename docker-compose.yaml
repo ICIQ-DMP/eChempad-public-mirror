@@ -19,22 +19,17 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+
+# Contains config used during development using docker containers
+# These properties work when running the software in containers and in a development machine
+
 ---
-version: "2.1"
+version: "3.9"
 services:
-  echempad_app:
-    image: aleixmt/echempad:latest
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=Etc/UTC
-    ports:
-      - "0.0.0.0:80:8081"
-    volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
-      - ./src/main/resources/secrets:/app/target/classes/secrets
-    restart: unless-stopped
+
   postgres_db:
-    image: postgres
+    image: postgres:latest
+    pull_policy: always
     environment:
       - PUID=1001
       - PGID=1001
@@ -43,5 +38,50 @@ services:
       - POSTGRES_USER=amarine
       - POSTGRES_DB=eChempad
     ports:
-      - "0.0.0.0:8080:5432"
-    restart: unless-stopped
+      - "0.0.0.0:5432:5432"
+
+  cas_service:
+    image: aleixmt/echempad-cas:latest
+    pull_policy: always
+    environment:  # We always need to load secrets or there will be no functionality
+      - "-Dspring.profiles.active=standalone,ldap,orcid,db,dev,container,cas_secrets"
+    ports:
+      - "8443:8443"
+      - "8080:8080"
+    volumes: # Mount secrets configuration file
+      - ./src/main/resources/secrets/secrets.properties:/etc/cas/config/secrets.properties
+    depends_on:
+      postgres_db:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --insecure --silent -o /dev/null https://localhost:8443/cas/a_page_that_does_not_exist" ]
+      interval: 20s
+      retries: 10
+      timeout: 60s
+      start_period: 5s
+
+
+  echempad_app:
+    image: aleixmt/echempad:latest
+    pull_policy: always
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Etc/UTC
+      - "-Dspring.profiles.active=container"
+    ports:
+      - "0.0.0.0:80:8081"
+    volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
+      - ./src/main/resources/secrets/DATAVERSE_KEY.txt:/app/target/classes/secrets/DATAVERSE_KEY.txt
+      - ./src/main/resources/secrets/SIGNALS_KEY.txt:/app/target/classes/secrets/SIGNALS_KEY.txt
+    depends_on:
+      cas_service:
+        condition: service_healthy
+      postgres_db:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health | grep -q UP" ]
+      interval: 20s
+      retries: 10
+      timeout: 60s
+      start_period: 5s
