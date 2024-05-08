@@ -40,7 +40,7 @@ import org.zkoss.zul.Window;
 import java.io.IOException;
 
 @Scope("desktop")
-//@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class ToolbarComposer extends SelectorComposer<Window> {
 
     /**

@@ -54,7 +54,7 @@ public class MainComposer extends SelectorComposer<Window> {
 	 * @return String containing the URL where eChempad is currently hosted.
 	 */
 	public static String getBaseUrl() {
-    	return "https://localhost:8081";
+    	return "https://echempad.iciq.es:8081";
 	}
 
 	/**

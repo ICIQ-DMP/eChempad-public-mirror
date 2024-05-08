@@ -336,6 +336,20 @@
 			<artifactId>spring-security-cas</artifactId>
 		</dependency>
 
+		<!-- Official client for java -->
+		<dependency>
+			<groupId>org.apereo.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>${org.apereo.cas.client.core.version}</version>
+		</dependency>
+
+		<!-- Autoconfiguration for spring boot -->
+		<dependency>
+			<groupId>org.apereo.cas.client</groupId>
+			<artifactId>cas-client-support-springboot</artifactId>
+			<version>${org.apereo.cas.client.core.version}</version>
+		</dependency>
+
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

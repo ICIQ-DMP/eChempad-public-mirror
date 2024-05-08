@@ -20,6 +20,8 @@
  */
 package org.ICIQ.eChempad.configurations.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.transaction.Transactional;
 import org.apereo.cas.client.session.SingleSignOutFilter;
@@ -45,6 +47,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,27 +55,39 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Collections;
+import java.util.logging.Logger;
 
 import static org.springframework.security.cas.ServiceProperties.DEFAULT_CAS_ARTIFACT_PARAMETER;
 
 /**
  * This class is the most important security orchestrator. It defines what URL endpoints are accessible under what
- * circumstances and configures security mechanisms such as CSRF and CORS.
+ * circumstances and configures security mechanisms such as CSRF and CORS. It exposes all the beans related to CAS
+ * authentication.
  *
- * TODO: This class is DEPRECATED. The recommended way now to configure security is using a FilterChain
+ * This class was not divided in components due to circular dependencies in beans. In that way, we can
+ * call the methods as in vanilla Java, by managing the dependencies by ourselves.
+ *
+ * This class is quite complex and probably is the thing of all the project that I dedicated more time to adjust details
+ * and allow the integration with CAS.
+ *
+ * Unluckily, this way of configuring security is DEPRECATED. The recommended way now to configure security is using a
+ * FilterChain.
  *
  * @see <a href="https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter">...</a>
  * @author Institut Català d'Investigació Química (iciq.cat)
@@ -119,7 +134,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http, MvcRequestMatcher.Builder mvc, AuthenticationEntryPoint casAuthenticationEntryPoint, CasAuthenticationFilter casAuthenticationFilter) throws Exception {
         // ZUL files regexp execution time
-        String zulFiles = "/zkau/web/*/*.zul";
+        String zulFiles = "/zkau/web/zul/*.zul";
 
         // Web files regexp execution time
         String[] zkResources = {"/zkau/web/*/js/**", "/zkau/web/*/css/**", "/zkau/web/*/img/**"};
@@ -129,8 +144,8 @@ public class WebSecurityConfig {
 
         // Anonymous accessible pages
         String[] anonymousPages = new String[]{
-                "/zkau/web/zul/help.zul",
-                "/zkau/web/zul/about.zul",
+                "/help",
+                "/about",
                 "/logout", "/timeout", "/exit", "/login"};
 
         // Pages that need authentication: CRUD API & ZK page
@@ -146,6 +161,7 @@ public class WebSecurityConfig {
         if (! this.corsDisabled) {
             http.cors().disable();
         }
+
 
 /*
         http
@@ -176,7 +192,7 @@ public class WebSecurityConfig {
                                     mvc.pattern(HttpMethod.GET, anonymousPages[0])
                                     , mvc.pattern(HttpMethod.GET, anonymousPages[1])
                                     , mvc.pattern(HttpMethod.GET, anonymousPages[2])
-                                    , mvc.pattern(HttpMethod.GET, anonymousPages[3])
+                            AuthenticationManager        , mvc.pattern(HttpMethod.GET, anonymousPages[3])
                                     , mvc.pattern(HttpMethod.GET, anonymousPages[4])
                             ).permitAll()
                             .requestMatchers(mvc.pattern(HttpMethod.GET, authenticatedPages[0]), mvc.pattern(HttpMethod.GET, authenticatedPages[1]), mvc.pattern(HttpMethod.GET, authenticatedPages[2])).hasRole("USER")
@@ -197,13 +213,16 @@ public class WebSecurityConfig {
                 .httpBasic()
                 .authenticationEntryPoint(casAuthenticationEntryPoint)
                 .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .exceptionHandling()
+                .authenticationEntryPoint(this.casAuthenticationEntryPoint(this.serviceProperties()))
+                .and()
+                .addFilterBefore(this.singleSignOutFilter(), CasAuthenticationFilter.class)
+                .addFilterBefore(this.logoutFilter(), LogoutFilter.class)
+                .csrf().ignoringRequestMatchers("/exit/cas")
                 .and()
                 .headers()
                 .frameOptions()
                 .sameOrigin(); // X-Frame-Options = SAMEORIGIN
-
 
 
                 // API endpoints protection
@@ -220,7 +239,7 @@ public class WebSecurityConfig {
 
         http
                 .authorizeRequests()
-              //  .requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
+                //.requestMatchers(zulFiles).denyAll()  // Block direct access to zul files
                 .requestMatchers(HttpMethod.GET, zkResources).permitAll()  // Allow ZK resources
                 .requestMatchers(HttpMethod.GET, removeDesktopRegex).permitAll()  // Allow desktop cleanup
                 // Allow desktop cleanup from ZATS
@@ -232,9 +251,9 @@ public class WebSecurityConfig {
                 .requestMatchers(authenticatedPages).hasRole("USER")
                 //.and()
                 //.formLogin()
-                //.loginPage("/login").defaultSuccessUrl("/mainComposer")
-                .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/")
+                //.loginPage("https://echempad-cas.iciq.es:8443/cas/login").defaultSuccessUrl("/main")
+                //.and()
+                //.logout().logoutUrl("/logout").logoutSuccessUrl("/")
 
                 // Rest of requests
                 .and()
@@ -314,6 +333,7 @@ public class WebSecurityConfig {
     public AuthenticationManager authenticationManager(HttpSecurity http, org.springframework.security.core.userdetails.UserDetailsService userDetailService)
             throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(this.casAuthenticationProvider(this.ticketValidator(), this.serviceProperties(), (UserDetailsServiceImpl) userDetailsService))
                 .userDetailsService(userDetailService)
                 .passwordEncoder(this.passwordEncoder())
                 .and()
@@ -321,12 +341,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    @Primary
     public CasAuthenticationFilter casAuthenticationFilter(
             ServiceProperties serviceProperties, AuthenticationManager authenticationManager) throws Exception {
         CasAuthenticationFilter filter = new CasAuthenticationFilter();
-        filter.setServiceProperties(serviceProperties);
         filter.setAuthenticationManager(authenticationManager);
+        filter.setServiceProperties(serviceProperties);
         return filter;
     }
 
@@ -344,8 +363,8 @@ public class WebSecurityConfig {
     public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
     {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-        casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
         casAuthenticationEntryPoint.setLoginUrl("https://echempad-cas.iciq.es:8443/cas/login");
+        casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
         return casAuthenticationEntryPoint;
 
     }
@@ -365,10 +384,6 @@ public class WebSecurityConfig {
         provider.setServiceProperties(serviceProperties);
         provider.setTicketValidator((org.apereo.cas.client.validation.TicketValidator) ticketValidator);
 
-        // Static login
-        // TODO parametrize in production
-        //provider.setUserDetailsService(s -> new User("casuser", "Mellon", true, true, true, true, AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
-
         provider.setUserDetailsService(userDetailsService);
         provider.setKey("CAS_PROVIDER_LOCALHOST_8081");
         return provider;
@@ -381,7 +396,36 @@ public class WebSecurityConfig {
         return serviceWrapper;
     }
 
-    // logout
+
+    // LOGOUT
+
+    /*
+    /**
+     * logout() method to handle the local logout. On success, it’ll redirect us to a page with a link for single logout
+     *
+     * @param request
+     * @param response
+     * @param logoutHandler
+     * @return
+     */
+
+    @GetMapping("/logout")
+    public String logout(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            SecurityContextLogoutHandler logoutHandler) {
+        Authentication auth = SecurityContextHolder
+                .getContext().getAuthentication();
+        logoutHandler.logout(request, response, auth );
+        new CookieClearingLogoutHandler(
+                AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY)
+                .logout(request, response, auth);
+
+        Logger.getGlobal().warning("aaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n\n\n" +
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+        return "auth/logout";
+    }
 
     @Bean
     public SecurityContextLogoutHandler securityContextLogoutHandler() {
@@ -389,10 +433,10 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public LogoutFilter logoutFilter(SecurityContextLogoutHandler securityContextLogoutHandler) {
+    public LogoutFilter logoutFilter() {
         LogoutFilter logoutFilter = new LogoutFilter(
                 "https://echempad-cas.iciq.es:8443/cas/logout",
-                securityContextLogoutHandler);
+                this.securityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl("/logout/cas");
         return logoutFilter;
     }
@@ -400,15 +444,16 @@ public class WebSecurityConfig {
     @Bean
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-        singleSignOutFilter.setLogoutCallbackPath("https://echempad-cas.iciq.es:8443/cas");
+        //singleSignOutFilter.setCasServerUrlPrefix("https://echempad-cas.iciq.es:8443");
+        singleSignOutFilter.setLogoutCallbackPath("/exit/cas");
         singleSignOutFilter.setIgnoreInitConfiguration(true);
         return singleSignOutFilter;
     }
 
 
-    @EventListener
+    /*@EventListener
     public SingleSignOutHttpSessionListener singleSignOutHttpSessionListener(
             HttpSessionEvent event) {
         return new SingleSignOutHttpSessionListener();
-    }
+    }*/
 }

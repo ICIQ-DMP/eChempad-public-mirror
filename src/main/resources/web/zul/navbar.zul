@@ -26,7 +26,7 @@
             <span class="navbar-toggler-icon"/>
         </n:button>
         <n:div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <a href="/">
+            <a href="/" style="padding-left:1em;">
                 <n:image src="/img/create-small-white.png"/>
             </a>
 
@@ -65,7 +65,7 @@
 
                         <n:div class="dropdown-divider d-sm-block d-md-none"/>
                         <!-- TODO: parametrize -->
-                        <n:a class="dropdown-item text-left d-flex justify-content-between align-items-start" href="https://echempad-cas.iciq.es:8443/cas/logout">
+                        <n:a class="dropdown-item text-left d-flex justify-content-between align-items-start" href="/logout/cas">
                             <span>Logout</span>
                             <span><n:i class="fas fa-sign-out-alt" style="margin-right: 0px"/></span>
                         </n:a>
