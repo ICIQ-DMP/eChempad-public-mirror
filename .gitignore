@@ -228,3 +228,6 @@ htmlReport/
 # ignore secrets
 src/main/resources/secrets
 src/main/resources/secrets.properties
+
+# ignore container data
+.db_container_data/.gitkeep
