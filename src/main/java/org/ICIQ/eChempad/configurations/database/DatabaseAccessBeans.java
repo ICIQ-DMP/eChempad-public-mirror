@@ -45,6 +45,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.EntityManagerFactory;
+
 import javax.sql.DataSource;
 import java.util.Properties;
 import java.util.logging.Logger;

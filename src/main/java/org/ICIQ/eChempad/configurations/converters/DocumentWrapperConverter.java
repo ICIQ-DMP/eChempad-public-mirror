@@ -21,7 +21,6 @@
 package org.ICIQ.eChempad.configurations.converters;
 
 import org.ICIQ.eChempad.entities.DocumentWrapper;
-import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntity;
 import org.ICIQ.eChempad.entities.genericJPAEntities.DataEntityImpl;
 import org.ICIQ.eChempad.services.LobService;
 import org.springframework.beans.factory.annotation.Autowired;

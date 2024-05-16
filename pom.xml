@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.2</version>
+		<version>3.2.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -59,10 +59,17 @@
 		<!-- Spring -->
 		<springboot.version>${project.parent.version}</springboot.version>
 
-		<!-- ZK version: ZK 9.6.0.2-jakarta CE -->
+		<!-- CAS -->
+		<org.apereo.cas.client.core.version>4.0.4</org.apereo.cas.client.core.version>
+		<org.apereo.cas.client.springboot.version>4.0.4</org.apereo.cas.client.springboot.version>
+		<!-- <javax-servlet.version>4.0.1</javax-servlet.version> -->
 
+		<!-- ZK  -->
+		<!-- version: ZK 9.6.0.2-jakarta CE -->
 		<zkspringboot-autoconfig.version>3.2.1</zkspringboot-autoconfig.version>
-		<zk.version>9.6.0.2-jakarta</zk.version>
+		<zk.version>10.0.0-jakarta</zk.version>
+
+		<postgresql.version>42.7.3</postgresql.version>
 
 		<cglib.version>3.3.0</cglib.version>
 		<hikari.version>5.0.1</hikari.version>
@@ -70,23 +77,15 @@
 		<javax-inject.version>1</javax-inject.version>
 		<ehcache.version>3.10.6</ehcache.version>
 		<threetenbp.version>1.6.5</threetenbp.version>
-		<postgresql.version>42.5.4</postgresql.version>
 		<jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
-		<testcontainers.version>1.18.3</testcontainers.version>
-		<jacoco.version>0.8.2</jacoco.version>
+		<!-- <testcontainers.version>1.18.3</testcontainers.version> -->
 		<reflections.version>0.10.2</reflections.version>
 		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
 		<license.licenseName>apache_v2</license.licenseName>
 		<apache-log4j.version>2.22.1</apache-log4j.version>
-		<commons-login.version>1.2</commons-login.version>
+		<!-- <commons-login.version>1.2</commons-login.version> -->
 		<!--Used by the licenses plugin-->
 		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
-
-
-		<!-- CAS -->
-		<org.apereo.cas.client.core.version>4.0.4</org.apereo.cas.client.core.version>
-		<org.apereo.cas.client.springboot.version>4.0.4</org.apereo.cas.client.springboot.version>
-		<javax-servlet.version>4.0.1</javax-servlet.version>
 	</properties>
 
 	<!--Licenses -->
@@ -233,16 +232,26 @@
 			<artifactId>spring-test</artifactId>
 		</dependency>
 
-		<!-- Used to integrate ZK with Spring -->
+		<!-- CAS -->
+
+		<!-- To use (integrate) a CAS service -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-cas</artifactId>
 		</dependency>
 
-		<!-- Used to integrate ZK with Spring -->
+		<!-- Official client for java -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
+			<groupId>org.apereo.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>${org.apereo.cas.client.core.version}</version>
+		</dependency>
+
+		<!-- Autoconfiguration for spring boot -->
+		<dependency>
+			<groupId>org.apereo.cas.client</groupId>
+			<artifactId>cas-client-support-springboot</artifactId>
+			<version>${org.apereo.cas.client.core.version}</version>
 		</dependency>
 
 		<!-- ZK -->
@@ -267,95 +276,31 @@
 			</exclusions>
 		</dependency>
 
-		<!--
+		<!-- Used to integrate ZK with Spring -->
 		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-core</artifactId>
-			<version>${zk.version}</version>
-		</dependency>-->
-
-		<!--
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-security</artifactId>
-			<version>${zk.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
 		</dependency>
 
+		<!-- Used to integrate ZK with Spring -->
 		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkbind</artifactId>
-			<version>${zk.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zul</artifactId>
-			<version>${zk.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zhtml</artifactId>
-			<version>${zk.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.common</groupId>
-			<artifactId>zcommon</artifactId>
-			<version>${zk.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
--->
 
 		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>${commons-login.version}</version>
-		</dependency>
-
-		<!-- CAS -->
-		<!-- To use (integrate) a CAS service -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-cas</artifactId>
-		</dependency>
-
-		<!-- Official client for java -->
-		<dependency>
-			<groupId>org.apereo.cas.client</groupId>
-			<artifactId>cas-client-core</artifactId>
-			<version>${org.apereo.cas.client.core.version}</version>
-		</dependency>
-
-		<!-- Autoconfiguration for spring boot -->
-		<dependency>
-			<groupId>org.apereo.cas.client</groupId>
-			<artifactId>cas-client-support-springboot</artifactId>
-			<version>${org.apereo.cas.client.core.version}</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
-		<dependency>
+		<!--<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax-servlet.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- INTEGRATION WITH JAVA 17 -->
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
@@ -402,11 +347,11 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<version>${jakarta.persistence-api.version}</version>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<version>${testcontainers.version}</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.testcontainers</groupId>
@@ -509,43 +454,17 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>
-						<version>3.12.1</version>
+						<version>3.13.0</version>
 						<configuration>
 							<source>17</source>
 							<target>17</target>
 						</configuration>
 					</plugin>
 
-					<!-- JaCoCo plugin for code coverage -->
 					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<!-- attached to Maven test phase -->
-							<execution>
-								<id>jacoco-report</id>
-								<phase>test</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-								<!-- default target/jscoco/site/* -->
-								<configuration>
-									<outputDirectory>target/jacoco-report</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
+						<groupId>com.mycila</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>2.4.0</version>
+						<version>4.5</version>
 						<executions>
 							<execution>
 								<id>download-third-party-license-text</id>
@@ -568,6 +487,39 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 									<goal>add-third-party</goal>
 								</goals>
 								<configuration>
+									<mapping>
+										<zul>XML_STYLE</zul>
+									</mapping>
+									<header>${project.basedir}/license/resources/header.txt</header>
+									<properties>
+										<owner>${project.organization.name}</owner>
+										<email>dmp@iciq.cat</email>
+										<inceptionYear>${project.inceptionYear}</inceptionYear>
+										<latestYearOfContribution>${current.year}</latestYearOfContribution>
+									</properties>
+									<excludes>
+										<exclude>**/README</exclude>
+										<exclude>src/main/resources/secrets/**</exclude>
+										<exclude>**/*.map</exclude>
+										<exclude>.spelling_dictionary.dic</exclude>
+										<exclude>**/cacerts</exclude>
+										<exclude>.mvn/**</exclude>
+										<exclude>.run/**</exclude>
+										<exclude>.idea/**</exclude>
+										<exclude>license/**</exclude>
+										<exclude>target/**</exclude>
+										<exclude>src/mainComposer/resources/CA_certificates/**</exclude>
+										<exclude>src/main/resources/static/css/bootstrap.min.css</exclude>
+										<exclude>src/main/resources/static/css/font-awesome.min.css</exclude>
+										<exclude>src/main/resources/static/js/bootstrap.min.js</exclude>
+										<exclude>src/main/resources/static/js/jquery-3.3.1.min.js</exclude>
+										<exclude>src/main/resources/static/js/popper.min.js</exclude>
+									</excludes>
+									<useDefaultExcludes>true</useDefaultExcludes>
+									<keywords>
+										<keyword>copyright</keyword>
+										<keyword>eChempad</keyword>
+									</keywords>
 									<verbose>true</verbose>
 									<inceptionYear>${project.inceptionYear}</inceptionYear>
 									<organizationName>${project.organization.name}</organizationName>
@@ -653,69 +605,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 									</licenseMerges>
 								</configuration>
 							</execution>
-
-
-
-						</executions>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-		<!--  This profile should ONLY be active when user specifies -Dattach.license.header=true on command-line.  -->
-		<!--  This profile will add license headers to all source files  -->
-		<profile>
-
-			<id>license-header-attach</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-				<property>
-					<name>attach.license.header</name>
-				</property>
-			</activation>
-
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.mycila</groupId>
-						<artifactId>license-maven-plugin</artifactId>
-						<version>4.3</version>
-						<configuration>
-							<mapping>
-								<zul>XML_STYLE</zul>
-							</mapping>
-							<header>${project.basedir}/license/resources/header.txt</header>
-							<properties>
-								<owner>${project.organization.name}</owner>
-								<email>dmp@iciq.cat</email>
-								<inceptionYear>${project.inceptionYear}</inceptionYear>
-								<latestYearOfContribution>${current.year}</latestYearOfContribution>
-							</properties>
-							<excludes>
-								<exclude>**/README</exclude>
-								<exclude>src/main/resources/secrets/**</exclude>
-								<exclude>**/*.map</exclude>
-								<exclude>.spelling_dictionary.dic</exclude>
-								<exclude>**/cacerts</exclude>
-								<exclude>.mvn/**</exclude>
-								<exclude>.run/**</exclude>
-								<exclude>.idea/**</exclude>
-								<exclude>license/**</exclude>
-								<exclude>target/**</exclude>
-								<exclude>src/mainComposer/resources/CA_certificates/**</exclude>
-								<exclude>src/main/resources/static/css/bootstrap.min.css</exclude>
-								<exclude>src/main/resources/static/css/font-awesome.min.css</exclude>
-								<exclude>src/main/resources/static/js/bootstrap.min.js</exclude>
-								<exclude>src/main/resources/static/js/jquery-3.3.1.min.js</exclude>
-								<exclude>src/main/resources/static/js/popper.min.js</exclude>
-							</excludes>
-							<useDefaultExcludes>true</useDefaultExcludes>
-							<keywords>
-								<keyword>copyright</keyword>
-								<keyword>eChempad</keyword>
-							</keywords>
-						</configuration>
-						<executions>
 							<execution>
 								<phase>generate-resources</phase>
 								<goals>
