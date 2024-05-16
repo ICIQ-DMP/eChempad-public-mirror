@@ -29,9 +29,6 @@ services:
 
   postgres_db:
     image: postgres:latest
-    build:
-      context: .
-      dockerfile: postgresql.Dockerfile
     pull_policy: always
     environment:  # Use secret for the password
       - PUID=1001
@@ -40,10 +37,13 @@ services:
       - POSTGRES_PASSWORD=chemistry
       - POSTGRES_USER=amarine
       - POSTGRES_DB=eChempad
+      - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "0.0.0.0:5432:5432"
-    volumes:  # Persist data from postgres
-      - ./data:/var/lib/postgresql/data
+    volumes:
+      - ./src/main/resources/SQL/schema-postgresql.sql:/docker-entrypoint-initdb.d/schema-postgresql.sql
+    #volumes:  # Persist data from postgres
+    #  - ./src/main/resources/SQL/schema-postgresql.sql:/var/lib/postgresql/data/scripts
 
   cas_service:
     image: aleixmt/echempad-cas:latest
@@ -51,10 +51,10 @@ services:
     environment:  # We always need to load secrets or there will be no functionality
       - "-Dspring.profiles.active=standalone,ldap,orcid,db,dev,container,cas_secrets"
     ports:
-      - "8443:8443"
+      - "0.0.0.0:8443:8443"
       - "8080:8080"
     volumes: # Mount secrets configuration file
-      - ./src/main/resources/secrets/secrets.properties:/etc/cas/config/secrets.properties
+      - ./src/main/resources/secrets/cas_secrets.properties:/etc/cas/config/cas_secrets.properties
     depends_on:
       postgres_db:
         condition: service_started
@@ -76,7 +76,7 @@ services:
       - PUID=1001
       - PGID=1001
       - TZ=Etc/UTC
-      - "-Dspring.profiles.active=container"
+      - SPRING_PROFILES_ACTIVE=container
     ports:
       - "0.0.0.0:80:8081"
     volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
