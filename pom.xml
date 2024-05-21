@@ -76,14 +76,10 @@
 		<ehcache.version>3.10.8</ehcache.version>
 
 		<!-- Other dependencies -->
-		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
-		<apache-log4j.version>2.22.1</apache-log4j.version>
-		<commons-login.version>1.2</commons-login.version>
 
 		<!-- Plugins & add-ons -->
 		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
 		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
-
 
 		<!-- Deprecated dependencies -->
 		<!-- <testcontainers.version>1.18.3</testcontainers.version>-->
@@ -93,6 +89,9 @@
 		<!-- <javax-inject.version>1</javax-inject.version> -->
 		<!-- <threetenbp.version>1.6.5</threetenbp.version> -->
 		<!-- <reflections.version>0.10.2</reflections.version> -->
+		<!--<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>-->
+		<!-- <apache-log4j.version>2.22.1</apache-log4j.version> -->
+		<!-- <commons-login.version>1.2</commons-login.version> -->
 	</properties>
 
 	<!--Licenses -->
@@ -282,13 +281,6 @@
 			</exclusions>
 		</dependency>
 
-		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>${commons-login.version}</version>
-		</dependency>
-
 
 
 		<!-- CAS -->
@@ -340,25 +332,8 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 		<!-- Other dependencies -->
 
 
-		<!-- To use the reflections' library, which is used in the code of iochem-bd
-		https://mvnrepository.com/artifact/org.reflections/reflections -->
-		<!--
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>${reflections.version}</version>
-		</dependency>
-		-->
 
-		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
-		<!--
-		<dependency>
-			<groupId>jakarta.persistence</groupId>
-			<artifactId>jakarta.persistence-api</artifactId>
-			<version>${jakarta.persistence-api.version}</version>
-		</dependency>
-		-->
-
+		<!-- Plugins & add-ons -->
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
 		<dependency>
 			<groupId>com.github.IQSS</groupId>
@@ -386,13 +361,18 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- plugin to manage the license headers with the licenses of the dependencies of the project -->
 		<dependency>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>license-maven-plugin</artifactId>
 			<version>${license-maven-plugin.version}</version>
 		</dependency>
 
+
+
+		<!-- Deprecated dependencies -->
 		<!-- To provide a valid implementation of Log4j2 -->
+		<!--
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
@@ -403,6 +383,7 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<artifactId>log4j-core</artifactId>
 			<version>${apache-log4j.version}</version>
 		</dependency>
+		-->
 
 		<!-- Deprecated dependencies -->
 		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
@@ -506,7 +487,29 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
     <version>${testcontainers.version}</version>
 </dependency>
 -->
-
+		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
+		<!--
+		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>${jakarta.persistence-api.version}</version>
+		</dependency>
+		-->
+		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
+		<!--<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons-login.version}</version>
+		</dependency>-->
+		<!-- To use the reflections' library, which is used in the code of iochem-bd
+https://mvnrepository.com/artifact/org.reflections/reflections -->
+		<!--
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${reflections.version}</version>
+		</dependency>
+		-->
 	</dependencies>
 
 
