@@ -79,7 +79,7 @@
 
 		<!-- Plugins & add-ons -->
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-		<org.codehaus.mojo.license-maven-plugin.version>2.4.0</org.codehaus.mojo.license-maven-plugin.version>
+		<org.codehaus.mojo.license-maven-plugin.version>4.5</org.codehaus.mojo.license-maven-plugin.version>
 		<com.mycila.license-maven-plugin.version>3.12.1</com.mycila.license-maven-plugin.version>
 		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
 
@@ -125,6 +125,7 @@
 			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
+
 
 
 	<dependencies>
@@ -545,7 +546,7 @@ https://mvnrepository.com/artifact/org.reflections/reflections -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>${license-maven-plugin.version}</version>
+						<version>${org.codehaus.mojo.license-maven-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>download-third-party-license-text</id>
@@ -679,7 +680,7 @@ https://mvnrepository.com/artifact/org.reflections/reflections -->
 					<plugin>
 						<groupId>com.mycila</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>4.3</version>
+						<version>${com.mycila.license-maven-plugin.version}</version>
 						<configuration>
 							<mapping>
 								<zul>XML_STYLE</zul>
