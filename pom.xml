@@ -76,9 +76,6 @@
 		<ehcache.version>3.10.8</ehcache.version>
 
 		<!-- Other dependencies -->
-		<testcontainers.version>1.18.3</testcontainers.version>
-		<jacoco.version>0.8.2</jacoco.version>
-		<reflections.version>0.10.2</reflections.version>
 		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
 		<apache-log4j.version>2.22.1</apache-log4j.version>
 		<commons-login.version>1.2</commons-login.version>
@@ -89,11 +86,13 @@
 
 
 		<!-- Deprecated dependencies -->
+		<!-- <testcontainers.version>1.18.3</testcontainers.version>-->
 		<!--<cglib.version>3.3.0</cglib.version>-->
 		<!--<hikari.version>5.0.1</hikari.version>-->
 		<!--<jakarta-servlet.version>6.0.0</jakarta-servlet.version>-->
 		<!-- <javax-inject.version>1</javax-inject.version> -->
 		<!-- <threetenbp.version>1.6.5</threetenbp.version> -->
+		<!-- <reflections.version>0.10.2</reflections.version> -->
 	</properties>
 
 	<!--Licenses -->
@@ -343,30 +342,22 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 
 		<!-- To use the reflections' library, which is used in the code of iochem-bd
 		https://mvnrepository.com/artifact/org.reflections/reflections -->
+		<!--
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>${reflections.version}</version>
 		</dependency>
+		-->
 
 		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
+		<!--
 		<dependency>
 			<groupId>jakarta.persistence</groupId>
 			<artifactId>jakarta.persistence-api</artifactId>
 			<version>${jakarta.persistence-api.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>${testcontainers.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>jdbc</artifactId>
-			<version>${testcontainers.version}</version>
-		</dependency>
+		-->
 
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
 		<dependency>
@@ -502,6 +493,20 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<artifactId>threetenbp</artifactId>
 			<version>${threetenbp.version}</version>
 		</dependency>-->
+		<!--
+<dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>${testcontainers.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>jdbc</artifactId>
+    <version>${testcontainers.version}</version>
+</dependency>
+-->
+
 	</dependencies>
 
 
@@ -536,32 +541,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 							<source>17</source>
 							<target>17</target>
 						</configuration>
-					</plugin>
-
-					<!-- JaCoCo plugin for code coverage -->
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<!-- attached to Maven test phase -->
-							<execution>
-								<id>jacoco-report</id>
-								<phase>test</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-								<!-- default target/jscoco/site/* -->
-								<configuration>
-									<outputDirectory>target/jacoco-report</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
 					</plugin>
 
 					<plugin>
