@@ -55,16 +55,18 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<current.year>2023</current.year>
+		<license.licenseName>AGPLv3</license.licenseName>
 
 		<!-- Spring -->
 		<springboot.version>${project.parent.version}</springboot.version>
 
 		<!-- ZK version: ZK 9.6.0.2-jakarta CE -->
-
 		<zkspringboot-autoconfig.version>3.2.1</zkspringboot-autoconfig.version>
 		<zk.version>9.6.0.2-jakarta</zk.version>
 
+		<!--
 		<cglib.version>3.3.0</cglib.version>
+		-->
 		<!--
 		<hikari.version>5.0.1</hikari.version>
 		-->
@@ -78,7 +80,6 @@
 		<jacoco.version>0.8.2</jacoco.version>
 		<reflections.version>0.10.2</reflections.version>
 		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
-		<license.licenseName>apache_v2</license.licenseName>
 		<apache-log4j.version>2.22.1</apache-log4j.version>
 		<commons-login.version>1.2</commons-login.version>
 		<!--Used by the licenses plugin-->
@@ -419,11 +420,13 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 		</dependency>
 
 		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
+		<!--
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
 			<version>${cglib.version}</version>
 		</dependency>
+		-->
 
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
 		<dependency>
