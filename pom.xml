@@ -75,21 +75,25 @@
 		<!-- ACLs -->
 		<ehcache.version>3.10.8</ehcache.version>
 
-		<javax-servlet.version>4.0.1</javax-servlet.version>
-		<javax-inject.version>1</javax-inject.version>
-		<threetenbp.version>1.6.5</threetenbp.version>
-		<jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
+		<!-- Other dependencies -->
 		<testcontainers.version>1.18.3</testcontainers.version>
 		<jacoco.version>0.8.2</jacoco.version>
 		<reflections.version>0.10.2</reflections.version>
 		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
 		<apache-log4j.version>2.22.1</apache-log4j.version>
 		<commons-login.version>1.2</commons-login.version>
+
+		<!-- Plugins & add-ons -->
 		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
+		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
+
 
 		<!-- Deprecated dependencies -->
 		<!--<cglib.version>3.3.0</cglib.version>-->
 		<!--<hikari.version>5.0.1</hikari.version>-->
+		<!--<jakarta-servlet.version>6.0.0</jakarta-servlet.version>-->
+		<!-- <javax-inject.version>1</javax-inject.version> -->
+		<!-- <threetenbp.version>1.6.5</threetenbp.version> -->
 	</properties>
 
 	<!--Licenses -->
@@ -335,12 +339,7 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 
 
 		<!-- Other dependencies -->
-		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${javax-servlet.version}</version>
-		</dependency>
+
 
 		<!-- To use the reflections' library, which is used in the code of iochem-bd
 		https://mvnrepository.com/artifact/org.reflections/reflections -->
@@ -348,13 +347,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>${reflections.version}</version>
-		</dependency>
-
-		<!-- To use the @Inject annotation -->
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>${javax-inject.version}</version>
 		</dependency>
 
 		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
@@ -395,19 +387,12 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			</exclusions>
 		</dependency>
 
-		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
-		<dependency>
-			<groupId>org.threeten</groupId>
-			<artifactId>threetenbp</artifactId>
-			<version>${threetenbp.version}</version>
-		</dependency>
-
 		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
 			<version>${jetbrains-annotations.version}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -499,6 +484,24 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			</exclusions>
 		</dependency>
 		-->
+		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
+		<!--<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>${jakarta-servlet.version}</version>
+		</dependency>-->
+		<!-- To use the @Inject annotation -->
+		<!--<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>${javax-inject.version}</version>
+		</dependency>-->
+		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
+		<!--<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threetenbp</artifactId>
+			<version>${threetenbp.version}</version>
+		</dependency>-->
 	</dependencies>
 
 
