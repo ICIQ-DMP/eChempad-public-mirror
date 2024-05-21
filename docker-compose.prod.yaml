@@ -19,20 +19,30 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+# prod contains properties used during production
+# These properties work when running the software in containers and in our deployment server
+
 ---
-version: "2.1"
+version: "3.9"
 services:
   echempad_app:
     image: aleixmt/echempad:latest
+    pull_policy: always
     environment:
       - PUID=1001
       - PGID=1001
       - TZ=Etc/UTC
+      - "-Dspring.profiles.active=prod,secrets"
     ports:
-      - "0.0.0.0:8081:8081"
+      - "0.0.0.0:80:8081"
+    volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
+      - ./src/main/resources/secrets/DATAVERSE_KEY.txt:/app/target/classes/secrets/DATAVERSE_KEY.txt
+      - ./src/main/resources/secrets/SIGNALS_KEY.txt:/app/target/classes/secrets/SIGNALS_KEY.txt
     restart: unless-stopped
+
   postgres_db:
     image: postgres
+    pull_policy: always
     environment:
       - PUID=1001
       - PGID=1001
@@ -41,5 +51,5 @@ services:
       - POSTGRES_USER=amarine
       - POSTGRES_DB=eChempad
     ports:
-      - "8080:5432"
+      - "0.0.0.0:8080:5432"
     restart: unless-stopped

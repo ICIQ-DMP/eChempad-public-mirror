@@ -19,15 +19,14 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-# Use the UBI minimal base image for the compilation stage
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.2-691 as build
+# Use JDK17 alpine
+FROM openjdk:17-jdk-alpine as build
 
 # Set the working directory
 WORKDIR /app
 
 # Install necessary dependencies for compilation
-RUN microdnf install --nodocs -y java-1.8.0-openjdk-headless maven && \
-    microdnf clean all
+RUN apk add --no-cache maven
 
 # Copy the source code to the container
 COPY . /app
@@ -49,14 +48,10 @@ RUN mkdir -p /app/src/main/resources/secrets
 
 
 # Use the UBI minimal base image for the run stage
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.2-691
+FROM openjdk:17-jdk-alpine
 
 # Set the working directory
 WORKDIR /app
-
-# Install necessary dependencies for running
-RUN microdnf install --nodocs -y java-1.8.0-openjdk-headless && \
-    microdnf clean all
 
 # Copy the directory created in the first stage into the run container
 RUN mkdir -p /app/target
@@ -69,7 +64,7 @@ RUN chown 1001:1001 /app/eChempad.war
 USER 1001
 
 # Set the application profile in order to change the config of DB location
-ENV spring_profiles_active=container
+# ENV spring_profiles_active=container
 
 ENTRYPOINT ["java", \
     "-jar", "eChempad.war"]
