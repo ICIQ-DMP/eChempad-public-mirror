@@ -78,8 +78,11 @@
 		<!-- Other dependencies -->
 
 		<!-- Plugins & add-ons -->
-		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
+		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+		<org.codehaus.mojo.license-maven-plugin.version>2.4.0</org.codehaus.mojo.license-maven-plugin.version>
+		<com.mycila.license-maven-plugin.version>3.12.1</com.mycila.license-maven-plugin.version>
 		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
+
 
 		<!-- Deprecated dependencies -->
 		<!-- <testcontainers.version>1.18.3</testcontainers.version>-->
@@ -361,13 +364,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- plugin to manage the license headers with the licenses of the dependencies of the project -->
-		<dependency>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>license-maven-plugin</artifactId>
-			<version>${license-maven-plugin.version}</version>
-		</dependency>
-
 
 
 		<!-- Deprecated dependencies -->
@@ -539,7 +535,7 @@ https://mvnrepository.com/artifact/org.reflections/reflections -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>
-						<version>3.12.1</version>
+						<version>${maven-compiler-plugin.version}</version>
 						<configuration>
 							<source>17</source>
 							<target>17</target>
@@ -549,7 +545,7 @@ https://mvnrepository.com/artifact/org.reflections/reflections -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>2.4.0</version>
+						<version>${license-maven-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>download-third-party-license-text</id>
