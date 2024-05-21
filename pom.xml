@@ -72,8 +72,10 @@
 		<postgresql.version>42.7.3</postgresql.version>
 
 		<cglib.version>3.3.0</cglib.version>
+		<!--
 		<hikari.version>5.0.1</hikari.version>
-		<hibernate-hikariCP.version>6.2.7.Final</hibernate-hikariCP.version>
+		-->
+		<hibernate-hikariCP.version>6.5.1.Final</hibernate-hikariCP.version>
 		<javax-inject.version>1</javax-inject.version>
 		<ehcache.version>3.10.6</ehcache.version>
 		<threetenbp.version>1.6.5</threetenbp.version>
@@ -328,11 +330,13 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 		</dependency>
 
 		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
+		<!--
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>${hikari.version}</version>
 		</dependency>
+		-->
 
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
