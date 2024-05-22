@@ -55,40 +55,46 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<current.year>2023</current.year>
+		<license.licenseName>AGPLv3</license.licenseName>
 
-		<!-- Spring -->
+		<!-- Spring Boot & Spring -->
 		<springboot.version>${project.parent.version}</springboot.version>
 
 		<!-- ZK version: ZK 9.6.0.2-jakarta CE -->
-
 		<zkspringboot-autoconfig.version>3.2.1</zkspringboot-autoconfig.version>
 		<zk.version>9.6.0.2-jakarta</zk.version>
-
-		<cglib.version>3.3.0</cglib.version>
-		<!--
-		<hikari.version>5.0.1</hikari.version>
-		-->
-		<hibernate-hikariCP.version>6.5.1.Final</hibernate-hikariCP.version>
-		<javax-inject.version>1</javax-inject.version>
-		<ehcache.version>3.10.6</ehcache.version>
-		<threetenbp.version>1.6.5</threetenbp.version>
-		<postgresql.version>42.5.4</postgresql.version>
-		<jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
-		<testcontainers.version>1.18.3</testcontainers.version>
-		<jacoco.version>0.8.2</jacoco.version>
-		<reflections.version>0.10.2</reflections.version>
-		<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
-		<license.licenseName>apache_v2</license.licenseName>
-		<apache-log4j.version>2.22.1</apache-log4j.version>
-		<commons-login.version>1.2</commons-login.version>
-		<!--Used by the licenses plugin-->
-		<license-maven-plugin.version>2.4.0</license-maven-plugin.version>
-
 
 		<!-- CAS -->
 		<org.apereo.cas.client.core.version>4.0.4</org.apereo.cas.client.core.version>
 		<org.apereo.cas.client.springboot.version>4.0.4</org.apereo.cas.client.springboot.version>
-		<javax-servlet.version>4.0.1</javax-servlet.version>
+
+		<!-- Database -->
+		<postgresql.version>42.5.4</postgresql.version>
+		<hibernate-hikariCP.version>6.5.1.Final</hibernate-hikariCP.version>
+
+		<!-- ACLs -->
+		<ehcache.version>3.10.8</ehcache.version>
+
+		<!-- Other dependencies -->
+
+		<!-- Plugins & add-ons -->
+		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+		<org.codehaus.mojo.license-maven-plugin.version>4.5</org.codehaus.mojo.license-maven-plugin.version>
+		<com.mycila.license-maven-plugin.version>3.12.1</com.mycila.license-maven-plugin.version>
+		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
+
+
+		<!-- Deprecated dependencies -->
+		<!-- <testcontainers.version>1.18.3</testcontainers.version>-->
+		<!--<cglib.version>3.3.0</cglib.version>-->
+		<!--<hikari.version>5.0.1</hikari.version>-->
+		<!--<jakarta-servlet.version>6.0.0</jakarta-servlet.version>-->
+		<!-- <javax-inject.version>1</javax-inject.version> -->
+		<!-- <threetenbp.version>1.6.5</threetenbp.version> -->
+		<!-- <reflections.version>0.10.2</reflections.version> -->
+		<!--<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>-->
+		<!-- <apache-log4j.version>2.22.1</apache-log4j.version> -->
+		<!-- <commons-login.version>1.2</commons-login.version> -->
 	</properties>
 
 	<!--Licenses -->
@@ -100,6 +106,7 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
+
 
 	<!-- This is needed to be able to import directly a github repository, which we need to import the Dataverse Java
 	API Wrapper  -->
@@ -122,6 +129,9 @@
 
 
 	<dependencies>
+
+
+
 		<!-- SPRING BOOT STARTERS -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -163,7 +173,7 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!--  -->
+		<!-- Embedded Tomcat container -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
@@ -202,8 +212,8 @@
 		</dependency>
 
 
-		<!-- Spring -->
 
+		<!-- Spring -->
 		<!-- Used to control the ACL security infrastructure -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -247,6 +257,12 @@
 			<artifactId>spring-context</artifactId>
 		</dependency>
 
+		<!-- To use (integrate) a CAS service -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-cas</artifactId>
+		</dependency>
+
 		<!-- ZK -->
 
 		<!-- ZK in spring boot project autoconfig -->
@@ -269,12 +285,126 @@
 			</exclusions>
 		</dependency>
 
+
+
+		<!-- CAS -->
+		<!-- Official client for java -->
+		<dependency>
+			<groupId>org.apereo.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>${org.apereo.cas.client.core.version}</version>
+		</dependency>
+
+		<!-- Autoconfiguration for spring boot -->
+		<dependency>
+			<groupId>org.apereo.cas.client</groupId>
+			<artifactId>cas-client-support-springboot</artifactId>
+			<version>${org.apereo.cas.client.core.version}</version>
+		</dependency>
+
+
+
+		<!-- Database -->
+		<!-- To use postgresql dialect in spring -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+
+		<!-- Hibernate maps SQL queries with POJOs -->
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-hikaricp</artifactId>
+			<version>${hibernate-hikariCP.version}</version>
+		</dependency>
+
+
+
+		<!-- ACLs -->
+		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
+And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>${ehcache.version}</version>
+			<classifier>jakarta</classifier>
+		</dependency>
+
+
+
+		<!-- Other dependencies -->
+
+
+
+		<!-- Plugins & add-ons -->
+		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
+		<dependency>
+			<groupId>com.github.IQSS</groupId>
+			<artifactId>dataverse-client-java</artifactId>
+			<version>master-SNAPSHOT</version>
+			<!-- This dependency pulls transitively a logging implementation, which is already satisfied using Spring,
+			exclude it -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>${jetbrains-annotations.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+
+		<!-- Deprecated dependencies -->
+		<!-- To provide a valid implementation of Log4j2 -->
 		<!--
 		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-core</artifactId>
-			<version>${zk.version}</version>
-		</dependency>-->
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${apache-log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${apache-log4j.version}</version>
+		</dependency>
+		-->
+
+		<!-- Deprecated dependencies -->
+		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
+		<!--
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>${cglib.version}</version>
+		</dependency>
+		-->
+		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
+		<!--
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikari.version}</version>
+		</dependency>
+		-->
+		<!--
+<dependency>
+    <groupId>org.zkoss.zk</groupId>
+    <artifactId>zkspring-core</artifactId>
+    <version>${zk.version}</version>
+</dependency>-->
 
 		<!--
 		<dependency>
@@ -322,168 +452,61 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
--->
-
-		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>${commons-login.version}</version>
-		</dependency>
-
-		<!-- CAS -->
-		<!-- To use (integrate) a CAS service -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-cas</artifactId>
-		</dependency>
-
-		<!-- Official client for java -->
-		<dependency>
-			<groupId>org.apereo.cas.client</groupId>
-			<artifactId>cas-client-core</artifactId>
-			<version>${org.apereo.cas.client.core.version}</version>
-		</dependency>
-
-		<!-- Autoconfiguration for spring boot -->
-		<dependency>
-			<groupId>org.apereo.cas.client</groupId>
-			<artifactId>cas-client-support-springboot</artifactId>
-			<version>${org.apereo.cas.client.core.version}</version>
-		</dependency>
-
+		-->
 		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${javax-servlet.version}</version>
-		</dependency>
-
-		<!-- INTEGRATION WITH JAVA 17 -->
-		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
-And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
-		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>${ehcache.version}</version>
-			<classifier>jakarta</classifier>
-		</dependency>
-
-		<!-- To use the reflections' library, which is used in the code of iochem-bd
-		https://mvnrepository.com/artifact/org.reflections/reflections -->
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>${reflections.version}</version>
-		</dependency>
-
+		<!--<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>${jakarta-servlet.version}</version>
+		</dependency>-->
 		<!-- To use the @Inject annotation -->
-		<dependency>
+		<!--<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>${javax-inject.version}</version>
-		</dependency>
-
-		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
+		</dependency>-->
+		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
+		<!--<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threetenbp</artifactId>
+			<version>${threetenbp.version}</version>
+		</dependency>-->
 		<!--
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${hikari.version}</version>
-		</dependency>
-		-->
+<dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>${testcontainers.version}</version>
+</dependency>
 
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-hikaricp</artifactId>
-			<version>${hibernate-hikariCP.version}</version>
-		</dependency>
-
+<dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>jdbc</artifactId>
+    <version>${testcontainers.version}</version>
+</dependency>
+-->
 		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
+		<!--
 		<dependency>
 			<groupId>jakarta.persistence</groupId>
 			<artifactId>jakarta.persistence-api</artifactId>
 			<version>${jakarta.persistence-api.version}</version>
 		</dependency>
-
+		-->
+		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
+		<!--<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons-login.version}</version>
+		</dependency>-->
+		<!-- To use the reflections' library, which is used in the code of iochem-bd
+https://mvnrepository.com/artifact/org.reflections/reflections -->
+		<!--
 		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>${testcontainers.version}</version>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${reflections.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>jdbc</artifactId>
-			<version>${testcontainers.version}</version>
-		</dependency>
-
-		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>${cglib.version}</version>
-		</dependency>
-
-		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
-		<dependency>
-			<groupId>com.github.IQSS</groupId>
-			<artifactId>dataverse-client-java</artifactId>
-			<version>master-SNAPSHOT</version>
-			<!-- This dependency pulls transitively a logging implementation, which is already satisfied using Spring,
-			exclude it -->
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
-		<dependency>
-			<groupId>org.threeten</groupId>
-			<artifactId>threetenbp</artifactId>
-			<version>${threetenbp.version}</version>
-		</dependency>
-
-		<!-- To use postgresql dialect in spring -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-		</dependency>
-
-		<!-- Used by the jetbrains IDE to annotate its own things, so they can be recognized by the IDE -->
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>${jetbrains-annotations.version}</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>license-maven-plugin</artifactId>
-			<version>${license-maven-plugin.version}</version>
-		</dependency>
-
-		<!-- To provide a valid implementation of Log4j2 -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${apache-log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${apache-log4j.version}</version>
-		</dependency>
-
+		-->
 	</dependencies>
 
 
@@ -513,43 +536,17 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>
-						<version>3.12.1</version>
+						<version>${maven-compiler-plugin.version}</version>
 						<configuration>
 							<source>17</source>
 							<target>17</target>
 						</configuration>
 					</plugin>
 
-					<!-- JaCoCo plugin for code coverage -->
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<!-- attached to Maven test phase -->
-							<execution>
-								<id>jacoco-report</id>
-								<phase>test</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-								<!-- default target/jscoco/site/* -->
-								<configuration>
-									<outputDirectory>target/jacoco-report</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>2.4.0</version>
+						<version>${org.codehaus.mojo.license-maven-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>download-third-party-license-text</id>
@@ -683,7 +680,7 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 					<plugin>
 						<groupId>com.mycila</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>4.3</version>
+						<version>${com.mycila.license-maven-plugin.version}</version>
 						<configuration>
 							<mapping>
 								<zul>XML_STYLE</zul>
