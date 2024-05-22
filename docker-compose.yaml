@@ -24,7 +24,6 @@
 # These properties work when running the software in containers and in a development machine
 
 ---
-version: "3.9"
 services:
 
   postgres_db:
