@@ -48,7 +48,7 @@ services:
     image: aleixmt/echempad-cas:latest
     pull_policy: always
     environment:  # We always need to load secrets or there will be no functionality
-      - "-Dspring.profiles.active=standalone,ldap,orcid,db,dev,container,cas_secrets"
+      - "-Dspring.profiles.active=standalone,cas,ldap,orcid,db,dev,prod,secrets"
     ports:
       - "0.0.0.0:8443:8443"
       - "8080:8080"
@@ -77,10 +77,9 @@ services:
       - TZ=Etc/UTC
       - SPRING_PROFILES_ACTIVE=container
     ports:
-      - "0.0.0.0:80:8081"
+      - "0.0.0.0:8081:8081"
     volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
-      - ./src/main/resources/secrets/DATAVERSE_KEY.txt:/app/target/classes/secrets/DATAVERSE_KEY.txt
-      - ./src/main/resources/secrets/SIGNALS_KEY.txt:/app/target/classes/secrets/SIGNALS_KEY.txt
+      - ./src/main/resources/secrets/:/app/target/classes/secrets/
     depends_on:
       cas_service:
         condition: service_healthy

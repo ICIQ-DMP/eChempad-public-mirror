@@ -20,16 +20,22 @@
 #
 
 # Use JDK17 alpine
-FROM openjdk:17-jdk-alpine as build
+FROM openjdk:17-jdk-alpine
 
 # Set the working directory
 WORKDIR /app
 
 # Install necessary dependencies for compilation
-RUN apk add --no-cache maven
+RUN apk add --no-cache maven bash
 
 # Copy the source code to the container
 COPY . /app
+
+# Remove secret files
+RUN rm -rf /app/target/classes/secrets
+
+# Create mountpoint for secrets
+RUN mkdir -p /app/src/main/resources/secrets
 
 # Apply permissions
 RUN chown -R 1001:1001 /app
@@ -38,33 +44,7 @@ RUN chown -R 1001:1001 /app
 USER 1001
 
 # Compile project skipping testing goals (compilation, resources and run of tests)
-RUN mvn clean package spring-boot:repackage -Dmaven.test.skip=true
+RUN ./mvnw clean package spring-boot:repackage -Dmaven.test.skip=true
 
-# Remove secret files
-RUN rm -rf /app/target/classes/secrets
-
-# Create mountpoint for secrets
-RUN mkdir -p /app/src/main/resources/secrets
-
-
-# Use the UBI minimal base image for the run stage
-FROM openjdk:17-jdk-alpine
-
-# Set the working directory
-WORKDIR /app
-
-# Copy the directory created in the first stage into the run container
-RUN mkdir -p /app/target
-COPY --from=build /app/target/eChempad.jar /app
-
-# Cambia la propiedad del directorio '/app/target' al usuario con id 1001
-RUN chown 1001:1001 /app/eChempad.jar
-
-# Cambia el usuario que va a ejecutar los siguientes comandos al usuario con id 1001
-USER 1001
-
-# Set the application profile in order to change the config of DB location
-# ENV spring_profiles_active=container
-
-ENTRYPOINT ["java", \
-    "-jar", "eChempad.jar"]
+ENTRYPOINT ["./mvnw", \
+    "spring-boot:run"]
