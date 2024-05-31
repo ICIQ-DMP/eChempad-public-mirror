@@ -55,10 +55,10 @@ WORKDIR /app
 
 # Copy the directory created in the first stage into the run container
 RUN mkdir -p /app/target
-COPY --from=build /app/target/eChempad.war /app
+COPY --from=build /app/target/eChempad.jar /app
 
 # Cambia la propiedad del directorio '/app/target' al usuario con id 1001
-RUN chown 1001:1001 /app/eChempad.war
+RUN chown 1001:1001 /app/eChempad.jar
 
 # Cambia el usuario que va a ejecutar los siguientes comandos al usuario con id 1001
 USER 1001
@@ -67,4 +67,4 @@ USER 1001
 # ENV spring_profiles_active=container
 
 ENTRYPOINT ["java", \
-    "-jar", "eChempad.war"]
+    "-jar", "eChempad.jar"]
