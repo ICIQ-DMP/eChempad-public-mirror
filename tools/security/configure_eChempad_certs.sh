@@ -169,6 +169,10 @@ keytool -export -noprompt \
   -keypass changeit \
   -alias eChempad-CAS
 
+# 4.1 copy cas.crt into security of eChempad
+rm -f "${ECHEMPAD_PATH}/src/main/resources/security/cas.crt"
+cp "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" "${ECHEMPAD_PATH}/src/main/resources/security/"
+
 # 5 Create trust store for eChempad CAS and import eChempad certificate.
 rm -f "${ECHEMPADCAS_PATH}/etc/cas/truststore"
 keytool -import -noprompt \

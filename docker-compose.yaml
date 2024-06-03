@@ -46,14 +46,17 @@ services:
 
   cas_service:
     image: aleixmt/echempad-cas:latest
+    build:
+      context: ../eChempad-CAS
+      dockerfile: Dockerfile
     pull_policy: always
     environment:  # We always need to load secrets or there will be no functionality
-      - "-Dspring.profiles.active=standalone,cas,ldap,orcid,db,dev,prod,secrets"
+      - "SPRING_PROFILES_ACTIVE=standalone,cas,ldap,orcid,db,dev,prod,secrets"
     ports:
       - "0.0.0.0:8443:8443"
       - "8080:8080"
     volumes: # Mount secrets configuration file
-      - ./src/main/resources/secrets/cas_secrets.properties:/etc/cas/config/cas_secrets.properties
+      - ./src/main/resources/secrets/cas_secrets.properties:/etc/cas/config/secrets.properties
     depends_on:
       postgres_db:
         condition: service_started
@@ -63,7 +66,6 @@ services:
       retries: 10
       timeout: 60s
       start_period: 5s
-
 
   echempad_app:
     image: aleixmt/echempad:latest
