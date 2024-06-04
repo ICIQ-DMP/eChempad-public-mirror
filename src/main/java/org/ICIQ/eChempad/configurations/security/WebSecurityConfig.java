@@ -242,7 +242,7 @@ public class WebSecurityConfig {
                 .requestMatchers(authenticatedPages).hasRole("USER")
                 //.and()
                 //.formLogin()
-                //.loginPage("https://echempad-cas.iciq.es:8443/cas/login").defaultSuccessUrl("/main")
+                //.loginPage("https://echempad-cas:8443/cas/login").defaultSuccessUrl("/main")
                 //.and()
                 //.logout().logoutUrl("/logout").logoutSuccessUrl("/")
 
@@ -354,7 +354,7 @@ public class WebSecurityConfig {
     public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
     {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-        casAuthenticationEntryPoint.setLoginUrl("https://echempad-cas.iciq.es:8443/cas/login");
+        casAuthenticationEntryPoint.setLoginUrl("https://echempad-cas:8443/cas/login");
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
         return casAuthenticationEntryPoint;
 
@@ -362,7 +362,7 @@ public class WebSecurityConfig {
 
     @Bean
     public TicketValidator ticketValidator() {
-        return new Cas30ServiceTicketValidator("https://echempad-cas.iciq.es:8443/cas");
+        return new Cas30ServiceTicketValidator("https://echempad-cas:8443/cas");
     }
 
     @Bean
@@ -426,7 +426,7 @@ public class WebSecurityConfig {
     @Bean
     public LogoutFilter logoutFilter() {
         LogoutFilter logoutFilter = new LogoutFilter(
-                "https://echempad-cas.iciq.es:8443/cas/logout",
+                "https://echempad-cas:8443/cas/logout",
                 this.securityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl("/logout/cas");
         return logoutFilter;
@@ -435,7 +435,7 @@ public class WebSecurityConfig {
     @Bean
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-        //singleSignOutFilter.setCasServerUrlPrefix("https://echempad-cas.iciq.es:8443");
+        //singleSignOutFilter.setCasServerUrlPrefix("https://echempad-cas:8443");
         singleSignOutFilter.setLogoutCallbackPath("/exit/cas");
         singleSignOutFilter.setIgnoreInitConfiguration(true);
         return singleSignOutFilter;
