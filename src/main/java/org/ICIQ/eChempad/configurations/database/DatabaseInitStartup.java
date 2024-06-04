@@ -110,11 +110,11 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
             while (myReader.hasNextLine()) {
                 data.append(myReader.nextLine());
             }
-            DatabaseInitStartup.LOGGER.info("File target/classes/secrets/" + keyName + ".txt" + " found! Key is" +
+            Logger.getGlobal().info("File target/classes/secrets/" + keyName + ".txt" + " found! Key is" +
                     "loaded.");
             myReader.close();
         } catch (FileNotFoundException e) {
-            DatabaseInitStartup.LOGGER.warning(
+            Logger.getGlobal().warning(
                     "File target/classes/secrets/" + keyName + ".txt not found, " +
                     "trying to obtain " + keyName + " from env.");
 
@@ -123,14 +123,14 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
 
             if (value == null)
             {
-                DatabaseInitStartup.LOGGER.warning(
+                Logger.getGlobal().warning(
                         "Environment property " + keyName + " not found. Key could not be loaded. Communication " +
                                 "with this third-party service will not be possible until the user loads it own key.");
             }
             else
             {
                 data.append(value);
-                DatabaseInitStartup.LOGGER.info("Property " + keyName + " found!. Key is loaded.");
+                Logger.getGlobal().info("Property " + keyName + " found!. Key is loaded.");
             }
         }
         return data.toString();
@@ -168,6 +168,10 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         authority_names.add("ROLE_USER");
         authority_names.add("ROLE_ADMIN");
         Map<String, String> keys = new HashMap<>();
+
+        Logger.getGlobal().warning("signals key " + this.getSignalsAPIKey());
+        Logger.getGlobal().warning("dataverse key " + this.getDataverseAPIKey());
+
         keys.put("SIGNALS_KEY", this.getSignalsAPIKey());
         keys.put("DATAVERSE_KEY", this.getDataverseAPIKey());
 
@@ -211,6 +215,9 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
         // Authenticate user, or we will not be able to manipulate the ACL service with the security context empty
         Authentication auth = new UsernamePasswordAuthenticationToken(researcher.getUsername(), researcher.getPassword(), researcher.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
+
+        //Logger.getGlobal().warning("dataverse " + researcher.getDataverseAPIKey() + " length:  " + ((Integer)researcher.getDataverseAPIKey().length()).toString());
+        //Logger.getGlobal().warning("signals " + researcher.getSignalsAPIKey() + " length:  " + ((Integer)researcher.getSignalsAPIKey().length()).toString());
 
         // Save of the authority is cascaded
         this.researcherService.save(researcher);

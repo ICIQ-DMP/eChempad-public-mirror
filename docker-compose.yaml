@@ -44,14 +44,14 @@ services:
     #volumes:  # Persist data from postgres
     #  - ./src/main/resources/SQL/schema-postgresql.sql:/var/lib/postgresql/data/scripts
 
-  cas_service:
+  echempad-cas:
     image: aleixmt/echempad-cas:latest
     build:
       context: ../eChempad-CAS
       dockerfile: Dockerfile
     pull_policy: always
     environment:  # We always need to load secrets or there will be no functionality
-      - "SPRING_PROFILES_ACTIVE=standalone,cas,ldap,orcid,db,dev,prod,secrets"
+      - "SPRING_PROFILES_ACTIVE=standalone,cas,ldap,orcid,db,dev,prod,container,secrets"
     ports:
       - "0.0.0.0:8443:8443"
       - "8080:8080"
@@ -83,7 +83,7 @@ services:
     volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
       - ./src/main/resources/secrets/:/app/target/classes/secrets/
     depends_on:
-      cas_service:
+      echempad-cas:
         condition: service_healthy
       postgres_db:
         condition: service_started

@@ -32,7 +32,7 @@ RUN apk add --no-cache maven bash
 COPY . /app
 
 # Remove secret files
-RUN rm -rf /app/target/classes/secrets
+RUN rm -rf /app/src/main/resources/secrets
 
 # Create mountpoint for secrets
 RUN mkdir -p /app/src/main/resources/secrets
