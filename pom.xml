@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.2</version>
+		<version>3.3.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -61,7 +61,7 @@
 		<springboot.version>${project.parent.version}</springboot.version>
 
 		<!-- ZK version: ZK 9.6.0.2-jakarta CE -->
-		<zkspringboot-autoconfig.version>3.2.1</zkspringboot-autoconfig.version>
+		<zkspringboot-autoconfig.version>3.2.3</zkspringboot-autoconfig.version>
 		<zk.version>9.6.0.2-jakarta</zk.version>
 
 		<!-- CAS -->
@@ -145,6 +145,7 @@
 		</dependency>
 
 		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -154,12 +155,13 @@
 					<groupId>org.junit.vintage</groupId>
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
-				<exclusion>  <!-- causes conflict with JSONObject, which is also pulled from sword client dependency -->
+				<exclusion>  causes conflict with JSONObject, which is also pulled from sword client dependency
 					<groupId>com.vaadin.external.google</groupId>
 					<artifactId>android-json</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
+		-->
 
 		<!-- Added with the project initialization -->
 		<dependency>
@@ -240,10 +242,10 @@
 		</dependency>
 
 		<!-- To use the MockMultipartFile -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<!-- Used to integrate ZK with Spring -->
 		<dependency>
@@ -313,11 +315,11 @@
 		</dependency>
 
 		<!-- Hibernate maps SQL queries with POJOs -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
-		</dependency>
+		</dependency> -->
 
 
 
