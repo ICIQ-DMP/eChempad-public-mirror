@@ -24,6 +24,8 @@ import org.springframework.http.MediaType;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.springframework.stereotype.Component;
+
 import java.util.logging.Logger;
 
 /**
@@ -40,6 +42,7 @@ import java.util.logging.Logger;
  * @version 1.0
  * @since 14/10/2022
  */
+@Component
 @Converter(autoApply = true)
 public class MediaTypeConverter implements AttributeConverter<MediaType, String>{
 
