@@ -37,6 +37,16 @@ RUN rm -rf /app/src/main/resources/secrets
 # Create mountpoint for secrets
 RUN mkdir -p /app/src/main/resources/secrets
 
+# 7 Gets eChempad-CAS certificate from src/main/resources/security/cas.crt and injects it in the truststore of the
+# JVM pointed by ${JAVA_HOME}/lib/security/cacerts
+RUN keytool -import -noprompt \
+   -file "/app/src/main/resources/security/cas.crt" \
+   -keystore "${JAVA_HOME}/lib/security/cacerts" \
+   -storepass changeit \
+   -keypass changeit \
+   -alias eChempad-CAS
+
+
 # Apply permissions
 RUN chown -R 1001:1001 /app
 

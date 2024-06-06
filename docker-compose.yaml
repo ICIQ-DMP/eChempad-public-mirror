@@ -29,12 +29,12 @@ services:
   postgres_db:
     image: postgres:latest
     pull_policy: always
-    environment:  # Use secret for the password
+    environment:  # TODO Use secret for the password
       - PUID=1001
       - PGID=1001
       - TZ=Etc/UTC
       - POSTGRES_PASSWORD=chemistry
-      - POSTGRES_USER=amarine
+      - POSTGRES_USER=eChempad
       - POSTGRES_DB=eChempad
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
@@ -51,7 +51,7 @@ services:
       dockerfile: Dockerfile
     pull_policy: always
     environment:  # We always need to load secrets or there will be no functionality
-      - "SPRING_PROFILES_ACTIVE=standalone,cas,ldap,orcid,db,dev,prod,container,secrets"
+      - "SPRING_PROFILES_ACTIVE=standalone,ldap,orcid,db,dev,prod,container,secrets"
     ports:
       - "0.0.0.0:8443:8443"
       - "8080:8080"

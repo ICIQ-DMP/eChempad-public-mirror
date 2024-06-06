@@ -242,10 +242,10 @@
 		</dependency>
 
 		<!-- To use the MockMultipartFile -->
-		<!--<dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-		</dependency> -->
+		</dependency>
 
 		<!-- Used to integrate ZK with Spring -->
 		<dependency>
