@@ -29,10 +29,10 @@ services:
   postgres_db:
     image: postgres:latest
     pull_policy: always
+    container_name: postgres_db
     environment:  # TODO Use secret for the password
-      - PUID=1001
-      - PGID=1001
-      - TZ=Etc/UTC
+      - UID=1015
+      - GID=1015
       - POSTGRES_PASSWORD=chemistry
       - POSTGRES_USER=eChempad
       - POSTGRES_DB=eChempad
@@ -40,7 +40,7 @@ services:
     ports:
       - "0.0.0.0:5432:5432"
     volumes:
-      - ./src/main/resources/SQL/schema-postgresql.sql:/docker-entrypoint-initdb.d/schema-postgresql.sql
+      - ./src/main/resources/SQL:/var/lib/postgresql/data
     #volumes:  # Persist data from postgres
     #  - ./src/main/resources/SQL/schema-postgresql.sql:/var/lib/postgresql/data/scripts
 
