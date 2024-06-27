@@ -40,9 +40,8 @@ services:
     ports:
       - "0.0.0.0:5432:5432"
     volumes:
-      - ./src/main/resources/SQL:/var/lib/postgresql/data
-    #volumes:  # Persist data from postgres
-    #  - ./src/main/resources/SQL/schema-postgresql.sql:/var/lib/postgresql/data/scripts
+      - ./src/main/resources/SQL:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data/scripts
 
   echempad-cas:
     image: aleixmt/echempad-cas:latest
@@ -51,12 +50,15 @@ services:
       dockerfile: Dockerfile
     pull_policy: always
     environment:  # We always need to load secrets or there will be no functionality
-      - "SPRING_PROFILES_ACTIVE=standalone,ldap,orcid,db,dev,prod,container,secrets"
+      - SPRING_PROFILES_ACTIVE=standalone,ldap,orcid,db,dev,prod,container,secrets
     ports:
       - "0.0.0.0:8443:8443"
       - "8080:8080"
     volumes: # Mount secrets configuration file
-      - ./src/main/resources/secrets/cas_secrets.properties:/etc/cas/config/secrets.properties
+      - type: bind
+        source: ./src/main/resources/secrets/cas_secrets.properties
+        target: /etc/cas/config/secrets.properties
+        read_only: true
     depends_on:
       postgres_db:
         condition: service_started
@@ -93,3 +95,6 @@ services:
       retries: 10
       timeout: 60s
       start_period: 5s
+
+volumes:
+  pgdata:
