@@ -20,8 +20,6 @@
  */
 package org.ICIQ.eChempad.services.genericJPAServices;
 
-import org.ICIQ.eChempad.configurations.security.ACL.AclServiceCustomImpl;
-import org.ICIQ.eChempad.configurations.security.ACL.PermissionBuilder;
 import org.ICIQ.eChempad.entities.genericJPAEntities.*;
 import org.ICIQ.eChempad.exceptions.NotEnoughAuthorityException;
 import org.ICIQ.eChempad.exceptions.ResourceNotExistsException;
@@ -31,7 +29,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;

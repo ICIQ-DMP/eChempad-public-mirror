@@ -83,18 +83,6 @@
 		<com.mycila.license-maven-plugin.version>3.12.1</com.mycila.license-maven-plugin.version>
 		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
 
-
-		<!-- Deprecated dependencies -->
-		<!-- <testcontainers.version>1.18.3</testcontainers.version>-->
-		<!--<cglib.version>3.3.0</cglib.version>-->
-		<!--<hikari.version>5.0.1</hikari.version>-->
-		<!--<jakarta-servlet.version>6.0.0</jakarta-servlet.version>-->
-		<!-- <javax-inject.version>1</javax-inject.version> -->
-		<!-- <threetenbp.version>1.6.5</threetenbp.version> -->
-		<!-- <reflections.version>0.10.2</reflections.version> -->
-		<!--<jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>-->
-		<!-- <apache-log4j.version>2.22.1</apache-log4j.version> -->
-		<!-- <commons-login.version>1.2</commons-login.version> -->
 	</properties>
 
 	<!--Licenses -->
@@ -130,8 +118,6 @@
 
 	<dependencies>
 
-
-
 		<!-- SPRING BOOT STARTERS -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -144,24 +130,6 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
-		<!-- Added with the project initialization, it seems a core part of spring boot to do automatic tests -->
-		<!--
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-				<exclusion>  causes conflict with JSONObject, which is also pulled from sword client dependency
-					<groupId>com.vaadin.external.google</groupId>
-					<artifactId>android-json</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		-->
 
 		<!-- Added with the project initialization -->
 		<dependency>
@@ -247,22 +215,26 @@
 			<artifactId>spring-test</artifactId>
 		</dependency>
 
-		<!-- Used to integrate ZK with Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-
-		<!-- Used to integrate ZK with Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
+		<!-- CAS -->
 
 		<!-- To use (integrate) a CAS service -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-cas</artifactId>
+		</dependency>
+
+		<!-- Official client for java -->
+		<dependency>
+			<groupId>org.apereo.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>${org.apereo.cas.client.core.version}</version>
+		</dependency>
+
+		<!-- Autoconfiguration for spring boot -->
+		<dependency>
+			<groupId>org.apereo.cas.client</groupId>
+			<artifactId>cas-client-support-springboot</artifactId>
+			<version>${org.apereo.cas.client.core.version}</version>
 		</dependency>
 
 		<!-- ZK -->
@@ -288,24 +260,6 @@
 		</dependency>
 
 
-
-		<!-- CAS -->
-		<!-- Official client for java -->
-		<dependency>
-			<groupId>org.apereo.cas.client</groupId>
-			<artifactId>cas-client-core</artifactId>
-			<version>${org.apereo.cas.client.core.version}</version>
-		</dependency>
-
-		<!-- Autoconfiguration for spring boot -->
-		<dependency>
-			<groupId>org.apereo.cas.client</groupId>
-			<artifactId>cas-client-support-springboot</artifactId>
-			<version>${org.apereo.cas.client.core.version}</version>
-		</dependency>
-
-
-
 		<!-- Database -->
 		<!-- To use postgresql dialect in spring -->
 		<dependency>
@@ -313,14 +267,6 @@
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
 		</dependency>
-
-		<!-- Hibernate maps SQL queries with POJOs -->
-		<!--<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency> -->
-
 
 
 		<!-- ACLs -->
@@ -334,10 +280,7 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 		</dependency>
 
 
-
 		<!-- Other dependencies -->
-
-
 
 		<!-- Plugins & add-ons -->
 		<!-- To use the dataverse client API for Java. Jitpack is also needed -->
@@ -367,58 +310,10 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			<scope>provided</scope>
 		</dependency>
 
-
-
-		<!-- Deprecated dependencies -->
-		<!-- To provide a valid implementation of Log4j2 -->
-		<!--
+		<!-- Used to integrate ZK with Spring -->
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${apache-log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${apache-log4j.version}</version>
-		</dependency>
-		-->
-
-		<!-- Deprecated dependencies -->
-		<!-- The cglib is optional. We add it because we use CGLIB-based class proxy -->
-		<!--
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>${cglib.version}</version>
-		</dependency>
-		-->
-		<!-- To configure the Hikari pool of connections, which is a software that manages connections to the database -->
-		<!--
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${hikari.version}</version>
-		</dependency>
-		-->
-		<!--
-<dependency>
-    <groupId>org.zkoss.zk</groupId>
-    <artifactId>zkspring-core</artifactId>
-    <version>${zk.version}</version>
-</dependency>-->
-
-		<!--
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkspring-security</artifactId>
-			<version>${zk.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.zkoss.zk</groupId>
-			<artifactId>zkbind</artifactId>
-			<version>${zk.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
 		</dependency>
 
 		<dependency>
@@ -454,61 +349,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 				</exclusion>
 			</exclusions>
 		</dependency>
-		-->
-		<!-- When upgrading to java 17 javax.servlet.Filter was missing, even though from java 17 and on we use jakarta-persistence.*  -->
-		<!--<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<version>${jakarta-servlet.version}</version>
-		</dependency>-->
-		<!-- To use the @Inject annotation -->
-		<!--<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>${javax-inject.version}</version>
-		</dependency>-->
-		<!-- A dependency started appearing with error msg Caused by: java.lang.ClassNotFoundException: org.threeten.bp.LocalDateTime -->
-		<!--<dependency>
-			<groupId>org.threeten</groupId>
-			<artifactId>threetenbp</artifactId>
-			<version>${threetenbp.version}</version>
-		</dependency>-->
-		<!--
-<dependency>
-    <groupId>org.testcontainers</groupId>
-    <artifactId>junit-jupiter</artifactId>
-    <version>${testcontainers.version}</version>
-</dependency>
-
-<dependency>
-    <groupId>org.testcontainers</groupId>
-    <artifactId>jdbc</artifactId>
-    <version>${testcontainers.version}</version>
-</dependency>
--->
-		<!-- Required when upgrading to java 17 since now classes depend on jakarta API and not javax -->
-		<!--
-		<dependency>
-			<groupId>jakarta.persistence</groupId>
-			<artifactId>jakarta.persistence-api</artifactId>
-			<version>${jakarta.persistence-api.version}</version>
-		</dependency>
-		-->
-		<!-- Extra: Spring-core depends on commons-logging. Integration ZK with spring security -->
-		<!--<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>${commons-login.version}</version>
-		</dependency>-->
-		<!-- To use the reflections' library, which is used in the code of iochem-bd
-https://mvnrepository.com/artifact/org.reflections/reflections -->
-		<!--
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>${reflections.version}</version>
-		</dependency>
-		-->
 	</dependencies>
 
 
@@ -576,6 +416,39 @@ https://mvnrepository.com/artifact/org.reflections/reflections -->
 									<goal>add-third-party</goal>
 								</goals>
 								<configuration>
+									<mapping>
+										<zul>XML_STYLE</zul>
+									</mapping>
+									<header>${project.basedir}/license/resources/header.txt</header>
+									<properties>
+										<owner>${project.organization.name}</owner>
+										<email>dmp@iciq.cat</email>
+										<inceptionYear>${project.inceptionYear}</inceptionYear>
+										<latestYearOfContribution>${current.year}</latestYearOfContribution>
+									</properties>
+									<excludes>
+										<exclude>**/README</exclude>
+										<exclude>src/main/resources/secrets/**</exclude>
+										<exclude>**/*.map</exclude>
+										<exclude>.spelling_dictionary.dic</exclude>
+										<exclude>**/cacerts</exclude>
+										<exclude>.mvn/**</exclude>
+										<exclude>.run/**</exclude>
+										<exclude>.idea/**</exclude>
+										<exclude>license/**</exclude>
+										<exclude>target/**</exclude>
+										<exclude>src/mainComposer/resources/CA_certificates/**</exclude>
+										<exclude>src/main/resources/static/css/bootstrap.min.css</exclude>
+										<exclude>src/main/resources/static/css/font-awesome.min.css</exclude>
+										<exclude>src/main/resources/static/js/bootstrap.min.js</exclude>
+										<exclude>src/main/resources/static/js/jquery-3.3.1.min.js</exclude>
+										<exclude>src/main/resources/static/js/popper.min.js</exclude>
+									</excludes>
+									<useDefaultExcludes>true</useDefaultExcludes>
+									<keywords>
+										<keyword>copyright</keyword>
+										<keyword>eChempad</keyword>
+									</keywords>
 									<verbose>true</verbose>
 									<inceptionYear>${project.inceptionYear}</inceptionYear>
 									<organizationName>${project.organization.name}</organizationName>

@@ -26,7 +26,6 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.logging.Logger;
 
 /**
  * Provides automatic transparent conversion between a {@code MediaType} and its {@code String} representation. This is
