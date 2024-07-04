@@ -24,37 +24,41 @@
 # These properties work when running the software in containers and in a development machine
 
 ---
-version: "3.9"
 services:
 
   postgres_db:
     image: postgres:latest
     pull_policy: always
-    environment:  # Use secret for the password
-      - PUID=1001
-      - PGID=1001
-      - TZ=Etc/UTC
+    container_name: postgres_db
+    environment:  # TODO Use secret for the password
+      - UID=1015
+      - GID=1015
       - POSTGRES_PASSWORD=chemistry
-      - POSTGRES_USER=amarine
+      - POSTGRES_USER=eChempad
       - POSTGRES_DB=eChempad
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "0.0.0.0:5432:5432"
     volumes:
-      - ./src/main/resources/SQL/schema-postgresql.sql:/docker-entrypoint-initdb.d/schema-postgresql.sql
-    #volumes:  # Persist data from postgres
-    #  - ./src/main/resources/SQL/schema-postgresql.sql:/var/lib/postgresql/data/scripts
+      - ./src/main/resources/SQL:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data/scripts
 
-  cas_service:
+  echempad-cas:
     image: aleixmt/echempad-cas:latest
+    build:
+      context: ../eChempad-CAS
+      dockerfile: Dockerfile
     pull_policy: always
     environment:  # We always need to load secrets or there will be no functionality
-      - "-Dspring.profiles.active=standalone,ldap,orcid,db,dev,container,cas_secrets"
+      - SPRING_PROFILES_ACTIVE=standalone,ldap,orcid,db,dev,prod,container,secrets
     ports:
       - "0.0.0.0:8443:8443"
       - "8080:8080"
     volumes: # Mount secrets configuration file
-      - ./src/main/resources/secrets/cas_secrets.properties:/etc/cas/config/cas_secrets.properties
+      - type: bind
+        source: ./src/main/resources/secrets/cas_secrets.properties
+        target: /etc/cas/config/secrets.properties
+        read_only: true
     depends_on:
       postgres_db:
         condition: service_started
@@ -64,7 +68,6 @@ services:
       retries: 10
       timeout: 60s
       start_period: 5s
-
 
   echempad_app:
     image: aleixmt/echempad:latest
@@ -78,12 +81,11 @@ services:
       - TZ=Etc/UTC
       - SPRING_PROFILES_ACTIVE=container
     ports:
-      - "0.0.0.0:80:8081"
+      - "0.0.0.0:8081:8081"
     volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
-      - ./src/main/resources/secrets/DATAVERSE_KEY.txt:/app/target/classes/secrets/DATAVERSE_KEY.txt
-      - ./src/main/resources/secrets/SIGNALS_KEY.txt:/app/target/classes/secrets/SIGNALS_KEY.txt
+      - ./src/main/resources/secrets/:/app/target/classes/secrets/
     depends_on:
-      cas_service:
+      echempad-cas:
         condition: service_healthy
       postgres_db:
         condition: service_started
@@ -93,3 +95,6 @@ services:
       retries: 10
       timeout: 60s
       start_period: 5s
+
+volumes:
+  pgdata:

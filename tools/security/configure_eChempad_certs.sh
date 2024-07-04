@@ -139,7 +139,7 @@ keytool -genkey -noprompt \
   -keystore "${ECHEMPAD_PATH}/src/main/resources/security/keystore" \
   -storepass changeit \
   -keypass changeit \
-  -ext san=dns:echempad.iciq.es,ip:127.0.0.1
+  -ext san=dns:echempad,ip:127.0.0.1
 
 # 2 Extracts eChempad certificate from keystore
 keytool -export -noprompt \
@@ -159,7 +159,7 @@ keytool -genkey -noprompt \
   -keystore "${ECHEMPADCAS_PATH}/etc/cas/thekeystore" \
   -storepass changeit \
   -keypass changeit \
-  -ext san=dns:echempad-cas.iciq.es,ip:127.0.0.1
+  -ext san=dns:echempad-cas,ip:127.0.0.1
 
 # 4 Extracts eChempad CAS certificate from keystore
 keytool -export -noprompt \
@@ -168,6 +168,10 @@ keytool -export -noprompt \
   -storepass changeit \
   -keypass changeit \
   -alias eChempad-CAS
+
+# 4.1 copy cas.crt into security of eChempad
+rm -f "${ECHEMPAD_PATH}/src/main/resources/security/cas.crt"
+cp "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" "${ECHEMPAD_PATH}/src/main/resources/security/"
 
 # 5 Create trust store for eChempad CAS and import eChempad certificate.
 rm -f "${ECHEMPADCAS_PATH}/etc/cas/truststore"
