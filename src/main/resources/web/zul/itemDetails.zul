@@ -55,7 +55,7 @@
 						<label id="ID" value="" sclass="col-md-6" tooltiptext="Identifier in eChempad of this resource with a UUID"/>
 
 						<n:label class="col-md-2">Type</n:label>
-						<textbox id="type" value="Container" sclass="form-control col-md-2" readonly="false" tooltiptext="Type of the selected resource. If 'create project' is pressed is the type of the new created project."/>
+						<label id="entityType" value="Container" sclass="form-control col-md-2" tooltiptext="Type of the selected resource. If 'create project' is pressed is the type of the new created project."/>
 					</div>
 
 					<div sclass="row mb-1 item-details-row">		

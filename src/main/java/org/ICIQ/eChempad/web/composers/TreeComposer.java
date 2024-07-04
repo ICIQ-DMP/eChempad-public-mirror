@@ -39,6 +39,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.*;
@@ -50,7 +51,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Scope("desktop")
-//@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class TreeComposer extends SelectorComposer<Window> {
 
     // Sending event queues
@@ -160,8 +161,7 @@ public class TreeComposer extends SelectorComposer<Window> {
         // Initialize queues
         this.initActionQueues();
 
-        // Sets the data to the tree
-        //this.refreshModel();
+        this.tree.setModel(this.createModel());
         // Sets how we want to display the data (look JPAEntityTreeRenderer)
         this.tree.setItemRenderer(new JPAEntityTreeRenderer());
     }

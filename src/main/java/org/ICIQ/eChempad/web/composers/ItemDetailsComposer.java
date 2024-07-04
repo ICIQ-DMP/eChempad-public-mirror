@@ -84,7 +84,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	private Textbox description;
 
 	@Wire
-	private Label type;
+	private Label entityType;
 
 	@Wire
 	private Textbox cDate;
@@ -166,6 +166,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		// Assign default data to the item details component so the creation button has consistent data at startup
 		this.cDate.setValue(new SimpleDateFormat().format(new Date()));
 		this.ID.setValue(UUID.randomUUID().toString());
+		//this.type.setValue("Container");
 	}
 
 	/**
@@ -208,7 +209,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 		this.cDate.setValue(simpleDateFormat.format(entity.getCreationDate()));
 		this.description.setValue(entity.getDescription());
-		this.type.setValue(entity.getClass().getSimpleName());
+		this.entityType.setValue(entity.getClass().getSimpleName());
 
 		// Enable delete and modification button
 		this.itemDetailsRemoveButton.setDisabled(false);
@@ -225,7 +226,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		this.name.setValue("");
 		this.cDate.setValue(new SimpleDateFormat().format(new Date()));
 		this.description.setValue("");
-		this.type.setValue("Journal");
+		this.entityType.setValue("Journal");
 
 		// UI comp not used yet
 		//this.conceptGroup.setText("");
@@ -287,7 +288,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 		// Search the type of the entity received in the parameter and create its corresponding class.
 		Class<?> entityClass = null;
 		try {
-			entityClass = Class.forName("org.ICIQ.eChempad.entities.genericJPAEntities." + this.type.getValue());
+			entityClass = Class.forName("org.ICIQ.eChempad.entities.genericJPAEntities." + this.entityType.getValue());
 		} catch (ClassNotFoundException e) {
 			entityClass = Container.class;
 		}
