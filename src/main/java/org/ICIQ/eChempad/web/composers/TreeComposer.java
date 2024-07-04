@@ -207,13 +207,17 @@ public class TreeComposer extends SelectorComposer<Window> {
                 }
                 case EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT: {
                     // Check if there is a selected element. If not just create it in the root.
-                    Entity entity = null;
+                    Entity entity = (Entity) event.getData();
                     Treeitem selectedItem = this.tree.getSelectedItem();
-                    DefaultTreeNode newNode = new DefaultTreeNode(event.getData());
+                    DefaultTreeNode newNode = new DefaultTreeNode(entity);
                     if (selectedItem == null) {
                         // There is no selection, create the new project as a Journal in the root
                         DefaultTreeNode selectedNode = (DefaultTreeNode) this.tree.getModel().getRoot();
                         selectedNode.add(newNode);
+
+                        // Save entity as a root container
+                        this.containerService.save((Container) entity);
+                        // TODO case document
                     } else  // There is a selection. We need to create element under the selection.
                     {
                         // Check the type of the selection
@@ -248,6 +252,7 @@ public class TreeComposer extends SelectorComposer<Window> {
                         newItem.setValue(new DefaultTreeNode<Entity>(entity));
                         newItem.setParent(newChild);
 
+                        // TODO make changes permanent by wriiting structure to database
                         // Finally, close the loop by adding the new Child as child of the selected item
                         // selectedItem.getChildren().add(newChild);
                     }

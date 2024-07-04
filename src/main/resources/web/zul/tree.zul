@@ -58,7 +58,7 @@
     
 
 	<!-- Right click menu -->
-    <menupopup id="treePopup" sclass="custom-dropdown-menu">
+    <!--<menupopup id="treePopup" sclass="custom-dropdown-menu">
 		<menuitem label="Expand all" id="treeDivExpandChildElements" sclass="treeWithSingleSelection"/>
 		<menuitem label="Collapse all" id="treeDivCollapseChildElements" sclass="treeWithSingleSelection"/>
 		<menuseparator sclass="treeWithSingleSelection dropdown-divider"/>
@@ -78,6 +78,7 @@
   	<menupopup id="emptyTreePopup"/>
   	<popup id="thumbnailPopup" sclass="custom-popup">
 		<html/>
-    </popup>	  						 	
+    </popup>
+    -->
 
 </window>
