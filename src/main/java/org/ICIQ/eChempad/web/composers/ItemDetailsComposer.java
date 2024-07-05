@@ -251,7 +251,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	 */
 	@Listen("onClick = #itemDetailsCreateButton")
 	public void createProjectClick() throws Exception{
-		this.treeQueue.publish(new Event(EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT, null, this.parseEntityFromDetails()));
+		this.treeQueue.publish(new Event(EventNames.CREATE_ENTITY_EVENT, null, this.parseEntityFromDetails()));
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class ItemDetailsComposer extends SelectorComposer<Window> {
 	 */
 	@Listen("onClick = #itemDetailsModifyButton")
 	public void modifyClick() throws InterruptedException, Exception{
-		this.treeQueue.publish(new Event(EventNames.MODIFY_ENTITY_PROPERTIES_EVENT, null, this.parseEntityFromDetails()));
+		this.treeQueue.publish(new Event(EventNames.MODIFY_ENTITY_EVENT, null, this.parseEntityFromDetails()));
 	}
 
 	/**

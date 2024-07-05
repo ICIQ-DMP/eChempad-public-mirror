@@ -151,111 +151,54 @@ public class TreeComposer extends SelectorComposer<Window> {
     @WireVariable("dataverseExportService")
     private DataverseExportService dataverseExportService;
 
+    /**
+     * Constructor-like method for ZK composers. Called after instantiating front-end page.
+     * @param comp Parent window.
+     * @throws Exception Throw exception if anything goes wrong.
+     */
     @Override
     public void doAfterCompose(Window comp) throws Exception {
         // Propagate call to parent
         super.doAfterCompose(comp);
 
-        // this.createJournal();  // For testing
-
         // Initialize queues
         this.initActionQueues();
 
+        // Initialize tree model
         this.tree.setModel(this.createModel());
+
         // Sets how we want to display the data (look JPAEntityTreeRenderer)
         this.tree.setItemRenderer(new JPAEntityTreeRenderer());
     }
 
     /**
-     * Creates an example journal programmatically with experiments and documents in the database.
+     * Initializes event queues for sending and receiving events.
      */
-    public void createJournal() {
-        Container exampleContainer = new Container("Journal testing", "This is description");
-
-        Document exampleDocument1 = new Document("File Nested in two levels", "with description very nested");
-        exampleDocument1.setContentType(MediaType.ALL);
-        Set<Document> exampleDocuments = new HashSet<Document>();
-        exampleDocuments.add(exampleDocument1);
-
-        this.containerService.save(exampleContainer);
-        this.documentService.save(exampleDocument1);
-    }
-
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void initActionQueues() {
+        // Create queue to receive events in the tree
         this.treeQueue = EventQueues.lookup(EventQueueNames.TREE_QUEUE, EventQueues.DESKTOP, true);
+
+        // Create queue to send events to the itemDetails component if it has already not been initialized
         this.itemDetailsQueue = EventQueues.lookup(EventQueueNames.ITEM_DETAILS_QUEUE, EventQueues.DESKTOP, true);
-        this.treeQueue.subscribe((EventListener) event -> {
+
+        // Subscribe tree to the events that it received
+        this.treeQueue.subscribe(this.treeEventListener());
+    }
+
+    /**
+     * Returns an event listener that attends to all the events that we want to attend with the tree.
+     * @return Event listener object for the suscribe method.
+     */
+    private EventListener<Event> treeEventListener()
+    {
+        return event -> {
             switch (event.getName()) {
-                case EventNames.MODIFY_ENTITY_PROPERTIES_EVENT: {
-                    Logger.getGlobal().warning(event.getData().getClass().getSimpleName().toString());
-                    if (event.getData().getClass().getSimpleName().equals("Container"))
-                    {
-                        this.containerService.save((Container) event.getData());
-                    }
-                    else if (event.getData().getClass().getSimpleName().equals("Document"))
-                    {
-                        this.documentService.save((Document) event.getData());
-                    }
-                    else
-                    {
-                        Logger.getGlobal().warning("not recognized type");
-                    }
-                    this.unParseOverTreeCell((Entity) event.getData(), this.tree.getSelectedItem());
-                    break;
+                case EventNames.MODIFY_ENTITY_EVENT: {
+                    this.modifyEntityEventListener((Entity) event.getData());
                 }
-                case EventNames.CREATE_CHILDREN_WITH_PROPERTIES_EVENT: {
-                    // Check if there is a selected element. If not just create it in the root.
-                    Entity entity = (Entity) event.getData();
-                    Treeitem selectedItem = this.tree.getSelectedItem();
-                    DefaultTreeNode newNode = new DefaultTreeNode(entity);
-                    if (selectedItem == null) {
-                        // There is no selection, create the new project as a Journal in the root
-                        DefaultTreeNode selectedNode = (DefaultTreeNode) this.tree.getModel().getRoot();
-                        selectedNode.add(newNode);
-
-                        // Save entity as a root container
-                        this.containerService.save((Container) entity);
-                        // TODO case document
-                    } else  // There is a selection. We need to create element under the selection.
-                    {
-                        // Check the type of the selection
-                        for (Component child : selectedItem.getTreerow().getChildren()) {
-                            if (((Treecell) child).getTreecol().getId().equals("Type")) {
-                                switch (((Treecell) child).getLabel()) {
-                                    case "Document": {
-                                        Logger.getGlobal().warning("cannot add entity to a document");
-                                        throw new Exception();
-                                    }
-                                    case "Experiment": {
-                                        entity = this.entityConversionService.parseDocument((DataEntity) event.getData());
-                                        break;
-                                    }
-                                    case "Journal": {
-                                        //entity = this.entityConversionService.parseExperiment((Entity) event.getData());
-                                        break;
-                                    }
-                                    default: {
-                                        Logger.getGlobal().warning(((Treecell) child).getLabel() + " is not a recognised type ");
-                                    }
-                                }
-                            }
-                        }
-
-                        // Create a children and set the selected item as parent.
-                        Treechildren newChild = new Treechildren();
-                        newChild.setParent(selectedItem);
-
-                        // Create a new item, attach received data to it, and set the new child as parent
-                        Treeitem newItem = new Treeitem();
-                        newItem.setValue(new DefaultTreeNode<Entity>(entity));
-                        newItem.setParent(newChild);
-
-                        // TODO make changes permanent by wriiting structure to database
-                        // Finally, close the loop by adding the new Child as child of the selected item
-                        // selectedItem.getChildren().add(newChild);
-                    }
+                case EventNames.CREATE_ENTITY_EVENT: {
+                    this.createEntityEventListener((Entity) event.getData());
                 }
                 case EventNames.DELETE_TREE_ENTITY_EVENT: {
                     // UI modification tree
@@ -315,8 +258,83 @@ public class TreeComposer extends SelectorComposer<Window> {
                     break;
                 }
             }
-        });
+        };
+    }
 
+
+    /**
+     * Modifies the state of the tree and the database when an Item in the itemDetails panel has been modified.
+     * @param entity New data of the entity that has been modified.
+     */
+    private void modifyEntityEventListener(Entity entity)
+    {
+        if (entity.getClass().getSimpleName().equals(Container.class.getSimpleName()))
+        {
+            this.containerService.save((Container) entity);
+        }
+        else if (entity.getClass().getSimpleName().equals(Document.class.getSimpleName()))
+        {
+            this.documentService.save((Document) entity);
+        }
+        else
+        {
+            Logger.getGlobal().warning("not recognized type");
+        }
+        this.unParseOverTreeCell((Entity) entity, this.tree.getSelectedItem());
+    }
+
+    private void createEntityEventListener(Entity entity)
+    {
+        // Check if there is a selected element. If not just create it in the root.
+        Treeitem selectedItem = this.tree.getSelectedItem();
+        if (selectedItem == null) {
+            // There is no selection, create the new project as a Journal in the root
+            DefaultTreeNode<Entity> selectedNode = (DefaultTreeNode<Entity>) this.tree.getModel().getRoot();
+            DefaultTreeNode<Entity> newNode = new DefaultTreeNode<>(entity);
+            selectedNode.add(newNode);
+
+            // Save entity as a root container
+            this.containerService.save((Container) entity);
+            // TODO case document
+        }
+        else  // There is a selection. We need to create element under the selection.
+        {
+            // Check the type of the selection
+            for (Component child : selectedItem.getTreerow().getChildren()) {
+                if (((Treecell) child).getTreecol().getId().equals("Type")) {
+                    switch (((Treecell) child).getLabel()) {
+                        case "Document": {
+                            Logger.getGlobal().warning("cannot add entity to a document");
+                            return;
+                        }
+                        case "Experiment": {
+                            entity = this.entityConversionService.parseDocument((DataEntity) entity);
+                            break;
+                        }
+                        case "Journal": {
+                            //entity = this.entityConversionService.parseExperiment((Entity) event.getData());
+                            break;
+                        }
+                        default: {
+                            Logger.getGlobal().warning(((Treecell) child).getLabel() + " is not a recognised type ");
+                        }
+                    }
+                }
+            }
+
+            // Create a children and set the selected item as parent.
+            Treechildren newChild = new Treechildren();
+            newChild.setParent(selectedItem);
+
+            // Create a new item, attach received data to it, and set the new child as parent
+            Treeitem newItem = new Treeitem();
+            newItem.setValue(new DefaultTreeNode<Entity>(entity));
+            newItem.setParent(newChild);
+
+            // TODO make changes permanent by wriiting structure to database
+            // Finally, close the loop by adding the new Child as child of the selected item
+            // selectedItem.getChildren().add(newChild);
+        }
     }
 
     /**
@@ -610,5 +628,20 @@ public class TreeComposer extends SelectorComposer<Window> {
         }
 
         return entity;
+    }
+
+    /**
+     * Creates an example journal programmatically with experiments and documents in the database.
+     */
+    public void createJournal() {
+        Container exampleContainer = new Container("Journal testing", "This is description");
+
+        Document exampleDocument1 = new Document("File Nested in two levels", "with description very nested");
+        exampleDocument1.setContentType(MediaType.ALL);
+        Set<Document> exampleDocuments = new HashSet<Document>();
+        exampleDocuments.add(exampleDocument1);
+
+        this.containerService.save(exampleContainer);
+        this.documentService.save(exampleDocument1);
     }
 }

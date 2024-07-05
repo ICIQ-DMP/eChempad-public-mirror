@@ -43,12 +43,12 @@ public class EventNames {
     /**
      * Event that is used to modify the properties from an entity in the tree and in the backend.
      */
-    public static final String MODIFY_ENTITY_PROPERTIES_EVENT = "MODIFY_ENTITY_PROPERTIES_EVENT";
+    public static final String MODIFY_ENTITY_EVENT = "MODIFY_ENTITY_PROPERTIES_EVENT";
 
     /**
      * Event used to create a new entity as children under another in the tree, modifying the view and the backend.
      */
-    public static final String CREATE_CHILDREN_WITH_PROPERTIES_EVENT = "CREATE_CHILDREN_WITH_PROPERTIES_EVENT";
+    public static final String CREATE_ENTITY_EVENT = "CREATE_CHILDREN_WITH_PROPERTIES_EVENT";
 
     /**
      * Event to delete an entity from the tree using its id.
