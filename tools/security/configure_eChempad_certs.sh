@@ -57,6 +57,8 @@
 #   8.- Gets eChempad certificate from ${ECHEMPAD_PATH}/tools/security/eChempad.crt and injects it in the truststore of
 #       the truststore of the JVM pointed by ${JAVA_HOME}/lib/security/cacerts
 
+declare -r mode="dev"
+
 echempad_possible_locations=(
 /home/amarine/Desktop/eChempad
 /home/amarine/Escritorio/eChempad
@@ -78,6 +80,14 @@ echempadcas_possible_locations=(
 "/home/${SUDO_USER}/Escritorio/eChempad-CAS"
 "/home/${SUDO_USER}/Desktop/eChempad-CAS"
 )
+
+if [ "${mode}" == "dev" ]; then
+  dns_echempad="echempad.iciq.es"
+  dns_echempad_cas="echempad-cas.iciq.es"
+else
+  dns_echempad="echempad"
+  dns_echempad_cas="echempad-cas"
+fi
 
 set_echempad_path()
 {
@@ -133,13 +143,13 @@ set_echempadcas_path
 rm -f "${ECHEMPAD_PATH}/src/main/resources/security/keystore"
 keytool -genkey -noprompt \
   -alias eChempad \
-  -dname "CN=echempad.iciq.es, OU=TCC, O=ICIQ, L=Tarragona, S=Spain, C=ES" \
+  -dname "CN=${dns_echempad}, OU=TCC, O=ICIQ, L=Tarragona, S=Spain, C=ES" \
   -keyalg RSA \
   -validity 999 \
   -keystore "${ECHEMPAD_PATH}/src/main/resources/security/keystore" \
   -storepass changeit \
   -keypass changeit \
-  -ext san=dns:echempad,ip:127.0.0.1
+  -ext san=dns:${dns_echempad},ip:127.0.0.1
 
 # 2 Extracts eChempad certificate from keystore
 keytool -export -noprompt \
@@ -153,13 +163,13 @@ keytool -export -noprompt \
 rm -f "${ECHEMPADCAS_PATH}/etc/cas/thekeystore"
 keytool -genkey -noprompt \
   -alias eChempad-CAS \
-  -dname "CN=echempad-cas.iciq.es, OU=TCC, O=ICIQ, L=Tarragona, S=Spain, C=ES" \
+  -dname "CN=${dns_echempad_cas}, OU=TCC, O=ICIQ, L=Tarragona, S=Spain, C=ES" \
   -keyalg RSA \
   -validity 999 \
   -keystore "${ECHEMPADCAS_PATH}/etc/cas/thekeystore" \
   -storepass changeit \
   -keypass changeit \
-  -ext san=dns:echempad-cas,ip:127.0.0.1
+  -ext san=dns:${dns_echempad_cas},ip:127.0.0.1
 
 # 4 Extracts eChempad CAS certificate from keystore
 keytool -export -noprompt \
