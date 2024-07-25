@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.cas.ServiceProperties;
@@ -110,6 +111,12 @@ public class WebSecurityConfig {
      */
     @Autowired
     private UserDetailsService userDetailsService;
+
+    /**
+     * To access the loaded properties from .properties files
+     */
+    @Autowired
+    private Environment env;
 
     /**
      * Allow everyone to access the login and logout form and allow everyone to access the login API calls.
@@ -343,7 +350,8 @@ public class WebSecurityConfig {
     @Bean
     public ServiceProperties serviceProperties() {
         ServiceProperties serviceProperties = new ServiceProperties();
-        serviceProperties.setService("https://echempad.iciq.es:8081/login/cas");
+        System.out.println("client-host-url" + this.env.getProperty("cas.client-host-url") + "login/cas");
+        serviceProperties.setService(this.env.getProperty("cas.client-host-url") + "login/cas");
         serviceProperties.setSendRenew(false);
         serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
         return serviceProperties;
@@ -354,7 +362,7 @@ public class WebSecurityConfig {
     public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
     {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-        casAuthenticationEntryPoint.setLoginUrl("https://echempad-cas:8443/cas/login");
+        casAuthenticationEntryPoint.setLoginUrl(this.env.getProperty("cas.server-login-url"));
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
         return casAuthenticationEntryPoint;
 
@@ -362,7 +370,8 @@ public class WebSecurityConfig {
 
     @Bean
     public TicketValidator ticketValidator() {
-        return new Cas30ServiceTicketValidator("https://echempad-cas:8443/cas");
+        System.out.println("ticket validator" + this.env.getProperty("cas.server-url-prefix"));
+        return new Cas30ServiceTicketValidator(this.env.getProperty("cas.server-url-prefix"));
     }
 
     @Bean
@@ -426,7 +435,7 @@ public class WebSecurityConfig {
     @Bean
     public LogoutFilter logoutFilter() {
         LogoutFilter logoutFilter = new LogoutFilter(
-                "https://echempad-cas:8443/cas/logout",
+                this.env.getProperty("cas.server-url-prefix") + "logout",
                 this.securityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl("/logout/cas");
         return logoutFilter;
