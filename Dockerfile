@@ -19,8 +19,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+# Compilation container, creates the .jar to run the application.
 # Use JDK17 alpine
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-jdk-alpine as build
 
 # Set the working directory
 WORKDIR /app
@@ -46,15 +47,28 @@ RUN keytool -import -noprompt \
    -keypass changeit \
    -alias eChempad-CAS
 
+# Compile project skipping testing goals (compilation, resources and run of tests)
+RUN ./mvnw package -Dmaven.test.skip=true
 
-# Apply permissions
-RUN chown -R 1001:1001 /app
+
+# Run container,
+# Use JDK17 alpine
+FROM openjdk:17-jdk-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the directory created in the first stage into the run container
+RUN mkdir -p /app/target
+COPY --from=build /app/target/eChempad.jar /app
+
+# Cambia la propiedad del directorio '/app/target' al usuario con id 1001
+RUN chown 1001:1001 /app/eChempad.jar
 
 # Set the user to run the application
 USER 1001
 
-# Compile project skipping testing goals (compilation, resources and run of tests)
-RUN ./mvnw clean package spring-boot:repackage -Dmaven.test.skip=true
+# Set the application profile in order to change the config of DB location
+ENV spring_profiles_active=container
 
-ENTRYPOINT ["./mvnw", \
-    "spring-boot:run"]
+ENTRYPOINT ["java", "-jar", "eChempad.jar"]
