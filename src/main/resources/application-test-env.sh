@@ -20,6 +20,6 @@
 #
 
 #export MAVEN_FLAGS="-e -X"
-export JAVA_FLAGS="-Djavax.net.debug=all -Djavax.net.debug=ssl:handshake"  # Debug net issues (HTTPS)
+#export JAVA_FLAGS="-Djavax.net.debug=all -Djavax.net.debug=ssl:handshake"  # Debug net issues (HTTPS)
 
 

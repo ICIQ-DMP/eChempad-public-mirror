@@ -90,7 +90,7 @@ services:
       postgres_db:
         condition: service_started
     healthcheck:
-      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health | grep -q UP" ]
+      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/health | grep -q UP" ]
       interval: 20s
       retries: 10
       timeout: 60s

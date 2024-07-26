@@ -19,5 +19,5 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-export MAVEN_FLAGS=""
-export JAVA_FLAGS=""
+#export MAVEN_FLAGS=""
+#export JAVA_FLAGS=""
