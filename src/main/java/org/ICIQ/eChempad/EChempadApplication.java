@@ -39,20 +39,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {
 		"org.ICIQ.eChempad.repositories"
 })
-@ComponentScan(
-		basePackages = {"org.ICIQ.eChempad"},
-		excludeFilters = {
-				@ComponentScan.Filter(
-						type = FilterType.ASSIGNABLE_TYPE,
-						value = UUIDConverter.class),
-				@ComponentScan.Filter(
-						type = FilterType.ASSIGNABLE_TYPE,
-						value = MediaTypeConverter.class),
-				@ComponentScan.Filter(
-						type = FilterType.ASSIGNABLE_TYPE,
-						value = DocumentWrapperConverter.class)
 
-		})
 public class EChempadApplication {
 
 	public static void main(String[] args) {
