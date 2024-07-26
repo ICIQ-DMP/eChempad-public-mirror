@@ -183,9 +183,13 @@ keytool -export -noprompt \
 rm -f "${ECHEMPAD_PATH}/src/main/resources/security/cas.crt"
 cp "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" "${ECHEMPAD_PATH}/src/main/resources/security/"
 
+# 4.2 copy eChempad.crt into security of cas
+rm -f "${ECHEMPADCAS_PATH}/etc/cas/config/eChempad.crt"
+cp "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" "${ECHEMPADCAS_PATH}/etc/cas/"
+
 # 5 Create trust store for eChempad CAS and import eChempad certificate.
 rm -f "${ECHEMPADCAS_PATH}/etc/cas/truststore"
-keytool -import -noprompt \
+keytool -import -noprompt -trustcacerts \
   -file "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" \
   -keystore "${ECHEMPADCAS_PATH}/etc/cas/truststore" \
   -storepass changeit \
@@ -194,7 +198,7 @@ keytool -import -noprompt \
 
 # 6 Create trust store for eChempad and import eChempad CAS certificate.
 rm -f "${ECHEMPAD_PATH}/src/main/resources/security/truststore"
-keytool -import -noprompt \
+keytool -import -noprompt -trustcacerts \
   -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
   -keystore "${ECHEMPAD_PATH}/src/main/resources/security/truststore" \
   -storepass changeit \
@@ -203,11 +207,11 @@ keytool -import -noprompt \
 
 # 7 Gets eChempad-CAS certificate from ${ECHEMPADCAS_PATH}/etc/cas/cas.crt and injects it in the truststore of the
 # JVM pointed by ${JAVA_HOME}/lib/security/cacerts
-if "${JAVA_HOME}/bin/keytool" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit" -list -alias "eChempad-CAS" &>/dev/null; then
+if "${JAVA_HOME}/bin/keytool" -trustcacerts -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit" -list -alias "eChempad-CAS"; then
   echo "*** - INFO: Certificate eChempad-CAS present in ${JAVA_HOME}/lib/security/cacerts, removing and reinstalling"
   "${JAVA_HOME}/bin/keytool" -delete -alias "eChempad-CAS" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
 fi
-keytool -import -noprompt \
+keytool -import -noprompt -trustcacerts \
    -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
    -keystore "${JAVA_HOME}/lib/security/cacerts" \
    -storepass changeit \
@@ -216,11 +220,11 @@ keytool -import -noprompt \
 
 # 8 Gets eChempad certificate from ${ECHEMPAD_PATH}/tools/security/eChempad.crt and injects it in the truststore of
 # the truststore of the JVM pointed by ${JAVA_HOME}/lib/security/cacerts
-if "${JAVA_HOME}/bin/keytool" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit" -list -alias "eChempad" &>/dev/null; then
+if "${JAVA_HOME}/bin/keytool" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit" -list -alias "eChempad"; then
   echo "*** - INFO: Certificate eChempad present in ${JAVA_HOME}/lib/security/cacerts, removing and reinstalling"
   "${JAVA_HOME}/bin/keytool" -delete -alias "eChempad" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
 fi
-keytool -import -noprompt \
+keytool -import -noprompt -trustcacerts \
    -file "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" \
    -keystore "${JAVA_HOME}/lib/security/cacerts" \
    -storepass changeit \

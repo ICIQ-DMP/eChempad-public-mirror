@@ -362,7 +362,7 @@ public class WebSecurityConfig {
     public AuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties)
     {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-        casAuthenticationEntryPoint.setLoginUrl(this.env.getProperty("cas_login_redirect"));
+        casAuthenticationEntryPoint.setLoginUrl(this.env.getProperty("cas.server-login-url"));
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties);
         return casAuthenticationEntryPoint;
 
