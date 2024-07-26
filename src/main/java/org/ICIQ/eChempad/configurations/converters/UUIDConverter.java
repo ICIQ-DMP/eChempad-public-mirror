@@ -40,8 +40,8 @@ import java.util.UUID;
  * @version 1.0
  * @since 04/10/2022
  */
+//@Converter
 @Component
-@Converter(autoApply = true)
 public class UUIDConverter implements AttributeConverter<UUID, String>, Serializable {
 
     /**

@@ -70,7 +70,6 @@
 
 		<!-- Database -->
 		<postgresql.version>42.5.4</postgresql.version>
-		<hibernate.version>6.5.2.Final</hibernate.version>
 
 		<!-- ACLs -->
 		<ehcache.version>3.10.8</ehcache.version>
@@ -82,7 +81,6 @@
 		<org.codehaus.mojo.license-maven-plugin.version>4.5</org.codehaus.mojo.license-maven-plugin.version>
 		<com.mycila.license-maven-plugin.version>3.12.1</com.mycila.license-maven-plugin.version>
 		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
-
 	</properties>
 
 	<!--Licenses -->
@@ -268,7 +266,6 @@
 			<version>${postgresql.version}</version>
 		</dependency>
 
-
 		<!-- ACLs -->
 		<!-- Spring ACL requires a cache to store Object Identity and ACL entries, so we'll make use of Ehcache here.
 And, to support Ehcache in Spring, we also need the spring-context-support dependency -->
@@ -358,6 +355,13 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 	<!-- Final name for the WAR artifact, so it is always the same and does not change with change of version -->
 	<build>
 		<finalName>eChempad</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${project.parent.version}</version>
+			</plugin>
+		</plugins>
 	</build>
 
 
@@ -375,11 +379,6 @@ And, to support Ehcache in Spring, we also need the spring-context-support depen
 			</activation>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-					</plugin>
-
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>

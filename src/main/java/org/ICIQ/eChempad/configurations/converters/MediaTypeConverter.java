@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
  * @since 14/10/2022
  */
 @Component
-@Converter(autoApply = true)
+//@Converter(autoApply = false)
 public class MediaTypeConverter implements AttributeConverter<MediaType, String>{
 
     /**
