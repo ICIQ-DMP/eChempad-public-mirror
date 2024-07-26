@@ -59,7 +59,7 @@ import java.sql.Blob;
  * @since 1.0
  */
 @Component
-@Converter
+//@Converter
 public class DocumentWrapperConverter implements AttributeConverter<DocumentWrapper, org.ICIQ.eChempad.entities.genericJPAEntities.Document>, Serializable {
 
     /**

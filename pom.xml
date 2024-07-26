@@ -70,7 +70,6 @@
 
 		<!-- Database -->
 		<postgresql.version>42.5.4</postgresql.version>
-		<hibernate.version>6.5.2.Final</hibernate.version>
 
 		<!-- ACLs -->
 		<ehcache.version>3.10.8</ehcache.version>
@@ -82,7 +81,6 @@
 		<org.codehaus.mojo.license-maven-plugin.version>4.5</org.codehaus.mojo.license-maven-plugin.version>
 		<com.mycila.license-maven-plugin.version>3.12.1</com.mycila.license-maven-plugin.version>
 		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
-
 	</properties>
 
 	<!--Licenses -->

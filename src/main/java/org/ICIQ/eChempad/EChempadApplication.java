@@ -20,8 +20,13 @@
  */
 package org.ICIQ.eChempad;
 
+import org.ICIQ.eChempad.configurations.converters.DocumentWrapperConverter;
+import org.ICIQ.eChempad.configurations.converters.MediaTypeConverter;
+import org.ICIQ.eChempad.configurations.converters.UUIDConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 // @SpringBootApplication This annotation includes three others, but is not well recognized in intelliJ... Substitute
@@ -34,6 +39,20 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {
 		"org.ICIQ.eChempad.repositories"
 })
+@ComponentScan(
+		basePackages = {"org.ICIQ.eChempad"},
+		excludeFilters = {
+				@ComponentScan.Filter(
+						type = FilterType.ASSIGNABLE_TYPE,
+						value = UUIDConverter.class),
+				@ComponentScan.Filter(
+						type = FilterType.ASSIGNABLE_TYPE,
+						value = MediaTypeConverter.class),
+				@ComponentScan.Filter(
+						type = FilterType.ASSIGNABLE_TYPE,
+						value = DocumentWrapperConverter.class)
+
+		})
 public class EChempadApplication {
 
 	public static void main(String[] args) {
