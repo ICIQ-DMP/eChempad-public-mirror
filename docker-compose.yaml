@@ -55,10 +55,7 @@ services:
       - "0.0.0.0:8443:8443"
       - "8080:8080"
     volumes: # Mount secrets configuration file
-      - type: bind
-        source: ./src/main/resources/secrets/cas_secrets.properties
-        target: /etc/cas/config/secrets.properties
-        read_only: true
+      - ${PWD}/src/main/resources/secrets/cas_secrets.properties:/etc/cas/config/secrets.properties
     depends_on:
       postgres_db:
         condition: service_started

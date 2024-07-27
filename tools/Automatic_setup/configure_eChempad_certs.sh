@@ -57,6 +57,8 @@
 #   8.- Gets eChempad certificate from ${ECHEMPAD_PATH}/tools/security/eChempad.crt and injects it in the truststore of
 #       the truststore of the JVM pointed by ${JAVA_HOME}/lib/security/cacerts
 
+# To work, the eChempad application only needs
+
 declare -r mode="dev"
 
 echempad_possible_locations=(
@@ -230,3 +232,5 @@ keytool -import -noprompt -trustcacerts \
    -storepass changeit \
    -keypass changeit \
    -alias eChempad
+
+
