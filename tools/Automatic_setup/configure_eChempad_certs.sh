@@ -43,18 +43,18 @@
 #     - /home/${SUDO_USER}/Escritorio/eChempad-CAS
 #     - /home/${SUDO_USER}/Desktop/eChempad-CAS
 # Steps:
-#   1.- Creates a new keystore with the eChempad certificate into ${ECHEMPAD_PATH}/src/main/resources/security/keystore
-#   2.- Extracts the certificate into ${ECHEMPAD_PATH}/tools/security/eChempad.crt
+#   1.- Creates a new keystore with the eChempad certificate into ${ECHEMPAD_PATH}/src/main/resources/secrets/keystore
+#   2.- Extracts the certificate into ${ECHEMPAD_PATH}/tools/secrets/eChempad.crt
 #   3.- Creates a new keystore with the eChempad-CAS certificate into ${ECHEMPADCAS_PATH}/etc/cas/thekeystore
 #   4.- Extracts the certificate into ${ECHEMPADCAS_PATH}/etc/cas/cas.crt
 #   5.- Gets eChempad-CAS certificate from ${ECHEMPADCAS_PATH}/etc/cas/cas.crt and creates a truststore for
-#       eChempad in ${ECHEMPAD_PATH}/src/main/resources/security/truststore
-#   6.- Gets eChempad certificate from ${ECHEMPAD_PATH}/tools/security/eChempad.crt and creates a truststore for
+#       eChempad in ${ECHEMPAD_PATH}/src/main/resources/secrets/truststore
+#   6.- Gets eChempad certificate from ${ECHEMPAD_PATH}/tools/secrets/eChempad.crt and creates a truststore for
 #       eChempad-CAS in ${ECHEMPADCAS_PATH}/etc/cas/truststore
 # Since we are not sure how to make eChempad trust CAS, also inject the certificates into the cacerts of the JVM
 #   7.- Gets eChempad-CAS certificate from ${ECHEMPADCAS_PATH}/etc/cas/cas.crt and injects it in the truststore of the
 #       JVM pointed by ${JAVA_HOME}/lib/security/cacerts
-#   8.- Gets eChempad certificate from ${ECHEMPAD_PATH}/tools/security/eChempad.crt and injects it in the truststore of
+#   8.- Gets eChempad certificate from ${ECHEMPAD_PATH}/tools/secrets/eChempad.crt and injects it in the truststore of
 #       the truststore of the JVM pointed by ${JAVA_HOME}/lib/security/cacerts
 
 # To work, the eChempad application only needs
@@ -85,7 +85,7 @@ echempadcas_possible_locations=(
 
 if [ "${mode}" == "dev" ]; then
   dns_echempad="echempad.iciq.es"
-  dns_echempad_cas="echempad-cas.iciq.es"
+  dns_echempad_cas="echempad-cas"
 else
   dns_echempad="echempad"
   dns_echempad_cas="echempad-cas"
@@ -142,21 +142,21 @@ set_echempad_path
 set_echempadcas_path
 
 # 1 Creates a new keystore with the eChempad certificate with no prompt
-rm -f "${ECHEMPAD_PATH}/src/main/resources/security/keystore"
+rm -f "${ECHEMPAD_PATH}/src/main/resources/secrets/keystore"
 keytool -genkey -noprompt \
   -alias eChempad \
   -dname "CN=${dns_echempad}, OU=TCC, O=ICIQ, L=Tarragona, S=Spain, C=ES" \
   -keyalg RSA \
   -validity 999 \
-  -keystore "${ECHEMPAD_PATH}/src/main/resources/security/keystore" \
+  -keystore "${ECHEMPAD_PATH}/src/main/resources/secrets/keystore" \
   -storepass changeit \
   -keypass changeit \
   -ext san=dns:${dns_echempad},ip:127.0.0.1
 
 # 2 Extracts eChempad certificate from keystore
 keytool -export -noprompt \
-  -file "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" \
-  -keystore "${ECHEMPAD_PATH}/src/main/resources/security/keystore" \
+  -file "${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad.crt" \
+  -keystore "${ECHEMPAD_PATH}/src/main/resources/secrets/keystore" \
   -storepass changeit \
   -keypass changeit \
   -alias eChempad
@@ -181,28 +181,28 @@ keytool -export -noprompt \
   -keypass changeit \
   -alias eChempad-CAS
 
-# 4.1 copy cas.crt into security of eChempad
-rm -f "${ECHEMPAD_PATH}/src/main/resources/security/cas.crt"
-cp "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" "${ECHEMPAD_PATH}/src/main/resources/security/"
+# 4.1 copy cas.crt into secrets of eChempad
+rm -f "${ECHEMPAD_PATH}/src/main/resources/secrets/cas.crt"
+cp "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" "${ECHEMPAD_PATH}/src/main/resources/secrets/"
 
-# 4.2 copy eChempad.crt into security of cas
+# 4.2 copy eChempad.crt into secrets of cas
 rm -f "${ECHEMPADCAS_PATH}/etc/cas/config/eChempad.crt"
-cp "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" "${ECHEMPADCAS_PATH}/etc/cas/"
+cp "${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad.crt" "${ECHEMPADCAS_PATH}/etc/cas/"
 
 # 5 Create trust store for eChempad CAS and import eChempad certificate.
 rm -f "${ECHEMPADCAS_PATH}/etc/cas/truststore"
 keytool -import -noprompt -trustcacerts \
-  -file "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" \
+  -file "${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad.crt" \
   -keystore "${ECHEMPADCAS_PATH}/etc/cas/truststore" \
   -storepass changeit \
   -keypass changeit \
   -alias eChempad
 
 # 6 Create trust store for eChempad and import eChempad CAS certificate.
-rm -f "${ECHEMPAD_PATH}/src/main/resources/security/truststore"
+rm -f "${ECHEMPAD_PATH}/src/main/resources/secrets/truststore"
 keytool -import -noprompt -trustcacerts \
   -file "${ECHEMPADCAS_PATH}/etc/cas/cas.crt" \
-  -keystore "${ECHEMPAD_PATH}/src/main/resources/security/truststore" \
+  -keystore "${ECHEMPAD_PATH}/src/main/resources/secrets/truststore" \
   -storepass changeit \
   -keypass changeit \
   -alias eChempad-CAS
@@ -220,14 +220,14 @@ keytool -import -noprompt -trustcacerts \
    -keypass changeit \
    -alias eChempad-CAS
 
-# 8 Gets eChempad certificate from ${ECHEMPAD_PATH}/tools/security/eChempad.crt and injects it in the truststore of
+# 8 Gets eChempad certificate from ${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad.crt and injects it in the truststore of
 # the truststore of the JVM pointed by ${JAVA_HOME}/lib/security/cacerts
 if "${JAVA_HOME}/bin/keytool" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit" -list -alias "eChempad"; then
   echo "*** - INFO: Certificate eChempad present in ${JAVA_HOME}/lib/security/cacerts, removing and reinstalling"
   "${JAVA_HOME}/bin/keytool" -delete -alias "eChempad" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
 fi
 keytool -import -noprompt -trustcacerts \
-   -file "${ECHEMPAD_PATH}/src/main/resources/security/eChempad.crt" \
+   -file "${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad.crt" \
    -keystore "${JAVA_HOME}/lib/security/cacerts" \
    -storepass changeit \
    -keypass changeit \

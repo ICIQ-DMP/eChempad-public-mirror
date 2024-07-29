@@ -38,24 +38,6 @@ RUN rm -rf /app/src/main/resources/secrets
 # Create mountpoint for secrets
 RUN mkdir -p /app/src/main/resources/secrets
 
-# 7 Gets eChempad-CAS certificate from src/main/resources/security/cas.crt and injects it in the truststore of the
-# JVM pointed by ${JAVA_HOME}/lib/security/cacerts
-RUN keytool -import -noprompt \
-   -file "/app/src/main/resources/security/cas.crt" \
-   -keystore "${JAVA_HOME}/lib/security/cacerts" \
-   -storepass changeit \
-   -keypass changeit \
-   -alias eChempad-CAS
-
-# 7 Gets eChempad-CAS certificate from src/main/resources/security/eChempad.crt and injects it in the truststore of the
-# JVM pointed by ${JAVA_HOME}/lib/security/cacerts
-RUN keytool -import -noprompt \
-   -file "/app/src/main/resources/security/eChempad.crt" \
-   -keystore "${JAVA_HOME}/lib/security/cacerts" \
-   -storepass changeit \
-   -keypass changeit \
-   -alias eChempad
-
 # Compile project skipping testing goals (compilation, resources and run of tests)
 RUN ./mvnw package -Dmaven.test.skip=true
 
@@ -74,13 +56,17 @@ WORKDIR /app
 RUN mkdir -p /app/target
 COPY --from=build /app/target/eChempad.jar /app
 
+# Copy entrypoint into image
+COPY ./entrypoint.sh /app/entrypoint.sh
+RUN chmod u+x /app/entrypoint.sh
+
 # Cambia la propiedad del directorio '/app/target' al usuario con id 1001
-RUN chown 1001:1001 /app/eChempad.jar
+#RUN chown 1001:1001 /app/eChempad.jar
 
 # Set the user to run the application
-USER 1001
+#USER 1001
 
 # Set the application profile in order to change the config of DB location
 ENV spring_profiles_active=container
 
-ENTRYPOINT ["java", "-jar", "eChempad.jar"]
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]
