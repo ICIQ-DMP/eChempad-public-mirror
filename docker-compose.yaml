@@ -29,7 +29,7 @@ services:
   postgres_db:
     image: postgres:latest
     pull_policy: always
-    container_name: postgres_db
+    #container_name: postgres_db
     environment:  # TODO Use secret for the password
       - UID=1015
       - GID=1015
@@ -38,7 +38,7 @@ services:
       - POSTGRES_DB=eChempad
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
-      - "0.0.0.0:5432:5432"
+      - "0.0.0.0:5433:5432"
     volumes:
       - ./src/main/resources/SQL:/docker-entrypoint-initdb.d
       - pgdata:/var/lib/postgresql/data/scripts
@@ -55,10 +55,7 @@ services:
       - "0.0.0.0:8443:8443"
       - "8080:8080"
     volumes: # Mount secrets configuration file
-      - type: bind
-        source: ./src/main/resources/secrets/cas_secrets.properties
-        target: /etc/cas/config/secrets.properties
-        read_only: true
+      - ${PWD}/src/main/resources/secrets/cas_secrets.properties:/etc/cas/config/secrets.properties
     depends_on:
       postgres_db:
         condition: service_started
@@ -90,7 +87,7 @@ services:
       postgres_db:
         condition: service_started
     healthcheck:
-      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health | grep -q UP" ]
+      test: [ "CMD-SHELL", "curl --silent --fail | grep -q UP" ]
       interval: 20s
       retries: 10
       timeout: 60s

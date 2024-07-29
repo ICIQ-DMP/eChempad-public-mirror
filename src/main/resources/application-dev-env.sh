@@ -19,5 +19,5 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-export MAVEN_FLAGS+=""
+#export MAVEN_FLAGS+=""
 #export JAVA_FLAGS="${JAVA_FLAGS} -Djavax.net.debug=ssl -Djavax.net.ssl.trustStore=${MAVEN_PROJECTBASEDIR}/src/main/resources/security/truststore -Djavax.net.ssl.trustStorePassword=changeit"

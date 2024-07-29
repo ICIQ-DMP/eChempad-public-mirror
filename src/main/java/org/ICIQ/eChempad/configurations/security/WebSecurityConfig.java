@@ -350,8 +350,7 @@ public class WebSecurityConfig {
     @Bean
     public ServiceProperties serviceProperties() {
         ServiceProperties serviceProperties = new ServiceProperties();
-        System.out.println("client-host-url" + this.env.getProperty("cas.client-host-url") + "login/cas");
-        serviceProperties.setService(this.env.getProperty("cas.client-host-url") + "login/cas");
+        serviceProperties.setService(this.env.getProperty("cas.client-host-url") + "/login/cas");
         serviceProperties.setSendRenew(false);
         serviceProperties.setArtifactParameter(DEFAULT_CAS_ARTIFACT_PARAMETER);
         return serviceProperties;
@@ -421,9 +420,6 @@ public class WebSecurityConfig {
                 AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY)
                 .logout(request, response, auth);
 
-        Logger.getGlobal().warning("aaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n\n\n" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
         return "auth/logout";
     }
 
@@ -435,7 +431,7 @@ public class WebSecurityConfig {
     @Bean
     public LogoutFilter logoutFilter() {
         LogoutFilter logoutFilter = new LogoutFilter(
-                this.env.getProperty("cas.server-url-prefix") + "logout",
+                this.env.getProperty("cas.server-url-prefix-public") + "/logout",
                 this.securityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl("/logout/cas");
         return logoutFilter;

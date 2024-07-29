@@ -314,25 +314,7 @@ export MAVEN_CMD_LINE_ARGS
 WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
 
-### CUSTOM CODE TO SOURCE DIFFERENT BASH CODE FOR EACH APPLICATION PROFILE ###
 
-# Obtain full path to the folder that contains this script
-MAVEN_WRAPPER_DIR="$(dirname "$(realpath "$0")")"
-
-# Obtain application profile
-SPRINGBOOT_PROFILE="$(
-  cat "${MAVEN_WRAPPER_DIR}/src/main/resources/application.properties" |
-  grep -Eo "spring.profiles.active = .*" |
-  cut -d "=" -f2- |
-  tr -d " "
-  )"
-
-# Added to the original code the sourcing of the application-env.sh and the corresponding environment for the profile
-# that we have currently active
-# {
-source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-env.sh"
-source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE}-env.sh"
-# }
 
 # Added a hardcoded truststore using $JAVA_HOME
 # Added maven options in MAVEN_OPTIONS. This var is defined in the application profile.
@@ -341,6 +323,8 @@ source "${MAVEN_WRAPPER_DIR}/src/main/resources/application-${SPRINGBOOT_PROFILE
 # *  "${JAVA_HOME}/jre/lib/security/cacerts"
 # *  /etc/ssl/certs/java/cacerts  <-- this is a good one
 # "${MAVEN_WRAPPER_DIR}/src/main/resources/security/truststore" <-- The static one that we have stored in the repo
+
+if [ 0 == 1 ]; then
 trustStores=("/etc/default/cacerts" "${JAVA_HOME}/jre/lib/security/cacerts" "/etc/ssl/certs/java/cacerts" "${MAVEN_WRAPPER_DIR}/src/main/resources/security/truststore" "${JAVA_HOME}/lib/security/cacerts" "${HOME}/.customizer/bin/java/jre/lib/security/cacerts")
 trustStore="${trustStores[3]}"
 echo "Using truststore ${trustStore}"
@@ -367,7 +351,7 @@ if [ ! -s "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar" ]; then
   echo "${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.jar and execute mvnw again to trigger its download"
   exit 1
 fi
-
+fi
 # Add -Xlint:unchecked because some classes uses unchecked operations and this flag can be used to see details.
 #JAVA_FLAGS="-javaagent:/home/aleixmt/.m2/repository/org/springframework/spring-instrument/6.0.11/spring-instrument-6.0.11.jar ${JAVA_FLAGS}"  # -Dsun.rmi.transport.tcp.maxConnectionThreads=0
 
@@ -385,11 +369,7 @@ echo exec "${JAVACMD}" ${JAVA_FLAGS} \
        ${WRAPPER_LAUNCHER} ${MAVEN_CONFIG} ${MAVEN_FLAGS} \
        "$@"
 
-# If there is any application listening to port 8081 (which is the one used to deploy the app) kill it.
-if lsof -ti tcp:8081 &> /dev/null; then
-  # if there is someone running in port 8081
-  lsof -ti tcp:8081 | xargs kill
-fi
+
 
 exec "${JAVACMD}" ${JAVA_FLAGS} \
          ${MAVEN_OPTS} \

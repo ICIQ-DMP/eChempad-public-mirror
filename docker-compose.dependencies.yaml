@@ -1,0 +1,8 @@
+---
+services:
+  nginx:
+    container_name: echempad-dependencies
+    build:
+      context: .
+      dockerfile: dependencies.Dockerfile
+    image: aleixmt/echempad-dependencies:latest
