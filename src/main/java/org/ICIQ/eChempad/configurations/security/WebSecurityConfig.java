@@ -431,7 +431,7 @@ public class WebSecurityConfig {
     @Bean
     public LogoutFilter logoutFilter() {
         LogoutFilter logoutFilter = new LogoutFilter(
-                this.env.getProperty("cas.server-url-prefix") + "/logout",
+                this.env.getProperty("cas.server-url-prefix-public") + "/logout",
                 this.securityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl("/logout/cas");
         return logoutFilter;
