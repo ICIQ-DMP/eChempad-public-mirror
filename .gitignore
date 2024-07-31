@@ -218,16 +218,12 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
-# End of https://www.toptal.com/developers/gitignore/api/mavenfile_db
-file_db
-secrets/*
-
 src/main/resources/secretshtmlReport
 htmlReport/
 
 # ignore secrets
-src/main/resources/secrets
-src/main/resources/secrets.properties
+#src/main/resources/secrets
+#src/main/resources/secrets.properties
 
 # ignore container data
 .db_container_data/.gitkeep

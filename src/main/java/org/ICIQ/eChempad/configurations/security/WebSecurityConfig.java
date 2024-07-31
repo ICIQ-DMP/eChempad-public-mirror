@@ -144,7 +144,7 @@ public class WebSecurityConfig {
         String[] anonymousPages = new String[]{
                 "/help",
                 "/about",
-                "/logout", "/timeout", "/exit", "/login"};
+                "/logout", "/timeout", "/exit", "/login", "/health"};
 
         // Pages that need authentication: CRUD API & ZK page
         String[] authenticatedPages = new String[]{"/api/**", "/profile", "/"};
