@@ -21,7 +21,7 @@
 
 # Compilation container, creates the .jar to run the application.
 # Use JDK17 alpine
-FROM aleixmt/echempad-dependencies:latest as build
+FROM aleixmt/echempad-dependencies:latest AS build
 
 # Set the working directory
 WORKDIR /app

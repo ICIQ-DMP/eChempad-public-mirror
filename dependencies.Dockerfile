@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine as base
+FROM openjdk:17-jdk-alpine AS base
 
 # Set the working directory
 WORKDIR /app
