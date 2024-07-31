@@ -59,7 +59,7 @@ services:
       postgres_db:
         condition: service_started
     healthcheck:
-      test: [ "CMD-SHELL", "curl --insecure --silent -o /dev/null https://localhost:8443/cas/a_page_that_does_not_exist" ]
+      test: [ "CMD-SHELL", "wget --no-check-certificate --no-verbose --tries=1 --spider https://localhost:8443/cas/login" ]
       interval: 20s
       retries: 10
       timeout: 60s
@@ -86,7 +86,7 @@ services:
       postgres_db:
         condition: service_started
     healthcheck:
-      test: [ "CMD-SHELL", "curl --insecure --silent https://localhost:8081/health | grep -q UP" ]
+      test: [ "CMD-SHELL", "wget --no-check-certificate --no-verbose --tries=1 --spider https://localhost:8081/health" ]
       interval: 20s
       retries: 10
       timeout: 60s

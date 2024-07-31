@@ -47,7 +47,7 @@ RUN ./mvnw package -Dmaven.test.skip=true
 FROM openjdk:17-jdk-alpine
 
 # debug
-RUN apk add --no-cache curl
+# RUN apk add --no-cache curl
 
 # Set the working directory
 WORKDIR /app
