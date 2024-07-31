@@ -36,7 +36,7 @@ COPY . /app
 RUN rm -rf /app/src/main/resources/secrets
 
 # Create mountpoint for secrets
-RUN mkdir -p /app/src/main/resources/secrets
+RUN mkdir -p /app/src/main/resources/secrets/eChempad_secrets
 
 # Compile project skipping testing goals (compilation, resources and run of tests)
 RUN ./mvnw package -Dmaven.test.skip=true
@@ -45,9 +45,6 @@ RUN ./mvnw package -Dmaven.test.skip=true
 # Run container,
 # Use JDK17 alpine
 FROM openjdk:17-jdk-alpine
-
-# debug
-# RUN apk add --no-cache curl
 
 # Set the working directory
 WORKDIR /app
@@ -59,12 +56,6 @@ COPY --from=build /app/target/eChempad.jar /app
 # Copy entrypoint into image
 COPY ./entrypoint.sh /app/entrypoint.sh
 RUN chmod u+x /app/entrypoint.sh
-
-# Cambia la propiedad del directorio '/app/target' al usuario con id 1001
-#RUN chown 1001:1001 /app/eChempad.jar
-
-# Set the user to run the application
-#USER 1001
 
 # Set the application profile in order to change the config of DB location
 ENV spring_profiles_active=container

@@ -105,12 +105,12 @@ public class DatabaseInitStartup implements ApplicationListener<ApplicationReady
     {
         StringBuilder data = new StringBuilder();
         try {
-            File myObj = new File("target/classes/secrets/" + keyName + ".txt");
+            File myObj = new File("target/classes/secrets/eChempad_secrets" + keyName + ".txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 data.append(myReader.nextLine());
             }
-            Logger.getGlobal().info("File target/classes/secrets/" + keyName + ".txt" + " found! Key is" +
+            Logger.getGlobal().info("File target/classes/secrets/eChempad_secrets" + keyName + ".txt" + " found! Key is" +
                     "loaded.");
             myReader.close();
         } catch (FileNotFoundException e) {

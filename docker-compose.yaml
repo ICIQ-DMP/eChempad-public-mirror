@@ -54,7 +54,7 @@ services:
       - "0.0.0.0:8443:8443"
       - "8080:8080"
     volumes: # Mount secrets configuration file
-      - ${PWD}/src/main/resources/secrets/cas_secrets.properties:/etc/cas/config/secrets.properties
+      - ${PWD}/src/main/resources/secrets/cas_secrets/cas_secrets.properties:/etc/cas/config/secrets.properties
     depends_on:
       postgres_db:
         condition: service_started
@@ -65,21 +65,19 @@ services:
       timeout: 60s
       start_period: 5s
 
-  echempad_app:
+  echempad-app:
     image: aleixmt/echempad:latest
     build:
       context: .
       dockerfile: Dockerfile
     pull_policy: always
     environment:
-      - PUID=1001
-      - PGID=1001
       - TZ=Etc/UTC
       - SPRING_PROFILES_ACTIVE=container
     ports:
       - "0.0.0.0:8081:8081"
     volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
-      - ./src/main/resources/secrets/:/app/target/classes/secrets/
+      - ./src/main/resources/secrets/eChempad_secrets:/app/target/classes/secrets/eChempad_secrets
     depends_on:
       echempad-cas:
         condition: service_healthy

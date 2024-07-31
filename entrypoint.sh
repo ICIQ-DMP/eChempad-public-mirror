@@ -9,7 +9,7 @@ if "${JAVA_HOME}/bin/keytool" -trustcacerts -keystore "${JAVA_HOME}/lib/security
   "${JAVA_HOME}/bin/keytool" -delete -alias "eChempad-CAS" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
 fi
 keytool -import -noprompt -trustcacerts \
-   -file "/app/target/classes/secrets/cas.crt" \
+   -file "/app/target/classes/secrets/eChempad_secrets/cas.crt" \
    -keystore "${JAVA_HOME}/lib/security/cacerts" \
    -storepass changeit \
    -keypass changeit \
@@ -22,7 +22,7 @@ if "${JAVA_HOME}/bin/keytool" -keystore "${JAVA_HOME}/lib/security/cacerts" -sto
   "${JAVA_HOME}/bin/keytool" -delete -alias "eChempad" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
 fi
 keytool -import -noprompt -trustcacerts \
-   -file "/app/target/classes/secrets/eChempad.crt" \
+   -file "/app/target/classes/secrets/eChempad_secrets/eChempad.crt" \
    -keystore "${JAVA_HOME}/lib/security/cacerts" \
    -storepass changeit \
    -keypass changeit \

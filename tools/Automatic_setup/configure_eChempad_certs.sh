@@ -233,4 +233,10 @@ keytool -import -noprompt -trustcacerts \
    -keypass changeit \
    -alias eChempad
 
+# 9 Copy certificates into the secret mountpoint of eChempad
+cp "${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad.crt" "${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad_secrets/eChempad.crt"
+cp "${ECHEMPAD_PATH}/src/main/resources/secrets/cas.crt" "${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad_secrets/cas.crt"
 
+# 10 Copy certificates into the secret mountpoint of CAS
+cp "${ECHEMPAD_PATH}/src/main/resources/secrets/eChempad.crt" "${ECHEMPAD_PATH}/src/main/resources/secrets/cas_secrets/eChempad.crt"
+cp "${ECHEMPAD_PATH}/src/main/resources/secrets/cas.crt" "${ECHEMPAD_PATH}/src/main/resources/secrets/cas_secrets/cas.crt"
