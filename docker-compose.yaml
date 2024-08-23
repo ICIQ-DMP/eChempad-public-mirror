@@ -29,18 +29,22 @@ services:
   postgres_db:
     image: postgres:latest
     pull_policy: always
-    environment:  # TODO Use secret for the password
-      - UID=1015
-      - GID=1015
-      - POSTGRES_PASSWORD=chemistry
+    environment:
+      - POSTGRES_PASSWORD_FILE=/run/secrets/ECHEMPAD_DB_PASSWORD
       - POSTGRES_USER=eChempad
       - POSTGRES_DB=eChempad
+      # Change default location of database data files for persisting data
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "0.0.0.0:5433:5432"
     volumes:
+      # Mount .sql files for db schema initialization
       - ./src/main/resources/SQL:/docker-entrypoint-initdb.d
-      - pgdata:/var/lib/postgresql/data/scripts
+      # Mount volume for persisting data
+      - pgdata:/var/lib/postgresql/data
+    secrets:
+      - ECHEMPAD_DB_PASSWORD
+
 
   echempad-cas:
     image: aleixmt/echempad-cas:latest
@@ -74,10 +78,9 @@ services:
     environment:
       - TZ=Etc/UTC
       - SPRING_PROFILES_ACTIVE=container
+      - WORDPRESS_DB_USER: wordpress
     ports:
       - "0.0.0.0:8081:8081"
-    volumes:  # Mount secret files (DATAVERSE_KEY.txt and SIGNALS_KEY.txt)
-      - ./src/main/resources/secrets/eChempad_secrets:/app/target/classes/secrets/eChempad_secrets
     depends_on:
       echempad-cas:
         condition: service_healthy
@@ -89,6 +92,26 @@ services:
       retries: 10
       timeout: 60s
       start_period: 5s
+    secrets:
+      - ECHEMPAD_DB_PASSWORD
+      - ECHEMPAD_APP_CERT
+      - ECHEMPAD_CAS_CERT
+      - ECHEMPAD_DATAVERSE_TOKEN
+      - ECHEMPAD_SIGNALS_TOKEN
+
+secrets:
+  ECHEMPAD_DB_PASSWORD:
+    environment: "ECHEMPAD_DB_PASSWORD"
+  ECHEMPAD_APP_CERT:
+    environment: "ECHEMPAD_APP_CERT"
+  ECHEMPAD_CAS_CERT:
+    environment: "ECHEMPAD_CAS_CERT"
+  ECHEMPAD_DATAVERSE_TOKEN:
+    environment: "ECHEMPAD_DATAVERSE_TOKEN"
+  ECHEMPAD_SIGNALS_TOKEN:
+    environment: "ECHEMPAD_SIGNALS_TOKEN"
+  ECHEMPAD_CAS_LDAP_TOKEN:
+    environment: "ECHEMPAD_LDAP_TOKEN"
 
 volumes:
   pgdata:
